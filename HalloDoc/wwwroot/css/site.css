@@ -1,0 +1,197 @@
+.maindiv {
+    /* height: 100vh; */
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+}
+
+.mode {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.fields {
+    width: 50%;
+    margin: auto;
+}
+
+.backbtn {
+    width: 50%;
+    padding-left: 20%;
+}
+
+.icon {
+    position: relative;
+    bottom: 40px;
+    left: 40%;
+}
+
+.terms {
+    /* width : 30%; */
+    font-size: 0.9rem;
+}
+
+.bg-image {
+    z-index: -1;
+    position: absolute;
+    height: 100vh;
+    opacity: 0.3;
+    filter: blur(3px);
+    display: flex;
+    justify-content: center;
+    width : 100%;
+}
+
+.mainpic {
+    width: 33%;
+}
+
+.pbtn {
+    background-color: #e3dede;
+    color: #4a4aff;
+    border: 1px solid #4a4aff;
+    text-transform: none;
+}
+
+.ffbtn {
+    background-color: #89e7f9;
+    color: #2752a3;
+    border: 1px solid #2752a3;
+    text-transform: none;
+}
+
+.cbtn {
+    background-color: #b9f1ba;
+    color: #007926;
+    border: 1px solid #007926;
+    text-transform: none;
+}
+
+.bbtn {
+    background-color: #ffd5fa;
+    color: #e53030;
+    border: 1px solid #e53030;
+    text-transform: none;
+}
+
+.link a {
+    width: 250px;
+    height: 50px;
+    padding: 10px;
+}
+
+.backbutton {
+    position: absolute;
+    right: 7%;
+    top: 10%;
+}
+
+.temp {
+    color: rgb(175, 23, 150);
+}
+
+.p_r {
+    position: absolute;
+    top: 13%;
+    right: 16%;
+}
+
+.form-floating:hover ~ label {
+    color: #00b8e6;
+}
+
+
+.form-floating .form-control:focus ~ label {
+    color: #00b8e6;
+}
+
+
+.form-control:focus {
+    border: 1px solid #00b8e6;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.pr_labels {
+    left: 10%;
+}
+
+.pr_main {
+    /* margin-top: 70px; */
+}
+
+div.iti.iti--allow-dropdown {
+    width: 100%;
+    border-radius: 5px;
+}
+
+
+    div.iti.iti--allow-dropdown:focus {
+        outline: #00b8e6;
+    }
+
+input#phone {
+    height: 58px;
+    width: 100%;
+    /* border-color: #00b8e6; */
+}
+
+@media only screen and (max-width: 710px) {
+    .fields {
+        width: 60%;
+    }
+
+    .mainpic {
+        width: 35%;
+    }
+
+    .bg {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .backbtn {
+        padding-left: 10%;
+    }
+
+    .mainpic {
+        width: 45%;
+    }
+
+    /* .terms {
+        width: 40%;
+    } */
+
+    .p_r {
+        right: 5%;
+    }
+}
+
+@media only screen and (max-width: 390px) {
+    /* .terms {
+        width: 50%;
+    } */
+}
+
+@media only screen and (max-width: 370px) {
+    .backbutton {
+        right: 15%;
+    }
+}
+
+
+@media only screen and (max-width: 500px) {
+    .form-floating {
+        font-size: small;
+    }
+}
+
+@media only screen and (min-width: 500px) {
+    .none {
+        display: none;
+    }
+}
