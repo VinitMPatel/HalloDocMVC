@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace HalloDoc.Models;
+
+public partial class Healthprofessionaltype
+{
+    public int Healthprofessionalid { get; set; }
+
+    public string Professionname { get; set; } = null!;
+
+    public DateTime Createddate { get; set; }
+
+    public BitArray? Isactive { get; set; }
+
+    public BitArray? Isdeleted { get; set; }
+}

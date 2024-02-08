@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace HalloDoc.Models;
+
+public partial class Adminregion
+{
+    public int Adminregionid { get; set; }
+
+    public int? Adminid { get; set; }
+
+    public int? Regionid { get; set; }
+}

@@ -1,7 +1,11 @@
+using HalloDoc.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<HalloDocMvcContext>();
 
 var app = builder.Build();
 
