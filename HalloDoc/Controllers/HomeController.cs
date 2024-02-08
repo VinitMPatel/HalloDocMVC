@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
-
 namespace HalloDoc.Controllers
 {
     public class HomeController : Controller
@@ -75,14 +74,18 @@ namespace HalloDoc.Controllers
             try
             {
                 var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
-            if (x.Passwordhash == u.Passwordhash) 
-                { return RedirectToAction("patient_request", "Home"); }
-            else
-                { return RedirectToAction("index", "Home"); }
+                if (x.Passwordhash == u.Passwordhash) { 
+                    
+                    return RedirectToAction("patient_request", "Home"); 
+                }
 
+                TempData["Password"] = "*Enter Valid password";
+                return RedirectToAction("index", "Home"); 
+                
             }
             catch (Exception e)
             {
+                TempData["Email"] = "*Enter Valid email";
                 return RedirectToAction("Index", "Home");
             }
 
