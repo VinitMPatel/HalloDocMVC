@@ -25,7 +25,11 @@
     bottom: 40px;
     left: 40%;
 }
-
+.login-icon {
+    position: absolute;
+    top: 18px;
+    right: 10px;
+}
 .terms {
     /* width : 30%; */
     font-size: 0.9rem;

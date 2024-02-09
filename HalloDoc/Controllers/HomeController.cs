@@ -1,4 +1,7 @@
-﻿using HalloDoc.Models;
+﻿
+using HalloDoc.DataContext;
+using HalloDoc.DataModels;
+using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -8,9 +11,10 @@ namespace HalloDoc.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly HalloDocMvcContext _context;
+        private readonly HelloDocDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger , HalloDocMvcContext context)
+
+        public HomeController(ILogger<HomeController> logger, HelloDocDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -74,21 +78,24 @@ namespace HalloDoc.Controllers
             try
             {
                 var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
-                if (x.Passwordhash == u.Passwordhash) { 
-                    
-                    return RedirectToAction("patient_request", "Home"); 
+                if (x.Passwordhash == u.Passwordhash)
+                {
+
+                    return RedirectToAction("patient_request", "home");
                 }
 
-                TempData["Password"] = "*Enter Valid password";
-                return RedirectToAction("index", "Home"); 
-                
+                TempData["password"] = "*enter valid password";
+                return RedirectToAction("index", "home");
+
             }
             catch (Exception e)
             {
-                TempData["Email"] = "*Enter Valid email";
-                return RedirectToAction("Index", "Home");
-            }
+                TempData["email"] = "*enter valid email";
+                return RedirectToAction("index", "home");
+                {
+                }
 
+            }
         }
     }
 }
