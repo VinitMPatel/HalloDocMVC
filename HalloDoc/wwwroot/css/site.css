@@ -1,8 +1,6 @@
 .maindiv {
-    /* height: 100vh; */
     display: flex;
     justify-content: center;
-    /* align-items: center; */
 }
 
 .mode {
@@ -17,7 +15,7 @@
 }
 
 .backbtn {
-    padding-left: 29%;
+    padding-left: 31%;
 }
 
 .icon {
@@ -31,7 +29,6 @@
     right: 10px;
 }
 .terms {
-    /* width : 30%; */
     font-size: 0.9rem;
 }
 
@@ -39,8 +36,8 @@
     z-index: -1;
     position: absolute;
     height: 100vh;
-    opacity: 0.3;
-    filter: blur(3px);
+    opacity: 0.5;
+    filter: blur(2px);
     display: flex;
     justify-content: center;
     width : 100%;
@@ -104,11 +101,9 @@
     color: #00b8e6;
 }
 
-
 .form-floating .form-control:focus ~ label {
     color: #00b8e6;
 }
-
 
 .form-control:focus {
     border: 1px solid #00b8e6;
@@ -131,26 +126,28 @@ div.iti.iti--allow-dropdown {
     border-radius: 5px;
 }
 
-
-    div.iti.iti--allow-dropdown:focus {
-        outline: #00b8e6;
-    }
+div.iti.iti--allow-dropdown:focus {
+     outline: #00b8e6;
+ }
 
 input#phone {
     height: 58px;
     width: 100%;
-    /* border-color: #00b8e6; */
+}
+
+
+input#phone1 {
+    height: 58px;
+    width: 100%;
 }
 
 @media only screen and (max-width: 710px) {
     .fields {
         width: 55%;
     }
-
     .mainpic {
         width: 35%;
     }
-
     .bg {
         width: 60%;
     }
@@ -160,20 +157,15 @@ input#phone {
     .mainpic {
         width: 45%;
     }
-
-.backbtn{
-    padding-left : 25%;
-}
-
+    .backbtn{
+        padding-left : 25%;
+    }
     .p_r {
         right: 5%;
     }
 }
 
 @media only screen and (max-width: 390px) {
-    /* .terms {
-        width: 50%;
-    } */
     .fields {
         width: 70%;
     }
@@ -184,7 +176,6 @@ input#phone {
         right: 15%;
     }
 }
-
 
 @media only screen and (max-width: 500px) {
     .form-floating {

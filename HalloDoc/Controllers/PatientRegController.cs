@@ -54,7 +54,7 @@ namespace HalloDoc.Controllers
 
             Request request = new Request
             {
-                Requesttypeid = 2,
+                Requesttypeid = 1,
                 Firstname = r.FirstName,
                 Lastname = r.LastName,
                 Phonenumber = r.PhoneNumber,

@@ -30,7 +30,7 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult patient_first()
+        public IActionResult patient_request()
         {
             return View();
         }
@@ -45,7 +45,7 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult patient_request()
+        public IActionResult patient_login()
         {
             return View();
         }
@@ -65,6 +65,10 @@ namespace HalloDoc.Controllers
             return View();
         }
 
+        public IActionResult patient_dashboard()
+        {
+            return View();
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -75,23 +79,23 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> validate(Aspnetuser u)
         {
+                var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
             try
             {
-                var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
                 if (x.Passwordhash == u.Passwordhash)
                 {
 
-                    return RedirectToAction("patient_request", "home");
+                    return RedirectToAction("patient_dashboard");
                 }
 
                 TempData["password"] = "*enter valid password";
-                return RedirectToAction("index", "home");
+                return RedirectToAction("patient_login", "home");
 
             }
             catch (Exception e)
             {
                 TempData["email"] = "*enter valid email";
-                return RedirectToAction("index", "home");
+                return RedirectToAction("patient_login", "home");
                 {
                 }
 
