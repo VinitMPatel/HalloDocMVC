@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace HalloDoc.Views.Home
+namespace HalloDoc.Views.Shared
 {
-    public class Patient_dashboardModel : PageModel
+    public class patientModel : PageModel
     {
         public void OnGet()
         {

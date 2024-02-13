@@ -1,0 +1,45 @@
+﻿@model HalloDoc.ViewModels.patient_dashboard
+<header>
+    <nav class="navbar navbar-light shadow px-4">
+
+
+        <a class="navbar-brand px" asp-controller="Home" asp-action="Index">
+            <img src="~/images/1HalloDoc.png" height="60px" width="100px">
+        </a>
+        <div class="navdiv d-flex flex-row gap-2">
+          @if (Model != null)
+            {
+                <span class="mt-2 welcome">welcome , @TempData["User"]</span>
+                <a asp-action="patient_login" asp-controller="home">
+                    <button style="background-color: transparent;" class="border-1 rounded text-info border-info p-2">
+                        <div><i class="bi bi-box-arrow-right"></i></div>
+                        <div class="logouttext"><span class="">log out</span></div>
+                    </button>
+                </a>
+            }
+            <div class="">
+                <button id="darkbtn" class="border border-0 rounded-2 p-1">
+                    <img src="~/images/moon_light.png" alt="picture" id="darkimg" height="35px" width="30px">
+                </button>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 p-0">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between px-4">
+                <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active text-info tab-btn rounded-0" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Dashboard</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link tab-btn text-info rounded-0" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</button>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>

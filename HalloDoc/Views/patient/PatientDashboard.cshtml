@@ -1,0 +1,148 @@
+﻿@model HalloDoc.ViewModels.patient_dashboard
+
+
+@Html.Partial("_patient")
+
+<div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+
+        <div class="container-fluid pb-5 mb-5">
+            <div class="px-4">
+
+                <div class="d-flex align-items-center py-3">
+                    <div class="h3 subinfotext fw-bold">Medical History </div>
+                </div>
+                <div class="bglight border border-danger rounded p-3 shadow" id="content">
+                    <div class="d-flex justify-content-end">
+                        <a class="text-info text-decoration-none">
+                            <button class="d-flex babtn border border-info bg-transparent rounded align-item-center p-1 px-2">
+                                <div class="plusimg text-info"><i class="bi bi-plus-lg"></i></div>
+                                <div class="text-info new_request"><span>Create New request</span></div>
+                            </button>
+                        </a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mt-4">
+                            <thead class="thead-light">
+                                <tr class="bg-secondary">
+                                    <th scope="col">Created Date</th>
+                                    <th scope="col">Current Status</th>
+                                    <th scope="col">Document</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in Model.request)
+                                {
+                                    <tr>
+                                        <td>@m.Createddate.ToString("MMM dd , yyyy")</td>
+                                        <td>@Model.StatusFind(m.Status)</td>
+                                        <td>@m.Requestid</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+
+        <div class="container mt-3">
+
+            <div class="d-flex justify-content-end">
+                <div>
+                    <button class=" border border-info rounded-2 p-2">
+                        <a class="text-decoration-none text-info" asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
+                    </button>
+                </div>
+            </div>
+
+            <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
+               
+                    <div class="patient-info row">
+                        <div class="h4">General information</div>
+
+                        <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                            <div class="form-floating ">
+                                <input type="text" asp-for="user.Firstname" class="form-control shadow-none bg-transparent" placeholder="First Name">
+                                <label class="FloatingInput" for="Name">First Name</label>
+                            </div>
+                        </div>
+
+                        <div class="form-floating mt-2 col-xl-6 col-sm-6 col-12">
+                            <input type="text" asp-for="user.Lastname" class="form-control" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword" style="left: 5px;">Last Name</label>
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                            <input type="date" asp-for="user.Modifieddate"  class="form-control" id="floatingPassword" placeholder="Password">
+                            <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
+                        </div>
+                    </div>
+
+                    <div class="contact-info row mt-5">
+
+                        <div class="h4">contact information</div>
+
+                        <div class="form-floating mt-3 col-xl-2 col-sm-2 col-4">
+                        <select class="form-control">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            </select>
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
+                            <input id="phone" asp-for="user.Aspnetuser.Phonenumber" class="form-control" type="tel" name="phone" />
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                            <input type="email" asp-for="user.Email"  class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput" style="left: 5px;">Email</label>
+                        </div>
+
+
+                    </div>
+
+                    <div class="location-info row mt-5">
+
+                        <div class="h4">Patient Location</div>
+
+                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                            <input type="text" asp-for="user.Street" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput" style="left: 5px;">Street</label>
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                            <input type="text" asp-for="user.City" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput" style="left: 5px;">City</label>
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                            <input type="text" asp-for="user.State" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput" style="left: 5px;">State</label>
+                        </div>
+
+                        <div class="form-floating mt-3 col-xl-3 col-sm-3 col-7">
+                            <input type="text" asp-for="user.Zip" class="form-control" id="floatingInput" placeholder="name@example.com">
+                            <label for="floatingInput" style="left: 5px;">Zip Code</label>
+                        </div>
+
+                    <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2 p-1">
+                        <button class=" rounded border border-info text-info form-control">
+                            <span><i class="bi bi-geo-alt"></i></span>
+                            Map</button>
+                    </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                    <button class="bg-info p-2 rounded border-0 px-3 text-white">Edit</button>
+                    </div>
+                   
+                
+            </div>
+        </div>
+
+    </div>
+</div>

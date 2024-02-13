@@ -65,11 +65,6 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult patient_dashboard()
-        {
-            return View();
-        }
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -79,13 +74,13 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> validate(Aspnetuser u)
         {
-                var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
+            var x = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == u.Email);
+            var users = await _context.Users.FirstOrDefaultAsync(m => m.Email == u.Email);
             try
             {
                 if (x.Passwordhash == u.Passwordhash)
                 {
-
-                    return RedirectToAction("patient_dashboard");
+                    return RedirectToAction("PatientDashboard", "patient", new {id=users.Userid});
                 }
 
                 TempData["password"] = "*enter valid password";

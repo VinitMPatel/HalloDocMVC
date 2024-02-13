@@ -141,50 +141,88 @@ input#phone1 {
     width: 100%;
 }
 
-@media only screen and (max-width: 710px) {
-    .fields {
-        width: 55%;
-    }
-    .mainpic {
-        width: 35%;
-    }
-    .bg {
-        width: 60%;
-    }
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background: none;
+    border-bottom : 3px solid #00b8e6;
 }
+/*.form-floating > .form-control:not(:placeholder-shown) {
+    padding : 0px;
+}*/
 
-@media only screen and (max-width: 650px) {
-    .mainpic {
-        width: 45%;
-    }
-    .backbtn{
-        padding-left : 25%;
-    }
-    .p_r {
-        right: 5%;
-    }
-}
+    @media only screen and (max-width: 710px) {
+        .fields {
+            width: 55%;
+        }
 
-@media only screen and (max-width: 390px) {
-    .fields {
-        width: 70%;
-    }
-}
+        .mainpic {
+            width: 35%;
+        }
 
-@media only screen and (max-width: 370px) {
-    .backbutton {
-        right: 15%;
+        .bg {
+            width: 60%;
+        }
     }
-}
 
-@media only screen and (max-width: 500px) {
-    .form-floating {
-        font-size: small;
-    }
-}
+    @media only screen and (max-width: 650px) {
+        .mainpic {
+            width: 45%;
+        }
 
-@media only screen and (min-width: 500px) {
-    .none {
-        display: none;
+        .backbtn {
+            padding-left: 25%;
+        }
+
+        .p_r {
+            right: 5%;
+        }
     }
-}
+
+    @media only screen and (max-width: 390px) {
+        .fields {
+            width: 70%;
+        }
+    }
+
+    @media only screen and (max-width: 370px) {
+        .backbutton {
+            right: 15%;
+        }
+    }
+
+    @media only screen and (max-width: 500px) {
+        .form-floating {
+            font-size: small;
+        }
+    }
+
+    @media only screen and (min-width: 500px) {
+        .none {
+            display: none;
+        }
+    }
+
+    @media only screen and (min-width: 450px) {
+        .bi-plus-lg {
+            display: none;
+        }
+
+        .bi-box-arrow-right {
+            display: none;
+        }
+    }
+
+    @media only screen and (max-width: 450px) {
+        .new_request {
+            display: none;
+        }
+
+        .logouttext {
+            display: none;
+        }
+
+        .welcome {
+            display: none;
+        }
+    }
+
+
