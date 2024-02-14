@@ -9,7 +9,10 @@ try {
     // console.log(file);
     // console.log("Hello");
     btn1.addEventListener('change', function () {
-        file.textContent = this.files[0].name;
+        file.placeholder = this.files[0].name;
+        file.value = this.files[0].name;
+        console.log(file.value);
+        console.log(btn1.value);
         file.style.fontSize = "large";
     })
 }

@@ -9,8 +9,8 @@
                 <h3 class="none">Submit Information</h3>
             </div>
             <div>
-                <button class=" border border-info rounded-2 p-2">
-                    <a class="text-decoration-none text-info" asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                    <a class="text-decoration-none text-info " asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
                 </button>
             </div>
         </div>
@@ -161,4 +161,11 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
+
+        swal("Information",
+            "When Submitting the request, you must provide the correct contact information for the patient or responsibly party.Failure to provide the correct email and phone number will delay the service or be declined.",
+            "warning", {
+            closeOnClickOutside: true,
+        });
+
 </script>

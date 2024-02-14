@@ -3,16 +3,20 @@ using Microsoft.EntityFrameworkCore;
 using HalloDoc.DataContext;
 using HalloDoc.ViewModels;
 using HalloDoc.DataModels;
+using System.Collections;
+using System.Reflection;
 
 namespace HalloDoc.Controllers
 {
     public class PatientRegController : Controller
     {
         private readonly HelloDocDbContext _context;
-        
-        public PatientRegController(HelloDocDbContext context)
+        private readonly IWebHostEnvironment _env;
+
+        public PatientRegController(HelloDocDbContext context , IWebHostEnvironment env)
         {
             _context = context;
+            _env = env;
         }
         [HttpPost]
         public async Task<IActionResult> Insert(PatientInfo r)
@@ -32,25 +36,27 @@ namespace HalloDoc.Controllers
                 aspnetuser.Modifieddate = DateTime.Now;
                 _context.Aspnetusers.Add(aspnetuser);
                 Aspnetuser = aspnetuser;
+
+                User user = new User();
+                user.Aspnetuserid = Aspnetuser.Id;
+                user.Firstname = r.FirstName;
+                user.Lastname = r.LastName;
+                user.Email = r.Email;
+                user.Mobile = r.PhoneNumber;
+                user.Street = r.Street;
+                user.City = r.City;
+                user.State = r.State;
+                user.Zip = r.ZipCode;
+                user.Createdby = r.FirstName + r.LastName;
+                user.Modifieddate = DateTime.Now;
+                user.Status = 1;
+                user.Regionid = 1;
+
+                _context.Users.Add(user);
+                _context.SaveChanges();
             }
 
-            User user = new User();
-            user.Aspnetuserid = Aspnetuser.Id;
-            user.Firstname = r.FirstName;
-            user.Lastname = r.LastName;
-            user.Email = r.Email;
-            user.Mobile = r.PhoneNumber;
-            user.Street = r.Street;
-            user.City = r.City;
-            user.State = r.State;
-            user.Zip = r.ZipCode;
-            user.Createdby = r.FirstName + r.LastName;
-            user.Modifieddate = DateTime.Now;
-            user.Status = 1;
-            user.Regionid = 1;
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            var user1 = await _context.Users.FirstOrDefaultAsync(m => m.Email == r.Email);
 
             Request request = new Request
             {
@@ -62,12 +68,13 @@ namespace HalloDoc.Controllers
                 Status = 1,
                 Createddate = DateTime.Now,
                 Modifieddate = DateTime.Now,
-                Userid = user.Userid
+                Userid = user1.Userid,
+             
             };
 
             _context.Requests.Add(request);
             _context.SaveChanges();
-            var requestdata = await _context.Requests.FirstOrDefaultAsync(m => m.Email == user.Email);
+            var requestdata = await _context.Requests.FirstOrDefaultAsync(m => m.Email == user1.Email);
             Requestclient requestclient = new Requestclient
             {
                 Requestid = requestdata.Requestid,
@@ -86,8 +93,42 @@ namespace HalloDoc.Controllers
             _context.Requestclients.Add(requestclient);
             _context.SaveChanges();
 
-            return RedirectToAction("patient_first", "Home");
+          
+           if(r.Upload != null)
+           {
+                uploadFile(r.Upload, requestdata.Requestid);
+           }
 
+            return RedirectToAction("Index", "Home");
+
+        }
+
+        public void uploadFile(List<IFormFile> upload , int id)
+        {
+            foreach(var item in upload)
+            {
+                string path = _env.WebRootPath + "/upload/" + item.FileName;
+                FileStream stream = new FileStream(path , FileMode.Create);
+                
+                item.CopyTo(stream);
+                Requestwisefile requestwisefile = new Requestwisefile
+                {
+                    Requestid = id,
+                    Filename = path,
+                    Createddate = DateTime.Now,
+                   
+                };
+                _context.Add(requestwisefile);
+                _context.SaveChanges();
+            }
+        }
+
+        [Route("/PatientReg/patient_request/checkmail/{email}")]
+        [HttpGet]
+        public IActionResult CheckEmail(string email)
+        {
+            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
+            return Json(new { exists = emailExists });
         }
     }
 }

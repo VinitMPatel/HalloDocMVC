@@ -80,7 +80,8 @@ namespace HalloDoc.Controllers
             {
                 if (x.Passwordhash == u.Passwordhash)
                 {
-                    return RedirectToAction("PatientDashboard", "patient", new {id=users.Userid});
+                    HttpContext.Session.SetInt32("UserId", users.Userid);
+                    return RedirectToAction("PatientDashboard", "patient");
                 }
 
                 TempData["password"] = "*enter valid password";

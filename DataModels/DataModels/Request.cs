@@ -61,6 +61,7 @@ public partial class Request
 
     [Column("isurgentemailsent", TypeName = "bit(1)")]
     public BitArray Isurgentemailsent { get; set; } = new BitArray(1);
+    
 
     [Column("lastwellnessdate", TypeName = "timestamp without time zone")]
     public DateTime? Lastwellnessdate { get; set; }

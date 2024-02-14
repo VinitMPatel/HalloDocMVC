@@ -12,14 +12,14 @@
             <h3 class="none">Submit Information</h3>
         </div>
         <div>
-            <button class=" border border-info rounded-2 p-2">
-                    <a class="text-decoration-none text-info" asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                    <a class="text-decoration-none text-info " asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
             </button>
         </div>
     </div>
 
     <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
-            <form asp-action="Insert" asp-controller="PatientReg" method="post">
+            <form asp-action="Insert" asp-controller="PatientReg" method="post" enctype="multipart/form-data">
         <div class="patient-info row">
             <div class="h4">Patient information</div>
 
@@ -56,12 +56,28 @@
             <div class="h4">Patient contact information</div>
 
             <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="email" asp-for="Email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input type="email" asp-for="Email" class="form-control" id="patientEmail" onblur="checkEmailExists()" placeholder="name@example.com">
                 <label for="floatingInput" style="left: 5px;">Email</label>
             </div>
 
             <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input id="phone" asp-for="PhoneNumber" class="form-control" type="tel" name="phone" />
+            </div>
+                        
+            <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" id="passwordFields1">
+                <input type="password" asp-for="Password" class="form-control" id="password" placeholder="name@example.com">
+                <label for="floatingInput" style="left: 5px;">password</label>
+                    <div class="login-icon" onclick="fun()">
+                        <i class="bi bi-eye-slash-fill" id="eye"></i>
+                    </div>
+            </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" id="passwordFields2">
+                <input type="password" class="form-control" id="cpassword" placeholder="name@example.com">
+                <label for="floatingInput" style="left: 5px;">Confirm Passworrd</label>
+                    <div class="login-icon" onclick="fun()">
+                        <i class="bi bi-eye-slash-fill" id="eye"></i>
+                    </div>
             </div>
 
         </div>
@@ -104,10 +120,11 @@
             <div class="row">
                 <div class="d-flex justify-content-between mt-2 border rounded col-12 ml-3 pe-0 bg-body-secondary">
                     <div class="mt-2">
-                        <label id="filename">No item selected</label>
+                       @*  <label id="filename">No item selected</label> *@
+                            <input type="text" id="filename" placeholder="No item selected" class="border border-0 bg-body-secondary"  />
                     </div>
                     <div class="bg-info p-2 rounded">
-                        <input type="file" id="upload" hidden>
+                            <input type="file" id="upload" asp-for="Upload" hidden multiple>
                         <label for="upload">
                                 <i class="bi bi-cloud-arrow-up text-white"></i>
                             <span class="text-white">Upload</span>
@@ -125,15 +142,58 @@
             </form>
     </div>
 </div>
-@* <script>
+<script>
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
 
-    const btn1 = document.getElementById("upload");
-    const file = document.getElementById("filename");
-    // console.log(file);
-    // console.log("Hello");
-    btn1.addEventListener('change', function () {
-        file.textContent = this.files[0].name;
-        file.style.fontSize = "large";
-    })
+    swal("Information",
+        "When Submitting the request, you must provide the correct contact information for the patient or responsibly party.Failure to provide the correct email and phone number will delay the service or be declined.",
+        "warning", {
+        closeOnClickOutside: true,
+    });
+   
+        const path = document.getElementById("eye");
+    const password = document.getElementById('password')
+    function fun() {
+        console.log(password);
+        if (password.type === "password") {
+            path.classList.remove("bi-eye-slash-fill");
+            path.classList.add("bi-eye-fill");
+            password.type = "text";
 
-</script> *@
+        }
+        else {
+            path.classList.remove("bi-eye-fill");
+            path.classList.add("bi-eye-slash-fill");
+            password.type = "password";
+
+        }
+    }
+
+    function checkEmailExists() {
+
+        var email = document.getElementById("patientEmail").value;
+
+        fetch('/PatientReg/patient_request/checkmail/' + email)
+            .then(response => response.json())
+            .then(data => {
+                var patientPassword = document.getElementById('passwordFields1');
+                var patientConfirmPassword = document.getElementById('passwordFields2');
+                if (data.exists) {
+                    patientPassword.style.display = 'none';
+                    patientConfirmPassword.style.display = 'none';
+                    console.log("exist ")
+                }
+                else {
+                    patientPassword.style.display = 'block';
+                    patientConfirmPassword.style.display = 'block';
+                    console.log(" not exist ")
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>

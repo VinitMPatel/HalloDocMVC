@@ -149,6 +149,12 @@ input#phone1 {
     padding : 0px;
 }*/
 
+div#passwordFields1{
+    display : none;
+}
+div#passwordFields2 {
+    display: none;
+}
     @media only screen and (max-width: 710px) {
         .fields {
             width: 55%;
