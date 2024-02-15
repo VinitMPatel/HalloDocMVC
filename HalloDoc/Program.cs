@@ -1,5 +1,8 @@
+using Data.DataContext;
 using HalloDoc.Models;
-using HalloDoc.DataContext;
+using Services.Contracts;
+
+using Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession(options =>
@@ -15,6 +18,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<HelloDocDbContext>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddTransient<IValidation, Validation>();
 
 
 var app = builder.Build();

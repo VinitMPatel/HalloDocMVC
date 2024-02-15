@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HalloDoc.DataContext;
+using Data.DataContext;
+using Data.Entity;
 using HalloDoc.ViewModels;
-using HalloDoc.DataModels;
+
 
 namespace HalloDoc.Controllers
 {

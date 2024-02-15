@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using HalloDoc.DataContext;
+
 using HalloDoc.ViewModels;
-using HalloDoc.DataModels;
+
 using System.Collections;
 using System.Reflection;
+using Data.DataContext;
+using Data.Entity;
 
 namespace HalloDoc.Controllers
 {
@@ -21,24 +23,24 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public async Task<IActionResult> Insert(PatientInfo r)
         {
-            var Aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.Email);
+            var aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.Email);
 
-            if (Aspnetuser == null)
+            if (aspnetuser == null)
             {
 
-                Aspnetuser aspnetuser = new Aspnetuser();
-                aspnetuser.Id = Guid.NewGuid().ToString();
-                aspnetuser.Passwordhash = r.Password;
-                aspnetuser.Email = r.Email;
+                Aspnetuser aspnetuser1 = new Aspnetuser();
+                aspnetuser1.Id = Guid.NewGuid().ToString();
+                aspnetuser1.Passwordhash = r.Password;
+                aspnetuser1.Email = r.Email;
                 String username = r.FirstName + r.LastName;
-                aspnetuser.Username = username;
-                aspnetuser.Phonenumber = r.PhoneNumber;
-                aspnetuser.Modifieddate = DateTime.Now;
-                _context.Aspnetusers.Add(aspnetuser);
-                Aspnetuser = aspnetuser;
+                aspnetuser1.Username = username;
+                aspnetuser1.Phonenumber = r.PhoneNumber;
+                aspnetuser1.Modifieddate = DateTime.Now;
+                _context.Aspnetusers.Add(aspnetuser1);
+                aspnetuser1 = aspnetuser1;
 
                 User user = new User();
-                user.Aspnetuserid = Aspnetuser.Id;
+                user.Aspnetuserid = aspnetuser1.Id;
                 user.Firstname = r.FirstName;
                 user.Lastname = r.LastName;
                 user.Email = r.Email;

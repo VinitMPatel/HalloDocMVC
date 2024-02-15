@@ -1,4 +1,4 @@
-﻿@model HalloDoc.DataModels.Aspnetuser;
+﻿@model Data.Entity.Aspnetuser;
 
 @*  @{
     viewdata["title"] = "home page";
@@ -29,7 +29,7 @@
             </a>
 
             <div class="h3 mt-3 d-flex justify-content-center">login to your account</div>
-            <form asp-action="validate">
+            <form asp-action="patient_login">
                 <div class="inputs">
                     <div class="form-floating mb-3 fields mt-5">
                         <input type="email" class="form-control" asp-for="Email" id="floatinginput" placeholder="name@example.com" required>
