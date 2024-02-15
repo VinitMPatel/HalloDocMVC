@@ -19,7 +19,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<HelloDocDbContext>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IValidation, Validation>();
-
+builder.Services.AddTransient<IPatientRequest, PatientRequest>();
+builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
+builder.Services.AddTransient<IConciergeRequest, ConciergeRequest>();
+builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 
 var app = builder.Build();
 

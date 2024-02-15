@@ -1,27 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Data.DataContext;
+﻿using Data.DataContext;
 using Data.Entity;
 using HalloDoc.ViewModels;
+using Services.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 
-namespace HalloDoc.Controllers
+namespace Services.Implementation
 {
-    public class FamilyFriendController : Controller
+    public class FamilyRequest : IFamilyRequest
     {
-
         private readonly HelloDocDbContext _context;
 
-        public FamilyFriendController(HelloDocDbContext context)
+        public FamilyRequest(HelloDocDbContext context)
         {
             _context = context;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Insert(FamilyFriendRequest r)
+        public void FamilyInsert(FamilyFriendRequest r)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Email == r.PEmail);
-            var aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.PEmail);
+            var user = _context.Users.Where(m => m.Email == r.PEmail).FirstOrDefault();
+            var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
 
             if (user != null)
             {
@@ -36,7 +38,7 @@ namespace HalloDoc.Controllers
                     Status = 1,
                     Createddate = DateTime.Now,
                     Modifieddate = DateTime.Now,
-                    Relationname = r.Relation   
+                    Relationname = r.Relation
                 };
                 _context.Requests.Add(request);
                 _context.SaveChanges();
@@ -47,7 +49,7 @@ namespace HalloDoc.Controllers
                     Firstname = r.FirstName,
                     Lastname = r.LastName,
                     Phonenumber = r.Mnumber,
-                    Address = r.Street+", "+r.City+ ", "+r.State,
+                    Address = r.Street + ", " + r.City + ", " + r.State,
                     Regionid = 1,
                     Notes = r.Symptoms,
                     City = r.City,
@@ -57,9 +59,8 @@ namespace HalloDoc.Controllers
                 _context.Requestclients.Add(requestclient);
                 _context.SaveChanges();
 
-                return RedirectToAction("index", "Home");
             }
-            return RedirectToAction("index", "Home");
+
         }
     }
 }

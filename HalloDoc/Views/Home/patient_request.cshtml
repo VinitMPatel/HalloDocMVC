@@ -19,7 +19,7 @@
     </div>
 
     <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
-            <form asp-action="Insert" asp-controller="PatientReg" method="post" enctype="multipart/form-data">
+            <form asp-action="Insert" asp-controller="Patient" method="post" enctype="multipart/form-data">
         <div class="patient-info row">
             <div class="h4">Patient information</div>
 
@@ -177,7 +177,7 @@
 
         var email = document.getElementById("patientEmail").value;
 
-        fetch('/PatientReg/patient_request/checkmail/' + email)
+        fetch('/Patient/patient_request/checkmail/' + email)
             .then(response => response.json())
             .then(data => {
                 var patientPassword = document.getElementById('passwordFields1');

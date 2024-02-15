@@ -1,29 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-using HalloDoc.ViewModels;
-
-using System.Collections;
-using System.Reflection;
-using Data.DataContext;
+﻿using Data.DataContext;
 using Data.Entity;
+using HalloDoc.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Services.Contracts;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace HalloDoc.Controllers
+namespace Services.Implementation
 {
-    public class PatientRegController : Controller
+    public class PatientRequest : IPatientRequest
     {
-        private readonly HelloDocDbContext _context;
-        private readonly IWebHostEnvironment _env;
 
-        public PatientRegController(HelloDocDbContext context , IWebHostEnvironment env)
+        private readonly HelloDocDbContext _context;
+        private readonly IHostingEnvironment _env;
+
+        public PatientRequest(HelloDocDbContext context, IHostingEnvironment env)
         {
             _context = context;
             _env = env;
         }
-        [HttpPost]
-        public async Task<IActionResult> Insert(PatientInfo r)
+       
+        public void Insert(PatientInfo r)
         {
-            var aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.Email);
+            var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.Email).FirstOrDefault();
 
             if (aspnetuser == null)
             {
@@ -58,7 +62,7 @@ namespace HalloDoc.Controllers
                 _context.SaveChanges();
             }
 
-            var user1 = await _context.Users.FirstOrDefaultAsync(m => m.Email == r.Email);
+            var user1 =  _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
 
             Request request = new Request
             {
@@ -71,12 +75,12 @@ namespace HalloDoc.Controllers
                 Createddate = DateTime.Now,
                 Modifieddate = DateTime.Now,
                 Userid = user1.Userid,
-             
+
             };
 
             _context.Requests.Add(request);
             _context.SaveChanges();
-            var requestdata = await _context.Requests.FirstOrDefaultAsync(m => m.Email == user1.Email);
+            var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
             Requestclient requestclient = new Requestclient
             {
                 Requestid = requestdata.Requestid,
@@ -95,42 +99,42 @@ namespace HalloDoc.Controllers
             _context.Requestclients.Add(requestclient);
             _context.SaveChanges();
 
-          
-           if(r.Upload != null)
-           {
-                uploadFile(r.Upload, requestdata.Requestid);
-           }
 
-            return RedirectToAction("Index", "Home");
+            if (r.Upload != null)
+            {
+                uploadFile(r.Upload, requestdata.Requestid);
+            }
+
+           
 
         }
 
-        public void uploadFile(List<IFormFile> upload , int id)
+        public void uploadFile(List<IFormFile> upload, int id)
         {
-            foreach(var item in upload)
+            foreach (var item in upload)
             {
                 string path = _env.WebRootPath + "/upload/" + item.FileName;
-                FileStream stream = new FileStream(path , FileMode.Create);
-                
+                FileStream stream = new FileStream(path, FileMode.Create);
+
                 item.CopyTo(stream);
                 Requestwisefile requestwisefile = new Requestwisefile
                 {
                     Requestid = id,
                     Filename = path,
                     Createddate = DateTime.Now,
-                   
+
                 };
                 _context.Add(requestwisefile);
                 _context.SaveChanges();
             }
         }
 
-        [Route("/PatientReg/patient_request/checkmail/{email}")]
-        [HttpGet]
-        public IActionResult CheckEmail(string email)
-        {
-            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
-            return Json(new { exists = emailExists });
-        }
+        //[Route("/PatientReg/patient_request/checkmail/{email}")]
+        //[HttpGet]
+        //public IActionResult CheckEmail(string email)
+        //{
+        //    var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
+        //    return Json(new { exists = emailExists });
+        //}
     }
 }

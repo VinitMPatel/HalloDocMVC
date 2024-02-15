@@ -1,47 +1,49 @@
 ﻿using Data.DataContext;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HalloDoc.ViewModels;
 using Data.Entity;
+using HalloDoc.ViewModels;
+using Services.Contracts;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace HalloDoc.Controllers
+namespace Services.Implementation
 {
-    public class BusinessController : Controller
+    public class ConciergeRequest : IConciergeRequest
     {
         private readonly HelloDocDbContext _context;
 
-        public BusinessController(HelloDocDbContext context)
+        public ConciergeRequest(HelloDocDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Insert(BusinessRequest r)
-        {
 
-            var aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.PEmail);
-            var user = await _context.Aspnetusers.FirstOrDefaultAsync(m => m.Email == r.PEmail);
+        public void CnciergeInsert(ConciergeRequestData r)
+        {
+            var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
+            var user =  _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
 
             if (user != null)
             {
-                Business business = new Business { 
-                    Name = r.Business,
-                    Address1 = r.Street + ", " +r.City,
+                Concierge concierge = new Concierge
+                {
+                    Conciergename = r.FirstName + " " + r.LastName,
+                    Address = r.Street + ", " + r.City,
+                    Street = r.Street,
                     City = r.City,
-                    Regionid = 1,
+                    State = r.State,
                     Zipcode = r.ZipCode,
-                    Phonenumber = r.PMnumber,
                     Createddate = DateTime.Now,
-                    Status = 1,
-                    Createdby = aspnetuser.Id,
-                    Modifiedby = aspnetuser.Id
-                    
+                    Regionid = 1,
                 };
-                _context.Businesses.Add(business);
+                _context.Concierges.Add(concierge);
                 _context.SaveChanges();
 
                 Request request = new Request
                 {
-                    Requesttypeid = 4,
+                    Requesttypeid = 3,
                     Firstname = r.PFirstName,
                     Lastname = r.PLastName,
                     Phonenumber = r.PMnumber,
@@ -49,7 +51,7 @@ namespace HalloDoc.Controllers
                     Status = 1,
                     Createddate = DateTime.Now,
                     Modifieddate = DateTime.Now,
-                    Relationname = r.Business
+                    Relationname = r.Relation
                 };
                 _context.Requests.Add(request);
                 _context.SaveChanges();
@@ -70,18 +72,14 @@ namespace HalloDoc.Controllers
                 _context.Requestclients.Add(requestclient);
                 _context.SaveChanges();
 
-                Requestbusiness requestbusiness = new Requestbusiness
+                Requestconcierge requestconcierge = new Requestconcierge
                 {
                     Requestid = request.Requestid,
-                    Businessid = business.Businessid
+                    Conciergeid = concierge.Conciergeid,
                 };
-                _context.Requestbusinesses.Add(requestbusiness);
+                _context.Requestconcierges.Add(requestconcierge);
                 _context.SaveChanges();
-
-                return RedirectToAction("index", "Home");
             }
-
-            return RedirectToAction("index", "Home");
         }
     }
 }

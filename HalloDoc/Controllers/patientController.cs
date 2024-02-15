@@ -3,6 +3,11 @@ using Data.DataContext;
 using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using Services.Contracts;
+using HalloDoc.ViewModels;
+using Services.Implementation;
+using Common.Enum;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
 namespace HalloDoc.Controllers
 {
@@ -10,10 +15,14 @@ namespace HalloDoc.Controllers
     {
 
         private readonly HelloDocDbContext _context;
+        private readonly IPatientRequest patientRequest;
+        private readonly IValidation validation;
 
-        public patientController(HelloDocDbContext context)
+        public patientController(HelloDocDbContext context , IPatientRequest patientRequest , IValidation validation)
         {
             _context = context;
+            this.patientRequest = patientRequest;
+            this.validation = validation;
         }
 
         public IActionResult PatientDashboard()
@@ -36,6 +45,7 @@ namespace HalloDoc.Controllers
             {
                 return RedirectToAction("Index","Home");
             }
+
         }
 
         public IActionResult Logout() {     
@@ -65,6 +75,34 @@ namespace HalloDoc.Controllers
         public IActionResult temp() { 
             return View();
             
+        }
+
+        public IActionResult Insert(PatientInfo r)
+        {
+            patientRequest.Insert(r);
+            return RedirectToAction("patient_login", "Home");
+        }
+
+        [Route("/Patient/patient_request/checkmail/{email}")]
+        [HttpGet]
+        public IActionResult CheckEmail(string email)
+        {
+            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
+            return Json(new { exists = emailExists });
+        }
+
+        [HttpPost]
+        public IActionResult patient_login(Aspnetuser aspnetuser)
+        {
+            var result = validation.Validate(aspnetuser);
+            var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
+            var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
+            if (result.Status == ResponseStautsEnum.Success)
+            {
+                HttpContext.Session.SetInt32("UserId", userdata.Userid);
+                return RedirectToAction("PatientDashboard", "patient");
+            }
+            return RedirectToAction("patient_login");
         }
     }
 }

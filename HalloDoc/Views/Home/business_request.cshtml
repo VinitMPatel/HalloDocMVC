@@ -1,4 +1,4 @@
-﻿@model HalloDoc.ViewModels.BusinessRequest;
+﻿@model HalloDoc.ViewModels.BusinessRequestData;
 @{
     Layout = "_Requests";
 }
@@ -15,7 +15,7 @@
     </div>
 
     <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
-        <form asp-action="insert" asp-controller="Business" method="post">
+        <form asp-action="BusinessInsert" asp-controller="Requests" method="post">
         <div class="business-info row mt-3">
 
             <div class="h4">Business Information</div>

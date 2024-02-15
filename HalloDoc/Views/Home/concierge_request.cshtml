@@ -1,4 +1,4 @@
-﻿@model HalloDoc.ViewModels.ConciergeRequest;
+﻿@model HalloDoc.ViewModels.ConciergeRequestData;
 
 @{
     Layout = "_Requests";
@@ -17,7 +17,7 @@
         </div>
 
         <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
-            <form asp-controller="Concierge" asp-action="insert">
+            <form asp-controller="Requests" asp-action="ConciergeInsert">
             <div class="concierge-info row mt-3">
 
                 <div class="h4">Concierge Information</div>
