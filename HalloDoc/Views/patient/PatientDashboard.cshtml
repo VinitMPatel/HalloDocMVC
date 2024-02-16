@@ -2,37 +2,40 @@
 
 
 @Html.Partial("_patient")
+@* 
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Launch static backdrop modal
+</button> *@
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Launch demo modal
-</button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                ...
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
+
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Request</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="h6">Here, I want to create new request for...</div>
+             <div class="d-flex justify-content-center mt-3">
+                 <button class="bg-info p-2 rounded border-0 px-3 text-white">Me</button>
+                 <button class="btn ms-3 p-2 rounded border-info bg-transparent text-info px-3">Some One Else</button>
+             </div>
+        </div>
+        <div class="modal-footer">
+                <button class="bg-info p-2 rounded border-0 px-3 text-white">Continue</button>
+                <button class="btn ms-3 p-2 rounded border-info bg-transparent text-info px-3">Cancel</button>
         </div>
     </div>
+</div>
 </div>
 
 <div class="tab-content" id="pills-tabContent">
     <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
 
-        <div class="container-fluid pb-5 mb-5">
+        <div class="container-fluid pb-5 mb-5" id="requests">
             <div class="px-4">
 
                 <div class="d-flex align-items-center py-3">
@@ -40,13 +43,10 @@
                 </div>
                 <div class="bglight rounded p-3 shadow" id="content">
                     <div class="d-flex justify-content-end">
-                        <a class="text-info text-decoration-none">
-                            <button class="d-flex babtn border border-info bg-transparent rounded align-item-center p-1 px-2">
-                                <div class="plusimg text-info"><i class="bi bi-plus-lg"></i></div>
-                                <div class="text-info new_request"><span>Create New request</span></div>
-                            </button>
-                        </a>
-
+                         <button type="button" class="border border-info bg-transparent rounded-2 text-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                            <i class="bi bi-plus-lg"></i>
+                            <span class="new_request">Create new request</span>
+                         </button>
                     </div>
                     <div class="table-responsive">
                         <table class="table mt-4">
@@ -63,11 +63,59 @@
                                     <tr>
                                         <td>@m.Createddate.ToString("MMM dd , yyyy")</td>
                                         <td>@Model.StatusFind(m.Status)</td>
-                                        <td>@m.Requestid</td>
+                                        <td onclick="temp()">
+                                            <button class=" border border-info rounded-2 bg-transparent text-info">
+                                                <span>@m.Requestwisefiles.Count()</span>
+                                                Document
+                                            </button>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="download">
+            <div class="container">
+                
+                <div class="d-flex justify-content-between mt-5">
+                    <div class="h3">Documents</div>
+                    <div>
+                        <button class=" border border-info rounded-2 p-2 bg-transparent">
+                            <a class="text-decoration-none text-info" asp-action="PatientDashboard">&lt; Back</a>
+                        </button>
+                    </div>
+                </div>
+                <div class="border rounded-3 p-3 mt-4 ">
+                    <div class="small">patient name</div>
+                    <div class="text-info fw-bolder h4">@TempData["User"]</div>
+                    <p class="small">Check here for any files that you or the doctors or your subrequests requestors have attached for your review.</p>
+                    <div class="row mx-1">
+                        <div class="d-flex justify-content-between mt-2 border rounded col-12 pe-0 bg-body-secondary">
+                            <div class="mt-2">
+                                @*  <label id="filename">No item selected</label> *@
+                                <input type="text" id="dashFileName" placeholder="No item selected" class="border border-0 bg-body-secondary" />
+                            </div>
+                            <div class="bg-info p-2 rounded">
+                                <input type="file" id="dashUpload" hidden multiple>
+                                <label for="dashUpload">
+                                    <i class="bi bi-cloud-arrow-up text-white"></i>
+                                    <span class="text-white">Upload</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <div class="h3">Download</div>
+                        <div>
+                            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                                <a class="text-decoration-none text-info">Download all</a>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -174,3 +222,12 @@
 
     </div>
 </div>
+<script>
+    var download = document.getElementById("download");
+    var requests = document.getElementById("requests");
+    download.style.display = "none";
+    function temp() {
+        download.style.display = "block";
+        requests.style.display = "none";
+    }
+</script>

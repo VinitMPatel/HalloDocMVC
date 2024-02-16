@@ -9,6 +9,7 @@ using Services.Implementation;
 using Common.Enum;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 
+
 namespace HalloDoc.Controllers
 {
     public class patientController : Controller
@@ -33,11 +34,15 @@ namespace HalloDoc.Controllers
 
                 var id = HttpContext.Session.GetInt32("UserId");
                 var userdata = _context.Users.Where(u => u.Userid == id).FirstOrDefault();
-                var req = from m in _context.Requests where m.Userid == id select m;
-
+                //var req = from m in _context.Requests where m.Userid == id select m;
+                var req = _context.Requests.Where(m => m.Userid == id);
+                
+                var files = _context.Requestwisefiles.Where(m => m.Requestid == ;
                 dash.user = userdata;
                 TempData["User"] = userdata.Firstname + " "+userdata.Lastname;
                 dash.request = req.ToList();
+                
+                dash.requestwisefile = _context.Requestwisefiles.ToList();
 
                 return View(dash);
             }
@@ -45,7 +50,6 @@ namespace HalloDoc.Controllers
             {
                 return RedirectToAction("Index","Home");
             }
-
         }
 
         public IActionResult Logout() {     
@@ -58,8 +62,8 @@ namespace HalloDoc.Controllers
              int id = (int)HttpContext.Session.GetInt32("userid");
              var userdata = _context.Users.FirstOrDefault(m => m.Userid == id);
 
-            userdata.Firstname = r.user.Firstname;
-            userdata.Lastname = r.user.Lastname;
+             userdata.Firstname = r.user.Firstname;
+             userdata.Lastname = r.user.Lastname;
              userdata.Street = r.user.Street;
              userdata.City = r.user.City;
              userdata.State = r.user.State;
@@ -79,6 +83,10 @@ namespace HalloDoc.Controllers
 
         public IActionResult Insert(PatientInfo r)
         {
+            if(r.Email == null)
+            {
+                return RedirectToAction("patient_request", "Home");
+            }
             patientRequest.Insert(r);
             return RedirectToAction("patient_login", "Home");
         }
@@ -94,15 +102,25 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public IActionResult patient_login(Aspnetuser aspnetuser)
         {
-            var result = validation.Validate(aspnetuser);
-            var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
-            var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-            if (result.Status == ResponseStautsEnum.Success)
+
+            try
             {
-                HttpContext.Session.SetInt32("UserId", userdata.Userid);
-                return RedirectToAction("PatientDashboard", "patient");
+                var result = validation.Validate(aspnetuser);
+                TempData["Email"] = result.emailError;
+                TempData["Password"] = result.passwordError;
+                var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
+                var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
+                if (result.Status == ResponseStautsEnum.Success)
+                {
+                    HttpContext.Session.SetInt32("UserId", userdata.Userid);
+                    return RedirectToAction("PatientDashboard", "patient");
+                }
+                return RedirectToAction("patient_login", "Home");
             }
-            return RedirectToAction("patient_login");
+            catch (Exception ex) { 
+                return RedirectToAction("patient_login", "Home"); 
+            }
+             
         }
     }
 }

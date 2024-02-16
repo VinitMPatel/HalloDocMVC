@@ -11,9 +11,9 @@ namespace Services.ViewModels
     {
         public ResponseStautsEnum Status { get; set; }
 
-        public String Message { get; set; }
+        public String emailError { get; set; }
 
-        public String Token {  get; set; }
+        public String passwordError {  get; set; }
 
     }
 }

@@ -27,19 +27,24 @@ namespace Services.Implementation
         public PatientLogin Validate(Aspnetuser user)
         {
             var x = _context.Aspnetusers.Where(u => u.Email == user.Email).FirstOrDefault();
-            if (x.Email == null)
+            if (user.Email == null && user.Passwordhash==null)
             {
-                return new PatientLogin { Status=ResponseStautsEnum.Failed, Message = "Enter valid Email" };
+                return new PatientLogin { Status=ResponseStautsEnum.Failed, emailError = "*Enter Email" , passwordError = "*Enter password"};
             }
-            if (x.Passwordhash == null)
+            else if (user.Email == null)
             {
-                return new PatientLogin { Status = ResponseStautsEnum.Failed, Message = "Enter valid password" };
+                return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Enter Email" };
             }
-            if (x.Passwordhash != x.Passwordhash)
+            else if (user.Passwordhash == null)
             {
-                return new PatientLogin {Status = ResponseStautsEnum.Failed, Message = "Password is incorrect" };
+                return new PatientLogin { Status = ResponseStautsEnum.Failed, passwordError = "*Enter Password" };
             }
-            return new PatientLogin {Status = ResponseStautsEnum.Success, Message = "Login Success" };
+            else if(user.Passwordhash != x.Passwordhash)
+            {
+                return new PatientLogin {Status = ResponseStautsEnum.Failed, passwordError = "*Enter correct password" };
+            }
+            else { return new PatientLogin { Status = ResponseStautsEnum.Success }; }
+            
         }
     }
 }

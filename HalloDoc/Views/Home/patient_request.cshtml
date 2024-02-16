@@ -35,7 +35,8 @@
             <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                 <div class="form-floating ">
                         <input type="text" asp-for="FirstName" class="form-control shadow-none bg-transparent" placeholder="First Name">
-                    <label class="FloatingInput" for="Name">First Name</label>
+                        <label class="FloatingInput" for="Name">First Name</label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
             </div>
 
@@ -60,7 +61,7 @@
                 <label for="floatingInput" style="left: 5px;">Email</label>
             </div>
 
-            <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+            <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" required>
                     <input id="phone" asp-for="PhoneNumber" class="form-control" type="tel" name="phone" />
             </div>
                         

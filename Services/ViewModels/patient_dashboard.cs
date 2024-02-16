@@ -8,7 +8,7 @@ public class patient_dashboard
 
     public List<Request> request { get; set; }
 
-    
+    public List<Requestwisefile> requestwisefile { get; set; }
 
     enum statusName
     {
