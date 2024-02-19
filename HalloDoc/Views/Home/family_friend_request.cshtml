@@ -24,26 +24,31 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="FirstName" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Your First Name</label>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="LastName" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Your Last Name</label>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="Mnumber" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Mobile number</label>
+                    <span asp-validation-for="Mnumber" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="email" class="form-control" asp-for="Email" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Your Email</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="Relation" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Relation With Patient</label>
+                    <span asp-validation-for="Relation" class="text-danger"></span>
                 </div>
 
             </div>
@@ -60,16 +65,19 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="PFirstName" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">First Name</label>
+                    <span asp-validation-for="PFirstName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for="PLastName" id="floatingPassword" placeholder="Password">
                     <label for="floatingPassword" style="left: 5px;">Last Name</label>
+                    <span asp-validation-for="PLastName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="date" class="form-control" asp-for="DOB" id="floatingPassword" placeholder="Password">
                     <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
+                    <span asp-validation-for="DOB" class="text-danger"></span>
                 </div>
 
             </div>
@@ -81,12 +89,14 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="email" class="form-control" asp-for="PEmail" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Email</label>
+                    <span asp-validation-for="PEmail" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <!-- <input type="tel" class="form-control" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Mobile number</label> -->
                     <input id="phone" class="form-control" asp-for="PMnumber" type="tel" name="phone" />
+                    <span asp-validation-for="PMnumber" class="text-danger"></span>
                 </div>
 
             </div>
@@ -98,6 +108,7 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for=Street id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Street</label>
+                    <span asp-validation-for="Street" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
@@ -113,6 +124,7 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" class="form-control" asp-for=ZipCode id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Zip Code</label>
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">

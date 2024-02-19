@@ -27,24 +27,27 @@ namespace Services.Implementation
         public PatientLogin Validate(Aspnetuser user)
         {
             var x = _context.Aspnetusers.Where(u => u.Email == user.Email).FirstOrDefault();
-            if (user.Email == null && user.Passwordhash==null)
-            {
-                return new PatientLogin { Status=ResponseStautsEnum.Failed, emailError = "*Enter Email" , passwordError = "*Enter password"};
-            }
-            else if (user.Email == null)
-            {
-                return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Enter Email" };
-            }
-            else if (user.Passwordhash == null)
-            {
-                return new PatientLogin { Status = ResponseStautsEnum.Failed, passwordError = "*Enter Password" };
-            }
-            else if(user.Passwordhash != x.Passwordhash)
-            {
-                return new PatientLogin {Status = ResponseStautsEnum.Failed, passwordError = "*Enter correct password" };
-            }
-            else { return new PatientLogin { Status = ResponseStautsEnum.Success }; }
             
+                if (user.Email == null && user.Passwordhash == null)
+                {
+                    return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Enter Email", passwordError = "*Enter password" };
+                }
+                else if (user.Passwordhash == null)
+                {
+                    return new PatientLogin { Status = ResponseStautsEnum.Failed, passwordError = "*Enter Password" };
+                }
+                if (x == null)
+                {
+                    return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Email not found" };
+                }
+                else if (user.Passwordhash != x.Passwordhash)
+                {
+                    return new PatientLogin { Status = ResponseStautsEnum.Failed, passwordError = "*Enter correct password" };
+                }
+                else 
+                { 
+                    return new PatientLogin { Status = ResponseStautsEnum.Success }; 
+                }
         }
     }
 }

@@ -4,6 +4,7 @@ using HalloDoc.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Services.Contracts;
+using Services.ViewModels;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,10 +84,12 @@ namespace Services.Implementation
 
                 _context.Requests.Add(request);
                 _context.SaveChanges();
-                var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
+                // var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
+
                 Requestclient requestclient = new Requestclient
                 {
-                    Requestid = requestdata.Requestid,
+                    //  Requestid = request.Requestid,
+                    Request = request,
                     Firstname = r.FirstName,
                     Lastname = r.LastName,
                     Phonenumber = r.PhoneNumber,
@@ -105,9 +108,8 @@ namespace Services.Implementation
 
                 if (r.Upload != null)
                 {
-                    uploadFile(r.Upload, requestdata.Requestid);
+                    uploadFile(r.Upload, request.Requestid);
                 }
-
             }
             catch(Exception ex) { }
  

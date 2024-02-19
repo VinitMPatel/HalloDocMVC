@@ -1,9 +1,7 @@
-﻿
+﻿@model Services.ViewModels.PatientInfo;
 @{
     Layout = "_Requests";
 }
-
-@model Services.ViewModels.PatientInfo;
 
 <div class="container mt-3">
 
@@ -13,13 +11,13 @@
         </div>
         <div>
             <button class=" border border-info rounded-2 p-2 bg-transparent">
-                    <a class="text-decoration-none text-info " asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
+                    <a class="text-decoration-none text-info " asp-controller="Patient" asp-action="PatientDashboard">&lt; Back</a>
             </button>
         </div>
     </div>
 
     <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
-            <form asp-action="Insert" asp-controller="Patient" method="post" enctype="multipart/form-data">
+            <form asp-action="Insert2" asp-controller="Patient" method="post" enctype="multipart/form-data">
         <div class="patient-info row">
             <div class="h4">Patient information</div>
 

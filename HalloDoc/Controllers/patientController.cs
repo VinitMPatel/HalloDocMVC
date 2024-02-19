@@ -26,6 +26,31 @@ namespace HalloDoc.Controllers
             this.validation = validation;
         }
 
+        [HttpPost]
+        public IActionResult patient_login(Aspnetuser aspnetuser)
+        {
+            try
+            {
+                var result = validation.Validate(aspnetuser);
+                TempData["Email"] = result.emailError;
+                TempData["Password"] = result.passwordError;
+                var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
+                var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
+                string temp = userdata.Firstname + " " + userdata.Lastname;
+                HttpContext.Session.SetString("UserName", temp);
+                if (result.Status == ResponseStautsEnum.Success)
+                {
+                    HttpContext.Session.SetInt32("UserId", userdata.Userid);
+                    return RedirectToAction("PatientDashboard", "patient");
+                }
+                return RedirectToAction("patient_login", "Home");
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("patient_login", "Home");
+            }
+        }
+
         public IActionResult PatientDashboard()
         {
             if (HttpContext.Session.GetString("UserId") != null)
@@ -37,12 +62,14 @@ namespace HalloDoc.Controllers
                 //var req = from m in _context.Requests where m.Userid == id select m;
                 var req = _context.Requests.Where(m => m.Userid == id);
                 
-                var files = _context.Requestwisefiles.Where(m => m.Requestid == ;
+                
+                
+                //var files = _context.Requestwisefiles.Where(m => m.Requestid == ;
                 dash.user = userdata;
                 TempData["User"] = userdata.Firstname + " "+userdata.Lastname;
                 dash.request = req.ToList();
-                
-                dash.requestwisefile = _context.Requestwisefiles.ToList();
+                List<Requestwisefile> files = (from m in _context.Requestwisefiles select m).ToList();
+                dash.requestwisefile = files;
 
                 return View(dash);
             }
@@ -52,41 +79,67 @@ namespace HalloDoc.Controllers
             }
         }
 
+        public IActionResult editing(patient_dashboard r)
+        {
+            int id = (int)HttpContext.Session.GetInt32("UserId");
+            var userdata = _context.Users.FirstOrDefault(m => m.Userid == id);
+
+            userdata.Firstname = r.user.Firstname;
+            userdata.Lastname = r.user.Lastname;
+            userdata.Street = r.user.Street;
+            userdata.City = r.user.City;
+            userdata.State = r.user.State;
+            userdata.Zip = r.user.Zip;
+            userdata.Modifieddate = DateTime.Now;
+
+            _context.Users.Update(userdata);
+            _context.SaveChanges();
+
+            return RedirectToAction("patientdashboard", "patient");
+        }
+
+        public IActionResult NewRequest()
+        {
+            var radio = Request.Form["flexRadioDefault"].ToList();
+            if (radio.ElementAt(0) == "Me")
+            {
+                return RedirectToAction("RequestForSelf");
+            }
+            else if (radio.ElementAt(0) == "else")
+            {
+                return RedirectToAction("RequestForElse");
+            }
+            return NoContent();
+        }
+
+        public IActionResult RequestForSelf()
+        {
+            return View();
+        }
+
+        public IActionResult RequestForElse()
+        {
+            return View();
+        }
+
+        public IActionResult ViewDocuments()
+        {
+            return View();
+        }
+
         public IActionResult Logout() {     
             HttpContext.Session.Remove("UserId");
             return RedirectToAction("patient_login","Home");
         }
 
-         public IActionResult editing(patient_dashboard r)
-         {
-             int id = (int)HttpContext.Session.GetInt32("userid");
-             var userdata = _context.Users.FirstOrDefault(m => m.Userid == id);
-
-             userdata.Firstname = r.user.Firstname;
-             userdata.Lastname = r.user.Lastname;
-             userdata.Street = r.user.Street;
-             userdata.City = r.user.City;
-             userdata.State = r.user.State;
-             userdata.Zip = r.user.Zip;
-             userdata.Modifieddate = DateTime.Now;
-
-             _context.Users.Update(userdata);
-             _context.SaveChanges();
-
-             return RedirectToAction("patientdashboard","patient");
-         }
-
-        public IActionResult temp() { 
-            return View();
+        //public IActionResult temp() { 
+        //    return View();
             
-        }
+        //}
 
+        [HttpPost]
         public IActionResult Insert(PatientInfo r)
         {
-            if(r.Email == null)
-            {
-                return RedirectToAction("patient_request", "Home");
-            }
             patientRequest.Insert(r);
             return RedirectToAction("patient_login", "Home");
         }
@@ -99,28 +152,7 @@ namespace HalloDoc.Controllers
             return Json(new { exists = emailExists });
         }
 
-        [HttpPost]
-        public IActionResult patient_login(Aspnetuser aspnetuser)
-        {
 
-            try
-            {
-                var result = validation.Validate(aspnetuser);
-                TempData["Email"] = result.emailError;
-                TempData["Password"] = result.passwordError;
-                var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
-                var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                if (result.Status == ResponseStautsEnum.Success)
-                {
-                    HttpContext.Session.SetInt32("UserId", userdata.Userid);
-                    return RedirectToAction("PatientDashboard", "patient");
-                }
-                return RedirectToAction("patient_login", "Home");
-            }
-            catch (Exception ex) { 
-                return RedirectToAction("patient_login", "Home"); 
-            }
-             
-        }
+
     }
 }
