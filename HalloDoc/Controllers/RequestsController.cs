@@ -21,12 +21,25 @@ namespace HalloDoc.Controllers
             this.businessRequest = businessRequest;
         }
 
+        public IActionResult family_friend_request()
+        {
+            return View();
+        }
+
+        public IActionResult concierge_request()
+        {
+            return View();
+        }
+        public IActionResult business_request()
+        {
+            return View();
+        }
+
         public IActionResult FamilyInsert(FamilyFriendRequest r)
         {
             familyRequest.FamilyInsert(r);
             return RedirectToAction("patient_login", "Home");
         }
-
 
         public IActionResult ConciergeInsert(ConciergeRequestData r)
         {

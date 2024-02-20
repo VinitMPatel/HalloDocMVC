@@ -18,12 +18,16 @@ namespace HalloDoc.Controllers
         private readonly HelloDocDbContext _context;
         private readonly IPatientRequest patientRequest;
         private readonly IValidation validation;
+        private readonly IDashboard dashboard;
+        private readonly IEmailSender emailSender;
 
-        public patientController(HelloDocDbContext context , IPatientRequest patientRequest , IValidation validation)
+        public patientController(HelloDocDbContext context , IPatientRequest patientRequest , IValidation validation , IDashboard dashboard, IEmailSender emailSender)
         {
             _context = context;
             this.patientRequest = patientRequest;
             this.validation = validation;
+            this.dashboard = dashboard;
+            this.emailSender = emailSender;
         }
 
         [HttpPost]
@@ -36,13 +40,14 @@ namespace HalloDoc.Controllers
                 TempData["Password"] = result.passwordError;
                 var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
                 var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                string temp = userdata.Firstname + " " + userdata.Lastname;
-                HttpContext.Session.SetString("UserName", temp);
+                HttpContext.Session.SetString("UserName", userdata.Firstname);
                 if (result.Status == ResponseStautsEnum.Success)
                 {
+                    TempData["success"] = "Login successfully";
                     HttpContext.Session.SetInt32("UserId", userdata.Userid);
                     return RedirectToAction("PatientDashboard", "patient");
                 }
+                TempData["error"] = "Incorrect Email or password";
                 return RedirectToAction("patient_login", "Home");
             }
             catch (Exception ex)
@@ -55,23 +60,8 @@ namespace HalloDoc.Controllers
         {
             if (HttpContext.Session.GetString("UserId") != null)
             {
-                patient_dashboard dash = new patient_dashboard();
-
-                var id = HttpContext.Session.GetInt32("UserId");
-                var userdata = _context.Users.Where(u => u.Userid == id).FirstOrDefault();
-                //var req = from m in _context.Requests where m.Userid == id select m;
-                var req = _context.Requests.Where(m => m.Userid == id);
-                
-                
-                
-                //var files = _context.Requestwisefiles.Where(m => m.Requestid == ;
-                dash.user = userdata;
-                TempData["User"] = userdata.Firstname + " "+userdata.Lastname;
-                dash.request = req.ToList();
-                List<Requestwisefile> files = (from m in _context.Requestwisefiles select m).ToList();
-                dash.requestwisefile = files;
-
-                return View(dash);
+                int id = (int)HttpContext.Session.GetInt32("UserId");
+                return View(dashboard.PatientDashboard(id));
             }
             else
             {
@@ -81,20 +71,9 @@ namespace HalloDoc.Controllers
 
         public IActionResult editing(patient_dashboard r)
         {
-            int id = (int)HttpContext.Session.GetInt32("UserId");
-            var userdata = _context.Users.FirstOrDefault(m => m.Userid == id);
-
-            userdata.Firstname = r.user.Firstname;
-            userdata.Lastname = r.user.Lastname;
-            userdata.Street = r.user.Street;
-            userdata.City = r.user.City;
-            userdata.State = r.user.State;
-            userdata.Zip = r.user.Zip;
-            userdata.Modifieddate = DateTime.Now;
-
-            _context.Users.Update(userdata);
-            _context.SaveChanges();
-
+            int id = (int)HttpContext.Session.GetInt32("UserId");            
+            String temp =  dashboard.editing(r, id);
+            HttpContext.Session.SetString("UserName", temp);
             return RedirectToAction("patientdashboard", "patient");
         }
 
@@ -122,20 +101,23 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult ViewDocuments()
+        public IActionResult ViewDocument(int id)
         {
-            return View();
+            if (HttpContext.Session.GetString("UserId") != null)
+            {
+                var userId = (int)HttpContext.Session.GetInt32("UserId");
+                return View(dashboard.ViewDocuments(userId , id));
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         public IActionResult Logout() {     
             HttpContext.Session.Remove("UserId");
             return RedirectToAction("patient_login","Home");
         }
-
-        //public IActionResult temp() { 
-        //    return View();
-            
-        //}
 
         [HttpPost]
         public IActionResult Insert(PatientInfo r)
@@ -152,7 +134,18 @@ namespace HalloDoc.Controllers
             return Json(new { exists = emailExists });
         }
 
-
-
+        public void SendingMail()
+        {
+            //_commonRepository.Insert(user);
+            //var result = _commonRepository.SaveChanges();
+            //emailSender.SendEmail("vmpatel2273@gmail.com", "User Regitered");
+            
+            emailSender.SendEmail("vinit.patel@etatvasoft.com", "Hello", "Please <a href=\"https://localhost:7021/PatientSite/PatientLogin\">login</a>");
+            //if (result > 0)
+            //{
+            //return CreatedAtAction("GetUser", new { id = user.id }, user);
+            //}
+            //return BadRequest();
+        }
     }
 }

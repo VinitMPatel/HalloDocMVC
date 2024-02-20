@@ -126,7 +126,7 @@ namespace Services.Implementation
                 Requestwisefile requestwisefile = new Requestwisefile
                 {
                     Requestid = id,
-                    Filename = path,
+                    Filename = item.FileName,
                     Createddate = DateTime.Now,
 
                 };

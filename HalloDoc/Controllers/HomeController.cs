@@ -20,7 +20,6 @@ namespace HalloDoc.Controllers
         {
             _logger = logger;
             _context = context;
-            
         }
 
         public IActionResult index()
@@ -49,21 +48,6 @@ namespace HalloDoc.Controllers
         }
 
         public IActionResult patient_login()
-        {
-            return View();
-        }
-
-        public IActionResult family_friend_request()
-        {
-            return View();
-        }
-
-        public IActionResult concierge_request()
-        {
-            return View();
-        }
-
-        public IActionResult business_request()
         {
             return View();
         }

@@ -79,10 +79,10 @@
             </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" id="passwordFields2">
-                <input type="password" class="form-control" id="cpassword" placeholder="confirm password">
+                <input type="password" class="form-control" id="cpassword" placeholder="confirmPassword">
                 <label for="floatingInput" style="left: 5px;">Confirm Passworrd</label>
-                    <div class="login-icon" onclick="fun()">
-                        <i class="bi bi-eye-slash-fill" id="eye"></i>
+                    <div class="login-icon" onclick="fun2()">
+                        <i class="bi bi-eye-slash-fill" id="eye2"></i>
                     </div>
             </div>
 
@@ -165,21 +165,32 @@
         closeOnClickOutside: true,
     });
    
-        const path = document.getElementById("eye");
+    const path = document.getElementById("eye");
     const password = document.getElementById('password')
+    const cpassword = document.getElementById('cpassword')
+    const eye2 = document.getElementById("eye2");
     function fun() {
-        console.log(password);
         if (password.type === "password") {
             path.classList.remove("bi-eye-slash-fill");
             path.classList.add("bi-eye-fill");
             password.type = "text";
-
         }
         else {
             path.classList.remove("bi-eye-fill");
             path.classList.add("bi-eye-slash-fill");
             password.type = "password";
-
+        }
+    }
+    function fun2() {
+        if (cpassword.type === "password") {
+            eye2.classList.remove("bi-eye-slash-fill");
+            eye2.classList.add("bi-eye-fill");
+            cpassword.type = "text";
+        }
+        else {
+            eye2.classList.remove("bi-eye-fill");
+            eye2.classList.add("bi-eye-slash-fill");
+            cpassword.type = "password";
         }
     }
 
@@ -205,5 +216,4 @@
             })
             .catch(error => console.error('Error:', error));
     }
-
 </script>

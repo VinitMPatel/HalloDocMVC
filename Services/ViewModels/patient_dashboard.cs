@@ -10,8 +10,6 @@ public class patient_dashboard
 
     public List<Requestwisefile> requestwisefile { get; set; }
 
-    public String radios {  get; set; }
-
     enum statusName
     {
         january,

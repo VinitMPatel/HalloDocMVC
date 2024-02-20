@@ -23,6 +23,8 @@ builder.Services.AddTransient<IPatientRequest, PatientRequest>();
 builder.Services.AddTransient<IFamilyRequest, FamilyRequest>();
 builder.Services.AddTransient<IConciergeRequest, ConciergeRequest>();
 builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
+builder.Services.AddTransient<IDashboard, Dashboard>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
