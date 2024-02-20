@@ -22,8 +22,8 @@ namespace Services.Implementation
 
         public void CnciergeInsert(ConciergeRequestData r)
         {
-            var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
-            var user =  _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
+            var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
+            var user =  _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
 
             if (user != null)
             {
@@ -44,10 +44,10 @@ namespace Services.Implementation
                 Request request = new Request
                 {
                     Requesttypeid = 3,
-                    Firstname = r.PFirstName,
-                    Lastname = r.PLastName,
-                    Phonenumber = r.PMnumber,
-                    Email = r.PEmail,
+                    Firstname = r.PatientFirstName,
+                    Lastname = r.PatientLastName,
+                    Phonenumber = r.PatientMobileNumber,
+                    Email = r.PatientEmail,
                     Status = 1,
                     Createddate = DateTime.Now,
                     Modifieddate = DateTime.Now,

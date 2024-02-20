@@ -22,8 +22,8 @@ namespace Services.Implementation
         public void BusinessInsert(BusinessRequestData r)
         {
 
-            var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
-            var user = _context.Aspnetusers.Where(m => m.Email == r.PEmail).FirstOrDefault();
+            var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
+            var user = _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
 
             if (user != null)
             {
@@ -34,7 +34,7 @@ namespace Services.Implementation
                     City = r.City,
                     Regionid = 1,
                     Zipcode = r.ZipCode,
-                    Phonenumber = r.PMnumber,
+                    Phonenumber = r.PatientMobileNumber,
                     Createddate = DateTime.Now,
                     Status = 1,
                     Createdby = aspnetuser.Id,
@@ -47,10 +47,10 @@ namespace Services.Implementation
                 Request request = new Request
                 {
                     Requesttypeid = 4,
-                    Firstname = r.PFirstName,
-                    Lastname = r.PLastName,
-                    Phonenumber = r.PMnumber,
-                    Email = r.PEmail,
+                    Firstname = r.PatientFirstName,
+                    Lastname = r.PatientLastName,
+                    Phonenumber = r.PatientMobileNumber,
+                    Email = r.PatientEmail,
                     Status = 1,
                     Createddate = DateTime.Now,
                     Modifieddate = DateTime.Now,

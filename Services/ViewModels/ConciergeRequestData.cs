@@ -22,15 +22,15 @@
 
         public String Symptoms { get; set; }
 
-        public String PFirstName { get; set; }
+        public String PatientFirstName { get; set; }
 
-        public String PLastName { get; set; }
+        public String PatientLastName { get; set; }
 
         public DateOnly DOB { get; set; }
 
-        public String PEmail { get; set; }
+        public String PatientEmail { get; set; }
 
-        public String PMnumber { get; set; }
+        public String PatientMobileNumber { get; set; }
 
         public String Room { get; set; }
     }
