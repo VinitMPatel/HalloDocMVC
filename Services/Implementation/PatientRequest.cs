@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Services.Implementation
 {
     public class PatientRequest : IPatientRequest
@@ -58,6 +59,9 @@ namespace Services.Implementation
                     user.State = r.State;
                     user.Zip = r.ZipCode;
                     user.Createdby = r.FirstName + r.LastName;
+                    user.Intyear = int.Parse(r.DOB.ToString("yyyy"));
+                    user.Intdate = int.Parse(r.DOB.ToString("dd"));
+                    user.Strmonth = r.DOB.ToString("MMM");
                     user.Modifieddate = DateTime.Now;
                     user.Status = 1;
                     user.Regionid = 1;

@@ -32,4 +32,6 @@ public class patient_dashboard
     }
 
     public List<IFormFile> Upload { get; set; }
+
+    public DateTime DOB {  get; set; }
 }

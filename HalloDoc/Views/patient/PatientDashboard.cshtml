@@ -109,7 +109,7 @@
 
                         <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                             <div class="form-floating ">
-                                <input type="text" asp-for="user.Firstname" class="form-control shadow-none bg-transparent data" placeholder="First Name" disabled>
+                                <input type="text" asp-for="user.Firstname" class="form-control data" placeholder="First Name" disabled>
                                 <label class="FloatingInput" for="Name">First Name</label>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="date" asp-for="user.Modifieddate" class="form-control data" id="floatingPassword" placeholder="Password" disabled>
+                            <input type="date" asp-for="@Model.DOB" class="form-control data" id="floatingPassword" placeholder="Password" disabled>
                             <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
                         </div>
                     </div>
@@ -138,7 +138,7 @@
                         </div>
 
                         <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
-                            <input id="phone"  class="form-control" type="tel" name="phone" />
+                            <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">

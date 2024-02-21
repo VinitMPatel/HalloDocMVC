@@ -7,9 +7,12 @@ using Services.Contracts;
 using Services.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Enum;
+using System.Globalization;
 
 namespace Services.Implementation
 {
@@ -27,6 +30,7 @@ namespace Services.Implementation
         {
             patient_dashboard dash = new patient_dashboard();
             var userdata = _context.Users.Where(u => u.Userid == id).FirstOrDefault();
+            dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(userdata.Intdate));
             var req = _context.Requests.Where(m => m.Userid == id);
             dash.user = userdata;
             dash.request = req.ToList();
@@ -47,6 +51,10 @@ namespace Services.Implementation
             userdata.State = r.user.State;
             userdata.Zip = r.user.Zip;
             userdata.Modifieddate = DateTime.Now;
+            userdata.Intyear = int.Parse(r.DOB.ToString("yyyy"));
+            userdata.Intdate = int.Parse(r.DOB.ToString("dd"));
+            userdata.Strmonth = r.DOB.ToString("MMM");
+            userdata.Mobile = r.user.Mobile;
 
             _context.Users.Update(userdata);
             _context.SaveChanges();
