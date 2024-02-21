@@ -134,6 +134,14 @@ namespace HalloDoc.Controllers
             return Json(new { exists = emailExists });
         }
 
+        [HttpPost]
+        public IActionResult SubmitDocument(patient_dashboard obj)
+        {
+            
+            dashboard.UplodingDocument(obj,obj.reqId);
+            return RedirectToAction("ViewDocument", new { id = obj.reqId });
+            
+        }
         public void SendingMail()
         {
             //_commonRepository.Insert(user);

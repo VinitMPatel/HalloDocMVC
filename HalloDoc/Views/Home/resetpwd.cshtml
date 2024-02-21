@@ -1,8 +1,4 @@
-﻿@page
-@model HalloDoc.Views.Home.resetpwdModel
-@{
-}
-
+﻿@model Data.Entity.Aspnetuser;
 <div class="bg-image">
     <img src="~/images/11116016_415.jpg" class="bg" width="50%">
 </div>
@@ -28,9 +24,9 @@
 
             <div class="h3 mt-3 mb-5 d-flex justify-content-center">Reset Your password</div>
 
-            <form asp-action="SendingMail" asp-controller="patient">
+            <form asp-action="PatientResetPasswordEmail" asp-controller="Home">
             <div class="form-floating  fields">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" asp-for="Email">
                 <label for="floatingInput">Username</label>
                 <i class="bi bi-person-circle login-icon"></i>
             </div>
@@ -39,6 +35,8 @@
                 Reset
                 Password
             </button><br>
+
+
             </form>
             <div class=" d-flex justify-content-center">
                 <a asp-controller="Home" asp-action="patient_login" class="link text-info text-decoration-none">

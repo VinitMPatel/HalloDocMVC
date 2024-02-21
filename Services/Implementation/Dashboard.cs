@@ -1,6 +1,8 @@
 ﻿using Data.DataContext;
 using Data.Entity;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -14,9 +16,11 @@ namespace Services.Implementation
     public class Dashboard : IDashboard
     {
         private readonly HelloDocDbContext _context;
-        public Dashboard(HelloDocDbContext context)
+        private readonly IHostingEnvironment _env;
+        public Dashboard(HelloDocDbContext context , IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
         public patient_dashboard PatientDashboard(int id)
@@ -57,7 +61,36 @@ namespace Services.Implementation
                 dash.user = userdata;
                 List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == reqId select m).ToList();
                 dash.requestwisefile = files;
+                dash.reqId = reqId;
                 return dash;
+        }
+
+        public void UplodingDocument(patient_dashboard obj,int reqId)
+        {
+            if(obj.Upload != null)
+            {
+                uploadFile(obj.Upload,reqId);
+            }
+        }
+
+        public void uploadFile(List<IFormFile> upload, int id)
+        {
+            foreach (var item in upload)
+            {
+                string path = _env.WebRootPath + "/upload/" + item.FileName;
+                FileStream stream = new FileStream(path, FileMode.Create);
+
+                item.CopyTo(stream);
+                Requestwisefile requestwisefile = new Requestwisefile
+                {
+                    Requestid = id,
+                    Filename = item.FileName,
+                    Createddate = DateTime.Now,
+
+                };
+                _context.Add(requestwisefile);
+                _context.SaveChanges();
+            }
         }
     }
 }

@@ -183,7 +183,7 @@
                     <div class="d-flex justify-content-end mt-4">
                     <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()">Edit</div>
                         <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white me-2" id="submitBtn">Submit</button>
-                        <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="CancelBtn" onclick="again()">Cancel</div>
+                        @* <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="CancelBtn" onclick="again()">Cancel</div> *@
                         @* <input type="submit" class="bg-info p-2 rounded border-0 px-3 text-white" /> *@
                     </div>
                    
@@ -196,26 +196,26 @@
 <script>
 
     var submitBtn = document.getElementById('submitBtn');
-    var cancelBtn = document.getElementById('CancelBtn');
+    //var cancelBtn = document.getElementById('CancelBtn');
     var editBtn = document.getElementById('editBtn');
     var dataFields = document.getElementsByClassName('data');
     submitBtn.style.display = 'none';
-    cancelBtn.style.display = 'none';
+    //cancelBtn.style.display = 'none';
     function allow() {
         for (let i = 0; i < dataFields.length; i++) {
             dataFields[i].removeAttribute('disabled')
             editBtn.style.display = "none";
         }
             submitBtn.style.display = 'block';
-            cancelBtn.style.display = 'block';
+            //cancelBtn.style.display = 'block';
     }
-    function again() {
-        submitBtn.style.display = 'none';
-        cancelBtn.style.display = 'none';
-        editBtn.style.display = "block";
-        for (let i = 0; i < dataFields.length; i++) {
-            dataFields[i].setAttribute('disabled')
-        }
-    }
+    // function again() {
+    //     submitBtn.style.display = 'none';
+    //     cancelBtn.style.display = 'none';
+    //     editBtn.style.display = "block";
+    //     for (let i = 0; i < dataFields.length; i++) {
+    //         dataFields[i].setAttribute('disabled')
+    //     }
+    // }
 </script>
 

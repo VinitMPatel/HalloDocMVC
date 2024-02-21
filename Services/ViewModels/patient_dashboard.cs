@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Microsoft.AspNetCore.Http;
 
 namespace Services.ViewModels;
 
@@ -9,6 +10,8 @@ public class patient_dashboard
     public List<Request> request { get; set; }
 
     public List<Requestwisefile> requestwisefile { get; set; }
+
+    public int reqId { get; set; }
 
     enum statusName
     {
@@ -28,4 +31,5 @@ public class patient_dashboard
         return sName;
     }
 
+    public List<IFormFile> Upload { get; set; }
 }
