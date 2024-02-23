@@ -29,93 +29,110 @@ namespace Services.Implementation
        
         public void Insert(PatientInfo r)
         {
-            try
+
+            using(var transaction = _context.Database.BeginTransaction())
             {
-
-                var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.Email).FirstOrDefault();
-
-                if (aspnetuser == null)
+                try
                 {
 
-                    Aspnetuser aspnetuser1 = new Aspnetuser();
-                    aspnetuser1.Id = Guid.NewGuid().ToString();
-                    aspnetuser1.Passwordhash = r.Password;
-                    aspnetuser1.Email = r.Email;
-                    String username = r.FirstName + r.LastName;
-                    aspnetuser1.Username = username;
-                    aspnetuser1.Phonenumber = r.PhoneNumber;
-                    aspnetuser1.Modifieddate = DateTime.Now;
-                    _context.Aspnetusers.Add(aspnetuser1);
-                    aspnetuser1 = aspnetuser1;
-
+                    var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.Email).FirstOrDefault();
                     User user = new User();
-                    user.Aspnetuserid = aspnetuser1.Id;
-                    user.Firstname = r.FirstName;
-                    user.Lastname = r.LastName;
-                    user.Email = r.Email;
-                    user.Mobile = r.PhoneNumber;
-                    user.Street = r.Street;
-                    user.City = r.City;
-                    user.State = r.State;
-                    user.Zip = r.ZipCode;
-                    user.Createdby = r.FirstName + r.LastName;
-                    user.Intyear = int.Parse(r.DOB.ToString("yyyy"));
-                    user.Intdate = int.Parse(r.DOB.ToString("dd"));
-                    user.Strmonth = r.DOB.ToString("MMM");
-                    user.Modifieddate = DateTime.Now;
-                    user.Status = 1;
-                    user.Regionid = 1;
+                    if (aspnetuser == null)
+                    {
 
-                    _context.Users.Add(user);
+                        Aspnetuser aspnetuser1 = new Aspnetuser();
+                        aspnetuser1.Id = Guid.NewGuid().ToString();
+                        aspnetuser1.Passwordhash = r.Password;
+                        aspnetuser1.Email = r.Email;
+                        String username = r.FirstName + r.LastName;
+                        aspnetuser1.Username = username;
+                        aspnetuser1.Phonenumber = r.PhoneNumber;
+                        aspnetuser1.Modifieddate = DateTime.Now;
+                        _context.Aspnetusers.Add(aspnetuser1);
+                        aspnetuser1 = aspnetuser1;
+
+                        
+                        user.Aspnetuserid = aspnetuser1.Id;
+                        user.Firstname = r.FirstName;
+                        user.Lastname = r.LastName;
+                        user.Email = r.Email;
+                        user.Mobile = r.PhoneNumber;
+                        user.Street = r.Street;
+                        user.City = r.City;
+                        user.State = r.State;
+                        user.Zip = r.ZipCode;
+                        user.Createdby = r.FirstName + r.LastName;
+                        user.Intyear = int.Parse(r.DOB.ToString("yyyy"));
+                        user.Intdate = int.Parse(r.DOB.ToString("dd"));
+                        user.Strmonth = r.DOB.ToString("MMM");
+                        user.Modifieddate = DateTime.Now;
+                        user.Status = 1;
+                        user.Regionid = 1;
+
+                        _context.Users.Add(user);
+                        //_context.SaveChanges();
+                    }
+                    else
+                    {
+                         user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
+                    }
+                    
+
+                    Request request = new Request
+                    {
+                        Requesttypeid = 1,
+                        Firstname = r.FirstName,
+                        Lastname = r.LastName,
+                        Phonenumber = r.PhoneNumber,
+                        Email = r.Email,
+                        Status = 1,
+                        Createddate = DateTime.Now,
+                        Modifieddate = DateTime.Now,
+                        User = user,
+                    };
+                    // if..else asp==null.. 
+
+                    _context.Requests.Add(request);
                     _context.SaveChanges();
+                    // var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
+
+                    Requestclient requestclient = new Requestclient
+                    {
+                        //  Requestid = request.Requestid,
+                        Request = request,
+                        Firstname = r.FirstName,
+                        Lastname = r.LastName,
+                        Phonenumber = r.PhoneNumber,
+                        Notes = r.Symptoms,
+                        Email = r.Email,
+                        Street = r.Street,
+                        City = r.City,
+                        State = r.State,
+                        Zipcode = r.ZipCode,
+                        Regionid = 1,
+                        Intyear = int.Parse(r.DOB.ToString("yyyy")),
+                        Intdate = int.Parse(r.DOB.ToString("dd")),
+                        Strmonth = r.DOB.ToString("MMM")
+                };
+
+                    _context.Requestclients.Add(requestclient);
+                    _context.SaveChanges();
+
+
+                    if (r.Upload != null)
+                    {
+                        uploadFile(r.Upload, request.Requestid);
+                    }
+
+                    transaction.Commit();
+
                 }
-
-                var user1 = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
-
-                Request request = new Request
-                {
-                    Requesttypeid = 1,
-                    Firstname = r.FirstName,
-                    Lastname = r.LastName,
-                    Phonenumber = r.PhoneNumber,
-                    Email = r.Email,
-                    Status = 1,
-                    Createddate = DateTime.Now,
-                    Modifieddate = DateTime.Now,
-                    Userid = user1.Userid,
-
-                };
-
-                _context.Requests.Add(request);
-                _context.SaveChanges();
-                // var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
-
-                Requestclient requestclient = new Requestclient
-                {
-                    //  Requestid = request.Requestid,
-                    Request = request,
-                    Firstname = r.FirstName,
-                    Lastname = r.LastName,
-                    Phonenumber = r.PhoneNumber,
-                    Notes = r.Symptoms,
-                    Email = r.Email,
-                    Street = r.Street,
-                    City = r.City,
-                    State = r.State,
-                    Zipcode = r.ZipCode,
-                    Regionid = 1
-                };
-
-                _context.Requestclients.Add(requestclient);
-                _context.SaveChanges();
-
-
-                if (r.Upload != null)
-                {
-                    uploadFile(r.Upload, request.Requestid);
+                catch (Exception ex) {
+                    transaction.Rollback();
                 }
             }
-            catch(Exception ex) { }
+
+            
  
         }
 

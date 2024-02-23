@@ -43,7 +43,7 @@
                 <div class="h3">Download</div>
                 <div>
                     <button class=" border border-info rounded-2 p-2 bg-transparent">
-                        <a class="text-decoration-none text-info">Download all</a>
+                        <a class="text-decoration-none text-info" onclick="downloadSelectedFiles()">Download all</a>
                     </button>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             <table class="table mt-2">
                 <thead class="thead-light">
                     <tr>
-                        <th scope="col"><input type="checkbox" id="documents" /></th>
+                        <th scope="col"><input type="checkbox" id="alldoc"/></th>
                         <th scope="col">First</th>
                         <th scope="col">Uploader</th>
                         <th scope="col">Upload Date</th>
@@ -62,7 +62,7 @@
                     @foreach (var m in Model.requestwisefile)
                     {
                         <tr>
-                            <td><input type="checkbox" class="childCheckbox" /></td>
+                            <td><input type="checkbox" class="all" name="checkdoc"/></td>
                             <td>@m.Filename</td>
                             <td>@Model.user.Firstname</td>
                             <td>@m.Createddate</td>
@@ -173,7 +173,7 @@
                     <div class="d-flex justify-content-end mt-4">
                         <div class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()">Edit</div>
                         <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white me-2" id="submitBtn">Submit</button>
-                        <div class="bg-info p-2 rounded border-0 px-3 text-white" id="CancelBtn" onclick="again()">Cancel</div>
+                        
                         @* <input type="submit" class="bg-info p-2 rounded border-0 px-3 text-white" /> *@
                     </div>
 
@@ -185,9 +185,7 @@
 </div>
 <script>
     var fileName = document.getElementById('file-choosen');
-    
     var submitBtn = document.getElementById('submitBtn');
-    var cancelBtn = document.getElementById('CancelBtn');
     var editBtn = document.getElementById('editBtn');
     var dataFields = document.getElementsByClassName('data');
     submitBtn.style.display = 'none';
@@ -198,19 +196,65 @@
             editBtn.style.display = "none";
         }
         submitBtn.style.display = 'block';
-        cancelBtn.style.display = 'block';
     }
     function again() {
         submitBtn.style.display = 'none';
-        cancelBtn.style.display = 'none';
         editBtn.style.display = "block";
         for (let i = 0; i < dataFields.length; i++) {
             dataFields[i].setAttribute('disabled')
-         
         }
     }
     function view(){
         console.log("Hello");
         fileName.value = this.files[0].name;
      }
+
+    $(document).ready(function () {
+
+        
+            $('#alldoc').click(function () {
+                console.log("hasfevuew")
+                $('.all').prop('checked', $(this).prop('checked'));
+            });
+        
+
+        // Handle individual checkbox clicks to update the leader checkbox state
+        $('.all').click(function () {
+            cosole.log("thaija")
+            $('#alldoc').prop('checked', $('.all:checked').length === $('.all').length);
+        });
+    });
+
+
+    // Function to handle download of selected files
+    function downloadSelectedFiles() {
+        
+        var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+        var fileUrls = [];
+
+        // Iterate through selected checkboxes and extract file URLs
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
+
+        // Download each file
+        fileUrls.forEach(function (url) {
+            // Create an anchor element to trigger the download
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+
+    // Event listener for download button
+    document.getElementById('downloadSelected').addEventListener('click', function (event) {
+        event.preventDefault();
+        downloadSelectedFiles();
+    });
+
 </script>

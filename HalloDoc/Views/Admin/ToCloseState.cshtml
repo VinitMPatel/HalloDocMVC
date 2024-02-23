@@ -1,0 +1,80 @@
+﻿@model Services.ViewModels.AdminDashboard;
+<div class="d-flex justify-content-between mt-5 mx-3">
+
+    <div>
+        <div class="h3">Patient <span class="text-info">(To close)</span></div>
+    </div>
+    <div>
+        <a class="text-decoration-none">
+            <button type="button" class="btn btn-info"><i class="bi bi-send me-2"></i>Send Link</button>
+        </a>
+        <a class="t ext-decoration-none">
+            <button type="button" class="btn btn-info"><i class="bi bi-file-text me-2"></i>Create Requests</button>
+        </a>
+        <a class="t ext-decoration-none">
+            <button type="button" class="btn btn-info"><i class="bi bi-arrow-up-short me-2"></i>Export</button>
+        </a>
+        <a class="t ext-decoration-none">
+            <button type="button" class="btn btn-info"><i class="bi bi-arrow-bar-up me-2"></i>Export all</button>
+        </a>
+        <a class="t ext-decoration-none btn btn-info" type="button">
+            <i class="bi bi-pin-map me-2"></i>Request DTY Support
+        </a>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date of birth</th>
+                <th>Requestor</th>
+                <th>Requested date</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Notes</th>
+                <th>Chat With</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.requestclients)
+            {
+                var color = "mediumpurple";
+                var type = "";
+                @if (obj.Request.Requesttypeid == 1)
+                {
+                    color = "rgb(117,201,115)";
+                    type = "Patient";
+                }
+                else if (obj.Request.Requesttypeid == 2)
+                {
+                    color = "rgb(219,161,36)";
+                    type = "Family";
+                }
+                else if (obj.Request.Requesttypeid == 4)
+                {
+                    color = "rgb(230, 0 , 115)";
+                    type = "Business";
+                }
+                else if (obj.Request.Requesttypeid == 3)
+                {
+                    color = "rgb(0,172,230)";
+                    type = "Concierge";
+                }
+                <tr style="--bs-table-bg : @color">
+                    <td>@obj.Firstname</td>
+                    <td>@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
+                    <td> @type , @obj.Request.Firstname</td>
+                    <td>@obj.Request.Createddate</td>
+                    <td>@obj.Phonenumber</td>
+                    <td>@obj.Address</td>
+                    <td>@obj.Notes</td>
+                    <td>Chat With</td>
+                    <td>Actions</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -59,12 +59,6 @@ namespace HalloDoc.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-
-        //public IActionResult PatientForgetPassword(Aspnetuser user)
-        //{
-        //    return View(user);
-        //}
-
         
         public IActionResult PatientResetPasswordEmail(Aspnetuser user)
         {

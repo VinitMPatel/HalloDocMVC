@@ -7,9 +7,9 @@ public class patient_dashboard
 {
     public User user {  get; set; }
 
-    public List<Request> request { get; set; }
+    public ICollection<Request> request { get; set; }
 
-    public List<Requestwisefile> requestwisefile { get; set; }
+    public ICollection<Requestwisefile> requestwisefile { get; set; }
 
     public int reqId { get; set; }
 

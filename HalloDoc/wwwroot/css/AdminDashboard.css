@@ -1,0 +1,131 @@
+﻿.new {
+    background-color: #e9eaef;
+    color: #203f9a;
+    border: 1px solid #203f9a;
+}
+
+.pending {
+    background-color: #e5f2f8;
+    color: #36a6c9;
+    border: 1px solid #36a6c9;
+}
+
+.activecase {
+    background-color: #e9f0e8;
+    color: #367f40;
+    border: 1px solid #367f40;
+}
+
+.conclude {
+    background-color: #f7e6ee;
+    color: #ac3d7d;
+    border: 1px solid #ac3d7d;
+}
+
+.toclose {
+    background-color: #e5eef5;
+    color: #2573b0;
+    border: 1px solid #2573b0;
+}
+
+.unpaid {
+    background-color: #efeef4;
+    color: #906cb6;
+    border: 1px solid #906cb6;
+}
+
+.allstatus {
+    width: 16.6% !important;
+    padding: 4px;
+}
+
+.nav-link {
+    padding: 8px;
+}
+
+.bottomarrow {
+    position: absolute;
+    left: 45%;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: none;
+    height: 0px;
+    width: 0px;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    background-color: transparent;
+    border: 0px;
+}
+
+
+.nav-tabs .allstatus .nav-link.active .new {
+    color: white;
+    background-color: #203f9a;
+}
+
+.nav-tabs .allstatus .nav-link.active .new + .bottomarrow {
+    border-top: 15px solid #203f9a;
+}
+
+.nav-tabs .allstatus .nav-link.active .pending {
+    color: white;
+    background-color: #36a6c9;
+}
+
+.nav-tabs .allstatus .nav-link.active .pending + .bottomarrow {
+    border-top: 15px solid #36a6c9;
+}
+
+.nav-tabs .allstatus .nav-link.active .activecase {
+    color: white;
+    background-color: #367f40;
+}
+
+.nav-tabs .allstatus .nav-link.active .activecase + .bottomarrow {
+    border-top: 15px solid #367f40;
+}
+
+.nav-tabs .allstatus .nav-link.active .conclude {
+    color: white;
+    background-color: #ac3d7d;
+}
+
+.nav-tabs .allstatus .nav-link.active .conclude + .bottomarrow {
+    border-top: 15px solid #ac3d7d;
+}
+
+.nav-tabs .allstatus .nav-link.active .toclose {
+    color: white;
+    background-color: #2573b0;
+}
+
+.nav-tabs .allstatus .nav-link.active .toclose + .bottomarrow {
+     border-top: 15px solid #2573b0;
+}
+
+.nav-tabs .allstatus .nav-link.active .unpaid {
+    color: white;
+    background-color: #906cb6;
+}
+
+.nav-tabs .allstatus .nav-link.active .unpaid + .bottomarrow {
+    border-top: 15px solid #906cb6;
+}
+
+
+@media only screen and (max-width:1050px) {
+    .allstatus {
+        width: 33.3% !important;
+    }
+}
+
+@media only screen and (max-width:500px) {
+    .icons {
+        display: none;
+    }
+
+    .small {
+        font-size: 0.75rem
+    }
+}

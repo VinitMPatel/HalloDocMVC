@@ -142,18 +142,5 @@ namespace HalloDoc.Controllers
             return RedirectToAction("ViewDocument", new { id = obj.reqId });
             
         }
-        public void SendingMail()
-        {
-            //_commonRepository.Insert(user);
-            //var result = _commonRepository.SaveChanges();
-            //emailSender.SendEmail("vmpatel2273@gmail.com", "User Regitered");
-            
-            emailSender.SendEmail("vinit.patel@etatvasoft.com", "Hello", "Please <a href=\"https://localhost:7021/PatientSite/PatientLogin\">login</a>");
-            //if (result > 0)
-            //{
-            //return CreatedAtAction("GetUser", new { id = user.id }, user);
-            //}
-            //return BadRequest();
-        }
     }
 }
