@@ -1,5 +1,5 @@
 ﻿@model Services.ViewModels.AdminDashboard;
-<div class="d-flex justify-content-between mt-5 mx-3">
+<div class="d-flex justify-content-between mt-5 mx-4">
 
     <div>
         <div class="h3">Patient <span class="text-info">(New)</span></div> 
@@ -22,8 +22,8 @@
         </a>
     </div>
 </div>
-<div class="border border-danger rounded-1">
-    <div class="d-flex justify-content-between mt-4 mx-4">
+<div class="border rounded-4 mx-4 mt-4">
+    <div class="d-flex justify-content-between py-3 mx-3 flex-wrap">
         <div class="dropdown d-flex">
             <input class="form-control search-input fuzzy-search rounded-1 form-control-sm me-2 shadow-none" type="search" placeholder="Search..." aria-label="Search">
             <button class="btn bg-white border border-dark dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,38 +36,38 @@
             </ul>
         </div>
 
-        <div class="d-flex ms-4">
+        <div class="d-flex ms-4 flex-wrap mt-sm-2">
 
             <div class="d-flex justify-content-center align-items-center px-2">
                 <input type="radio" class="btn-check" name="requestby" id="requestbyAll" autocomplete="off">
-                <label class="btn" for="requestbyAll">All</label>
+                <label class="btn border rounded-2 px-3" for="requestbyAll">All</label>
             </div>
             <div class="d-flex justify-content-center align-items-center px-2">
-                <input type="radio" class="btn-check" name="requestby" id="1" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #5fbc61;"></i>
+                <input type="radio" class="btn-check" name="requestby" id="1" autocomplete="off"><i class="bi bi-circle-fill" style="color :#5fbc61"></i>
                 <label class="btn p-1 border-0" for="1">Patient</label>
             </div>
             <div class="d-flex justify-content-center align-items-center px-2">
-                <input type="radio" class="btn-check" name="requestby" id="2" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #ed9124;"></i>
+                <input type="radio" class="btn-check" name="requestby" id="2" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #ed9124;"></i>
                 <label class="btn p-1 border-0" for="2">Family</label>
             </div>
             <div class="d-flex justify-content-center align-items-center px-2">
-                <input type="radio" class="btn-check" name="requestby" id="3" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1  " style="color:   #e36478;"></i>
+                <input type="radio" class="btn-check" name="requestby" id="3" autocomplete="off"><i class="bi bi-circle-fill" style="color:#e36478;"></i>
                 <label class="btn p-1 border-0" for="3">Concierge</label>
             </div>
             <div class="d-flex justify-content-center align-items-center px-2">
-                <input type="radio" class="btn-check" name="requestby" id="4" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #0c7db7;"></i>
+                <input type="radio" class="btn-check" name="requestby" id="4" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #0c7db7;"></i>
                 <label class="btn p-1 border-0" for="4">Business</label>
             </div>
             <div class="d-flex justify-content-center align-items-center px-2">
-                <input type="radio" class="btn-check" name="requestby" id="5" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #943db8;"></i>
+                <input type="radio" class="btn-check" name="requestby" id="5" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #943db8;"></i>
                 <label class="btn p-1 border-0" for="5">VIP</label>
             </div>
 
         </div>
     </div>
-<div class="table-responsive">
+<div class="table-responsive border-top">
     <table class="table">
-        <thead>
+        <thead class="bg-body-secondary">
             <tr>
                 <th>Name</th>
                 <th> </th>

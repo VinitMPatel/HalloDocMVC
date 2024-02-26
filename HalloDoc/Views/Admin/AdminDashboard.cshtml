@@ -7,7 +7,7 @@
     Layout = "_Admin";
 }
 <nav>
-    <div class="nav nav-tabs row mt-3 mx-2 pb-2" id="status-tab" role="tablist">
+    <div class="nav nav-tabs row mt-3 mx-1 pb-2" id="status-tab" role="tablist">
         <div class="allstatus">
             <button class="w-100 nav-link dashboardtab active position-relative p-0" id="status-new" data-bs-toggle="tab" data-bs-target="#s_new" type="button" role="tab" aria-controls="s_new" aria-selected="true">
                 <div class="p-2 new rounded">
@@ -43,9 +43,9 @@
         </div>
         <div class="allstatus">
             <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-conclude" data-bs-toggle="tab" data-bs-target="#s_conclude" type="button" role="tab" aria-controls="s_conclude" aria-selected="false">
-                <div class="p-2 conclude rounded-2">
+                <div class="p-1 conclude rounded-2">
                     <div class="d-flex">
-                        <div class="px-2  icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">CONCLUDE</div>
+                        <div class="px-1  icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">CONCLUDE</div>
                     </div>
                     <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 6).Count()</div>
                 </div>

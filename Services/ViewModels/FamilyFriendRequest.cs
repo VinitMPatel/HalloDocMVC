@@ -1,4 +1,6 @@
-﻿namespace HalloDoc.ViewModels
+﻿using Microsoft.AspNetCore.Http;
+
+namespace HalloDoc.ViewModels
 {
     public class FamilyFriendRequest
     {
@@ -34,5 +36,6 @@
 
         public String Room { get; set; }
 
+        public List<IFormFile> Upload { get; set; }
     }
 }

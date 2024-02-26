@@ -138,7 +138,9 @@
                         </div>
 
                         <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
-                            <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/>
+                           @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                            <input type="text" asp-for="user.Mobile" class="form-control data" id="floatingInput" placeholder="phone" disabled>
+                            <label for="floatingInput" style="left: 5px;">Contact</label>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
@@ -173,10 +175,10 @@
                             <label for="floatingInput" style="left: 5px;">Zip Code</label>
                         </div>
 
-                    <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2 p-1">
+                    <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2">
                         <div class=" rounded border border-info text-info form-control">
-                            <span><i class="bi bi-geo-alt"></i></span>
-                            Map</div>
+                            <i class="bi bi-geo-alt"></i>Map
+                        </div>
                     </div>
                     </div>
 
