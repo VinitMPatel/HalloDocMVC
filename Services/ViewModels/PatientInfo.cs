@@ -22,8 +22,13 @@ public class PatientInfo
 
     public String Password { get; set; }
 
+    [Compare("Password")]
+    public String ConfirmPassword { get; set; }
+
+
     [Required]
     public String PhoneNumber { get; set; }
+
 
     [Required]
     public String Street { get; set; }

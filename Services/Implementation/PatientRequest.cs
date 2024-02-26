@@ -29,12 +29,10 @@ namespace Services.Implementation
        
         public void Insert(PatientInfo r)
         {
-
             using(var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-
                     var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.Email).FirstOrDefault();
                     User user = new User();
                     if (aspnetuser == null)
@@ -47,11 +45,12 @@ namespace Services.Implementation
                         String username = r.FirstName + r.LastName;
                         aspnetuser1.Username = username;
                         aspnetuser1.Phonenumber = r.PhoneNumber;
+                        aspnetuser1.Createddate = DateTime.Now;
                         aspnetuser1.Modifieddate = DateTime.Now;
                         _context.Aspnetusers.Add(aspnetuser1);
                         aspnetuser1 = aspnetuser1;
+                        _context.Aspnetusers.Add(aspnetuser1);
 
-                        
                         user.Aspnetuserid = aspnetuser1.Id;
                         user.Firstname = r.FirstName;
                         user.Lastname = r.LastName;
@@ -65,19 +64,17 @@ namespace Services.Implementation
                         user.Intyear = int.Parse(r.DOB.ToString("yyyy"));
                         user.Intdate = int.Parse(r.DOB.ToString("dd"));
                         user.Strmonth = r.DOB.ToString("MMM");
+                        user.Createddate = DateTime.Now;
                         user.Modifieddate = DateTime.Now;
                         user.Status = 1;
                         user.Regionid = 1;
-
                         _context.Users.Add(user);
-                        //_context.SaveChanges();
                     }
                     else
                     {
                          user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
                     }
                     
-
                     Request request = new Request
                     {
                         Requesttypeid = 1,
@@ -90,15 +87,10 @@ namespace Services.Implementation
                         Modifieddate = DateTime.Now,
                         User = user,
                     };
-                    // if..else asp==null.. 
-
                     _context.Requests.Add(request);
-                    _context.SaveChanges();
-                    // var requestdata = _context.Requests.Where(m => m.Email == user1.Email).FirstOrDefault();
 
                     Requestclient requestclient = new Requestclient
                     {
-                        //  Requestid = request.Requestid,
                         Request = request,
                         Firstname = r.FirstName,
                         Lastname = r.LastName,
@@ -109,15 +101,15 @@ namespace Services.Implementation
                         City = r.City,
                         State = r.State,
                         Zipcode = r.ZipCode,
+                        Address = r.Street + ", " + r.City + ", " + r.State,
                         Regionid = 1,
                         Intyear = int.Parse(r.DOB.ToString("yyyy")),
                         Intdate = int.Parse(r.DOB.ToString("dd")),
                         Strmonth = r.DOB.ToString("MMM")
-                };
-
+                    };
                     _context.Requestclients.Add(requestclient);
-                    _context.SaveChanges();
 
+                    _context.SaveChanges();
 
                     if (r.Upload != null)
                     {
@@ -131,9 +123,6 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
-            
- 
         }
 
         public void uploadFile(List<IFormFile> upload, int id)
@@ -155,13 +144,5 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
         }
-
-        //[Route("/PatientReg/patient_request/checkmail/{email}")]
-        //[HttpGet]
-        //public IActionResult CheckEmail(string email)
-        //{
-        //    var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
-        //    return Json(new { exists = emailExists });
-        //}
     }
 }

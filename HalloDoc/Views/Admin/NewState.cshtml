@@ -22,12 +22,55 @@
         </a>
     </div>
 </div>
+<div class="border border-danger rounded-1">
+    <div class="d-flex justify-content-between mt-4 mx-4">
+        <div class="dropdown d-flex">
+            <input class="form-control search-input fuzzy-search rounded-1 form-control-sm me-2 shadow-none" type="search" placeholder="Search..." aria-label="Search">
+            <button class="btn bg-white border border-dark dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-magnifying-glass fa-xs"></i> <label class="me-4">All Region</label>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+            </ul>
+        </div>
+
+        <div class="d-flex ms-4">
+
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="requestbyAll" autocomplete="off">
+                <label class="btn" for="requestbyAll">All</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="1" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #5fbc61;"></i>
+                <label class="btn p-1 border-0" for="1">Patient</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="2" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #ed9124;"></i>
+                <label class="btn p-1 border-0" for="2">Family</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="3" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1  " style="color:   #e36478;"></i>
+                <label class="btn p-1 border-0" for="3">Concierge</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="4" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #0c7db7;"></i>
+                <label class="btn p-1 border-0" for="4">Business</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2">
+                <input type="radio" class="btn-check" name="requestby" id="5" autocomplete="off"><i class="fa-solid fa-circle fa-2xs pe-1 " style="color:  #943db8;"></i>
+                <label class="btn p-1 border-0" for="5">VIP</label>
+            </div>
+
+        </div>
+    </div>
 <div class="table-responsive">
     <table class="table">
-
         <thead>
             <tr>
                 <th>Name</th>
+                <th> </th>
                 <th>Date of birth</th>
                 <th>Requestor</th>
                 <th>Requested date</th>
@@ -64,17 +107,21 @@
                     type = "Concierge";
                 }
              <tr style="--bs-table-bg : @color">
-                <td>@obj.Firstname</td>
-                <td>@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
-                <td> @type , @obj.Request.Firstname</td>
-                <td>@obj.Request.Createddate</td>
-                <td>@obj.Phonenumber</td>
-                <td>@obj.Address</td>
-                <td>@obj.Notes</td>
-                <td>Chat With</td>
-                <td>Actions</td>
+                <td class="text-white">@obj.Firstname</td>
+                <td class="text-white"><i class="bi bi-envelope"></i></td>
+                <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
+                <td class="text-white"> @type , @obj.Request.Firstname</td>
+                <td class="text-white">@obj.Request.Createddate</td>
+                <td class="text-white">
+                        <div class="border border-light rounded-1 p-1"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                </td>
+                <td class="text-white">@obj.Address</td>
+                <td class="text-white">@obj.Notes</td>
+                <td class="text-white">Chat With</td>
+                <td class="text-white">Actions</td>
             </tr>
             }
         </tbody>
     </table>
+</div>
 </div>
