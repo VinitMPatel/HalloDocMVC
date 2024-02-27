@@ -32,12 +32,23 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AdminDashboard NewStateData()
+        public AdminDashboard NewStateData(String status , String requesttype)
         {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
-            return obj;
+
+            if (status == null && requesttype == null)
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
+                AdminDashboard obj = new AdminDashboard();
+                obj.requestclients = reqc;
+                return obj;
+            }
+            else
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
+                AdminDashboard obj = new AdminDashboard();
+                obj.requestclients = reqc;
+                return obj;
+            }
         }
 
         public AdminDashboard PendingStateData()

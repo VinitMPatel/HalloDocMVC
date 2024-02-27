@@ -1,4 +1,5 @@
-﻿using HalloDoc.ViewModels;
+﻿using Data.Entity;
+using HalloDoc.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Services.ViewModels;
 
@@ -9,5 +10,6 @@ namespace Services.Contracts
         //IActionResult CheckEmail(string email);
         void Insert(PatientInfo r);
         void uploadFile(List<IFormFile> upload, int id);
+        void NewAccount(Aspnetuser model);
     }
 }

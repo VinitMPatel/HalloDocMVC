@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Data.DataContext;
+using Data.Entity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 
@@ -7,8 +10,10 @@ namespace HalloDoc.Controllers
     public class AdminController : Controller
     {
         private readonly IDashboardData dashboardData;
-        public AdminController(IDashboardData dashboardData) {
+        private readonly HelloDocDbContext _context;
+        public AdminController(IDashboardData dashboardData , HelloDocDbContext context) {
             this.dashboardData = dashboardData;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -34,10 +39,10 @@ namespace HalloDoc.Controllers
             return View(data);
         }
 
-        public IActionResult NewState()
+        public IActionResult NewState(String status , String requesttype)
         {
-            AdminDashboard data = dashboardData.NewStateData();
-            return View(data);
+                AdminDashboard data = dashboardData.NewStateData(status,requesttype);
+                return View(data);
         }
 
         public IActionResult PendingState()

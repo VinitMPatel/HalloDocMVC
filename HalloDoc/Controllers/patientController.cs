@@ -145,14 +145,7 @@ namespace HalloDoc.Controllers
 
         public IActionResult NewAccount(Aspnetuser model)
         {
-            Aspnetuser aspnetuser1 = new Aspnetuser();
-            aspnetuser1.Id = Guid.NewGuid().ToString();
-            aspnetuser1.Passwordhash = model.Passwordhash;
-            aspnetuser1.Email = model.Email;
-            aspnetuser1.Username = "Temp";
-
-            _context.Aspnetusers.Add(aspnetuser1);
-            _context.SaveChanges();
+            patientRequest.NewAccount(model);
 
             return RedirectToAction("family_friend_request", "requests");
         }

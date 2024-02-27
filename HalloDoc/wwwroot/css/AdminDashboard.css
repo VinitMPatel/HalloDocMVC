@@ -123,6 +123,10 @@
     .allstatus {
         width: 33.3% !important;
     }
+    .bottomarrow{
+        display : none;
+    }
+
 }
 
 @media only screen and (max-width:500px) {
@@ -132,5 +136,10 @@
 
     .small {
         font-size: 0.75rem
+    }
+}
+@media only screen and (max-width:950px) {
+    .dash-btn {
+        display: none;
     }
 }
