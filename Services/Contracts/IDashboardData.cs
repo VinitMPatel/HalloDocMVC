@@ -17,5 +17,7 @@ namespace Services.Contracts
         AdminDashboard UnpaidStateData();
 
         AdminDashboard AllData();
+
+        ViewCase ViewCaseData(int requestId);
     }
 }

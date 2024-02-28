@@ -90,5 +90,25 @@ namespace Services.Implementation
             obj.requestclients = reqc;
             return obj;
         }
+
+        public ViewCase ViewCaseData(int requestId) {
+                var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
+                var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
+                var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
+                var data = new ViewCase
+                {
+                    //ConfirmationNumber = request.Confirmationnumber,
+                    PatientNotes = requestclient.Notes,
+                    FirstName = requestclient.Firstname,
+                    LastName = requestclient.Lastname,
+                    Email = requestclient.Email,
+                    DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate)),
+                    PhoneNumber = requestclient.Phonenumber,
+                    Region = regiondata,
+                    Address = requestclient.Address,
+
+                };
+                return data;
+        }
     }
 }

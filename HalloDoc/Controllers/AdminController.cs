@@ -62,5 +62,11 @@ namespace HalloDoc.Controllers
             AdminDashboard data = dashboardData.UnpaidStateData();
             return View(data);
         }
+
+        public IActionResult ViewCase(int requestId)
+        {
+            ViewCase obj = dashboardData.ViewCaseData(requestId);
+            return View(obj);
+        }
     }
 }
