@@ -1,4 +1,5 @@
-﻿using Services.ViewModels;
+﻿using Data.Entity;
+using Services.ViewModels;
 
 namespace Services.Contracts
 {
@@ -19,5 +20,7 @@ namespace Services.Contracts
         AdminDashboard AllData();
 
         ViewCase ViewCaseData(int requestId);
+
+        List<Physician> PhysicianList(int regionid);
     }
 }

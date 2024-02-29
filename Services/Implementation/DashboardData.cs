@@ -28,6 +28,8 @@ namespace Services.Implementation
         {
             List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).ToList();
             AdminDashboard obj = new AdminDashboard();
+            obj.regionList = _context.Regions.ToList();
+            obj.cancelList = _context.Casetags.ToList();
             obj.requestclients = reqc;
             return obj;
         }
@@ -92,23 +94,30 @@ namespace Services.Implementation
         }
 
         public ViewCase ViewCaseData(int requestId) {
-                var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
                 var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
+                var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
                 var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
+                var regionList = _context.Regions.ToList();
                 var data = new ViewCase
                 {
                     //ConfirmationNumber = request.Confirmationnumber,
                     PatientNotes = requestclient.Notes,
-                    FirstName = requestclient.Firstname,
-                    LastName = requestclient.Lastname,
-                    Email = requestclient.Email,
+                    FirstName = request.Firstname,
+                    LastName = request.Lastname,
+                    Email = request.Email,
                     DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate)),
-                    PhoneNumber = requestclient.Phonenumber,
-                    Region = regiondata,
+                    PhoneNumber = request.Phonenumber,
+                    Region = regiondata.Name,
+                    regionList = regionList,
                     Address = requestclient.Address,
-
                 };
                 return data;
+        }
+
+        public List<Physician> PhysicianList(int regionid)
+        {
+            List<Physician> physicianList = _context.Physicians.Where(a => a.Regionid == regionid).ToList();
+            return physicianList;
         }
     }
 }

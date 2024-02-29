@@ -6,98 +6,162 @@
 @{
     Layout = "_Admin";
 }
-<nav>
-    <div class="nav nav-tabs row mt-3 mx-1 pb-2" id="status-tab" role="tablist">
-        <div class="allstatus">
-            <button class="w-100 nav-link dashboardtab active position-relative p-0" id="status-new" data-bs-toggle="tab" data-bs-target="#s_new" type="button" role="tab" aria-controls="s_new" aria-selected="true">
-                <div class="p-2 new rounded">
-                    <div class="d-flex">
-                        <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">NEW</div>
+<div id="viewCaseContent">
+    <nav>
+        <div class="nav nav-tabs row mt-3 mx-1 pb-2" id="status-tab" role="tablist">
+            <div class="allstatus">
+                <button class="w-100 nav-link dashboardtab active position-relative p-0" id="status-new" data-bs-toggle="tab" data-bs-target="#s_new" type="button" role="tab" aria-controls="s_new" aria-selected="true">
+                    <div class="p-2 new rounded">
+                        <div class="d-flex">
+                            <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">NEW</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 1).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 1).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
-        </div>
-        <div class="allstatus">
-            <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-pending" data-bs-toggle="tab" data-bs-target="#s_pending" type="button" role="tab" aria-controls="s_pending" aria-selected="false">
-                <div class="p-2 pending rounded-2">
-                    <div class="d-flex">
-                        <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">PENDING</div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-pending" data-bs-toggle="tab" data-bs-target="#s_pending" type="button" role="tab" aria-controls="s_pending" aria-selected="false">
+                    <div class="p-2 pending rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">PENDING</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 2).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 2).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
-        </div>
-        <div class="allstatus">
-            <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-active" data-bs-toggle="tab" data-bs-target="#s_active" type="button" role="tab" aria-controls="s_active" aria-selected="false">
-                <div class="p-2 activecase rounded-2">
-                    <div class="d-flex">
-                        <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">ACTIVE</div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-active" data-bs-toggle="tab" data-bs-target="#s_active" type="button" role="tab" aria-controls="s_active" aria-selected="false">
+                    <div class="p-2 activecase rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">ACTIVE</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
-        </div>
-        <div class="allstatus">
-            <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-conclude" data-bs-toggle="tab" data-bs-target="#s_conclude" type="button" role="tab" aria-controls="s_conclude" aria-selected="false">
-                <div class="p-1 conclude rounded-2">
-                    <div class="d-flex">
-                        <div class="px-1  icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">CONCLUDE</div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-conclude" data-bs-toggle="tab" data-bs-target="#s_conclude" type="button" role="tab" aria-controls="s_conclude" aria-selected="false">
+                    <div class="p-2 conclude rounded-2">
+                        <div class="d-flex">
+                            <div class="px-1  icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">CONCLUDE</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 6).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 6).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
-        </div>
-        <div class="allstatus">
-            <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-toclose" data-bs-toggle="tab" data-bs-target="#s_toclose" type="button" role="tab" aria-controls="s_toclose" aria-selected="false">
-                <div class="p-2 toclose rounded-2">
-                    <div class="d-flex">
-                        <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">TO CLOSE</div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-toclose" data-bs-toggle="tab" data-bs-target="#s_toclose" type="button" role="tab" aria-controls="s_toclose" aria-selected="false">
+                    <div class="p-2 toclose rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">TO CLOSE</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
-        </div>
-        <div class="allstatus">
-            <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-unpaid" data-bs-toggle="tab" data-bs-target="#s_unpaid" type="button" role="tab" aria-controls="s_unpaid" aria-selected="false">
-                <div class="p-2 unpaid rounded-2">
-                    <div class="d-flex">
-                        <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">UNPAID</div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-unpaid" data-bs-toggle="tab" data-bs-target="#s_unpaid" type="button" role="tab" aria-controls="s_unpaid" aria-selected="false">
+                    <div class="p-2 unpaid rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">UNPAID</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 9).Count()</div>
                     </div>
-                    <div class="fw-bolder fs-4 p-2 text-start">@Model.requestclients.Where(a => a.Request.Status == 9).Count()</div>
-                </div>
-                <div class="bottomarrow"></div>
-            </button>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
-<div class="tab-content" id="status-tabContent">
-    <div class="tab-pane fade show active" id="s_new" role="tabpanel" aria-labelledby="status-new">
-    
-    </div>
-    <div class="tab-pane fade" id="s_pending" role="tabpanel" aria-labelledby="status-panding">
-   
-    </div>
-    <div class="tab-pane fade" id="s_active" role="tabpanel" aria-labelledby="status-active">
-    
-    </div>
-    <div class="tab-pane fade" id="s_conclude" role="tabpanel" aria-labelledby="status-conclude">
-   
-    </div>
-    <div class="tab-pane fade" id="s_toclose" role="tabpanel" aria-labelledby="status-toclose">
-    
-    </div>
-    <div class="tab-pane fade" id="s_unpaid" role="tabpanel" aria-labelledby="status-unpaid">
-    
+    <div class="tab-content" id="status-tabContent">
+        <div class="tab-pane fade show active" id="s_new" role="tabpanel" aria-labelledby="status-new">
+        </div>
+        <div class="tab-pane fade" id="s_pending" role="tabpanel" aria-labelledby="status-panding">
+        </div>
+        <div class="tab-pane fade" id="s_active" role="tabpanel" aria-labelledby="status-active">
+        </div>
+        <div class="tab-pane fade" id="s_conclude" role="tabpanel" aria-labelledby="status-conclude">
+        </div>
+        <div class="tab-pane fade" id="s_toclose" role="tabpanel" aria-labelledby="status-toclose">
+        </div>
+        <div class="tab-pane fade" id="s_unpaid" role="tabpanel" aria-labelledby="status-unpaid">
+        </div>
+        @* <partial name="_AssignCase" /> *@
     </div>
 </div>
 
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                To assign this request, search and select another Physician.
+                <div class="form-floating">
+                    <select class="form-select regionData" id="floatingSelect" aria-label="Floating label select example">
+                        <option selected disabled>Select Region</option>
+                        @foreach (var obj in Model.regionList)
+                        {
+                            <option value="@obj.Regionid">@obj.Name</option>
+                        }
+                    </select>
+                    <label for="floatingSelect" class="text-info">
+                        Narrow Search by Region
+                    </label>
+                </div>
+                <select id="physelect" class="form-select mt-4" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+                    
+                </select>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Patient Name : <spasn class="text-info"> Coming Soon...</spasn>
+                <div class="form-floating">
+                    <select class="form-select mt-4" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+                        <option selected disabled>Reason for cancellation</option>
+                        @foreach (var obj in Model.cancelList)
+                        {
+                            <option value="@obj.Casetagid">@obj.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info text-white">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     $(document).ready(function () {
@@ -109,16 +173,14 @@
             error: function (xhr, status, error) {
                 console.error(error);
             }
-        });           
+        });
 
-      
         $('.dashboardtab').on('click', function (e) {
             console.log("two")
             e.preventDefault();
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var target = $(this).data('bs-target');
-            console.log($(this));
             var url;
             switch (target) {
                 case '#s_new':
@@ -147,6 +209,36 @@
                 url: url,
                 success: function (response) {
                     $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.regionData').on('change', function (e) {
+            var regionid = $(this).val();
+            console.log(regionid);
+
+            $.ajax({
+                url: '/Admin/FilterData',
+                data: { "regionid": regionid },
+                success: function (response) {
+                    var physelect = $('#physelect');
+                    physelect.empty();
+                    physelect.append($('<option>', {
+                        value: "",
+                        text: "Select Physician"
+                    }))
+                    response.forEach(function (item) {
+                        //console.log(item);
+                        physelect.append(
+                            $('<option>', {
+                                value: item.physicianid,
+                                text: item.firstname
+                            }));
+                        console.log("fetch success");
+                    });
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

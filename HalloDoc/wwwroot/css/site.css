@@ -97,6 +97,10 @@
     right: 16%;
 }
 
+.adminSubDivs{
+    height : 100vh;
+}
+
 .form-floating:hover ~ label {
     color: #00b8e6;
 }

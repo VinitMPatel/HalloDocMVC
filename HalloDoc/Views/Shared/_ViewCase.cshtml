@@ -1,11 +1,10 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "ViewCase";
 }
 
 
 @{
-    Layout = "_Admin";
+    Layout = "";
 }
 @model Services.ViewModels.ViewCase
 
@@ -32,7 +31,7 @@
                 </div>
                 <div class="p-2 col-xl-12 mb-3">
                     <div class="form-floating">
-                        <textarea class="form-control" 
+                        <textarea class="form-control"
                                   placeholder="Patient Notes"
                                   style="height: 100px" asp-for="PatientNotes" disabled></textarea>
                         <label for="floatingTextarea2">Patient Notes</label>
@@ -42,23 +41,23 @@
 
                 <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                     <div class="form-floating ">
-                        <input type="text"  class="form-control" placeholder="First Name" asp-for=FirstName disabled>
+                        <input type="text" class="form-control" placeholder="First Name" asp-for=FirstName disabled>
                         <label class="FloatingInput" for="Name">First Name</label>
                     </div>
                 </div>
 
                 <div class="form-floating mt-2 col-xl-6 col-sm-6 col-12">
-                    <input type="text"  class="form-control" id="floatingPassword" placeholder="Last Name" asp-for=LastName disabled>
+                    <input type="text" class="form-control" id="floatingPassword" placeholder="Last Name" asp-for=LastName disabled>
                     <label for="floatingPassword" style="left: 5px;">Last Name</label>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="date"  class="form-control" id="floatingPassword" placeholder="Date of birth" asp-for="DOB" disabled> 
+                    <input type="date" class="form-control" id="floatingPassword" placeholder="Date of birth" asp-for="DOB" disabled>
                     <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-4 col-sm-4 col-9" required>
-                    <input id="phone" class="form-control" type="text" maxlength="10" asp-for="PhoneNumber"  disabled/>
+                    <input id="phone" class="form-control" type="text" maxlength="10" asp-for="PhoneNumber" disabled />
                 </div>
 
                 <div class="form-floating mt-3 col-xl-1 col-sm-1 col-2 border rounded-2 border-info d-flex justify-content-center align-items-center">
@@ -66,12 +65,12 @@
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="email" class="form-control" id="patientEmail" onblur="checkEmailExists()" placeholder="name@example.com" asp-for=Email disabled> 
+                    <input type="email" class="form-control" id="patientEmail" onblur="checkEmailExists()" placeholder="name@example.com" asp-for=Email disabled>
                     <label for="floatingInput" style="left: 5px;">Email</label>
                 </div>
 
                 @* <div class="form-floating mt-3 col-xl-1 col-sm-1 col-1 border rounded-2 border-info justify-content-center align-items-center text-info ms-3 d-none d-sm-flex" onclick="allow()">
-                    Edit
+                Edit
                 </div> *@
 
             </div>
@@ -80,7 +79,7 @@
                 <div class="h4">Location Information</div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="text"  class="form-control" id="floatingInput" placeholder="Region" asp-for=Region disabled>
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Region" asp-for=Region disabled>
                     <label for="floatingInput" style="left: 5px;">Region</label>
                 </div>
 
@@ -94,70 +93,17 @@
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="text"  class="form-control" id="floatingInput" placeholder="Room" asp-for=Room disabled>
+                    <input type="text" class="form-control" id="floatingInput" placeholder="Room" asp-for=Room disabled>
                     <label for="floatingInput" style="left: 5px;">Room # / Suite(Optional)</label>
                 </div>
             </div>
-            
+
             <div class="d-flex justify-content-end mt-4">
                 <div class="bg-info p-2 rounded border-0 px-3 text-white" data-bs-toggle="modal" data-bs-target="#exampleModal1" style="cursor : pointer"> Assign</div>
                 <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" style="cursor : pointer">Submit</div>
-                <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer">Cancel</div>
+                <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#exampleModal2">Cancel</div>
             </div>
-          
         </form>
     </div>
 </div>
-<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                To assign this request, search and select another Physician.
-                <div class="form-floating">
-                    <select class="form-select physiciandata" id="floatingSelect" aria-label="Floating label select example">
-                        <option selected>Select Region</option>
-                        
-                        
-                            @foreach (var obj in Model.Region)
-                            {
-                                <option value="@obj.">@obj.Name</option>
-                            }
-
-                        
-                    </select>
-                    <label for="floatingSelect" class="text-info">
-                        Narrow Search by Region
-                    </label>
-                </div>
-                <select class="form-select mt-4" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
-                    <option selected>Select Physician</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                </select>
-                <div class="form-floating mt-4">
-                    <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
-                    <label for="floatingTextarea">Description</label>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-info text-white">Submit</button>
-                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    const phoneInputField = document.querySelector("#phone");
-    const phoneInput = window.intlTelInput(phoneInputField, {
-        utilsScript:
-            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
-    });
-</script>
-
-
 

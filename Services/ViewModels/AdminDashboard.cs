@@ -12,5 +12,11 @@ namespace Services.ViewModels
         public List<Requestclient> requestclients { get; set; }
 
         public DateTime DOB { get; set; }
+
+        public List<Region> regionList { get; set; }
+
+        public List<Physician> physiciansList { get; set; }
+
+        public List<Casetag> cancelList { get; set; }
     }
 }

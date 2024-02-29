@@ -66,7 +66,18 @@ namespace HalloDoc.Controllers
         public IActionResult ViewCase(int requestId)
         {
             ViewCase obj = dashboardData.ViewCaseData(requestId);
-            return View(obj);
+            return PartialView("_ViewCase" , obj);
+        }
+
+        public List<Physician> FilterData(int regionid)
+        {
+            List<Physician> physicianList= dashboardData.PhysicianList(regionid);
+            return physicianList;
+        }
+
+        public IActionResult AdminLogin()
+        {
+            return View();
         }
     }
 }

@@ -139,7 +139,7 @@
     background-color: #efeef4;
     color: #906cb6;
     transform : translateY(-20px);
-    z-index : 2;
+    z-index : 2 !important;
 }
 
 .dashLine{
@@ -147,6 +147,9 @@
     border : 1px dashed grey;
 }
 
+.subdivs{
+    height:100vh;
+}
 div.iti.iti--allow-dropdown {
     width: 100%;
     border-radius: 5px;
@@ -160,7 +163,9 @@ input#phone {
     height: 58px;
     width: 100%;
 }
-
+.accordion-button{
+    z-index : 0 !important;
+}
 @media only screen and (max-width:1050px) {
     .allstatus {
         width: 33.3% !important;
