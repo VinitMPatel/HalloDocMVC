@@ -138,15 +138,15 @@
                         <td>
                             <div class="border border-light rounded-2 text-center">
                                 <div class="btn-group">
-                                    <button type="button" class="bg-transparent border border-0 text-white p-1" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                    <button type="button" class="bg-transparent border border-0 text-white p-1 w-100" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                                         Action
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal1" href="#"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
-                                        <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal2" href="#"><i class="bi bi-x-circle me-2" data-bs-toggle="modal" data-bs-target="#exampleModal2"></i>Cancel case</a></li>
-                                        <li class="viewCase" id="@obj.Request.Requestid" ><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                        <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
+                                        <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
+                                        <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -209,8 +209,8 @@
                     </h2>
 
                     <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                        <div class="d-flex justify-content-end">
-                            <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid">
+                        <div class="d-flex justify-content-end" >
+                            <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid" style="cursor : pointer">
                                 View Case
                             </div>
                         </div>
@@ -222,10 +222,10 @@
                             <div><i class="bi bi-person me-2 icn"></i>Requestor: @item.Request.Firstname, @item.Request.Lastname</div>
                         </div>
                         <div class="row mx-3">
-                            <div class="col-6">
-                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;" data-bs-toggle="modal" data-bs-target="#exampleModal1">Assign Case</a>
+                            <div class="col-6" onclick="AssignCase(@item.Request.Requestid)">
+                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
                             </div>
-                            <div class="col-6">
+                            <div class="col-6" onclick="CancelCase(@item.Request.Requestid)">
                                 <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal2">Cancel Case</a>
                             </div>
                             <div class="col-6 mt-2">
@@ -244,9 +244,79 @@
         </div>
     </div>
 </div>
+<div id="caseView">
 
+</div>
+<div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <input type="text"  hidden />
+            <div class="modal-body">
+                Patient Name : <span class="text-info"> @Model.patietName</span>
+                <div class="form-floating">
+                    <select class="form-select mt-4 pt-2 reason" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+                        <option selected disabled>Reason for cancellation</option>
+                        @foreach (var obj in Model.cancelList)
+                        {
+                            <option value="@obj.Casetagid">@obj.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control cancelNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
+
+    function AssignCase(requestId) {
+        $.ajax({
+            url: "/Admin/AssignCase/" ,
+            data : {"requestId" : requestId} ,
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal1", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        });
+    };
+
+    function CancelCase(requestId) {
+        $.ajax({
+            url: "/Admin/CancelCase/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal2", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        });
+    };
+
     $(document).ready(function () {
 
         $('.viewCase').on('click', function (e) {

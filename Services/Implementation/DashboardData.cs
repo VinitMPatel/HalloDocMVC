@@ -28,8 +28,6 @@ namespace Services.Implementation
         {
             List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).ToList();
             AdminDashboard obj = new AdminDashboard();
-            obj.regionList = _context.Regions.ToList();
-            obj.cancelList = _context.Casetags.ToList();
             obj.requestclients = reqc;
             return obj;
         }
@@ -101,6 +99,7 @@ namespace Services.Implementation
                 var data = new ViewCase
                 {
                     //ConfirmationNumber = request.Confirmationnumber,
+                    requestId = requestId,
                     PatientNotes = requestclient.Notes,
                     FirstName = request.Firstname,
                     LastName = request.Lastname,

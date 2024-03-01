@@ -10,10 +10,12 @@ namespace HalloDoc.Controllers
     public class AdminController : Controller
     {
         private readonly IDashboardData dashboardData;
+        private readonly ICaseActions caseActions;
         private readonly HelloDocDbContext _context;
-        public AdminController(IDashboardData dashboardData , HelloDocDbContext context) {
+        public AdminController(IDashboardData dashboardData , HelloDocDbContext context , ICaseActions caseActions) {
             this.dashboardData = dashboardData;
             _context = context;
+            this.caseActions = caseActions;
         }
 
         public IActionResult Index()
@@ -79,5 +81,32 @@ namespace HalloDoc.Controllers
         {
             return View();
         }
+
+        public IActionResult AssignCase(int requestId)
+        {
+            CaseActionsDetails obj =  caseActions.AssignCase(requestId);
+            return PartialView("_AssignCase",obj);
+        }
+
+        public IActionResult CancelCase(int requestId)
+        {
+            CaseActionsDetails obj = caseActions.CancelCase(requestId);
+            return PartialView("_CancelCase", obj);
+        }
+
+        public IActionResult SubmitAssign(CaseActionsDetails obj)
+        {
+            caseActions.SubmitAssign(obj);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public IActionResult SubmitCancel(int requestId , int caseId , string cancelNote)
+        {
+            
+            caseActions.SubmitCancel(requestId , caseId , cancelNote);
+            return RedirectToAction("AdminDashboard");
+        }
+
+
     }
 }

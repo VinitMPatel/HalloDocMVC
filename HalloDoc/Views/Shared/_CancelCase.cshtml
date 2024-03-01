@@ -1,0 +1,55 @@
+﻿@model Services.ViewModels.CaseActionsDetails
+@{
+    Layout = "";
+}
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+             <input type="text" asp-for="requestId" hidden/> 
+            <div class="modal-body">
+                Patient Name : <span class="text-info"> @Model.patietName</span>
+                <div class="form-floating">
+                        <select class="form-select mt-4 pt-2 reason" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+                        <option selected disabled>Reason for cancellation</option>
+                        @foreach (var obj in Model.cancelList)
+                        {
+                            <option value="@obj.Casetagid">@obj.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control cancelNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.confirm').on('click', function (e) {
+            var caseId = $('.reason').val();
+            var cancelNote = $('.cancelNote').val();
+            $.ajax({
+                url: '/Admin/SubmitCancel',
+                data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

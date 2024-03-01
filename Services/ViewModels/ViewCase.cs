@@ -9,7 +9,8 @@ namespace Services.ViewModels
 {
     public  class ViewCase
     {
-                public String ConfirmationNumber { get; set; }
+        public int requestId { get; set; }
+        public String ConfirmationNumber { get; set; }
         public String PatientNotes { get; set; }
 
         public String FirstName { get; set; }

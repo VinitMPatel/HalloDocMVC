@@ -26,6 +26,7 @@ builder.Services.AddTransient<IBusinessRequest, BusinessRequest>();
 builder.Services.AddTransient<IDashboard, Dashboard>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IDashboardData, DashboardData>();
+builder.Services.AddScoped<ICaseActions, CaseActions>();
 
 var app = builder.Build();
 
