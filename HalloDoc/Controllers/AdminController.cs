@@ -84,6 +84,7 @@ namespace HalloDoc.Controllers
 
         public IActionResult AssignCase(int requestId)
         {
+
             CaseActionsDetails obj =  caseActions.AssignCase(requestId);
             return PartialView("_AssignCase",obj);
         }
@@ -107,6 +108,18 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
+        public IActionResult BlockCase(int requestId)
+        {
+            CaseActionsDetails obj = caseActions.BlockCase(requestId);
+            return PartialView("_BlockCase", obj);
+        }
+
+        public IActionResult SubmitBlock(int requestId, string blockNote)
+        {
+
+            caseActions.SubmitBlock(requestId, blockNote);
+            return RedirectToAction("AdminDashboard");
+        }
 
     }
 }

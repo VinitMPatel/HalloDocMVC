@@ -1,5 +1,6 @@
 ﻿using Data.DataContext;
 using Data.Entity;
+using Microsoft.CodeAnalysis.Operations;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -32,6 +33,15 @@ namespace Services.Implementation
             CaseActionsDetails obj = new CaseActionsDetails();
             var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
             obj.cancelList = _context.Casetags.ToList();
+            obj.requestId = requestId;
+            obj.patietName = name;
+            return obj;
+        }
+
+        public CaseActionsDetails BlockCase(int requestId)
+        {
+            CaseActionsDetails obj = new CaseActionsDetails();
+            var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
             obj.requestId = requestId;
             obj.patietName = name;
             return obj;
@@ -72,6 +82,25 @@ namespace Services.Implementation
                 Createddate = DateTime.Now
             };
             _context.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
+
+        public void SubmitBlock(int requestId, string blockNote)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            requestData.Modifieddate = DateTime.Now;
+            requestData.Status = 11;
+            _context.Requests.Update(requestData);
+
+            Blockrequest blockrequest = new Blockrequest
+            {
+                Requestid = requestId,
+                Phonenumber = requestData.Phonenumber,
+                Email = requestData.Email,
+                Reason = blockNote,
+                Createddate= DateTime.Now,
+            };
+            _context.Add(blockrequest);
             _context.SaveChanges();
         }
     }

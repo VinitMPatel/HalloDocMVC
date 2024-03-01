@@ -1,0 +1,42 @@
+﻿@model Services.ViewModels.CaseActionsDetails
+
+<div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModalLabel3">Confirm Cancellation</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <input type="text" asp-for="requestId" hidden />
+            <div class="modal-body">
+                Patient Name : <span class="text-info"> @Model.patietName</span>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control blockNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Reason for block request</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="confirm" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Confirm</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.confirm').on('click', function (e) {
+            var blockNote = $('.blockNote').val();
+            $.ajax({
+                url: '/Admin/SubmitBlock',
+                data: { "requestId": @Model.requestId, "blockNote": blockNote },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
