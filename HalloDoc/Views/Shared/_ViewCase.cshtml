@@ -6,13 +6,29 @@
 @{
     Layout = "";
 }
-@model Services.ViewModels.ViewCase
+@model Services.ViewModels.CaseDetails
 
 <div class="container mt-3">
 
     <div class="d-flex justify-content-between">
         <div>
-            <h3 class="none">Submit Information</h3>
+            <div class="h3">View Case
+            @switch (Model.requestType)
+            {
+                case 1 :
+                        <span class="border p-2 px-4 rounded-pill fs-6 text-white" style="background-color : green">patient</span>
+                    break;
+                 case 2 :
+                        <span class="border p-2 px-4 rounded-pill fs-6 text-white" style="background-color : rgb(219,161,36)">Family/Friend</span>
+                    break;
+                case 3:
+                        <span class="border p-2 px-4 rounded-pill fs-6 text-white" style="background-color : rgb(0,172,230)">Business</span>
+                    break;
+                case 4:
+                        <span class="border p-2 px-4 rounded-pill fs-6 text-white" style="background-color : rgb(230, 0 , 115)">Concierge</span>
+                    break;
+            }
+            </div>
         </div>
         <div>
             <button class=" border border-info rounded-2 p-2 bg-transparent">
@@ -21,7 +37,7 @@
         </div>
     </div>
 
-    <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
+    <div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
         <form>
             <div class="patient-info row">
                 <div class="h4">Patient information</div>
@@ -31,7 +47,7 @@
                 </div>
                 <div class="p-2 col-xl-12 mb-3">
                     <div class="form-floating">
-                        <textarea class="form-control"
+                        <textarea class="form-control" id="floatingTextarea2"
                                   placeholder="Patient Notes"
                                   style="height: 100px" asp-for="PatientNotes" disabled></textarea>
                         <label for="floatingTextarea2">Patient Notes</label>

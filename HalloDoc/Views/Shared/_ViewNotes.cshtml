@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Services.ViewModels.CaseDetails
+<div class="container pt-3">
+
+    <div class="d-flex justify-content-between">
+        <div>
+            <h3 class="none">Notes</h3>
+        </div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+        <div class="row mt-3">
+            
+            <div class="col-12 col-sm-6">
+                <div class="d-flex flex-row shadow rounded-3 p-3 m-0">
+                    <i class="bi bi-arrow-left-right me-3 h4"></i>
+                    <div class="d-flex flex-column">
+                        <p class="m-0 mb-1 fw-bold">Transfer Notes</p>
+                        <small class="m-0 text-secondary" >@Model.adminName Transferred to @Model.physicianName on @Model.assignTime.ToString("dd/MM/yyyy") at @Model.assignTime.ToString("hh:mm tt")</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cl-12 col-sm-6">
+                <div class="d-flex flex-row shadow rounded-3 p-3 m-0">
+                    <i class="bi bi-person me-3 h4"></i>
+                    <div class="d-flex flex-column">
+                        <p class="m-0 mb-1 fw-bold">Physician Notes</p>
+                        <p class="m-0 text-secondary">PhysicianNotes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cl-12 col-sm-6 mt-2">
+                <div class="d-flex flex-row shadow rounded-3 p-3 m-0">
+                    <i class="bi bi-person me-3 h4"></i>
+                    <div class="d-flex flex-column">
+                        <p class="m-0 mb-1 fw-bold">Admin Notes</p>
+                        <p class="m-0 text-secondary" id="adminNote">@Model.adminNote</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-3">
+                <div class="shadow rounded-3 p-3">
+                    <div class="form-floating mb-3">
+                        <textarea class="form-control notes"  placeholder="admin notes"
+                                   style="height: 100px" asp-for="adminNote"></textarea>
+                        <label for="floatingTextarea2" class="">
+                            Additional Notes
+                        </label>
+                    <input type="text" asp-for="requestId" id="reqId" hidden />
+                    </div>
+                    <div class="d-flex justify-content-end mt-3 mb-2">
+                        <button class="btn btn-info text-white rounded-2 confirm">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('.confirm').on('click', function (e) {
+            // var caseId = $('.reason').val();
+            var notes = $('.notes').val();
+            var requestId = $('#reqId').val();
+            $.ajax({
+                url: '/Admin/SubmitNotes',
+                data: { "requestId": requestId, "notes": notes },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+
+            $('#adminNote').html(notes);
+
+        });
+    });
+</script>

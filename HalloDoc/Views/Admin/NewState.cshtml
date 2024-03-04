@@ -36,7 +36,9 @@
     <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
         <div class="dropdown d-flex flex-wrap row">
             <div class="col-12 col-sm-6">
-                <input class="form-control search-input fuzzy-search rounded-1 me-2 shadow-none" type="search" placeholder="Search..." aria-label="Search">
+                <input class="form-control search-input fuzzy-search rounded-1 me-2 shadow-none" type="search" aria-label="Search">
+                <label class="search-label">Search Patient</label>
+                <i class="bi bi-search me-2"></i>
             </div>
             <div class="col-12 col-sm-6 mt-3 mt-sm-0">
                 <button class="btn bg-white border border-dark dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -128,7 +130,18 @@
                         <td class="text-white"> @type , @obj.Firstname</td>
                         <td class="text-white">@obj.Request.Createddate</td>
                         <td class="text-white">
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            @if(type == "Patient")
+                            {
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                                <div>(Patinet)</div>
+                            }
+                            else
+                            {
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                                <div>(Patinet)</div>
+                                <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                                <div>(@type)</div>
+                            }
                         </td>
                         <td class="text-white">@obj.Address</td>
                         <td class="text-white">@obj.Notes</td>
@@ -145,7 +158,7 @@
                                         <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
                                         <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
                                         <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                        <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
                                         <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
                                     </ul>
                                 </div>
@@ -209,7 +222,7 @@
                     </h2>
 
                     <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
-                        <div class="d-flex justify-content-end" >
+                        <div class="d-flex justify-content-end">
                             <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid" style="cursor : pointer">
                                 View Case
                             </div>
@@ -229,7 +242,7 @@
                             <div class="col-6" onclick="CancelCase(@item.Request.Requestid)">
                                 <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
                             </div>
-                            <div class="col-6 mt-2">
+                            <div class="col-6 mt-2 viewNotes" id="@item.Request.Requestid">
                                 <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                             </div>
                             <div class="col-6 mt-2" onclick="BlockCase(@item.Request.Requestid)">
@@ -246,7 +259,6 @@
     </div>
 </div>
 <div id="caseView">
-
 </div>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -254,8 +266,8 @@
 
     function AssignCase(requestId) {
         $.ajax({
-            url: "/Admin/AssignCase/" ,
-            data : {"requestId" : requestId} ,
+            url: "/Admin/AssignCase/",
+            data: { "requestId": requestId },
             type: "POST",
             dataType: "html",
             success: function (data) {
@@ -314,6 +326,22 @@
             console.log(requestId);
             $.ajax({
                 url: '/Admin/ViewCase',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewNotes').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/Admin/ViewNotes',
                 data: { "requestId": requestId },
                 success: function (response) {
                     $('#viewCaseContent').html(response);

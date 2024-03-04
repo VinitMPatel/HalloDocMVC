@@ -159,6 +159,9 @@ div#passwordFields1{
 div#passwordFields2 {
     display: none;
 }
+
+
+
     @media only screen and (max-width: 710px) {
         .fields {
             width: 55%;
@@ -203,6 +206,10 @@ div#passwordFields2 {
         .form-floating {
             font-size: small;
         }
+
+        .wid-admin{
+            width:300px!important;
+        }
     }
 
     @media only screen and (min-width: 500px) {
@@ -235,4 +242,20 @@ div#passwordFields2 {
         }
     }
 
+@media only screen and (max-width:1000px) {
+
+    .mainPhoto {
+        z-index: -1;
+        height: 100vh;
+        opacity: 0.5;
+        filter: blur(2px);
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    #subDiv2{
+        position : absolute;
+    }
+}
 

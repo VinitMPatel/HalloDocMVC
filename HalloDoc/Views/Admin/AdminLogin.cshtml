@@ -3,11 +3,78 @@
 *@
 @{
 }
-<div class="d-flex justify-content-between gap-4">
-    <div class="border border-danger adminSubDivs w-50">
-        <img src="~/images/11116016_415.jpg" class="h-100 w-100"/>
-    </div>
-    <div class="border border-danger adminSubDivs w-50">
+<div class="container-fluid">
+    <div class="row" style="overflow : hidden">
 
+        <div class="border border-danger adminSubDivs col-lg-6 p-0">
+            <img src="~/images/11116016_415.jpg" class="h-100 w-100 mainPhoto" />
+        </div>
+
+
+        <div class="d-flex align-items-center justify-content-center flex-column adminSubDivs col-lg-6" id="subDiv2">
+            <div class="d-flex flex-column align-items-center h-100 wid-admin" style="width:360px">
+                <div class="d-flex justify-content-center mt-5">
+                    <img src="~/images/1HalloDoc.png" height="125px" width="250px" />
+                </div>
+
+                <div class="login d-flex justify-content-center flex-column mt-5 w-100">
+                    <div class="h3 mt-3 d-flex justify-content-center">login to your account</div>
+
+                    <div class="form-floating mb-3 mt-3">
+                        <input type="email" class="form-control" id="floatinginput" placeholder="name@example.com">
+                        <label for="floatinginput">email</label>
+                        <i class="bi bi-person-circle login-icon"></i>
+                    </div>
+
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="see" placeholder="password">
+                        <label for="floatingpassword">password</label>
+                        <div class="login-icon" onclick="fun()">
+                            <i class="bi bi-eye-slash-fill" id="eye"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="d-flex justify-content-center btn btn-primary fields mt-3 bg-info rounded-2 border border-0 w-100">log in</button><br>
+
+                    <div class="d-flex justify-content-center">
+                        <a asp-controller="home" asp-action="resetpwd" class="link text-info text-decoration-none">forgot password?</a>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <div class="terms bg-body-tertiary p-1 border rounded-2 d-flex justify-content-between position-fixed bottom-0 mb-3">
+                            <a href="#" class="text-decoration-none text-secondary">terms of conditions</a>
+                            <span class="mx-1">|</span>
+                            <a href="#" class="text-decoration-none text-secondary">privacy policy</a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
     </div>
 </div>
+
+<script>
+    const path = document.getElementById("eye");
+    const password = document.getElementById('see')
+    function fun() {
+        console.log(password);
+        if (password.type === "password") {
+            path.classList.remove("bi-eye-slash-fill");
+            path.classList.add("bi-eye-fill");
+            password.type = "text";
+
+        }
+        else {
+            path.classList.remove("bi-eye-fill");
+            path.classList.add("bi-eye-slash-fill");
+            password.type = "password";
+
+        }
+    }
+</script>
+

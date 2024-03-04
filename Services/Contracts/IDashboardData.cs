@@ -19,7 +19,7 @@ namespace Services.Contracts
 
         AdminDashboard AllData();
 
-        ViewCase ViewCaseData(int requestId);
+        CaseDetails ViewCaseData(int requestId);
 
         List<Physician> PhysicianList(int regionid);
     }

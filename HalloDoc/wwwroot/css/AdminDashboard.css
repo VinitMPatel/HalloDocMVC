@@ -142,9 +142,19 @@
     z-index : 2 !important;
 }
 
-.dashLine{
-    width : 98%;
-    border : 1px dashed grey;
+.bi-search {
+    
+}
+
+.search-label {
+    position: relative;
+    bottom: 30px;
+    left: 40px;
+}
+
+.dashLine {
+    width: 98%;
+    border: 1px dashed grey;
 }
 
 .subdivs{

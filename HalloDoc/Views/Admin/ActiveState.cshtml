@@ -1,80 +1,247 @@
 ﻿@model Services.ViewModels.AdminDashboard;
-<div class="d-flex justify-content-between mt-5 mx-3">
+@{
+    Layout = "";
+}
+<div class="d-flex justify-content-between mt-5 mx-4">
 
     <div>
-        <div class="h3">Patient <span class="text-info">(Active)</span></div>
+        <div class="h3">Patient <span class="text-info">(New)</span></div>
     </div>
     <div>
         <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-send me-2"></i>Send Link
+            <i class="bi bi-send me-2 "></i>
+            <span class="dash-btn">Send Link</span>
         </a>
         <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-file-text me-2"></i>Create Requests
+            <i class="bi bi-file-text me-2 "></i>
+            <span class="dash-btn">Create Requests</span>
         </a>
         <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-arrow-up-short me-2"></i>Export
+            <i class="bi bi-arrow-up-short me-2"></i>
+            <span class="dash-btn">Export</span>
         </a>
-        <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-arrow-bar-up me-2"></i>Export all
+        <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
+            @* mt-2 mt-md-0 *@
+            <i class="bi bi-arrow-bar-up me-2 "></i>
+            <span class="dash-btn">Export All</span>
         </a>
-        <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-pin-map me-2"></i>Request DTY Support
+        <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
+            @* mt-2 mt-lg-0 *@
+            <i class="bi bi-pin-map me-2"></i>
+            <span class="dash-btn">Request DTY Support</span>
         </a>
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table">
+<div class="border rounded-4 mx-4 mt-4">
+    <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
+        <div class="dropdown d-flex flex-wrap row">
+            <div class="col-12 col-sm-6">
+                <input class="form-control search-input fuzzy-search rounded-1 me-2 shadow-none" type="search" placeholder="Search..." aria-label="Search">
+            </div>
+            <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                <button class="btn bg-white border border-dark dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-magnifying-glass fa-xs"></i> <label class="me-4">All Region</label>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </div>
 
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Date of birth</th>
-                <th>Requestor</th>
-                <th>Requested date</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>Notes</th>
-                <th>Chat With</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var obj in Model.requestclients)
-            {
-                var color = "mediumpurple";
-                var type = "";
-                @if (obj.Request.Requesttypeid == 1)
-                {
-                    color = "rgb(117,201,115)";
-                    type = "Patient";
-                }
-                else if (obj.Request.Requesttypeid == 2)
-                {
-                    color = "rgb(219,161,36)";
-                    type = "Family";
-                }
-                else if (obj.Request.Requesttypeid == 4)
-                {
-                    color = "rgb(230, 0 , 115)";
-                    type = "Business";
-                }
-                else if (obj.Request.Requesttypeid == 3)
-                {
-                    color = "rgb(0,172,230)";
-                    type = "Concierge";
-                }
-                <tr style="--bs-table-bg : @color">
-                    <td>@obj.Firstname</td>
-                    <td>@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
-                    <td> @type , @obj.Request.Firstname</td>
-                    <td>@obj.Request.Createddate</td>
-                    <td>@obj.Phonenumber</td>
-                    <td>@obj.Address</td>
-                    <td>@obj.Notes</td>
-                    <td>Chat With</td>
-                    <td>Actions</td>
+        </div>
+
+        <div class="d-flex flex-wrap mt-2">
+
+            <div class="d-flex justify-content-center align-items-center px-2 filter">
+                <input type="radio" class="btn-check" name="requestby" id="requestbyAll" autocomplete="off">
+                <label class="btn border rounded-2 px-3" for="requestbyAll">All</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2 filter" id="1">
+                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color :#5fbc61"></i>
+                <label class="btn p-1 border-0 d-block" for="1">Patient</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2 filter" id="2">
+                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #ed9124;"></i>
+                <label class="btn p-1 border-0 text-small" for="2">Family</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2 filter" id="3">
+                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:#e36478;"></i>
+                <label class="btn p-1 border-0" for="3">Concierge</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2 filter" id="4">
+                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #0c7db7;"></i>
+                <label class="btn p-1 border-0" for="4">Business</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center px-2 filter" id="5">
+                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #943db8;"></i>
+                <label class="btn p-1 border-0" for="5">VIP</label>
+            </div>
+
+        </div>
+    </div>
+    <div class="table-responsive border-top">
+        <table class="table d-md-table d-none">
+            <thead class="bg-body-secondary">
+                <tr>
+                    <th>Name</th>
+                    <th> </th>
+                    <th>Date of birth</th>
+                    <th>Requestor</th>
+                    <th>Requested date</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>Notes</th>
+                    <th>Chat With</th>
+                    <th>Actions</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var obj in Model.requestclients)
+                {
+                    var color = "mediumpurple";
+                    var type = "";
+                    @if (obj.Request.Requesttypeid == 1)
+                    {
+                        color = "rgb(117,201,115)";
+                        type = "Patient";
+                    }
+                    else if (obj.Request.Requesttypeid == 2)
+                    {
+                        color = "rgb(219,161,36)";
+                        type = "Family";
+                    }
+                    else if (obj.Request.Requesttypeid == 4)
+                    {
+                        color = "rgb(230, 0 , 115)";
+                        type = "Business";
+                    }
+                    else if (obj.Request.Requesttypeid == 3)
+                    {
+                        color = "rgb(0,172,230)";
+                        type = "Concierge";
+                    }
+                    <tr style="--bs-table-bg : @color">
+                        <td class="text-white">@obj.Request.Firstname</td>
+                        <td class="text-white"><i class="bi bi-envelope"></i></td>
+                        <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
+                        <td class="text-white"> @type , @obj.Firstname</td>
+                        <td class="text-white">@obj.Request.Createddate</td>
+                        <td class="text-white">
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                        </td>
+                        <td class="text-white">@obj.Address</td>
+                        <td class="text-white">@obj.Notes</td>
+                        <td class="text-white">
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-person-fill me-2"></i>Provider</div>
+                        </td>
+                        <td>
+                            <div class="border border-light rounded-2 text-center">
+                                <div class="btn-group">
+                                    <button type="button" class="bg-transparent border border-0 text-white p-1 w-100" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
+                                        <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
+                                        <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                        <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+            <div class="accordion-item">
+                @foreach (var item in Model.requestclients)
+                {
+                    var color = "mediumpurple";
+                    var type = "";
+                    @if (item.Request.Requesttypeid == 1)
+                    {
+                        color = "rgb(117,201,115)";
+                        type = "Patient";
+                    }
+                    else if (item.Request.Requesttypeid == 2)
+                    {
+                        color = "rgb(219,161,36)";
+                        type = "Family";
+                    }
+                    else if (item.Request.Requesttypeid == 4)
+                    {
+                        color = "rgb(230, 0 , 115)";
+                        type = "Business";
+                    }
+                    else if (item.Request.Requesttypeid == 3)
+                    {
+                        color = "rgb(0,172,230)";
+                        type = "Concierge";
+                    }
+                    <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                            <div class="col d-flex flex-column">
+                                <span class="">@item.Firstname, @item.Lastname</span>
+                                <span class=" mt-4">@item.Street @item.City @item.State</span>
+                                <span class="mt-3"><i class="bi bi-clock text-info h6 me-2 icns"></i>Wait Time: DEC5, 2023</span>
+                            </div>
+                            <div class="col d-flex flex-column text-end mt-2 p-0">
+                                <div>
+                                    <div>
+                                        <span>@type</span>
+                                        <i class="bi bi-circle-fill" style="color :@color"></i>
+                                    </div>
+                                    <div class=" btn rounded-pill text-info border-info float-end p-1 mt-3" style="width:150px">
+                                        Map Location
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </button>
+                        <hr class="m-0">
+                    </h2>
+
+                    <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                        <div class="d-flex justify-content-end">
+                            <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid" style="cursor : pointer">
+                                View Case
+                            </div>
+                        </div>
+
+                        <div class="accordion-body d-flex flex-column gap-1">
+                            <div><i class="bi bi-calendar2-minus me-2 icn"></i>Date of birth: @item.Strmonth @item.Intdate, @item.Intyear</div>
+                            <div><i class="bi bi-envelope me-2 icn"></i>Email: @item.Request.Email</div>
+                            <div><i class="bi bi-telephone me-2 icn"></i>Patient: @item.Request.Phonenumber</div>
+                            <div><i class="bi bi-person me-2 icn"></i>Requestor: @item.Request.Firstname, @item.Request.Lastname</div>
+                        </div>
+
+                        <div class="row mx-3">
+                            <div class="col-6" onclick="AssignCase(@item.Request.Requestid)">
+                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                            </div>
+                            <div class="col-6" onclick="CancelCase(@item.Request.Requestid)">
+                                <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                            </div>
+                            <div class="col-6 mt-2" onclick="BlockCase(@item.Request.Requestid)">
+                                <a class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
+                            </div>
+                            <div class="col-6 mt-2">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

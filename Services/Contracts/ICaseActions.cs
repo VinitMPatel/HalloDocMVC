@@ -11,5 +11,6 @@ namespace Services.Contracts
         void SubmitAssign(CaseActionsDetails obj);
         void SubmitBlock(int requestId, string blockNote);
         void SubmitCancel(int requestId, int caseId, string cancelNote);
+        void SubmitNotes(int requestId, string notes, CaseDetails obj);
     }
 }

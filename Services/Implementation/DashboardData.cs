@@ -53,7 +53,7 @@ namespace Services.Implementation
 
         public AdminDashboard PendingStateData()
         {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 2).ToList();
+            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
             AdminDashboard obj = new AdminDashboard();
             obj.requestclients = reqc;
             return obj;
@@ -91,12 +91,12 @@ namespace Services.Implementation
             return obj;
         }
 
-        public ViewCase ViewCaseData(int requestId) {
+        public CaseDetails ViewCaseData(int requestId) {
                 var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
                 var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
                 var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
                 var regionList = _context.Regions.ToList();
-                var data = new ViewCase
+                var data = new CaseDetails
                 {
                     //ConfirmationNumber = request.Confirmationnumber,
                     requestId = requestId,
@@ -109,9 +109,12 @@ namespace Services.Implementation
                     Region = regiondata.Name,
                     regionList = regionList,
                     Address = requestclient.Address,
+                    requestType = request.Requesttypeid
                 };
                 return data;
         }
+
+
 
         public List<Physician> PhysicianList(int regionid)
         {

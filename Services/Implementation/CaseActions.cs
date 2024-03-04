@@ -52,6 +52,7 @@ namespace Services.Implementation
             var requestData = _context.Requests.Where(a => a.Requestid == obj.requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
             requestData.Status = 2;
+            requestData.Physicianid = obj.physicianId;
             _context.Requests.Update(requestData);
 
             Requeststatuslog requeststatuslog = new Requeststatuslog
@@ -61,6 +62,7 @@ namespace Services.Implementation
                 Physicianid = obj.physicianId,
                 Notes = obj.assignNotes,
                 Createddate = DateTime.Now,
+                Transtophysicianid = obj.physicianId
             };
             _context.Add(requeststatuslog);
             _context.SaveChanges();
@@ -101,6 +103,19 @@ namespace Services.Implementation
                 Createddate= DateTime.Now,
             };
             _context.Add(blockrequest);
+            _context.SaveChanges();
+        }
+
+        public void SubmitNotes(int requestId, string notes, CaseDetails obj)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Requestnote requestnote = new Requestnote();
+            var existRequestNote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
+            requestnote.Requestid = requestId;
+            requestnote.Createddate = DateTime.Now;
+            requestnote.Adminnotes = notes;
+            requestnote.Createdby = "1";
+            _context.Requestnotes.Add(requestnote);
             _context.SaveChanges();
         }
     }

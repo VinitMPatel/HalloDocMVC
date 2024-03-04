@@ -2,6 +2,7 @@
 using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.Replication.PgOutput.Messages;
 using Services.Contracts;
 using Services.ViewModels;
 
@@ -67,8 +68,35 @@ namespace HalloDoc.Controllers
 
         public IActionResult ViewCase(int requestId)
         {
-            ViewCase obj = dashboardData.ViewCaseData(requestId);
+            CaseDetails obj = dashboardData.ViewCaseData(requestId);
             return PartialView("_ViewCase" , obj);
+        }
+
+        public IActionResult ViewNotes(int requestId)
+        {
+            var requestData = _context.Requests.FirstOrDefault(a=>a.Requestid == requestId);
+            var requestnote = _context.Requestnotes.FirstOrDefault(a=> a.Requestid == requestId);
+            CaseDetails obj = new CaseDetails();
+            if (requestnote != null)
+            {
+                obj.adminNote = requestnote.Adminnotes;
+            }
+
+            var admin = "Vinit";
+            obj.requestId = requestId;
+            var transferNote = _context.Requeststatuslogs.FirstOrDefault(a => a.Requestid == obj.requestId && a.Status == 2);
+            if (transferNote != null)
+            {
+                var physicianName = _context.Physicians.FirstOrDefault(a=>a.Physicianid == transferNote.Physicianid).Firstname;
+                obj.adminName = admin;
+                obj.physicianName = physicianName;
+                obj.assignTime = transferNote.Createddate;
+            }
+
+            //bol jaldi bol ungh aave he
+
+            //CaseDetails obj = dashboardData.ViewCaseData(requestId);
+            return PartialView("_ViewNotes",obj);
         }
 
         public List<Physician> FilterData(int regionid)
@@ -118,6 +146,12 @@ namespace HalloDoc.Controllers
         {
 
             caseActions.SubmitBlock(requestId, blockNote);
+            return RedirectToAction("AdminDashboard");
+        }
+
+        public IActionResult SubmitNotes(int requestId, string notes , CaseDetails obj)
+        {
+            caseActions.SubmitNotes(requestId, notes , obj);
             return RedirectToAction("AdminDashboard");
         }
 
