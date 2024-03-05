@@ -1,9 +1,12 @@
 ﻿using Data.DataContext;
 using Data.Entity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -17,10 +20,12 @@ namespace Services.Implementation
     {
 
         private readonly HelloDocDbContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public DashboardData(HelloDocDbContext context)
+        public DashboardData(HelloDocDbContext context , IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
 
@@ -114,12 +119,60 @@ namespace Services.Implementation
                 return data;
         }
 
-
-
         public List<Physician> PhysicianList(int regionid)
         {
             List<Physician> physicianList = _context.Physicians.Where(a => a.Regionid == regionid).ToList();
             return physicianList;
+        }
+
+        public CaseDetails ViewUploads(int requestId)
+        {
+            CaseDetails obj = new CaseDetails();
+            //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
+            List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m ).ToList();
+            var patientName = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
+            obj.FirstName = patientName;
+            obj.requestId = requestId;
+            obj.requestwisefile = files;
+            return obj;
+        }
+
+        public void UplodingDocument(List<IFormFile> myfile, int requestId)
+        {
+            if (myfile.Count() > 0)
+            {
+                uploadFile(myfile, requestId);
+            }
+        }
+
+        public void uploadFile(List<IFormFile> upload, int id)
+        {
+            foreach (var item in upload)
+            {
+                string path = _env.WebRootPath + "/upload/" + item.FileName;
+                FileStream stream = new FileStream(path, FileMode.Create);
+
+                item.CopyTo(stream);
+                Requestwisefile requestwisefile = new Requestwisefile
+                {
+                    Requestid = id,
+                    Filename = item.FileName,
+                    Createddate = DateTime.Now,
+
+                };
+                _context.Add(requestwisefile);
+                _context.SaveChanges();
+            }
+        }
+
+
+        public void SingleDelete(int reqfileid)
+        {
+            var requestwisefile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == reqfileid);
+            int reqid = requestwisefile.Requestid;
+            requestwisefile.Isdeleted = new BitArray(new[] { true });
+            _context.Requestwisefiles.Update(requestwisefile);
+            _context.SaveChanges();
         }
     }
 }

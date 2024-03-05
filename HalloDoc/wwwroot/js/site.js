@@ -11,15 +11,10 @@ try {
     // console.log("Hello");
     btn1.addEventListener('change', function () {
         file.placeholder = this.files[0].name;
-        
-        
-        
         for (var i = 0; i < this.files.length; i++) {
             names += this.files[i].name;
             }
-
         file.value = names;
-        
         console.log(file.value);
         console.log(btn1.value);
         file.style.fontSize = "large";

@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,5 +43,9 @@ namespace Services.ViewModels
         public DateTime assignTime { get; set; }
 
         public String adminNote { get; set; }
+
+        public ICollection<Requestwisefile> requestwisefile { get; set; }
+
+        public List<IFormFile> Upload { get; set; }
     }
 }

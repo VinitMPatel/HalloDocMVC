@@ -1,0 +1,211 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Services.ViewModels.CaseDetails
+<div class="container mt-3" id="home-tab-pane">
+
+    <div class="d-flex justify-content-between">
+        <div>
+            <div class="h3">
+                Documents
+            </div>
+        </div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+    <div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
+
+        <div class="fs-6">patient name</div>
+        <div class="text-info fw-bolder h4 mt-2">@Model.FirstName</div>
+        <p class="fs-6">Check here for any files that you or the doctors or your subrequests requestors have attached for your review.</p>
+        <div class="row mx-1">
+
+
+            <div class="row d-flex mt-3">
+                <div class="py-2 col-12 ">
+                    <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                        <div class="px-3 table-responsive">
+                            <input type="file" id="actual-btn" asp-for="Upload" multiple hidden />
+                            <input type="text" id="docid" name="@Model.requestId" hidden />
+                            <input type="hidden" />
+                            <label role="button" for="actual-btn" id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                        </div>
+                        <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                            <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-4">
+                <div class="h4">Download</div>
+                <div>
+                    <button class=" border border-info rounded-2 p-2 bg-transparent">
+                        <a class="text-decoration-none text-info d-flex flex-row" onclick="downloadSelectedFiles()">
+                            <i class="bi bi-cloud-arrow-down me-sm-2"></i>
+                            <span class="d-none d-sm-block">Download all</span>
+                        </a>
+                    </button>
+                    <button class=" border border-info rounded-2 p-2 bg-transparent" id="DeleteAll">
+                        <a class="text-decoration-none text-info d-flex flex-row">
+                            <i class="bi bi-trash3 me-sm-2"></i>
+                            <span class="d-none d-sm-block">Delete all</span>
+                        </a>
+                    </button>
+                    <button class=" border border-info rounded-2 p-2 bg-transparent text-info">
+                        <a class="text-decoration-none text-info d-flex flex-row">
+                            <i class="bi bi-envelope me-sm-2"></i>
+                            <span class="d-none d-sm-block">Send Mail</span>
+                        </a>
+                    </button>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table mt-2">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col"><input type="checkbox" id="alldoc" /></th>
+                            <th scope="col">First</th>
+
+                            <th scope="col">Upload Date</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var m in Model.requestwisefile)
+                        {
+                            <tr>
+                                <td><input type="checkbox" class="all" name="checkdoc" value="@m.Requestwisefileid"/></td>
+                                <td>@m.Filename</td>
+                                <td>@m.Createddate</td>
+                                <td>
+                                    <a role="button" class="text-decoration-none me-2" href="~/upload/@m.Filename" download>
+                                        <span class="p-1 text-info border rounded-2 border-info">
+                                            <i class="bi bi-cloud-arrow-down"></i>
+                                        </span>
+                                    </a>
+                                    <span class="p-1 text-info border rounded-2 border-info SingleDelete" name="@m.Requestwisefileid" >
+                                        <i class="bi bi-trash3"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        var fileName = document.getElementById('file-choosen');
+        var actualBtn = document.getElementById('actual-btn');
+        actualBtn.addEventListener('change', function () {
+
+            for (var i = 0; i < this.files.length; i++) {
+                names += this.files[i].name + ", ";
+            }
+            fileName.textContent = names;
+        })
+
+        $(document).ready(function () {
+            $('#alldoc').click(function () {
+                $('.all').prop('checked', this.checked);
+            });
+
+            $('.all').click(function () {
+                $('#alldoc').prop('checked', $('.all:checked').length === $('.all').length);
+            });
+        });
+
+        function downloadSelectedFiles() {
+
+            var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+            var fileUrls = [];
+
+            // Iterate through selected checkboxes and extract file URLs
+            selectedFiles.forEach(function (checkbox) {
+                var row = checkbox.closest('tr');
+                var fileUrl = row.querySelector('a').getAttribute('href');
+                fileUrls.push(fileUrl);
+            });
+
+            // Download each file
+            fileUrls.forEach(function (url) {
+                // Create an anchor element to trigger the download
+                var link = document.createElement('a');
+                link.href = url;
+                link.download = '';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
+        $('.uploadbtn').on('click', function () {
+            var myfile = $('#actual-btn')[0].files;
+            var formData = new FormData();
+            var reqid = $('#docid').attr('name');
+            console.log(myfile);
+            if (myfile.length > 0) {
+                for (var i = 0; i < files.length; i++) {
+                    formData.append('myfile', myfile[i]);
+                }
+            }
+            formData.append('reqid', reqid);
+           
+            $.ajax({
+                url: '/Admin/UploadDocument',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+            });
+        });
+        $('.SingleDelete').on('click', function () {
+            var reqfileid = $(this).attr('name');
+            
+            $.ajax({
+                url: '/Admin/SingleDelete',
+                data: { 'reqfileid': reqfileid , 'reqid' : @Model.requestId},
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+            });
+        });
+        $('#DeleteAll').on('click', function () {
+            var formData = new FormData();
+
+            $('input[type="checkbox"]:checked').each(function () {
+                formData.append('reqwiseid', $(this).val());
+            });
+            var reqid = $('#docid').attr('name');
+            formData.append('reqid', reqid);
+
+
+            $.ajax({
+                url: '/Admin/DeleteAll',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    </script>

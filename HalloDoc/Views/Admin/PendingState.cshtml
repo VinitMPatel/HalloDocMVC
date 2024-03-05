@@ -144,11 +144,12 @@
                                         Action
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
-                                        <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
                                         <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
+                                        <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
                                         <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                        <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Transfer</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Clear case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Send Agreement</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -257,6 +258,38 @@
             console.log(requestId);
             $.ajax({
                 url: '/Admin/ViewNotes',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewCase').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/Admin/ViewCase',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewUpload').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/Admin/ViewUploads',
                 data: { "requestId": requestId },
                 success: function (response) {
                     $('#viewCaseContent').html(response);
