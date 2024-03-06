@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info text-white">Submit</button>
+                <button id="submitBtn" type="submit" class="btn btn-info text-white" disabled>Submit</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
             </form>
@@ -72,4 +72,9 @@
             });
         });
     });
+
+    var submitBtn = document.getElementById('submitBtn');
+    submitBtn.addEventListener('click', function () {
+
+    })
 </script>

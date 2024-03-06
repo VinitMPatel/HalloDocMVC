@@ -59,7 +59,7 @@
                             <span class="d-none d-sm-block">Delete all</span>
                         </a>
                     </button>
-                    <button class=" border border-info rounded-2 p-2 bg-transparent text-info">
+                    <button class=" border border-info rounded-2 p-2 bg-transparent text-info" id="sendMail">
                         <a class="text-decoration-none text-info d-flex flex-row">
                             <i class="bi bi-envelope me-sm-2"></i>
                             <span class="d-none d-sm-block">Send Mail</span>
@@ -208,4 +208,29 @@
                 }
             });
         });
+
+    $('#sendMail').on('click', function () {
+        var formData = new FormData();
+
+        $('input[type="checkbox"]:checked').each(function () {
+            formData.append('reqwiseid', $(this).val());
+        });
+        var reqid = $('#docid').attr('name');
+        formData.append('reqid', reqid);
+
+
+        $.ajax({
+            url: '/Admin/sendMail',
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $('#home-tab-pane').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
     </script>

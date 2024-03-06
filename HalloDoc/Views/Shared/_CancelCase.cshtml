@@ -2,18 +2,19 @@
 @{
     Layout = "";
 }
-<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+<div id="status-tabContent">
+<div class="modal" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h1 class="modal-title fs-5" id="exampleModal1Label">Confirm Cancellation</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-             <input type="text" asp-for="requestId" hidden/> 
+            <input type="text" asp-for="requestId" hidden />
             <div class="modal-body">
                 Patient Name : <span class="text-info"> @Model.patietName</span>
                 <div class="form-floating">
-                        <select class="form-select mt-4 pt-2 reason" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+                    <select class="form-select mt-4 pt-2 reason" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
                         <option selected disabled>Reason for cancellation</option>
                         @foreach (var obj in Model.cancelList)
                         {
@@ -27,29 +28,48 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Confirm</button>
+                    <button type="button" class="btn btn-info text-white confirm" >Confirm</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>
 </div>
+</div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <script>
     $(document).ready(function () {
 
         $('.confirm').on('click', function (e) {
+
             var caseId = $('.reason').val();
-            var cancelNote = $('.cancelNote').val();
-            $.ajax({
-                url: '/Admin/SubmitCancel',
-                data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
-                success: function (response) {
-                    $('#status-tabContent').html(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
+            console.log(caseId);
+            if (caseId == null) {
+                $('.reason').css('border', '1px solid red');
+                //$('#exampleModal2').modal('show');
+            }
+            else {
+                var cancelNote = $('.cancelNote').val();
+                
+                const myModal = new bootstrap.Modal("#exampleModal2", {});
+                //myModal.hide();
+                document.getElementById('exampleModal2').addEventListener('shown.bs.modal', function (event) {
+                    this.myModal.hide();
+                })
+                $.ajax({
+                    url: '/Admin/SubmitCancel',
+                    data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
+                    success: function (response) {
+                        $('#status-tabContent').html(response);
+
+                        $("body").removeAttr("style");
+                        $(".modal-backdrop").remove();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
         });
     });
 </script>

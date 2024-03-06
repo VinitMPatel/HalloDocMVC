@@ -7,6 +7,8 @@ using Npgsql.Replication.PgOutput.Messages;
 using Services.Contracts;
 using Services.Implementation;
 using Services.ViewModels;
+using System.Net.Mail;
+using System.Net;
 
 namespace HalloDoc.Controllers
 {
@@ -16,11 +18,13 @@ namespace HalloDoc.Controllers
         private readonly IValidation validation;
         private readonly ICaseActions caseActions;
         private readonly HelloDocDbContext _context;
-        public AdminController(IDashboardData dashboardData , HelloDocDbContext context , ICaseActions caseActions , IValidation validation) {
+        private readonly IJwtRepository _jwtRepository;
+        public AdminController(IDashboardData dashboardData , HelloDocDbContext context , ICaseActions caseActions , IValidation validation , IJwtRepository _jwtRepository) {
             this.dashboardData = dashboardData;
             _context = context;
             this.caseActions = caseActions;
             this.validation = validation;
+            _jwtRepository = _jwtRepository;
         }
 
         public IActionResult Index()
@@ -30,8 +34,15 @@ namespace HalloDoc.Controllers
 
         public IActionResult AdminDashboard() 
         {
+            if(HttpContext.Session.GetString("AdminName") != null)
+            {
             AdminDashboard obj = dashboardData.AllData();
             return View(obj);
+            }
+            else
+            {
+                return RedirectToAction("AdminLogin");
+            }
         }
 
         public IActionResult ActiveState()
@@ -86,13 +97,13 @@ namespace HalloDoc.Controllers
                 obj.adminNote = requestnote.Adminnotes;
             }
 
-            var admin = "Vinit";
+            
             obj.requestId = requestId;
             var transferNote = _context.Requeststatuslogs.FirstOrDefault(a => a.Requestid == obj.requestId && a.Status == 2);
             if (transferNote != null)
             {
                 var physicianName = _context.Physicians.FirstOrDefault(a=>a.Physicianid == transferNote.Physicianid).Firstname;
-                obj.adminName = admin;
+                obj.adminName = HttpContext.Session.GetString("AdminName");
                 obj.physicianName = physicianName;
                 obj.assignTime = transferNote.Createddate;
             }
@@ -165,13 +176,13 @@ namespace HalloDoc.Controllers
         public IActionResult UploadDocument(List<IFormFile> myfile , int reqid)
         {
             dashboardData.UplodingDocument(myfile, reqid);
-            return PartialView("_ViewDocument", new { id = reqid });
+            return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
 
         public IActionResult SingleDelete(int reqfileid , int reqid)
         {
             dashboardData.SingleDelete(reqfileid);
-            return PartialView("_ViewDocument", reqid);
+            return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
 
         [HttpPost]
@@ -186,6 +197,7 @@ namespace HalloDoc.Controllers
 
         public IActionResult AdminLogin()
         {
+
             return View();
         }
 
@@ -219,6 +231,61 @@ namespace HalloDoc.Controllers
             HttpContext.Session.Remove("AdminId");
             HttpContext.Session.Remove("AdminName");
             return RedirectToAction("AdminLogin", "Admin");
+        }
+
+        public IActionResult SendMail(List<int> reqwiseid, int reqid)
+        {
+
+            List<string> filenames = new List<string>();
+            foreach (var item in reqwiseid)
+            {
+                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
+                filenames.Add(file);
+            }
+          
+            Sendemail("vinit2273@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
+            return PartialView("_ViewDocument", reqid);
+
+        }
+        public async Task Sendemail(string email, string subject, string message, List<string> attachmentPaths)
+        {
+            try
+            {
+                var mail = "tatva.dotnet.vinitpatel@outlook.com";
+                var password = "016@ldce";
+
+                var client = new SmtpClient("smtp.office365.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(mail, password)
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(mail),
+                    Subject = subject,
+                    Body = message,
+                    IsBodyHtml = true // Set to true if your message contains HTML
+                };
+
+                mailMessage.To.Add(email);
+
+                foreach (var attachmentPath in attachmentPaths)
+                {
+                    if (!string.IsNullOrEmpty(attachmentPath))
+                    {
+                        var attachment = new Attachment(attachmentPath);
+                        mailMessage.Attachments.Add(attachment);
+                    }
+                }
+
+                await client.SendMailAsync(mailMessage);
+                Console.WriteLine("Email sent successfully!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+            }
         }
     }
 }

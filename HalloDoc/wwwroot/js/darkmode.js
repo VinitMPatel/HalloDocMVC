@@ -31,7 +31,6 @@ function dark(){
 
 window.onload = function(){
     var array = document.cookie.split("=");
-    console.log(array);
     flag = parseInt(array[1]);
     dark()
 }

@@ -27,6 +27,8 @@ builder.Services.AddTransient<IDashboard, Dashboard>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IDashboardData, DashboardData>();
 builder.Services.AddScoped<ICaseActions, CaseActions>();
+builder.Services.AddScoped<IJwtRepository, JwtRepository>();
+builder.Services.AddScoped<IAuthorization, Authorization>();
 
 var app = builder.Build();
 
