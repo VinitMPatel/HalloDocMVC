@@ -15,10 +15,10 @@ namespace HalloDoc.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
 
-        public HomeController(ILogger<HomeController> logger, HelloDocDbContext context)
+        public HomeController(ILogger<HomeController> logger, HalloDocDbContext context)
         {
             _logger = logger;
             _context = context;

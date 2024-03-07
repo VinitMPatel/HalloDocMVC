@@ -1,0 +1,20 @@
+﻿<script>
+    Swal.fire({
+        icon: "error",
+        title: "Session Expired",
+        text: "Please Login Again",
+        showCancelButton: false,
+        confirmButtonText: "Log In",
+        backdrop: "rgb(2,0,36)",
+
+        background: "white",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false,
+        showCancelButton: false,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "https://localhost:7038/";
+        }
+    });
+</script>

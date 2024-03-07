@@ -17,9 +17,9 @@ namespace Services.Implementation
 {
     public class Validation : IValidation
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
-        public Validation(HelloDocDbContext context)
+        public Validation(HalloDocDbContext context)
         {
             _context = context;
         }

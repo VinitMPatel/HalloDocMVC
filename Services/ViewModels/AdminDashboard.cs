@@ -9,9 +9,12 @@ namespace Services.ViewModels
 {
     public class AdminDashboard
     {
+
         public List<Requestclient> requestclients { get; set; }
 
         public DateTime DOB { get; set; }
 
+
+        public int totalPages { get; set; }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Services.ViewModels
 {
-    public  class CaseDetails
+    public  class CaseActionDetails
     {
         public int requestId { get; set; }
 

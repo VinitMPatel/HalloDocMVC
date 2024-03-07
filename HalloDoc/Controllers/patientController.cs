@@ -15,13 +15,13 @@ namespace HalloDoc.Controllers
     public class patientController : Controller
     {
 
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IPatientRequest patientRequest;
         private readonly IValidation validation;
         private readonly IDashboard dashboard;
         private readonly IEmailSender emailSender;
 
-        public patientController(HelloDocDbContext context , IPatientRequest patientRequest , IValidation validation , IDashboard dashboard, IEmailSender emailSender)
+        public patientController(HalloDocDbContext context , IPatientRequest patientRequest , IValidation validation , IDashboard dashboard, IEmailSender emailSender)
         {
             _context = context;
             this.patientRequest = patientRequest;

@@ -13,9 +13,9 @@ namespace Services.Implementation
 {
     public class CaseActions : ICaseActions
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
-        public CaseActions(HelloDocDbContext context)
+        public CaseActions(HalloDocDbContext context)
         {
             _context = context;
         }
@@ -46,6 +46,14 @@ namespace Services.Implementation
             obj.patietName = name;
             return obj;
         }
+
+        public CaseActionsDetails Orders(int requestId)
+        {
+            CaseActionsDetails obj = new CaseActionsDetails();
+           
+            return obj;
+        }
+
 
         public void SubmitAssign(CaseActionsDetails obj)
         {
@@ -106,7 +114,7 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public void SubmitNotes(int requestId, string notes, CaseDetails obj)
+        public void SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
             var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             Requestnote requestnote = new Requestnote();

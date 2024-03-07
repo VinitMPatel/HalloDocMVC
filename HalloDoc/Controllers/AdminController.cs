@@ -9,35 +9,45 @@ using Services.Implementation;
 using Services.ViewModels;
 using System.Net.Mail;
 using System.Net;
+using Authorization = Services.Implementation.Authorization;
 
 namespace HalloDoc.Controllers
 {
+
+   
     public class AdminController : Controller
     {
         private readonly IDashboardData dashboardData;
         private readonly IValidation validation;
         private readonly ICaseActions caseActions;
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IJwtRepository _jwtRepository;
-        public AdminController(IDashboardData dashboardData , HelloDocDbContext context , ICaseActions caseActions , IValidation validation , IJwtRepository _jwtRepository) {
+        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
+
+        public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        {
             this.dashboardData = dashboardData;
             _context = context;
             this.caseActions = caseActions;
             this.validation = validation;
-            _jwtRepository = _jwtRepository;
+            _jwtRepository = jwtRepository;
+            _env = env;
         }
+
 
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult AdminDashboard() 
+
+        [Authorization("1")]
+        public IActionResult AdminDashboard()
         {
-            if(HttpContext.Session.GetString("AdminName") != null)
+            if (HttpContext.Session.GetString("AdminName") != null)
             {
-            AdminDashboard obj = dashboardData.AllData();
-            return View(obj);
+                AdminDashboard obj = dashboardData.AllData();
+                return View(obj);
             }
             else
             {
@@ -45,64 +55,77 @@ namespace HalloDoc.Controllers
             }
         }
 
+
+        public IActionResult Error()
+        {
+            return View();
+        }
+
+        [Authorization("1")]
         public IActionResult ActiveState()
         {
             AdminDashboard data = dashboardData.ActiveStateData();
             return View(data);
         }
 
+        [Authorization("1")]
         public IActionResult ConcludeState()
         {
             AdminDashboard data = dashboardData.ConcludeStateData();
             return View(data);
         }
 
-        public IActionResult NewState(String status , String requesttype)
+        [Authorization("1")]
+        public IActionResult NewState(String status, String requesttype, int currentPage)
         {
-                AdminDashboard data = dashboardData.NewStateData(status,requesttype);
-                return View(data);
-        }
-
-        public IActionResult PendingState()
-        {
-            AdminDashboard data = dashboardData.PendingStateData();
+            AdminDashboard data = dashboardData.NewStateData(status, requesttype, currentPage);
             return View(data);
         }
 
+        [Authorization("1")]
+        public IActionResult PendingState(int currentPage)
+        {
+            AdminDashboard data = dashboardData.PendingStateData(currentPage);
+            return View(data);
+        }
+
+        [Authorization("1")]
         public IActionResult ToCloseState()
         {
             AdminDashboard data = dashboardData.ToCloseStateData();
             return View(data);
         }
 
+        [Authorization("1")]
         public IActionResult UnpaidState()
         {
             AdminDashboard data = dashboardData.UnpaidStateData();
             return View(data);
         }
 
+    
         public IActionResult ViewCase(int requestId)
         {
-            CaseDetails obj = dashboardData.ViewCaseData(requestId);
-            return PartialView("_ViewCase" , obj);
+            CaseActionDetails obj = dashboardData.ViewCaseData(requestId);
+            return PartialView("_ViewCase", obj);
         }
 
         public IActionResult ViewNotes(int requestId)
         {
-            var requestData = _context.Requests.FirstOrDefault(a=>a.Requestid == requestId);
-            var requestnote = _context.Requestnotes.FirstOrDefault(a=> a.Requestid == requestId);
-            CaseDetails obj = new CaseDetails();
+            var requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            var requestnote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
+            CaseActionDetails obj = new CaseActionDetails();
             if (requestnote != null)
             {
                 obj.adminNote = requestnote.Adminnotes;
             }
 
-            
+
             obj.requestId = requestId;
             var transferNote = _context.Requeststatuslogs.FirstOrDefault(a => a.Requestid == obj.requestId && a.Status == 2);
             if (transferNote != null)
             {
-                var physicianName = _context.Physicians.FirstOrDefault(a=>a.Physicianid == transferNote.Physicianid).Firstname;
+                var physicianName = _context.Physicians.FirstOrDefault(a => a.Physicianid == transferNote.Physicianid).Firstname;
                 obj.adminName = HttpContext.Session.GetString("AdminName");
                 obj.physicianName = physicianName;
                 obj.assignTime = transferNote.Createddate;
@@ -111,20 +134,19 @@ namespace HalloDoc.Controllers
             //bol jaldi bol ungh aave he
 
             //CaseDetails obj = dashboardData.ViewCaseData(requestId);
-            return PartialView("_ViewNotes",obj);
+            return PartialView("_ViewNotes", obj);
         }
 
         public List<Physician> FilterData(int regionid)
         {
-            List<Physician> physicianList= dashboardData.PhysicianList(regionid);
+            List<Physician> physicianList = dashboardData.PhysicianList(regionid);
             return physicianList;
         }
 
         public IActionResult AssignCase(int requestId)
         {
-
-            CaseActionsDetails obj =  caseActions.AssignCase(requestId);
-            return PartialView("_AssignCase",obj);
+            CaseActionsDetails obj = caseActions.AssignCase(requestId);
+            return PartialView("_AssignCase", obj);
         }
         public IActionResult SubmitAssign(CaseActionsDetails obj)
         {
@@ -139,10 +161,10 @@ namespace HalloDoc.Controllers
             return PartialView("_CancelCase", obj);
         }
 
-        public IActionResult SubmitCancel(int requestId , int caseId , string cancelNote)
+        public IActionResult SubmitCancel(int requestId, int caseId, string cancelNote)
         {
-            
-            caseActions.SubmitCancel(requestId , caseId , cancelNote);
+
+            caseActions.SubmitCancel(requestId, caseId, cancelNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -160,26 +182,26 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-        public IActionResult SubmitNotes(int requestId, string notes , CaseDetails obj)
+        public IActionResult SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
-            caseActions.SubmitNotes(requestId, notes , obj);
+            caseActions.SubmitNotes(requestId, notes, obj);
             return RedirectToAction("AdminDashboard");
         }
 
 
         public IActionResult ViewUploads(int requestId)
         {
-            CaseDetails obj = dashboardData.ViewUploads(requestId);
+            CaseActionDetails obj = dashboardData.ViewUploads(requestId);
             return PartialView("_ViewUploads", obj);
         }
 
-        public IActionResult UploadDocument(List<IFormFile> myfile , int reqid)
+        public IActionResult UploadDocument(List<IFormFile> myfile, int reqid)
         {
             dashboardData.UplodingDocument(myfile, reqid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
 
-        public IActionResult SingleDelete(int reqfileid , int reqid)
+        public IActionResult SingleDelete(int reqfileid, int reqid)
         {
             dashboardData.SingleDelete(reqfileid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
@@ -192,14 +214,22 @@ namespace HalloDoc.Controllers
             {
                 dashboardData.SingleDelete(obj);
             }
-            return RedirectToAction("ViewUploads" , new {requestId = reqid});
+            return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
+
+        public IActionResult Orders(int requestId)
+        {
+            //CaseActionsDetails obj = caseActions.Orders(requestId);
+            return PartialView("_Orders");
+        }
+
 
         public IActionResult AdminLogin()
         {
 
             return View();
         }
+
 
         public IActionResult AdminValidate(Aspnetuser obj)
         {
@@ -210,11 +240,18 @@ namespace HalloDoc.Controllers
                 TempData["Password"] = result.passwordError;
                 var check = _context.Aspnetusers.Where(u => u.Email == obj.Email).FirstOrDefault();
                 var admindata = _context.Admins.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                HttpContext.Session.SetString("AdminName", admindata.Firstname);
+                var userRole = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == check.Id);
+                LoggedInPersonViewModel loggedInPerson = new LoggedInPersonViewModel();
+                loggedInPerson.role = userRole.Roleid;
+                loggedInPerson.aspuserid = check.Id;
+                loggedInPerson.username = check.Username;
+
+                Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
                 if (result.Status == ResponseStautsEnum.Success)
                 {
+                    HttpContext.Session.SetString("AdminName", admindata.Firstname);
                     TempData["success"] = "Login successfully";
-                    HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
+                    //HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
                     return RedirectToAction("AdminDashboard", "Admin");
                 }
                 TempData["error"] = "Incorrect Email or password";
@@ -230,6 +267,7 @@ namespace HalloDoc.Controllers
         {
             HttpContext.Session.Remove("AdminId");
             HttpContext.Session.Remove("AdminName");
+            Response.Cookies.Delete("jwt");
             return RedirectToAction("AdminLogin", "Admin");
         }
 
@@ -242,7 +280,7 @@ namespace HalloDoc.Controllers
                 var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
                 filenames.Add(file);
             }
-          
+
             Sendemail("vinit2273@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
             return PartialView("_ViewDocument", reqid);
 
@@ -272,15 +310,15 @@ namespace HalloDoc.Controllers
 
                 foreach (var attachmentPath in attachmentPaths)
                 {
-                    if (!string.IsNullOrEmpty(attachmentPath))
+                    string path = "C:\\Users\\pca14\\source\\repos\\HalloDoc\\HalloDoc\\wwwroot\\upload\\" + attachmentPath;
+                    if (!string.IsNullOrEmpty(path))
                     {
-                        var attachment = new Attachment(attachmentPath);
+                        var attachment = new Attachment(path);
                         mailMessage.Attachments.Add(attachment);
                     }
                 }
 
                 await client.SendMailAsync(mailMessage);
-                Console.WriteLine("Email sent successfully!");
             }
             catch (Exception ex)
             {

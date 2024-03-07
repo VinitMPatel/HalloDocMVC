@@ -12,9 +12,9 @@ namespace Services.Implementation
 {
     public class ConciergeRequest : IConciergeRequest
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
-        public ConciergeRequest(HelloDocDbContext context)
+        public ConciergeRequest(HalloDocDbContext context)
         {
             _context = context;
         }

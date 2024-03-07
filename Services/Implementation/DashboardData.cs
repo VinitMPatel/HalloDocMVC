@@ -19,10 +19,10 @@ namespace Services.Implementation
     public class DashboardData : IDashboardData
     {
 
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
 
-        public DashboardData(HelloDocDbContext context , IHostingEnvironment env)
+        public DashboardData(HalloDocDbContext context , IHostingEnvironment env)
         {
             _context = context;
             _env = env;
@@ -37,14 +37,16 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AdminDashboard NewStateData(String status , String requesttype)
+        public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage)
         {
 
             if (status == null && requesttype == null)
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
+                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
                 AdminDashboard obj = new AdminDashboard();
                 obj.requestclients = reqc;
+                obj.totalPages = reqc.Count();
+                List<Requestclient> newData = reqc.Skip(currnetPage - 1).Take(3).ToList();
                 return obj;
             }
             else
@@ -56,17 +58,19 @@ namespace Services.Implementation
             }
         }
 
-        public AdminDashboard PendingStateData()
+        public AdminDashboard PendingStateData(int currentPage)
         {
             List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
             AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
+            obj.totalPages = reqc.Count();
+            List<Requestclient> newData = reqc.Skip((currentPage - 1)*3).Take(3).ToList();
+            obj.requestclients = newData;
             return obj;
         }
 
         public AdminDashboard ActiveStateData()
         {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 4 ||  a.Request.Status == 5).ToList();
+            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 4 ||  a.Request.Status == 5).ToList();
             AdminDashboard obj = new AdminDashboard();
             obj.requestclients = reqc;
             return obj;
@@ -96,12 +100,12 @@ namespace Services.Implementation
             return obj;
         }
 
-        public CaseDetails ViewCaseData(int requestId) {
+        public CaseActionDetails ViewCaseData(int requestId) {
                 var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
                 var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
                 var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
                 var regionList = _context.Regions.ToList();
-                var data = new CaseDetails
+                var data = new CaseActionDetails
                 {
                     //ConfirmationNumber = request.Confirmationnumber,
                     requestId = requestId,
@@ -125,9 +129,9 @@ namespace Services.Implementation
             return physicianList;
         }
 
-        public CaseDetails ViewUploads(int requestId)
+        public CaseActionDetails ViewUploads(int requestId)
         {
-            CaseDetails obj = new CaseDetails();
+            CaseActionDetails obj = new CaseActionDetails();
             //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
             List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m ).ToList();
             var patientName = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;

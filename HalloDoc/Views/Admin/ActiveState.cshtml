@@ -88,7 +88,8 @@
                     <th> </th>
                     <th>Date of birth</th>
                     <th>Requestor</th>
-                    <th>Requested date</th>
+                    <th>Pyysician Name</th>
+                    <th>Date of Service</th>
                     <th>Phone</th>
                     <th>Address</th>
                     <th>Notes</th>
@@ -126,6 +127,7 @@
                         <td class="text-white"><i class="bi bi-envelope"></i></td>
                         <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
                         <td class="text-white"> @type , @obj.Firstname</td>
+                        <td class="text-white">@obj.Request.Physician.Firstname</td>
                         <td class="text-white">@obj.Request.Createddate</td>
                         <td class="text-white">
                             <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
@@ -142,11 +144,12 @@
                                         Action
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
-                                        <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
-                                        <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
                                         <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                        <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                        <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
+                                        <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                        <li class="orders" id="@obj.Request.Requestid" style="cursor : pointer" onclick="Orders(@obj.Request.Requestid)"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Orders</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Doctor Note</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Encounter</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -245,3 +248,39 @@
         </div>
     </div>
 </div>
+<script>
+    function Orders(requestId){
+        console.log("Working");
+        $.ajax({
+            url: "/Admin/Orders/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+    // $(document).ready(function () {
+
+    //     $('.orders').on('click', function (e) {
+    //         e.preventDefault();
+    //         var requestId = $(this).attr('id');
+    //         console.log(requestId);
+    //         $.ajax({
+    //             url: '/Admin/Orders',
+    //             data: { "requestId": requestId },
+    //             success: function (response) {
+    //                 $('#viewCaseContent').html(response);
+    //             },
+    //             error: function (xhr, status, error) {
+    //                 console.error(error);
+    //             }
+    //         });
+    //     });
+
+    // });
+</script>

@@ -15,9 +15,9 @@ namespace HalloDoc.Controllers
         private readonly IFamilyRequest familyRequest;
         private readonly IConciergeRequest conciergeRequest;
         private readonly IBusinessRequest businessRequest;
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
-        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest , HelloDocDbContext context)
+        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest , HalloDocDbContext context)
         {
             this.familyRequest = familyRequest;
             this.conciergeRequest = conciergeRequest;

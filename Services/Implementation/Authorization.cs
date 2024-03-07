@@ -24,7 +24,7 @@ namespace Services.Implementation
             var jwtservice = context.HttpContext.RequestServices.GetService<IJwtRepository>();
             if (jwtservice == null)
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Home", action = "AdminLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "Error" }));
                 return;
             }
 
@@ -33,7 +33,7 @@ namespace Services.Implementation
 
             if (token == null || !jwtservice.ValidateToken(token, out JwtSecurityToken jwttoken))
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Home", action = "AdminLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
                 return;
             }
 
@@ -41,13 +41,13 @@ namespace Services.Implementation
 
             if (roleClaim == null)
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Home", action = "AdminLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
                 return;
             }
 
             if (string.IsNullOrEmpty(_role) || roleClaim.Value != _role)
             {
-                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Home", action = "AdminLogin" }));
+                context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));
             }
         }
     }

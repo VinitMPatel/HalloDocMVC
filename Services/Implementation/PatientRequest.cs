@@ -18,10 +18,10 @@ namespace Services.Implementation
     public class PatientRequest : IPatientRequest
     {
 
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
 
-        public PatientRequest(HelloDocDbContext context, IHostingEnvironment env)
+        public PatientRequest(HalloDocDbContext context, IHostingEnvironment env)
         {
             _context = context;
             _env = env;

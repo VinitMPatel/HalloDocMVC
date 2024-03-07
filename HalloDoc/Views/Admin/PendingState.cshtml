@@ -158,7 +158,21 @@
                 }
             </tbody>
         </table>
+        <div class="d-none d-md-flex justify-content-center gap-3">
+            @if(Model.totalPages > 0)
+            {
+                
+            @for (int page = 0; page <= Model.totalPages / 3; page++)
+            {
+                var temp = page + 1;
 
+                <button class="@temp" onclick="ChangePage(@temp)">
+                    @temp
+                </button>
+
+            }
+            }
+        </div>
         <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
             <div class="accordion-item">
@@ -249,6 +263,22 @@
     </div>
 </div>
 <script>
+    function ChangePage(Page) {
+        var currentPage = Page;
+        console.log("Fun working");
+        $.ajax({
+            url: "/Admin/PendingState/",
+            data: { "currentPage": currentPage },
+            type: "POST",
+            dataType: "html",
+            success: function (response) {
+                $('#status-tabContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
     $(document).ready(function () {
 
      

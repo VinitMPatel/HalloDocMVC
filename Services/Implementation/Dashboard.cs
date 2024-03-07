@@ -18,9 +18,9 @@ namespace Services.Implementation
 {
     public class Dashboard : IDashboard
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
-        public Dashboard(HelloDocDbContext context , IHostingEnvironment env)
+        public Dashboard(HalloDocDbContext context , IHostingEnvironment env)
         {
             _context = context;
             _env = env;

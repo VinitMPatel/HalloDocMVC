@@ -6,9 +6,9 @@ namespace Services.Contracts
 {
     public interface IDashboardData
     {
-        AdminDashboard NewStateData(String a , String b);
+        AdminDashboard NewStateData(String a , String b , int p);
 
-        AdminDashboard PendingStateData();
+        AdminDashboard PendingStateData(int p);
 
         AdminDashboard ActiveStateData();
 
@@ -20,11 +20,11 @@ namespace Services.Contracts
 
         AdminDashboard AllData();
 
-        CaseDetails ViewCaseData(int requestId);
+        CaseActionDetails ViewCaseData(int requestId);
 
         List<Physician> PhysicianList(int regionid);
 
-        CaseDetails ViewUploads(int requestId);
+        CaseActionDetails ViewUploads(int requestId);
         void UplodingDocument(List<IFormFile> myfile, int reqid);
         void uploadFile(List<IFormFile> upload, int id);
         void SingleDelete(int reqfileid);

@@ -16,10 +16,10 @@ namespace Services.Implementation
 {
     public class FamilyRequest : IFamilyRequest
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
 
-        public FamilyRequest(HelloDocDbContext context , IHostingEnvironment env)
+        public FamilyRequest(HalloDocDbContext context , IHostingEnvironment env)
         {
             _context = context;
             _env = env;

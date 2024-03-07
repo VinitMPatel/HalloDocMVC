@@ -168,7 +168,18 @@
                 }
             </tbody>
         </table>
-
+        <div class="d-none d-md-flex justify-content-center gap-3">
+            @if(Model.totalPages > 0)
+            {
+            @for(int page=0; page <= Model.totalPages/3 ; page++)
+            {
+            var temp = page+1;
+            <button class="@temp" onclick="ChangePage(@temp)">
+                @temp
+            </button>
+            }
+            }
+        </div>
         <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
 
             <div class="accordion-item">
@@ -263,6 +274,26 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
+
+    function ChangePage(Page) {
+        var currentPage = Page;
+        conole.log("Fun working");
+        $.ajax({
+            url: "/Admin/NewState/",
+            data: { "currentPage" : currentPage },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal1", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        }); 
+    }
 
     function AssignCase(requestId) {
         $.ajax({

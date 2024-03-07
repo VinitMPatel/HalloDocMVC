@@ -16,7 +16,7 @@ builder.Services.AddSession(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<HelloDocDbContext>();
+builder.Services.AddDbContext<HalloDocDbContext>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<IValidation, Validation>();
 builder.Services.AddTransient<IPatientRequest, PatientRequest>();

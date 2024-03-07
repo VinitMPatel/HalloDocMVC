@@ -12,9 +12,9 @@ namespace Services.Implementation
 {
     public class BusinessRequest : IBusinessRequest
     {
-        private readonly HelloDocDbContext _context;
+        private readonly HalloDocDbContext _context;
 
-        public BusinessRequest(HelloDocDbContext context)
+        public BusinessRequest(HalloDocDbContext context)
         {
             _context = context;
         }

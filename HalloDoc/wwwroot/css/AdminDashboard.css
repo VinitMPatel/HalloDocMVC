@@ -176,6 +176,16 @@ input#phone {
 .accordion-button{
     z-index : 0 !important;
 }
+.page-active {
+    border-radius: 50%;
+    background: #17a2b8;
+    color: white;
+}
+
+    .page-active:hover {
+        color: white;
+    }
+
 @media only screen and (max-width:1050px) {
     .allstatus {
         width: 33.3% !important;
