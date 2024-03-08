@@ -55,22 +55,22 @@ namespace Services.Implementation
         }
 
 
-        public void SubmitAssign(CaseActionsDetails obj)
+        public void SubmitAssign(int requestId, int physicianId, string assignNote)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == obj.requestId).FirstOrDefault();
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
             requestData.Status = 2;
-            requestData.Physicianid = obj.physicianId;
+            requestData.Physicianid = physicianId;
             _context.Requests.Update(requestData);
 
             Requeststatuslog requeststatuslog = new Requeststatuslog
             {
-                Requestid = obj.requestId,
+                Requestid = requestId,
                 Status = 2,
-                Physicianid = obj.physicianId,
-                Notes = obj.assignNotes,
+                Physicianid = physicianId,
+                Notes = assignNote,
                 Createddate = DateTime.Now,
-                Transtophysicianid = obj.physicianId
+                Transtophysicianid = physicianId
             };
             _context.Add(requeststatuslog);
             _context.SaveChanges();
@@ -124,6 +124,24 @@ namespace Services.Implementation
             requestnote.Adminnotes = notes;
             requestnote.Createdby = "1";
             _context.Requestnotes.Add(requestnote);
+            _context.SaveChanges();
+        }
+
+        public void SubmitOrder(Orders obj)
+        {
+            Orderdetail orderdetail = new Orderdetail
+            {
+                Vendorid = obj.vendorid,
+                Requestid = obj.requestId,
+                Faxnumber = obj.Fax,
+                Email = obj.Email,
+                Businesscontact = obj.Contact,
+                Prescription = obj.prescription,
+                Noofrefill = obj.refil,
+                Createddate = DateTime.Now,
+                Createdby = obj.createdby
+            };
+            _context.Orderdetails.Add(orderdetail);
             _context.SaveChanges();
         }
     }

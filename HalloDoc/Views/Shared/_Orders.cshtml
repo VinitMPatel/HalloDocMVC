@@ -6,7 +6,7 @@
 @{
     Layout = "";
 }
-@model Services.ViewModels.CaseActionDetails
+@model Services.ViewModels.Orders
 
 <div class="container mt-3">
 
@@ -19,38 +19,38 @@
         </div>
     </div>
 
+        <form asp-action="SubmitOrder" asp-controller="Admin">
     <div class="border rounded-3 p-3 mt-4 bg-transparent row" id="main-content">
-
         <div class="form-floating col-sm-6 col-12 mt-3">
-            <select class="form-select p-2"  aria-label="Floating label select example">
+            <select class="form-select p-2 professions"  aria-label="Floating label select example" asp-for="professionid">
                 <option value="" selected disabled>Select Profession</option>
             </select>
         </div>
 
         <div class="form-floating  col-sm-6 col-12 mt-3">
-            @* <input type="number" asp-for="requestId" hidden /> *@
-            <select class="form-select p-2"  aria-label="Floating label select example">
+            <input type="number" asp-for="requestId" hidden />
+            <select class="form-select p-2 businesses"  aria-label="Floating label select example" asp-for="vendorid">
                 <option value="" selected disabled>Select Business</option>
             </select>
         </div>
                
         <div class="p-2 col-sm-6 col-12 mt-3">
             <div class="form-floating ">
-                <input type="text" class="form-control" placeholder="Business Contact">
+                <input type="text" class="form-control" placeholder="Business Contact" name="contact" asp-for="Contact">
                 <label class="FloatingInput">Business Contact</label>
             </div>
         </div>
 
         <div class="p-2 col-sm-6 col-12 mt-3">
             <div class="form-floating ">
-                <input type="email" class="form-control" placeholder="Business Contact">
+                <input type="email" class="form-control" placeholder="Business Contact" name="email" asp-for="Email">
                 <label class="FloatingInput">Email</label>
             </div>
         </div>
 
         <div class="p-2 col-sm-6 col-12">
             <div class="form-floating ">
-                <input type="text" class="form-control" placeholder="Fax Number">
+                <input type="text" class="form-control" placeholder="Fax Number" name="fax" asp-for="Fax">
                 <label class="FloatingInput" for="Name">Fax Number</label>
             </div>
         </div>
@@ -59,21 +59,99 @@
               <div class="form-floating">
                    <textarea class="form-control" id="floatingTextarea2"
                                   placeholder="Patient Notes"
-                                  style="height: 100px" asp-for="PatientNotes"></textarea>
+                                  style="height: 100px" asp-for="prescription"></textarea>
                    <label for="floatingTextarea2">Patient Notes</label>
               </div>
          </div>
 
         <div class="form-floating col-sm-6 col-12">
-            <select class="form-select p-2" id="floatingSelect" aria-label="Floating label select example">
+            <select class="form-select p-2" id="floatingSelect" aria-label="Floating label select example" asp-for="refil">
                 <option value="" selected disabled>Not Required</option>
+                    <option value="1" >1</option>
+                    <option value="2" >2</option>
+                    <option value="3" >3</option>
             </select>
         </div>
 
         <div class="d-flex justify-content-end mt-4">
-                <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" style="cursor : pointer">Submit</div>
+             <button type="submit" class="ms-3 bg-info p-2 rounded border-0 px-3 text-white submit" style="cursor : pointer">Submit</button>
                 <div class="ms-3 p-2 rounded border border-info px-3 text-info" style="cursor : pointer">Cancel</div>
         </div>
-       
     </div>
+        </form>
 </div>
+<script>
+    $(document).ready(function () {
+        var professions = $('.professions');
+        $.ajax({
+            url: '/Admin/GetProfessions',
+            success: function (response) {
+                professions.empty();
+                professions.append($('<option>', {
+                    value: "",
+                    text: "Select Profession"
+                }))
+                response.forEach(function (item) {
+                    professions.append(
+                        $('<option>', {
+                            value: item.healthprofessionalid,
+                            text: item.professionname
+                        }));
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        
+        $('.professions').on('change', function () {
+            var businesses = $('.businesses');
+            var professionId = $(this).val();
+            $.ajax({
+                url: '/Admin/GetBusinesses',
+                data: { "professionId": professionId },
+                success: function (response) {
+                    $('input[name="email"]').val("");
+                    $('input[name="contact"]').val("");
+                    $('input[name="fax"]').val("");
+                    businesses.empty();
+                    businesses.append($('<option>', {
+                        value: "",
+                        text: "Select Businesses"
+                    }))
+                    response.forEach(function (item) {
+                        businesses.append(
+                            $('<option>', {
+                                value: item.vendorid,
+                                text: item.vendorname
+                            }));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.businesses').on('change', function () {
+            console.log("Fun working")
+            var email = $('input[name="email"]').val("");
+            var contact = $('input[name="contact"]').val("");
+            var fax = $('input[name="fax"]').val("");
+            var businessid = $(this).val();
+            $.ajax({
+                url: '/Admin/GetBusinessesDetails',
+                data: { "businessid": businessid },
+                success: function (response) {
+                   console.log(response);
+                    email.val(response.email);
+                    contact.val(response.businesscontact)
+                    fax.val(response.faxnumber)
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

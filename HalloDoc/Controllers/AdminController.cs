@@ -148,9 +148,9 @@ namespace HalloDoc.Controllers
             CaseActionsDetails obj = caseActions.AssignCase(requestId);
             return PartialView("_AssignCase", obj);
         }
-        public IActionResult SubmitAssign(CaseActionsDetails obj)
+        public IActionResult SubmitAssign(int requestId, int physicianId, string assignNote)
         {
-            caseActions.SubmitAssign(obj);
+            caseActions.SubmitAssign(requestId, physicianId, assignNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -163,7 +163,6 @@ namespace HalloDoc.Controllers
 
         public IActionResult SubmitCancel(int requestId, int caseId, string cancelNote)
         {
-
             caseActions.SubmitCancel(requestId, caseId, cancelNote);
             return RedirectToAction("AdminDashboard");
         }
@@ -219,10 +218,15 @@ namespace HalloDoc.Controllers
 
         public IActionResult Orders(int requestId)
         {
-            //CaseActionsDetails obj = caseActions.Orders(requestId);
-            return PartialView("_Orders");
+            Orders obj = new Orders();
+            obj.requestId = requestId;
+            return PartialView("_Orders",obj);
         }
 
+        public List<Healthprofessionaltype> GetProfessions()
+        {
+            return _context.Healthprofessionaltypes.ToList();
+        }
 
         public IActionResult AdminLogin()
         {
@@ -230,6 +234,23 @@ namespace HalloDoc.Controllers
             return View();
         }
 
+        public List<Healthprofessional> GetBusinesses(int professionId)
+        {
+            return _context.Healthprofessionals.Where(u=>u.Profession ==  professionId).ToList();
+        }
+
+        public Healthprofessional GetBusinessesDetails(int businessid)
+        {
+            return  _context.Healthprofessionals.Where(u => u.Vendorid ==  businessid).FirstOrDefault(); 
+        }
+
+
+        public IActionResult SubmitOrder(Orders obj)
+        {
+            obj.createdby = HttpContext.Session.GetString("AdminName");
+            caseActions.SubmitOrder(obj);
+            return RedirectToAction("AdminDashboard");
+        }
 
         public IActionResult AdminValidate(Aspnetuser obj)
         {

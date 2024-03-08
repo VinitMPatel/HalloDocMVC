@@ -22,6 +22,7 @@
                         }
                     </select>
                 </div>
+                <span id="warning" class="text-danger"></span>
                 <div class="form-floating mt-4">
                     <textarea class="form-control cancelNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
                     <label for="floatingTextarea">Description</label>
@@ -40,30 +41,29 @@
 <script>
     $(document).ready(function () {
 
-        $('.confirm').on('click', function (e) {
+        $('.reason').on('change', function () {
+            $('.reason').css('border', '2px groove #e6eefa');
+            $('#warning').html('');
+        });
 
+        $('.confirm').on('click', function (e) {
             var caseId = $('.reason').val();
             console.log(caseId);
             if (caseId == null) {
                 $('.reason').css('border', '1px solid red');
+                $('#warning').html('*Please select reason');
                 //$('#exampleModal2').modal('show');
             }
             else {
                 var cancelNote = $('.cancelNote').val();
-                
-                const myModal = new bootstrap.Modal("#exampleModal2", {});
-                //myModal.hide();
-                document.getElementById('exampleModal2').addEventListener('shown.bs.modal', function (event) {
-                    this.myModal.hide();
-                })
                 $.ajax({
                     url: '/Admin/SubmitCancel',
                     data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
                     success: function (response) {
                         $('#status-tabContent').html(response);
-
                         $("body").removeAttr("style");
                         $(".modal-backdrop").remove();
+                        window.location.reload();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

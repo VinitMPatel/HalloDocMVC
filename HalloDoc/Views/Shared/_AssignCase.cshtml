@@ -7,9 +7,10 @@
                 <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form asp-action="SubmitAssign" asp-controller="Admin">
+            
             <div class="modal-body">
                 To assign this request, search and select another Physician.
+
                 <div class="form-floating">
                     <input type="number" asp-for="requestId" hidden/>
                     <select class="form-select regionData" id="floatingSelect" aria-label="Floating label select example">
@@ -22,19 +23,30 @@
                     <label for="floatingSelect" class="text-info">
                         Narrow Search by Region
                     </label>
+                        <span id="regionwarning" class="text-danger"> </span>
                 </div>
-                <select id="physelect" asp-for=physicianId class="form-select mt-4" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
+
+
+                <select id="physelect" class="form-select mt-4 physician" id="floatingSelect" aria-label="Floating label select example" style="height:58px">
                 </select>
+                <span id="warning" class="text-danger"></span>
+
                 <div class="form-floating mt-4">
-                    <textarea class="form-control" asp-for=assignNotes placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <textarea class="form-control assignNotes" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
                     <label for="floatingTextarea">Description</label>
                 </div>
+
+
             </div>
+
+
             <div class="modal-footer">
-                    <button id="submitBtn" type="submit" class="btn btn-info text-white" data-bs-dismiss="modal">Submit</button>
+                    <button id="submitBtn" type="submit" class="btn btn-info text-white confirm">Submit</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
-            </form>
+
+
+            
         </div>
     </div>
 </div>
@@ -53,7 +65,7 @@
                     var physelect = $('#physelect');
                     physelect.empty();
                     physelect.append($('<option>', {
-                        value: "",
+                        value : "",
                         text: "Select Physician"
                     }))
                     response.forEach(function (item) {
@@ -73,8 +85,34 @@
         });
     });
 
-    var submitBtn = document.getElementById('submitBtn');
-    submitBtn.addEventListener('click', function () {
+    $('.physician').on('change', function () {
+        $('.physician').css('border', '2px groove #e6eefa');
+        $('#warning').html('');
+    });
 
-    })
+    $('.confirm').on('click', function (e) {
+        var physicianId = $('.physician').val();
+        console.log(physicianId)
+        if (physicianId == null || physicianId == "") {
+            $('.physician').css('border', '1px solid red');
+            $('#warning').html('*Please select physician');
+            //$('#exampleModal2').modal('show');
+        }
+        else {
+            var assignNote = $('.assignNotes').val();
+            $.ajax({
+                url: '/Admin/SubmitAssign',
+                data: { "requestId": @Model.requestId, "physicianId": physicianId, "assignNote": assignNote },
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                    $("body").removeAttr("style");
+                    $(".modal-backdrop").remove();
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+    });
 </script>

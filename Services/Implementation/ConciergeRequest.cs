@@ -62,6 +62,7 @@ namespace Services.Implementation
                     Firstname = r.FirstName,
                     Lastname = r.LastName,
                     Phonenumber = r.Mnumber,
+                    Street = r.Street,
                     Address = r.Street + ", " + r.City + ", " + r.State,
                     Regionid = 1,
                     Notes = r.Symptoms,
