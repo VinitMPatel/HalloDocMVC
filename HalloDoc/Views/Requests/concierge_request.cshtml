@@ -1,4 +1,4 @@
-﻿@model HalloDoc.ViewModels.ConciergeRequestData;
+﻿@model Services.ViewModels.ConciergeRequestData;
 
 @{
     Layout = "_Requests";
@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input id="phone" class="form-control" asp-for="Mnumber" type="tel" name="phone" />
+                    <input type="text"  id="phone" class="form-control" asp-for="Mnumber" name="phone" maxlength="10" />
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
@@ -110,7 +110,7 @@
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input id="phone1" class="form-control" asp-for=PatientMobileNumber type="tel" name="phone1" />
+                    <input type="text" id="phone1" class="form-control" asp-for=PatientMobileNumber  name="phone1" maxlength="10"/>
                 </div>
 
             </div>
@@ -127,7 +127,7 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <button class="bg-info p-2 rounded border-0 px-3 text-white">Submit</button>
+                <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white">Submit</button>
                 <button class="ms-3 p-2 rounded border-info bg-white text-info px-3">Cancel</button>
             </div>
             </form>

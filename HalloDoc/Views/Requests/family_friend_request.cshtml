@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_Requests";
 }
-@model HalloDoc.ViewModels.FamilyFriendRequest;
+@model Services.ViewModels.FamilyFriendRequest;
 
     <div class="container mt-3">
         <div class="d-flex justify-content-between">
@@ -16,7 +16,7 @@
         </div>
 
         <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
-            <form asp-action="FamilyInsert" asp-controller="Requests" method="post">
+        <form asp-action="FamilyInsert" asp-controller="Requests" method="post" enctype="multipart/form-data">
             <div class="relative-info row mt-3">
 
                 <div class="h4">Family/friend Information</div>
@@ -92,10 +92,15 @@
                     <span asp-validation-for="PatientEmail" class="text-danger"></span>
                 </div>
 
-                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                @* <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <!-- <input type="tel" class="form-control" id="floatingInput" placeholder="name@example.com">
                     <label for="floatingInput" style="left: 5px;">Mobile number</label> -->
                     <input id="phone" class="form-control" asp-for="PatientMobileNumber" type="tel" name="phone" />
+                    <span asp-validation-for="PatientMobileNumber" class="text-danger"></span>
+                </div> *@
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" required>
+                    <input id="phone" asp-for="PatientMobileNumber" class="form-control" type="text" maxlength="10" />
                     <span asp-validation-for="PatientMobileNumber" class="text-danger"></span>
                 </div>
 
@@ -138,25 +143,36 @@
 
                 <div class="h4">(Optional) Upload photo or Document</div>
 
-                <div class="row">
-                    <div class="d-flex justify-content-between mt-2 border rounded col-12 ml-3 pe-0 bg-body-secondary">
-                        <div class="mt-2">
-                            @*  <label id="filename">No item selected</label> *@
-                            <input type="text" id="filename" placeholder="No item selected" class="border border-0 bg-body-secondary" />
+@*                 <div class="row d-flex mt-3">
+                    <div class="py-2 col-12 ">
+                        <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                            <div class="px-3 table-responsive">
+                                <input type="file" id="upload" asp-for="Upload" multiple hidden />
+                                <label id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                            </div>
+                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                                <label for="upload" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                            </div>
                         </div>
-                        <div class="bg-info p-2 rounded">
-                            <input type="file" id="upload" asp-for="Upload" hidden multiple>
-                            <label for="upload">
-                                <i class="bi bi-cloud-arrow-up text-white"></i>
-                                <span class="text-white">Upload</span>
-                            </label>
-                        </div>
+                    </div>
+                </div> *@
 
+                <div class="row d-flex mt-3">
+                    <div class="py-2 col-12 ">
+                        <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                            <div class="px-3 table-responsive">
+                                <input type="file" id="upload" asp-for="Upload" multiple hidden />
+                                <label id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                            </div>
+                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                                <label for="upload" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">
-                    <button class="bg-info p-2 rounded border-0 px-3 text-white">Submit</button>
+                    <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white">Submit</button>
                     <button class="ms-3 p-2 rounded border-info bg-white text-info px-3">Cancel</button>
                 </div>
 

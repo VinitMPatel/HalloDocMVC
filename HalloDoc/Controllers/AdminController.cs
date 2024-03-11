@@ -107,7 +107,7 @@ namespace HalloDoc.Controllers
         public IActionResult ViewCase(int requestId)
         {
             CaseActionDetails obj = dashboardData.ViewCaseData(requestId);
-            return PartialView("_ViewCase", obj);
+            return PartialView("AdminCaseAction/_ViewCase", obj);
         }
 
         public IActionResult ViewNotes(int requestId)
@@ -119,7 +119,6 @@ namespace HalloDoc.Controllers
             {
                 obj.adminNote = requestnote.Adminnotes;
             }
-
 
             obj.requestId = requestId;
             var transferNote = _context.Requeststatuslogs.FirstOrDefault(a => a.Requestid == obj.requestId && a.Status == 2);
@@ -134,7 +133,7 @@ namespace HalloDoc.Controllers
             //bol jaldi bol ungh aave he
 
             //CaseDetails obj = dashboardData.ViewCaseData(requestId);
-            return PartialView("_ViewNotes", obj);
+            return PartialView("AdminCaseAction/_ViewNotes", obj);
         }
 
         public List<Physician> FilterData(int regionid)
@@ -146,7 +145,7 @@ namespace HalloDoc.Controllers
         public IActionResult AssignCase(int requestId)
         {
             CaseActionsDetails obj = caseActions.AssignCase(requestId);
-            return PartialView("_AssignCase", obj);
+            return PartialView("AdminCaseAction/_AssignCase", obj);
         }
         public IActionResult SubmitAssign(int requestId, int physicianId, string assignNote)
         {
@@ -158,7 +157,7 @@ namespace HalloDoc.Controllers
         public IActionResult CancelCase(int requestId)
         {
             CaseActionsDetails obj = caseActions.CancelCase(requestId);
-            return PartialView("_CancelCase", obj);
+            return PartialView("AdminCaseAction/_CancelCase", obj);
         }
 
         public IActionResult SubmitCancel(int requestId, int caseId, string cancelNote)
@@ -171,7 +170,7 @@ namespace HalloDoc.Controllers
         public IActionResult BlockCase(int requestId)
         {
             CaseActionsDetails obj = caseActions.BlockCase(requestId);
-            return PartialView("_BlockCase", obj);
+            return PartialView("AdminCaseAction/_BlockCase", obj);
         }
 
         public IActionResult SubmitBlock(int requestId, string blockNote)
@@ -191,7 +190,7 @@ namespace HalloDoc.Controllers
         public IActionResult ViewUploads(int requestId)
         {
             CaseActionDetails obj = dashboardData.ViewUploads(requestId);
-            return PartialView("_ViewUploads", obj);
+            return PartialView("AdminCaseAction/_ViewUploads", obj);
         }
 
         public IActionResult UploadDocument(List<IFormFile> myfile, int reqid)
@@ -220,7 +219,7 @@ namespace HalloDoc.Controllers
         {
             Orders obj = new Orders();
             obj.requestId = requestId;
-            return PartialView("_Orders",obj);
+            return PartialView("AdminCaseAction/_Orders", obj);
         }
 
         public List<Healthprofessionaltype> GetProfessions()
@@ -251,6 +250,20 @@ namespace HalloDoc.Controllers
             caseActions.SubmitOrder(obj);
             return RedirectToAction("AdminDashboard");
         }
+
+
+        public IActionResult TransferCase(int requestId)
+        {
+            CaseActionsDetails obj = caseActions.AssignCase(requestId);
+            return PartialView("AdminCaseAction/_TransferCase", obj);
+        }
+
+        public IActionResult SubmitTransfer(int requestId, int physicianId, string transferNote)
+        {
+            caseActions.SubmitTransfer(requestId, physicianId, transferNote);
+            return RedirectToAction("AdminDashboard");
+        }
+
 
         public IActionResult AdminValidate(Aspnetuser obj)
         {

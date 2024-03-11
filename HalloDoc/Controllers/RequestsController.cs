@@ -1,12 +1,12 @@
 ﻿using Data.DataContext;
 using Data.Entity;
-using HalloDoc.ViewModels;
 using HalloDoc.Views.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using System.Net.Mail;
 using System.Net;
+using Services.ViewModels;
 
 namespace HalloDoc.Controllers
 {

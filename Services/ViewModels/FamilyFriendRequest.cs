@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace HalloDoc.ViewModels
+namespace Services.ViewModels
 {
     public class FamilyFriendRequest
     {

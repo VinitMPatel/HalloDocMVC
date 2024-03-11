@@ -102,6 +102,7 @@
     $(document).ready(function () {
         $.ajax({
             url: '/Admin/NewState',
+            data: { "status": 0, "requesttype": 0},
             success: function (response) {
                 $('#status-tabContent').html(response);
             },
@@ -141,6 +142,7 @@
 
             $.ajax({
                 url: url,
+                data: { "status": 0, "requesttype": 0 },
                 success: function (response) {
                     $('#status-tabContent').html(response);
                     document.getElementById("page-1").style.backgroundColor = "lightblue";

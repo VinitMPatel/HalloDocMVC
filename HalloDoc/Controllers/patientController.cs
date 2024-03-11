@@ -4,7 +4,6 @@ using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Services.Contracts;
-using HalloDoc.ViewModels;
 using Services.Implementation;
 using Common.Enum;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;

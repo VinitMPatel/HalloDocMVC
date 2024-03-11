@@ -1,6 +1,5 @@
 ﻿using Data.DataContext;
 using Data.Entity;
-using HalloDoc.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Services.Contracts;

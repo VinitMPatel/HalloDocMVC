@@ -1,6 +1,6 @@
 ﻿using Data.DataContext;
 using Data.Entity;
-using HalloDoc.ViewModels;
+using Services.ViewModels;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -22,8 +22,8 @@ namespace Services.Implementation
 
         public void CnciergeInsert(ConciergeRequestData r)
         {
-            var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
-            var user =  _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
+            // var aspnetuser =  _context.Aspnetusers.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
+            var user =  _context.Users.Where(m => m.Email == r.PatientEmail).FirstOrDefault();
 
             if (user != null)
             {
@@ -43,6 +43,7 @@ namespace Services.Implementation
 
                 Request request = new Request
                 {
+                    Userid = user.Userid,
                     Requesttypeid = 3,
                     Firstname = r.PatientFirstName,
                     Lastname = r.PatientLastName,
@@ -62,6 +63,7 @@ namespace Services.Implementation
                     Firstname = r.FirstName,
                     Lastname = r.LastName,
                     Phonenumber = r.Mnumber,
+                    Email = r.Email,
                     Street = r.Street,
                     Address = r.Street + ", " + r.City + ", " + r.State,
                     Regionid = 1,
@@ -69,6 +71,9 @@ namespace Services.Implementation
                     City = r.City,
                     State = r.State,
                     Zipcode = r.ZipCode,
+                    Intyear = int.Parse(r.DOB.ToString("yyyy")),
+                    Intdate = int.Parse(r.DOB.ToString("dd")),
+                    Strmonth = r.DOB.ToString("MMM")
                 };
                 _context.Requestclients.Add(requestclient);
                 _context.SaveChanges();

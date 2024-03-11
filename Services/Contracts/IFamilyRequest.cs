@@ -1,5 +1,6 @@
-﻿using HalloDoc.ViewModels;
+﻿
 using Microsoft.AspNetCore.Http;
+using Services.ViewModels;
 
 namespace Services.Contracts
 {

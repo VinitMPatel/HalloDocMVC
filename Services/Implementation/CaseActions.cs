@@ -144,5 +144,25 @@ namespace Services.Implementation
             _context.Orderdetails.Add(orderdetail);
             _context.SaveChanges();
         }
+
+        public void SubmitTransfer(int requestId, int physicianId, string transferNote)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            requestData.Modifieddate = DateTime.Now;
+            requestData.Physicianid = physicianId;
+            _context.Requests.Update(requestData);
+
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = requestId,
+                Status = 2,
+                Physicianid = physicianId,
+                Notes = transferNote,
+                Createddate = DateTime.Now,
+                Transtophysicianid = physicianId
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
     }
 }

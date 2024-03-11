@@ -7,7 +7,6 @@ using System.ComponentModel.DataAnnotations;
 public class PatientInfo
 {
     public String Symptoms { get; set; }
-
     
     public String FirstName { get; set; }
 
@@ -25,10 +24,8 @@ public class PatientInfo
     [Compare("Password")]
     public String ConfirmPassword { get; set; }
 
-
     [Required]
     public String PhoneNumber { get; set; }
-
 
     [Required]
     public String Street { get; set; }

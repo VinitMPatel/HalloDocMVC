@@ -40,20 +40,22 @@ namespace Services.Implementation
         public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage)
         {
 
-            if (status == null && requesttype == null)
+            if (status == "0" && requesttype == "0")
             {
                 List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
                 AdminDashboard obj = new AdminDashboard();
-                obj.requestclients = reqc;
                 obj.totalPages = reqc.Count();
-                List<Requestclient> newData = reqc.Skip(currnetPage - 1).Take(3).ToList();
+                List<Requestclient> newData = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = newData;
                 return obj;
             }
             else
             {
                 List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
                 AdminDashboard obj = new AdminDashboard();
-                obj.requestclients = reqc;
+                obj.totalPages = reqc.Count();
+                List<Requestclient> newData = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = newData;
                 return obj;
             }
         }

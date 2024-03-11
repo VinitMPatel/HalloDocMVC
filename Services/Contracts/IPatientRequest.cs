@@ -1,5 +1,4 @@
 ﻿using Data.Entity;
-using HalloDoc.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Services.ViewModels;
 

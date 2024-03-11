@@ -1,4 +1,4 @@
-﻿namespace HalloDoc.ViewModels
+﻿namespace Services.ViewModels
 {
     public class BusinessRequestData
     {

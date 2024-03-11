@@ -11,9 +11,15 @@ namespace Services.Contracts
         CaseActionsDetails Orders(int requestId);
 
         void SubmitAssign(int requestId, int physicianId, string assignNote);
+
         void SubmitBlock(int requestId, string blockNote);
+
         void SubmitCancel(int requestId, int caseId, string cancelNote);
+
         void SubmitNotes(int requestId, string notes, CaseActionDetails obj);
+
         void SubmitOrder(Orders obj);
+
+        void SubmitTransfer(int requestId, int physicianId, string transferNote);
     }
 }

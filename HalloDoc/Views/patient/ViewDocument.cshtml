@@ -26,9 +26,9 @@
                             <div class="py-2 col-12 ">
                                 <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
                                     <div class="px-3 table-responsive">
-                                        <input type="file" id="actual-btn" asp-for="Upload" multiple hidden/>
+                                        <input type="file" id="upload" asp-for="Upload" multiple hidden/>
                                         <input type="hidden" asp-for="reqId" />
-                                        <label role="button" for="actual-btn" id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                                        <label role="button" for="upload" id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
                                     </div>
                                     <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
                                         <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
@@ -186,9 +186,6 @@
 </div>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-    var names = "";
-    var fileName = document.getElementById('file-choosen');
-    var actualBtn = document.getElementById('actual-btn');
     var submitBtn = document.getElementById('submitBtn');
     var editBtn = document.getElementById('editBtn');
     var dataFields = document.getElementsByClassName('data');
@@ -207,14 +204,6 @@
             dataFields[i].setAttribute('disabled')
         }
     }
-    actualBtn.addEventListener('change', function (){
-
-        for (var i = 0; i < this.files.length; i++) {
-            names += this.files[i].name + ", ";
-        }
-        fileName.textContent = names;
-    })
-   
 
     $(document).ready(function () {
         $('#alldoc').click(function () {

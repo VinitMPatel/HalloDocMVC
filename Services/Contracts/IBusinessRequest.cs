@@ -1,4 +1,4 @@
-﻿using HalloDoc.ViewModels;
+﻿using Services.ViewModels;
 
 namespace Services.Contracts
 {

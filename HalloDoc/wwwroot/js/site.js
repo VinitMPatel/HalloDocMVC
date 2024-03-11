@@ -6,17 +6,17 @@
 try {
     const btn1 = document.getElementById("upload");
     var names = "";
-    const file = document.getElementById("filename");
-    // console.log(file);
-    // console.log("Hello");
+    const file = document.getElementById("file-choosen");
+
     btn1.addEventListener('change', function () {
-        file.placeholder = this.files[0].name;
+        console.log("Fun Working");
         for (var i = 0; i < this.files.length; i++) {
-            names += this.files[i].name;
-            }
-        file.value = names;
-        console.log(file.value);
-        console.log(btn1.value);
+            names += this.files[i].name + ", ";
+        }
+        file.textContent = names;
+        console.log(names);
+        console.log(file.textContent);
+
         file.style.fontSize = "large";
     })
 }

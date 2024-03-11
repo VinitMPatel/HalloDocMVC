@@ -130,7 +130,18 @@
                         <td class="text-white">@obj.Request.Physician.Firstname</td>
                         <td class="text-white">Service Date</td>
                         <td class="text-white">
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            @if (type == "Patient")
+                            {
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                                <div>(Patinet)</div>
+                            }
+                            else
+                            {
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                                <div>(Patinet)</div>
+                                <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                                <div>(@type)</div>
+                            }
                         </td>
                         <td class="text-white">@obj.Address</td>
                         <td class="text-white">@obj.Notes</td>
@@ -147,7 +158,7 @@
                                         <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
                                         <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
                                         <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Transfer</a></li>
+                                        <li onclick="TransferCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Transfer</a></li>
                                         <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Clear case</a></li>
                                         <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Send Agreement</a></li>
                                     </ul>
@@ -197,7 +208,7 @@
                 @for (int page = 0; page < (Model.totalPages / 3) + x; page++)
                 {
                     var temp = page + 1;
-                    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,1)" style="width:25px">
+                    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px">
                         @temp
                     </button>
                 }
@@ -294,10 +305,12 @@
         </div>
     </div>
 </div>
+<div id="caseView">
+
+</div>
 <script>
     function ChangePage(Page) {
         var currentPage = Page;
-        console.log("Fun working");
         $.ajax({
             url: "/Admin/PendingState/",
             data: { "currentPage": currentPage },
@@ -313,8 +326,27 @@
             }
         });
     }
-    $(document).ready(function () {
 
+    function TransferCase(requestId) {
+        console.log("Transfer calling...")
+        $.ajax({
+            url: "/Admin/TransferCase/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal1", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        });
+    };
+
+    $(document).ready(function () {
      
         $('.viewNotes').on('click', function (e) {
             e.preventDefault();

@@ -1,6 +1,6 @@
 ﻿using Data.DataContext;
 using Data.Entity;
-using HalloDoc.ViewModels;
+using Services.ViewModels;
 using Services.Contracts;
 using System;
 using System.Collections.Generic;
@@ -72,6 +72,9 @@ namespace Services.Implementation
                     City = r.City,
                     State = r.State,
                     Zipcode = r.ZipCode,
+                    Intyear = int.Parse(r.DOB.ToString("yyyy")),
+                    Intdate = int.Parse(r.DOB.ToString("dd")),
+                    Strmonth = r.DOB.ToString("MMM")
                 };
                 _context.Requestclients.Add(requestclient);
                 _context.SaveChanges();
