@@ -44,6 +44,7 @@ namespace Services.Implementation
             {
                 List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
                 AdminDashboard obj = new AdminDashboard();
+                
                 if (!string.IsNullOrWhiteSpace(searchKey))
                 {
                     reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
@@ -59,7 +60,7 @@ namespace Services.Implementation
                 AdminDashboard obj = new AdminDashboard();
                 if (!string.IsNullOrWhiteSpace(searchKey))
                 {
-                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
                 }
                 obj.totalPages = reqc.Count();
                 reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();

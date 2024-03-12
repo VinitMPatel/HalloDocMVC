@@ -2,84 +2,35 @@
 @{
     Layout = "";
 }
-<div class="d-flex justify-content-between mt-5 mx-4">
+    // <div class="d-flex justify-content-between mt-5 mx-4">
 
-    <div>
-        <div class="h3">Patient <span class="text-info">(New)</span></div>
-    </div>
-    <div>
-        <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-send me-2 "></i>
-            <span class="dash-btn">Send Link</span>
-        </a>
-        <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-file-text me-2 "></i>
-            <span class="dash-btn">Create Requests</span>
-        </a>
-        <a class="text-decoration-none btn btn-info text-white" type="button">
-            <i class="bi bi-arrow-up-short me-2"></i>
-            <span class="dash-btn">Export</span>
-        </a>
-        <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-            @* mt-2 mt-md-0 *@
-            <i class="bi bi-arrow-bar-up me-2 "></i>
-            <span class="dash-btn">Export All</span>
-        </a>
-        <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-            @* mt-2 mt-lg-0 *@
-            <i class="bi bi-pin-map me-2"></i>
-            <span class="dash-btn">Request DTY Support</span>
-        </a>
-    </div>
-</div>
-<div class="border rounded-4 mx-4 mt-4">
-    <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
-        <div class="dropdown d-flex flex-wrap row">
-            <div class="col-12 col-sm-6">
-                <input class="form-control search-input fuzzy-search rounded-1 me-2 shadow-none" type="search" placeholder="Search..." aria-label="Search">
-            </div>
-            <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                <button class="btn bg-white border border-dark dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fa-solid fa-magnifying-glass fa-xs"></i> <label class="me-4">All Region</label>
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-            </div>
+    //     <div>
+    //         <div class="h3">Patient <span class="text-info">(New)</span></div>
+    //     </div>
+    //     <div>
+    //         <a class="text-decoration-none btn btn-info text-white" type="button">
+    //             <i class="bi bi-send me-2 "></i>
+    //             <span class="dash-btn">Send Link</span>
+    //         </a>
+    //         <a class="text-decoration-none btn btn-info text-white" type="button">
+    //             <i class="bi bi-file-text me-2 "></i>
+    //             <span class="dash-btn">Create Requests</span>
+    //         </a>
+    //         <a class="text-decoration-none btn btn-info text-white" type="button">
+    //             <i class="bi bi-arrow-up-short me-2"></i>
+    //             <span class="dash-btn">Export</span>
+    //         </a>
+    //         <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
+    //             <i class="bi bi-arrow-bar-up me-2 "></i>
+    //             <span class="dash-btn">Export All</span>
+    //         </a>
+    //         <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
+    //             <i class="bi bi-pin-map me-2"></i>
+    //             <span class="dash-btn">Request DTY Support</span>
+    //         </a>
+    //     </div>
+    // </div>
 
-        </div>
-
-        <div class="d-flex flex-wrap mt-2">
-
-            <div class="d-flex justify-content-center align-items-center px-2 filter">
-                <input type="radio" class="btn-check" name="requestby" id="requestbyAll" autocomplete="off">
-                <label class="btn border rounded-2 px-3" for="requestbyAll">All</label>
-            </div>
-            <div class="d-flex justify-content-center align-items-center px-2 filter" id="1">
-                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color :#5fbc61"></i>
-                <label class="btn p-1 border-0 d-block" for="1">Patient</label>
-            </div>
-            <div class="d-flex justify-content-center align-items-center px-2 filter" id="2">
-                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #ed9124;"></i>
-                <label class="btn p-1 border-0 text-small" for="2">Family</label>
-            </div>
-            <div class="d-flex justify-content-center align-items-center px-2 filter" id="3">
-                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:#e36478;"></i>
-                <label class="btn p-1 border-0" for="3">Concierge</label>
-            </div>
-            <div class="d-flex justify-content-center align-items-center px-2 filter" id="4">
-                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #0c7db7;"></i>
-                <label class="btn p-1 border-0" for="4">Business</label>
-            </div>
-            <div class="d-flex justify-content-center align-items-center px-2 filter" id="5">
-                <input type="radio" class="btn-check" name="requestby" autocomplete="off"><i class="bi bi-circle-fill" style="color:  #943db8;"></i>
-                <label class="btn p-1 border-0" for="5">VIP</label>
-            </div>
-
-        </div>
-    </div>
     <div class="table-responsive border-top">
         <table class="table d-md-table d-none">
             <thead class="bg-body-secondary">
@@ -171,30 +122,30 @@
         </table>
 
         @* <div class="d-none d-md-flex justify-content-center gap-3">
-            @if (Model.totalpages > 0)
-            {
-                var x = 0;
-                if (Model.totalpages % 7 == 0)
-                {
-                    x = 0;
-                }
-                else
-                {
-                    x = 1;
-                }
-                @for (int page = 0;  page++)
-                {
-                    var temp = page + 1;
-                    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,1)" style="width:25px">
-                        @temp
-                    </button>
-                }
-            }
-        </div> *@
+    @if (Model.totalpages > 0)
+    {
+    var x = 0;
+    if (Model.totalpages % 7 == 0)
+    {
+    x = 0;
+    }
+    else
+    {
+    x = 1;
+    }
+    @for (int page = 0;  page++)
+    {
+    var temp = page + 1;
+    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp,1)" style="width:25px">
+    @temp
+    </button>
+    }
+    }
+    </div> *@
 
 
         <div class="d-none d-md-flex justify-content-center gap-3">
-            @if(Model.totalPages > 0)
+            @if (Model.totalPages > 0)
             {
                 var x = 0;
                 if (Model.totalPages % 3 == 0)
@@ -304,97 +255,96 @@
             </div>
         </div>
     </div>
-</div>
-<div id="caseView">
 
-</div>
-<script>
-    function ChangePage(Page) {
-        var currentPage = Page;
-        $.ajax({
-            url: "/Admin/PendingState/",
-            data: { "currentPage": currentPage },
-            type: "POST",
-            dataType: "html",
-            success: function (response) {
-                $('#status-tabContent').html(response);
-                document.getElementById("page-1").style.backgroundColor = "white";
-                document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
-    }
-
-    function TransferCase(requestId) {
-        console.log("Transfer calling...")
-        $.ajax({
-            url: "/Admin/TransferCase/",
-            data: { "requestId": requestId },
-            type: "POST",
-            dataType: "html",
-            success: function (data) {
-                $("#caseView").html(data);
-                const myModal = new bootstrap.Modal("#exampleModal1", {});
-                myModal.show();
-            },
-            error: function () {
-                alert("No Projects Found");
-                $("#caseView").html('An error has occurred');
-            }
-        });
-    };
-
-    $(document).ready(function () {
-     
-        $('.viewNotes').on('click', function (e) {
-            e.preventDefault();
-            var requestId = $(this).attr('id');
-            console.log(requestId);
+    <div id="caseView">
+    </div>
+    <script>
+        function ChangePage(Page) {
+            var currentPage = Page;
             $.ajax({
-                url: '/Admin/ViewNotes',
-                data: { "requestId": requestId },
+                url: "/Admin/PendingState/",
+                data: { "currentPage": currentPage },
+                type: "POST",
+                dataType: "html",
                 success: function (response) {
-                    $('#viewCaseContent').html(response);
+                    $('#status-tabContent').html(response);
+                    document.getElementById("page-1").style.backgroundColor = "white";
+                    document.getElementById("page-" + currentPage).style.backgroundColor = "lightblue";
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
-        });
+        }
 
-        $('.viewCase').on('click', function (e) {
-            e.preventDefault();
-            var requestId = $(this).attr('id');
-            console.log(requestId);
+        function TransferCase(requestId) {
+            console.log("Transfer calling...")
             $.ajax({
-                url: '/Admin/ViewCase',
+                url: "/Admin/TransferCase/",
                 data: { "requestId": requestId },
-                success: function (response) {
-                    $('#viewCaseContent').html(response);
+                type: "POST",
+                dataType: "html",
+                success: function (data) {
+                    $("#caseView").html(data);
+                    const myModal = new bootstrap.Modal("#exampleModal1", {});
+                    myModal.show();
                 },
-                error: function (xhr, status, error) {
-                    console.error(error);
+                error: function () {
+                    alert("No Projects Found");
+                    $("#caseView").html('An error has occurred');
                 }
             });
-        });
+        };
 
-        $('.viewUpload').on('click', function (e) {
-            e.preventDefault();
-            var requestId = $(this).attr('id');
-            console.log(requestId);
-            $.ajax({
-                url: '/Admin/ViewUploads',
-                data: { "requestId": requestId },
-                success: function (response) {
-                    $('#viewCaseContent').html(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
+        $(document).ready(function () {
+
+            $('.viewNotes').on('click', function (e) {
+                e.preventDefault();
+                var requestId = $(this).attr('id');
+                console.log(requestId);
+                $.ajax({
+                    url: '/Admin/ViewNotes',
+                    data: { "requestId": requestId },
+                    success: function (response) {
+                        $('#viewCaseContent').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
             });
-        });
 
-    });
-</script>
+            $('.viewCase').on('click', function (e) {
+                e.preventDefault();
+                var requestId = $(this).attr('id');
+                console.log(requestId);
+                $.ajax({
+                    url: '/Admin/ViewCase',
+                    data: { "requestId": requestId },
+                    success: function (response) {
+                        $('#viewCaseContent').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            $('.viewUpload').on('click', function (e) {
+                e.preventDefault();
+                var requestId = $(this).attr('id');
+                console.log(requestId);
+                $.ajax({
+                    url: '/Admin/ViewUploads',
+                    data: { "requestId": requestId },
+                    success: function (response) {
+                        $('#viewCaseContent').html(response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+        });
+    </script>

@@ -2,7 +2,7 @@
 @{
     Layout = "";
 }
-<div class="d-flex justify-content-between mt-5 mx-4">
+@* <div class="d-flex justify-content-between mt-5 mx-4">
 
     <div>
         <div class="h3">Patient <span class="text-info">(New)</span></div>
@@ -29,9 +29,9 @@
             <span class="dash-btn">Request DTY Support</span>
         </a>
     </div>
-</div>
-<div class="border rounded-4 mx-4 mt-4">
-    <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
+</div> *@
+@* <div class="border rounded-4 mx-4 mt-4"> *@
+@*     <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
         <div class="dropdown d-flex flex-wrap row">
 
             <div class="col-12 col-sm-6">
@@ -82,7 +82,7 @@
             </div>
 
         </div>
-    </div>
+    </div> *@
     <div class="table-responsive border-top">
         <table class="table d-md-table d-none">
             <thead class="bg-body-secondary">
@@ -277,14 +277,14 @@
                 {
 
                     var temp = page + 1;
-                    <button class="@temp paginationBtn" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px" name="@temp">
+                    <button class="@temp paginationBtn bg-none rounded-4" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px" name="@temp">
                         @temp
                     </button>
                 }
             }
         </div>
     </div>
-</div>
+@* </div> *@
 <div id="caseView">
 
 </div>
@@ -292,10 +292,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <script>
-    var currentPage = 1;
-    var requestType;
-    var requestStatus;
-    var searchKey;
+    
+    
     function ChangePage(Page) {
         currentPage = Page;
         if (typeof(requestType) == "undefined") {
@@ -307,36 +305,34 @@
         CommonAjax();
     }
 
-    function filter(type){
-        if(type==0){
-            requestType = "0";
-            requestStatus = "0";
-            searchKey = ""
-        }
-        else{
-        requestType = type;
-        requestStatus = 1;
-        }
-        CommonAjax();
-    }
+    // function filter(type){
+    //     if(type==0){
+    //         requestType = "0";
+    //         requestStatus = "0";
+    //     }
+    //     else{
+    //     requestType = type;
+    //     }
+    //     CommonAjax();
+    // }
 
-    function Search() {
-        searchKey = $('#search').val(); 
-        console.log(searchKey);
-        if (typeof (requestType) == "undefined") {
-            requestType = "0";
-        }
-        if (typeof (requestStatus) == "undefined") {
-            requestStatus = "0";
-        }
-        CommonAjax();
-    }
+    // function Search() {
+    //     searchKey = $('#search').val(); 
+    //     console.log(searchKey);
+    //     if (typeof (requestType) == "undefined") {
+    //         requestType = "0";
+    //     }
+    //     if (typeof (requestStatus) == "undefined") {
+    //         requestStatus = "0";
+    //     }
+    //     CommonAjax();
+    // }
 
     function CommonAjax() {
-        // console.log("status is : " +requestStatus);
-        // console.log("requesttype is : " +requestType);
-        // console.log("page is : " +currentPage);
-        //console.log("Search is : " +searchKey);
+        console.log("status is : " +requestStatus);
+        console.log("requesttype is : " +requestType);
+        console.log("page is : " +currentPage);
+        console.log("Search is : " +searchKey);
         $.ajax({
             url: '/Admin/NewState',
             data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
