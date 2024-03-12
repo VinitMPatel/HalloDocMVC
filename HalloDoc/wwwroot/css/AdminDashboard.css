@@ -142,9 +142,14 @@
     z-index : 2 !important;
 }
 
-.bi-search {
-    
+
+.search-icon {
+    margin-left: 10px;
+    padding-left: 25px;
+    background: url("https://static.thenounproject.com/png/101791-200.png") no-repeat left;
+    background-size: 20px;
 }
+
 
 .search-label {
     position: relative;

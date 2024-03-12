@@ -13,10 +13,11 @@
                 <div class="form-floating mt-4">
                     <textarea class="form-control blockNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
                     <label for="floatingTextarea">Reason for block request</label>
+                    <span id="warning" class="text-danger"></span>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="confirm" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Confirm</button>
+                <button type="submit" class="btn btn-info text-white confirm">Confirm</button>
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -25,18 +26,31 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+
+        $('.blockNote').on('focus', function () {
+            $('.blockNote').css('border', '2px groove #e6eefa');
+            $('#warning').html('');
+        });
+
         $('.confirm').on('click', function (e) {
             var blockNote = $('.blockNote').val();
+            if (blockNote == "") {
+                $('.blockNote').css('border', '1px solid red');
+                $('#warning').html('*Please enter reason');
+            }
+            else{
             $.ajax({
                 url: '/Admin/SubmitBlock',
                 data: { "requestId": @Model.requestId, "blockNote": blockNote },
                 success: function (response) {
                     $('#status-tabContent').html(response);
+                    window.location.reload();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
                 }
             });
+            }
         });
     });
 </script>

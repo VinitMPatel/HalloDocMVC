@@ -60,9 +60,9 @@
                     url: '/Admin/SubmitCancel',
                     data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
                     success: function (response) {
-                        $('#status-tabContent').html(response);
-                        $("body").removeAttr("style");
-                        $(".modal-backdrop").remove();
+                        // $('#status-tabContent').html(response);
+                        // $("body").removeAttr("style");
+                        // $(".modal-backdrop").remove();
                         window.location.reload();
                     },
                     error: function (xhr, status, error) {

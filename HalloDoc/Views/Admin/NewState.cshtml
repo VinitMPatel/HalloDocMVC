@@ -21,12 +21,10 @@
             <span class="dash-btn">Export</span>
         </a>
         <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-            @* mt-2 mt-md-0 *@
             <i class="bi bi-arrow-bar-up me-2 "></i>
             <span class="dash-btn">Export All</span>
         </a>
         <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-            @* mt-2 mt-lg-0 *@
             <i class="bi bi-pin-map me-2"></i>
             <span class="dash-btn">Request DTY Support</span>
         </a>
@@ -35,12 +33,16 @@
 <div class="border rounded-4 mx-4 mt-4">
     <div class="d-lg-flex justify-content-between py-3 mx-3 flex-wrap">
         <div class="dropdown d-flex flex-wrap row">
+
             <div class="col-12 col-sm-6">
-                <input class="form-control search-input fuzzy-search rounded-1 me-2 shadow-none" type="search" aria-label="Search">
-                <label class="search-label">Search Patient</label>
+                <div class="d-flex rounded-2 border border-dark h-100">
+                    <span class="search-icon"></span>
+                    <input id="search" onkeyup="Search()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
+                </div>
             </div>
+
             <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                <button class="btn bg-white border border-dark dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn bg-white border border-dark dropdown-toggle w-100 h-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa-solid fa-magnifying-glass fa-xs"></i> <label class="me-4">All Region</label>
                 </button>
                 <ul class="dropdown-menu">
@@ -123,7 +125,7 @@
                         type = "Business";
                     }
                     <tr style="--bs-table-bg : @color">
-                        <td class="text-white">@obj.Request.Firstname</td>
+                        <td class="text-white">@obj.Request.Firstname @obj.Request.Lastname</td>
                         <td class="text-white"><i class="bi bi-envelope"></i></td>
                         <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
                         <td class="text-white"> @type , @obj.Firstname</td>
@@ -169,28 +171,7 @@
         </table>
 
 
-        <div class="d-none d-md-flex justify-content-center gap-3">
-            @if (Model.totalPages > 0)
-            {
-                var x = 0;
-                if (Model.totalPages % 3 == 0)
-                {
-                    x = 0;
-                }
-                else
-                {
-                    x = 1;
-                }
-                @for (int page = 0; page < (Model.totalPages / 3) + x; page++)
-                {
-                   
-                    var temp = page + 1;
-                    <button class="@temp paginationBtn" id="page-@temp" onclick="ChangePage(@temp)"  style="width:25px" name="@temp">
-                        @temp
-                    </button>
-                }
-            }
-        </div>
+        
 
 
         <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
@@ -280,6 +261,28 @@
                 }
             </div>
         </div>
+        <div class="d-flex justify-content-center gap-3 my-3">
+            @if (Model.totalPages > 0)
+            {
+                var x = 0;
+                if (Model.totalPages % 3 == 0)
+                {
+                    x = 0;
+                }
+                else
+                {
+                    x = 1;
+                }
+                @for (int page = 0; page < (Model.totalPages / 3) + x; page++)
+                {
+
+                    var temp = page + 1;
+                    <button class="@temp paginationBtn" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px" name="@temp">
+                        @temp
+                    </button>
+                }
+            }
+        </div>
     </div>
 </div>
 <div id="caseView">
@@ -292,6 +295,7 @@
     var currentPage = 1;
     var requestType;
     var requestStatus;
+    var searchKey;
     function ChangePage(Page) {
         currentPage = Page;
         if (typeof(requestType) == "undefined") {
@@ -307,21 +311,35 @@
         if(type==0){
             requestType = "0";
             requestStatus = "0";
+            searchKey = ""
         }
         else{
         requestType = type;
-            requestStatus = 1;
+        requestStatus = 1;
+        }
+        CommonAjax();
+    }
+
+    function Search() {
+        searchKey = $('#search').val(); 
+        console.log(searchKey);
+        if (typeof (requestType) == "undefined") {
+            requestType = "0";
+        }
+        if (typeof (requestStatus) == "undefined") {
+            requestStatus = "0";
         }
         CommonAjax();
     }
 
     function CommonAjax() {
-        // console.log("status is : " + requestStatus);
+        // console.log("status is : " +requestStatus);
         // console.log("requesttype is : " +requestType);
-        // console.log("page is : " + currentPage);
+        // console.log("page is : " +currentPage);
+        //console.log("Search is : " +searchKey);
         $.ajax({
             url: '/Admin/NewState',
-            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage },
+            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
             success: function (response) {
                 $('#status-tabContent').html(response);
             },

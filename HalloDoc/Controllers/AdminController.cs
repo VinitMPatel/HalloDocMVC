@@ -76,9 +76,9 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult NewState(String status, String requesttype, int currentPage)
+        public IActionResult NewState(String status, String requesttype, int currentPage , string searchKey)
         {
-            AdminDashboard data = dashboardData.NewStateData(status, requesttype, currentPage);
+            AdminDashboard data = dashboardData.NewStateData(status, requesttype, currentPage , searchKey);
             return View(data);
         }
 

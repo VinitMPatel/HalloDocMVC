@@ -37,25 +37,33 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage)
+        public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage , string searchKey = "")
         {
 
             if (status == "0" && requesttype == "0")
             {
                 List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
                 AdminDashboard obj = new AdminDashboard();
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
                 obj.totalPages = reqc.Count();
-                List<Requestclient> newData = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
-                obj.requestclients = newData;
+                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = reqc;
                 return obj;
             }
             else
             {
                 List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
                 AdminDashboard obj = new AdminDashboard();
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
                 obj.totalPages = reqc.Count();
-                List<Requestclient> newData = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
-                obj.requestclients = newData;
+                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = reqc;
                 return obj;
             }
         }

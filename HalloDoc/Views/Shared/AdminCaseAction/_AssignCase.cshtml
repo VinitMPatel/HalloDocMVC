@@ -104,9 +104,9 @@
                 url: '/Admin/SubmitAssign',
                 data: { "requestId": @Model.requestId, "physicianId": physicianId, "assignNote": assignNote },
                 success: function (response) {
-                    $('#status-tabContent').html(response);
-                    $("body").removeAttr("style");
-                    $(".modal-backdrop").remove();
+                    // $('#status-tabContent').html(response);
+                    // $("body").removeAttr("style");
+                    // $(".modal-backdrop").remove();
                     window.location.reload();
                 },
                 error: function (xhr, status, error) {
