@@ -64,43 +64,57 @@ namespace HalloDoc.Controllers
         [Authorization("1")]
         public IActionResult ActiveState()
         {
-            AdminDashboard data = dashboardData.ActiveStateData();
-            return View(data);
+            return View();
         }
 
         [Authorization("1")]
         public IActionResult ConcludeState()
         {
-            AdminDashboard data = dashboardData.ConcludeStateData();
-            return View(data);
+            return View();
         }
 
         [Authorization("1")]
         public IActionResult NewState(String status, String requesttype, int currentPage , string searchKey)
         {
             AdminDashboard data = dashboardData.NewStateData(status, requesttype, currentPage , searchKey);
-            return View(data);
+            switch (status)
+            {
+                case "1":return View(data);
+                    break;
+                case "2":return View("PendingState",data);
+                    break;
+                case "3":
+                    return View("ToCloseState", data);
+                    break;
+                case "4":
+                    return View("ActiveState", data);
+                    break;
+                case "6":
+                    return View("ConcludeState", data);
+                    break;
+                case "9":
+                    return View("UnpaidState", data);
+                    break;
+                default : return View();
+            }
         }
 
         [Authorization("1")]
-        public IActionResult PendingState(String status, String requesttype, int currentPage, string searchKey)
+        public IActionResult PendingState()
         {
-            AdminDashboard data = dashboardData.PendingStateData(status, requesttype, currentPage, searchKey);
-            return View(data);
+            return View();
         }
 
         [Authorization("1")]
         public IActionResult ToCloseState()
         {
-            AdminDashboard data = dashboardData.ToCloseStateData();
-            return View(data);
+            return View();
         }
 
         [Authorization("1")]
         public IActionResult UnpaidState()
         {
-            AdminDashboard data = dashboardData.UnpaidStateData();
-            return View(data);
+            return View();
         }
 
     

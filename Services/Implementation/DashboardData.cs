@@ -42,7 +42,7 @@ namespace Services.Implementation
 
             if (requesttype == "0")
             {
-                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status).ToList();
+                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == status).ToList();
                 AdminDashboard obj = new AdminDashboard();
                 
                 if (!string.IsNullOrWhiteSpace(searchKey))
@@ -67,76 +67,6 @@ namespace Services.Implementation
                 obj.requestclients = reqc;
                 return obj;
             }
-        }
-
-        public AdminDashboard PendingStateData(String status, String requesttype, int currnetPage, string searchKey = "")
-        {
-            //List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
-            //AdminDashboard obj = new AdminDashboard();
-            //obj.totalPages = reqc.Count();
-            //List<Requestclient> newData = reqc.Skip((currentPage - 1)*3).Take(3).ToList();
-            //obj.requestclients = newData;
-            //return obj;
-
-            if (status == "0" && requesttype == "0")
-            {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
-                AdminDashboard obj = new AdminDashboard();
-
-                if (!string.IsNullOrWhiteSpace(searchKey))
-                {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
-                }
-                obj.totalPages = reqc.Count();
-                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
-                obj.requestclients = reqc;
-                return obj;
-            }
-            else
-            {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician). Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
-                AdminDashboard obj = new AdminDashboard();
-                if (!string.IsNullOrWhiteSpace(searchKey))
-                {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
-                }
-                obj.totalPages = reqc.Count();
-                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
-                obj.requestclients = reqc;
-                return obj;
-            }
-        }
-
-        public AdminDashboard ActiveStateData()
-        {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 4 ||  a.Request.Status == 5).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
-            return obj;
-        }
-
-        public AdminDashboard ConcludeStateData()
-        {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 6).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
-            return obj;
-        }
-
-        public AdminDashboard ToCloseStateData()
-        {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
-            return obj;
-        }
-
-        public AdminDashboard UnpaidStateData()
-        {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 9).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.requestclients = reqc;
-            return obj;
         }
 
         public CaseActionDetails ViewCaseData(int requestId) {

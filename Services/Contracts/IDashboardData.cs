@@ -8,16 +8,6 @@ namespace Services.Contracts
     {
         AdminDashboard NewStateData(String a , String b , int p , string searchKey);
 
-        AdminDashboard PendingStateData(String a, String b, int p, string searchKey);
-
-        AdminDashboard ActiveStateData();
-
-        AdminDashboard ConcludeStateData();
-
-        AdminDashboard ToCloseStateData();
-
-        AdminDashboard UnpaidStateData();
-
         AdminDashboard AllData();
 
         CaseActionDetails ViewCaseData(int requestId);

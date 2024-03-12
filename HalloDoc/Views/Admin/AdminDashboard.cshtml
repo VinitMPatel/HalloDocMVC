@@ -223,7 +223,6 @@
 
         $('.dashboardtab').on('click', function (e) {
             e.preventDefault();
-            
             //$('.dashboardtab').removeClass('active');
             //$(this).addClass('active');
             var target = $(this).data('bs-target');
@@ -235,30 +234,25 @@
                     break;
                 case '#s_pending':
                     requestStatus = 2;
-                    url = '/Admin/NewState';
                     break;
                 case '#s_active':
                     requestStatus = 4 ;
-                    url = '/Admin/ActiveState';
                     break;
                 case '#s_conclude':
                     requestStatus = 6;
-                    url = '/Admin/ConcludeState';
                     break;
                 case '#s_toclose':
                     requestStatus = 3;
-                    url = '/Admin/ToCloseState';
                     break;
                 case '#s_unpaid':
                     requestStatus = 9;
-                    url = '/Admin/UnpaidState';
                     break;
                 default:
-                    url = 'Admin/AdminDashboard';
+                    requestStatus = 12;
             }
 
             $.ajax({
-                url: url,
+                url: '/Admin/NewState',
                 data: { "status": requestStatus, "requesttype": 0, "currentPage": 1 },
                 success: function (response) {
                     $('#status-tabContent').html(response);
