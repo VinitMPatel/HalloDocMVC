@@ -293,6 +293,7 @@
 
 <script>
     
+    console.log(requestStatus);
     
     function ChangePage(Page) {
         currentPage = Page;
@@ -300,7 +301,7 @@
             requestType = "0";
         }
         if (typeof(requestStatus) == "undefined"){
-            requestStatus = "0";
+            requestStatus = "1";
         }
         CommonAjax();
     }

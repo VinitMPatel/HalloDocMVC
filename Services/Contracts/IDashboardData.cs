@@ -8,7 +8,7 @@ namespace Services.Contracts
     {
         AdminDashboard NewStateData(String a , String b , int p , string searchKey);
 
-        AdminDashboard PendingStateData(int p);
+        AdminDashboard PendingStateData(String a, String b, int p, string searchKey);
 
         AdminDashboard ActiveStateData();
 

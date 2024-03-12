@@ -83,9 +83,9 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult PendingState(int currentPage)
+        public IActionResult PendingState(String status, String requesttype, int currentPage, string searchKey)
         {
-            AdminDashboard data = dashboardData.PendingStateData(currentPage);
+            AdminDashboard data = dashboardData.PendingStateData(status, requesttype, currentPage, searchKey);
             return View(data);
         }
 

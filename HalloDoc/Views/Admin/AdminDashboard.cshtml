@@ -188,11 +188,11 @@
     function filter(type) {
         if (type == 0) {
             requestType = "0";
-            currentPage = 1;
-            requestStatus = "0";
+            requestStatus = requestStatus;
         }
         else {
             requestType = type;
+            currentPage = 1;
         }
         CommonAjax();
     }
@@ -211,8 +211,9 @@
     $(document).ready(function () {
         $.ajax({
             url: '/Admin/NewState',
-            data: { "status": 0, "requesttype": 0},
+            data: { "status": 1, "requesttype": 0},
             success: function (response) {
+                requestStatus = 1;
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -230,21 +231,26 @@
             switch (target) {
                 case '#s_new':
                     url = '/Admin/NewState';
-                    requestStatus = 1 ;
+                    requestStatus = 1;
                     break;
                 case '#s_pending':
-                    url = '/Admin/PendingState';
+                    requestStatus = 2;
+                    url = '/Admin/NewState';
                     break;
                 case '#s_active':
+                    requestStatus = 4 ;
                     url = '/Admin/ActiveState';
                     break;
                 case '#s_conclude':
+                    requestStatus = 6;
                     url = '/Admin/ConcludeState';
                     break;
                 case '#s_toclose':
+                    requestStatus = 3;
                     url = '/Admin/ToCloseState';
                     break;
                 case '#s_unpaid':
+                    requestStatus = 9;
                     url = '/Admin/UnpaidState';
                     break;
                 default:
@@ -253,7 +259,7 @@
 
             $.ajax({
                 url: url,
-                data: { "status": 0, "requesttype": 0 },
+                data: { "status": requestStatus, "requesttype": 0, "currentPage": 1 },
                 success: function (response) {
                     $('#status-tabContent').html(response);
                 },

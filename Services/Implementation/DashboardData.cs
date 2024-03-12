@@ -40,9 +40,9 @@ namespace Services.Implementation
         public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage , string searchKey = "")
         {
 
-            if (status == "0" && requesttype == "0")
+            if (requesttype == "0")
             {
-                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status == 1).ToList();
+                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status).ToList();
                 AdminDashboard obj = new AdminDashboard();
                 
                 if (!string.IsNullOrWhiteSpace(searchKey))
@@ -56,7 +56,7 @@ namespace Services.Implementation
             }
             else
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
                 AdminDashboard obj = new AdminDashboard();
                 if (!string.IsNullOrWhiteSpace(searchKey))
                 {
@@ -69,14 +69,42 @@ namespace Services.Implementation
             }
         }
 
-        public AdminDashboard PendingStateData(int currentPage)
+        public AdminDashboard PendingStateData(String status, String requesttype, int currnetPage, string searchKey = "")
         {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
-            AdminDashboard obj = new AdminDashboard();
-            obj.totalPages = reqc.Count();
-            List<Requestclient> newData = reqc.Skip((currentPage - 1)*3).Take(3).ToList();
-            obj.requestclients = newData;
-            return obj;
+            //List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
+            //AdminDashboard obj = new AdminDashboard();
+            //obj.totalPages = reqc.Count();
+            //List<Requestclient> newData = reqc.Skip((currentPage - 1)*3).Take(3).ToList();
+            //obj.requestclients = newData;
+            //return obj;
+
+            if (status == "0" && requesttype == "0")
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status == 2).ToList();
+                AdminDashboard obj = new AdminDashboard();
+
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
+                obj.totalPages = reqc.Count();
+                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = reqc;
+                return obj;
+            }
+            else
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician). Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
+                AdminDashboard obj = new AdminDashboard();
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
+                obj.totalPages = reqc.Count();
+                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.requestclients = reqc;
+                return obj;
+            }
         }
 
         public AdminDashboard ActiveStateData()
