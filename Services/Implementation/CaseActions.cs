@@ -1,11 +1,17 @@
 ﻿using Data.DataContext;
 using Data.Entity;
+using Microsoft.AspNetCore.Http;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,17 +26,17 @@ namespace Services.Implementation
             _context = context;
         }
 
-        public CaseActionsDetails AssignCase(int requestId)
+        public ViewModels.CaseActions AssignCase(int requestId)
         {
-            CaseActionsDetails obj = new CaseActionsDetails();
+            ViewModels.CaseActions obj = new ViewModels.CaseActions();
             obj.regionList = _context.Regions.ToList();
             obj.requestId = requestId;
             return obj;
         }
 
-        public CaseActionsDetails CancelCase(int requestId)
+        public ViewModels.CaseActions CancelCase(int requestId)
         {
-            CaseActionsDetails obj = new CaseActionsDetails();
+            ViewModels.CaseActions obj = new ViewModels.CaseActions();
             var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
             obj.cancelList = _context.Casetags.ToList();
             obj.requestId = requestId;
@@ -38,23 +44,63 @@ namespace Services.Implementation
             return obj;
         }
 
-        public CaseActionsDetails BlockCase(int requestId)
+        public ViewModels.CaseActions BlockCase(int requestId)
         {
-            CaseActionsDetails obj = new CaseActionsDetails();
+            ViewModels.CaseActions obj = new ViewModels.CaseActions();
             var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
             obj.requestId = requestId;
             obj.patietName = name;
             return obj;
         }
 
-        public CaseActionsDetails Orders(int requestId)
+        public ViewModels.CaseActions Orders(int requestId)
         {
-            CaseActionsDetails obj = new CaseActionsDetails();
+            ViewModels.CaseActions obj = new ViewModels.CaseActions();
            
             return obj;
         }
 
+        public AgreementDetails Agreement(int requestId)
+        {
+            AgreementDetails obj = new AgreementDetails();
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            obj.mobile = requestData.Phonenumber;
+            obj.email = requestData.Email;
+            obj.type = requestData.Requesttypeid;
+            return obj;
+        }
 
+        public void AgreeAgreement(int requestId)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            requestData.Modifieddate = DateTime.Now;
+            requestData.Status = 4;
+            _context.Requests.Update(requestData);
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = requestId,
+                Status = 4,
+                Createddate = DateTime.Now,
+            };
+            _context.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
+
+        public void CancelAgreement(int requestId)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            requestData.Modifieddate = DateTime.Now;
+            requestData.Status = 7;
+            _context.Requests.Update(requestData);
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = requestId,
+                Status = 7,
+                Createddate = DateTime.Now,
+            };
+            _context.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
         public void SubmitAssign(int requestId, int physicianId, string assignNote)
         {
             var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
@@ -163,6 +209,53 @@ namespace Services.Implementation
             };
             _context.Requeststatuslogs.Add(requeststatuslog);
             _context.SaveChanges();
+        }
+
+        public void SubmitClearCase(int requestId)
+        {
+            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            requestData.Modifieddate = DateTime.Now;
+            requestData.Status = 10;
+            _context.Requests.Update(requestData);
+
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = requestId,
+                Status = 10,
+                Createddate = DateTime.Now,
+            };
+            _context.Requeststatuslogs.Add(requeststatuslog);
+            _context.SaveChanges();
+        }
+
+        public void SendingAgreement(int requestId , string email , string url)
+        {
+            try
+            {
+                var mail = "tatva.dotnet.vinitpatel@outlook.com";
+                var password = "016@ldce";
+
+                var client = new SmtpClient("smtp.office365.com", 587)
+                {
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential(mail, password)
+                };
+
+                var mailMessage = new MailMessage
+                {
+                    From = new MailAddress(mail),
+                    Subject = "Agreement",
+                    Body = "You can view agreement by using this link : " + url,
+                    IsBodyHtml = true // Set to true if your message contains HTML
+                };
+
+                mailMessage.To.Add(email);
+                client.SendMailAsync(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error sending email: {ex.Message}");
+            }
         }
     }
 }

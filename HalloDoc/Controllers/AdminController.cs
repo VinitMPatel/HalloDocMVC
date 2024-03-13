@@ -10,6 +10,7 @@ using Services.ViewModels;
 using System.Net.Mail;
 using System.Net;
 using Authorization = Services.Implementation.Authorization;
+using System.Web.Helpers;
 
 namespace HalloDoc.Controllers
 {
@@ -62,28 +63,16 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult ActiveState()
+        public IActionResult AllState(String status, String requesttype, int currentPage , string searchKey)
         {
-            return View();
-        }
-
-        [Authorization("1")]
-        public IActionResult ConcludeState()
-        {
-            return View();
-        }
-
-        [Authorization("1")]
-        public IActionResult NewState(String status, String requesttype, int currentPage , string searchKey)
-        {
-            AdminDashboard data = dashboardData.NewStateData(status, requesttype, currentPage , searchKey);
+            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage , searchKey);
             switch (status)
             {
-                case "1":return View(data);
+                case "1":return View("NewState",data);
                     break;
                 case "2":return View("PendingState",data);
                     break;
-                case "3":
+                case "7":
                     return View("ToCloseState", data);
                     break;
                 case "4":
@@ -98,25 +87,6 @@ namespace HalloDoc.Controllers
                 default : return View();
             }
         }
-
-        [Authorization("1")]
-        public IActionResult PendingState()
-        {
-            return View();
-        }
-
-        [Authorization("1")]
-        public IActionResult ToCloseState()
-        {
-            return View();
-        }
-
-        [Authorization("1")]
-        public IActionResult UnpaidState()
-        {
-            return View();
-        }
-
     
         public IActionResult ViewCase(int requestId)
         {
@@ -156,9 +126,10 @@ namespace HalloDoc.Controllers
             return physicianList;
         }
 
+        
         public IActionResult AssignCase(int requestId)
         {
-            CaseActionsDetails obj = caseActions.AssignCase(requestId);
+            Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
         public IActionResult SubmitAssign(int requestId, int physicianId, string assignNote)
@@ -168,12 +139,12 @@ namespace HalloDoc.Controllers
         }
 
 
+
         public IActionResult CancelCase(int requestId)
         {
-            CaseActionsDetails obj = caseActions.CancelCase(requestId);
+            Services.ViewModels.CaseActions obj = caseActions.CancelCase(requestId);
             return PartialView("AdminCaseAction/_CancelCase", obj);
         }
-
         public IActionResult SubmitCancel(int requestId, int caseId, string cancelNote)
         {
             caseActions.SubmitCancel(requestId, caseId, cancelNote);
@@ -181,18 +152,20 @@ namespace HalloDoc.Controllers
         }
 
 
+
         public IActionResult BlockCase(int requestId)
         {
-            CaseActionsDetails obj = caseActions.BlockCase(requestId);
+            Services.ViewModels.CaseActions obj = caseActions.BlockCase(requestId);
             return PartialView("AdminCaseAction/_BlockCase", obj);
         }
-
         public IActionResult SubmitBlock(int requestId, string blockNote)
         {
 
             caseActions.SubmitBlock(requestId, blockNote);
             return RedirectToAction("AdminDashboard");
         }
+
+
 
         public IActionResult SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
@@ -201,18 +174,17 @@ namespace HalloDoc.Controllers
         }
 
 
+
         public IActionResult ViewUploads(int requestId)
         {
             CaseActionDetails obj = dashboardData.ViewUploads(requestId);
             return PartialView("AdminCaseAction/_ViewUploads", obj);
         }
-
         public IActionResult UploadDocument(List<IFormFile> myfile, int reqid)
         {
             dashboardData.UplodingDocument(myfile, reqid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
-
         public IActionResult SingleDelete(int reqfileid, int reqid)
         {
             dashboardData.SingleDelete(reqfileid);
@@ -266,12 +238,12 @@ namespace HalloDoc.Controllers
         }
 
 
+
         public IActionResult TransferCase(int requestId)
         {
-            CaseActionsDetails obj = caseActions.AssignCase(requestId);
+            Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_TransferCase", obj);
         }
-
         public IActionResult SubmitTransfer(int requestId, int physicianId, string transferNote)
         {
             caseActions.SubmitTransfer(requestId, physicianId, transferNote);
@@ -279,6 +251,35 @@ namespace HalloDoc.Controllers
         }
 
 
+
+        public IActionResult ClearCase(int requestId)
+        {
+            Services.ViewModels.CaseActions obj = new Services.ViewModels.CaseActions();
+            obj.requestId = requestId;
+            return PartialView("AdminCaseAction/_ClearCase", obj);
+        }
+        public IActionResult SubmitClearCase(int requestId)
+        {
+            caseActions.SubmitClearCase(requestId);
+            return RedirectToAction("AdminDashboard");
+        }
+
+
+        public IActionResult Agreement(int requestId)
+        {
+            AgreementDetails obj = caseActions.Agreement(requestId);
+            obj.requestId = requestId;
+            return PartialView("AdminCaseAction/_Agreement", obj);
+        }
+        public void SendAgreement(int requestId)
+        {
+            var email = _context.Requests.FirstOrDefault(a => a.Requestid == requestId).Email;
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            string resetPasswordPath = Url.Action("ViewAgreement", "Home", new { requestId = requestId });
+            string url = baseUrl + resetPasswordPath;
+            caseActions.SendingAgreement(requestId, email, url);
+        }
+      
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

@@ -81,8 +81,8 @@
                                     <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
                                     <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
                                     <li onclick="TransferCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Transfer</a></li>
-                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Clear case</a></li>
-                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Send Agreement</a></li>
+                                    <li onclick="ClearCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Clear case</a></li>
+                                    <li onclick="Agreement(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Send Agreement</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -225,7 +225,7 @@
         console.log("page is : " + currentPage);
         console.log("Search is : " + searchKey);
         $.ajax({
-            url: '/Admin/NewState',
+            url: '/Admin/AllState',
             data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
             success: function (response) {
                 $('#status-tabContent').html(response);
@@ -237,9 +237,45 @@
     }
 
     function TransferCase(requestId) {
-        console.log("Transfer calling...")
         $.ajax({
             url: "/Admin/TransferCase/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal1", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        });
+    };
+
+    function ClearCase(requestId) {
+        $.ajax({
+            url: "/Admin/ClearCase/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (data) {
+                $("#caseView").html(data);
+                const myModal = new bootstrap.Modal("#exampleModal1", {});
+                myModal.show();
+            },
+            error: function () {
+                alert("No Projects Found");
+                $("#caseView").html('An error has occurred');
+            }
+        });
+    };
+
+
+    function Agreement(requestId) {
+        $.ajax({
+            url: "/Admin/Agreement/",
             data: { "requestId": requestId },
             type: "POST",
             dataType: "html",

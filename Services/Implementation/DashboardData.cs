@@ -37,7 +37,7 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AdminDashboard NewStateData(String status , String requesttype  , int currnetPage , string searchKey = "")
+        public AdminDashboard AllStateData(String status , String requesttype  , int currnetPage , string searchKey = "")
         {
 
             if (requesttype == "0")

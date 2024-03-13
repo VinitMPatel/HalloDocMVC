@@ -19,14 +19,16 @@ namespace HalloDoc.Controllers
         private readonly IValidation validation;
         private readonly IDashboard dashboard;
         private readonly IEmailSender emailSender;
+        private readonly ICaseActions caseActions;
 
-        public patientController(HalloDocDbContext context , IPatientRequest patientRequest , IValidation validation , IDashboard dashboard, IEmailSender emailSender)
+        public patientController(HalloDocDbContext context , IPatientRequest patientRequest, IValidation validation, IDashboard dashboard, IEmailSender emailSender, ICaseActions caseActions)
         {
             _context = context;
             this.patientRequest = patientRequest;
             this.validation = validation;
             this.dashboard = dashboard;
             this.emailSender = emailSender;
+            this.caseActions = caseActions;
         }
 
         [HttpPost]
@@ -147,6 +149,16 @@ namespace HalloDoc.Controllers
             patientRequest.NewAccount(model);
 
             return RedirectToAction("family_friend_request", "requests");
+        }
+
+        public void AgreeAgreement(int requestId)
+        {
+            caseActions.AgreeAgreement(requestId);
+        }
+
+        public void CancelAgreement(int requestId)
+        {
+            caseActions.CancelAgreement(requestId);
         }
     }
 }

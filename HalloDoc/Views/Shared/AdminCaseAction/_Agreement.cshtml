@@ -1,0 +1,67 @@
+﻿@model Services.ViewModels.AgreementDetails
+
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+                @switch (Model.type)
+                {
+                    case 1:
+                        <i class="bi bi-circle-fill" style="color :#5fbc61"></i>
+                        <span>Patient</span>
+                        break;
+                    case 2:
+                        <i class="bi bi-circle-fill" style="color:  #ed9124;"></i>
+                        <span>Friend</span>
+                        break;
+                    case 3:
+                        <i class="bi bi-circle-fill" style="color:#e36478;"></i>
+                        <span>Concierge</span>
+                        break;
+                    case 4:
+                        <i class="bi bi-circle-fill" style="color:  #0c7db7;"></i>
+                        <span>Business</span>
+                        break;
+                }
+                <div class="small mt-2">To Send Agreement please make sure you are uploading the correct contact information below for the responsible party.</div>
+                <div class="form-floating mt-3">
+                    <input type="text" class="form-control shadow-none bg-transparent" placeholder="Mobile Number" asp-for="mobile" disabled>
+                    <label class="FloatingInput" for="Name">Phone Number</label>
+                </div>
+
+                <div class="form-floating mt-4">
+                    <input type="email" class="form-control shadow-none bg-transparent" placeholder="Email" asp-for="email" disabled>
+                    <label class="FloatingInput" for="Name">Email</label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="submitBtn" type="submit" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('.confirm').on('click', function (e) {
+            console.log("Calling");
+            $.ajax({
+                url: '/Admin/SendAgreement',
+                data: { "requestId": @Model.requestId },
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>

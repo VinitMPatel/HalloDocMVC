@@ -9,6 +9,7 @@ using Services.Contracts;
 using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
+using Services.ViewModels;
 
 namespace HalloDoc.Controllers
 {
@@ -51,6 +52,13 @@ namespace HalloDoc.Controllers
 
         public IActionResult patient_login()
         {
+            return View();
+        }
+
+        public IActionResult ViewAgreement(int requestId)
+        {
+            AgreementDetails obj = new AgreementDetails();
+            obj.requestId = requestId;
             return View();
         }
 

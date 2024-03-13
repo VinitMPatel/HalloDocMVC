@@ -1,0 +1,45 @@
+﻿@model Services.ViewModels.CaseActions
+<div class="modal fade" id="exampleModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border border-0 rounded-3">
+            <div class="modal-body">
+                <div class="d-flex flex-column align-items-center">
+                    <div class="mt-5">
+                        <div class="border border-warning rounded-circle">
+                            <div>
+                                <i class="bi bi-exclamation-circle-fill text-warning warn-icon mx-4" style="font-size:100px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3 h3">
+                        Confirmation for clear case
+                    </div>
+                    <div class="mt-3 px-5 text-secondary">
+                        Are you want to clear this request? Once clear this request then you are not able to see this request.
+                    </div>
+                </div>
+                <div class="mt-4 mb-4 gap-2 d-flex justify-content-center">
+                    <button type="submit" class="btn bg-info text-white confirm" data-bs-dismiss="modal">Clear</button>
+                    <button type="button" class="btn border border-info text-info" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $('.confirm').on('click', function () {
+        $.ajax({
+            url: '/Admin/SubmitClearCase',
+            data: { "requestId": @Model.requestId},
+            success: function (response) {
+                console.log(response);
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        });
+    })
+
+</script>

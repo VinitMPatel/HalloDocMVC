@@ -205,12 +205,13 @@
         if (typeof (requestStatus) == "undefined") {
             requestStatus = "0";
         }
+        currentPage = 1;
         CommonAjax();
     }
 
     $(document).ready(function () {
         $.ajax({
-            url: '/Admin/NewState',
+            url: '/Admin/AllState',
             data: { "status": 1, "requesttype": 0},
             success: function (response) {
                 requestStatus = 1;
@@ -227,9 +228,9 @@
             //$(this).addClass('active');
             var target = $(this).data('bs-target');
             var url;
+           
             switch (target) {
                 case '#s_new':
-                    url = '/Admin/NewState';
                     requestStatus = 1;
                     break;
                 case '#s_pending':
@@ -242,7 +243,7 @@
                     requestStatus = 6;
                     break;
                 case '#s_toclose':
-                    requestStatus = 3;
+                    requestStatus = 7;
                     break;
                 case '#s_unpaid':
                     requestStatus = 9;
@@ -252,7 +253,7 @@
             }
 
             $.ajax({
-                url: '/Admin/NewState',
+                url: '/Admin/AllState',
                 data: { "status": requestStatus, "requesttype": 0, "currentPage": 1 },
                 success: function (response) {
                     $('#status-tabContent').html(response);

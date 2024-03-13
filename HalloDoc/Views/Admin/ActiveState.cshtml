@@ -224,7 +224,7 @@
         console.log("page is : " + currentPage);
         console.log("Search is : " + searchKey);
         $.ajax({
-            url: '/Admin/NewState',
+            url: '/Admin/AllState',
             data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
             success: function (response) {
                 $('#status-tabContent').html(response);
