@@ -187,9 +187,10 @@ input#phone {
     color: white;
 }
 
-    .page-active:hover {
+.page-active:hover {
         color: white;
-    }
+}
+
 
 @media only screen and (max-width:1050px) {
     .allstatus {

@@ -45,23 +45,23 @@
                     type = "Concierge";
                 }
                 <tr style="--bs-table-bg : @color">
-                    <td class="text-white">@obj.Request.Firstname</td>
+                    <td class="text-white">@obj.Firstname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
-                    <td class="text-white"> @type , @obj.Firstname</td>
+                    <td class="text-white"> @type , @obj.Request.Firstname</td>
                     <td class="text-white">@obj.Request.Physician.Firstname</td>
                     <td class="text-white">Service Date</td>
                     <td class="text-white">
                         @if (type == "Patient")
                         {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
                             <div>(Patinet)</div>
                         }
                         else
                         {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
                             <div>(Patinet)</div>
-                            <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
                             <div>(@type)</div>
                         }
                     </td>

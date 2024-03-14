@@ -6,44 +6,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - HalloDoc</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="~/css/AdminDashboard.css" asp-append-version="true" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/AdminDashboard.css" asp-append-version="true" />
 </head>
 <body >
     <header>
         <nav class="navbar navbar-light border-bottom px-4">
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Button with data-target
+                </button>
+                
+            </p>
 
-
-            <a class="navbar-brand px" asp-controller="Home" asp-action="Index">
-                <img src="~/images/1HalloDoc.png" height="60px" width="100px">
-            </a>
             <div class="navdiv d-flex flex-row gap-2">
-
-
                 <span class="mt-2 welcome d-none d-sm-block">welcome , @HttpContextAccessor.HttpContext.Session.GetString("AdminName") </span>
 
                 <a asp-action="Logout" asp-controller="Admin">
                     <button style="background-color: transparent;" class="border-1 rounded text-info border-info p-2">
                         <div><i class="bi bi-box-arrow-right d-sm-none"></i></div>
-
                         <div class="logouttext"><span class="d-none d-sm-block">log out</span></div>
-
                     </button>
                 </a>
 
-                <div class="">
+                <div >
                     <button id="darkbtn" class="border border-0 rounded-2 p-1">
                         <img src="~/images/moon_light.png" alt="picture" id="darkimg" height="35px" width="30px">
                     </button>
                 </div>
             </div>
         </nav>
+
+        <div class="collapse" id="collapseExample">
+            <div class="card card-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            </div>
+        </div>
 
         <ul class="nav nav-tabs shadow">
             <li class="nav-item">

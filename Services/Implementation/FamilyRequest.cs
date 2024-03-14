@@ -66,10 +66,10 @@ namespace Services.Implementation
                     Data.Entity.Request request = new Data.Entity.Request();
                     request.Requesttypeid = 2;
                     request.Userid = newUser.Userid;
-                    request.Firstname = r.PatientFirstName;
-                    request.Lastname = r.PatientLastName;
-                    request.Phonenumber = r.PatientMobileNumber;
-                    request.Email = r.PatientEmail;
+                    request.Firstname = r.FirstName;
+                    request.Lastname = r.LastName;
+                    request.Phonenumber = r.Mnumber;
+                    request.Email = r.Email;
                     request.Status = 1;
                     request.Createddate = DateTime.Now;
                     request.Modifieddate = DateTime.Now;
@@ -81,10 +81,10 @@ namespace Services.Implementation
                     Requestclient requestclient = new Requestclient
                     {
                         Requestid = request.Requestid,
-                        Firstname = r.FirstName,
-                        Lastname = r.LastName,
-                        Phonenumber = r.Mnumber,
-                        Email = r.Email,
+                        Firstname = r.PatientFirstName,
+                        Lastname = r.PatientLastName,
+                        Phonenumber = r.PatientMobileNumber,
+                        Email = r.PatientEmail,
                         Street = r.Street,
                         Address = r.Street + ", " + r.City + ", " + r.State,
                         Regionid = 1,
@@ -110,10 +110,10 @@ namespace Services.Implementation
                 Data.Entity.Request request2 = new Data.Entity.Request();
                 request2.Requesttypeid = 2;
                 request2.Userid = user.Userid;
-                request2.Firstname = r.PatientFirstName;
-                request2.Lastname = r.PatientLastName;
-                request2.Phonenumber = r.PatientMobileNumber;
-                request2.Email = r.PatientEmail;
+                request2.Firstname = r.FirstName;
+                request2.Lastname = r.LastName;
+                request2.Phonenumber = r.Mnumber;
+                request2.Email = r.Email;
                 request2.Status = 1;
                 request2.Createddate = DateTime.Now;
                 request2.Modifieddate = DateTime.Now;
@@ -125,10 +125,10 @@ namespace Services.Implementation
                 Requestclient requestclient2 = new Requestclient
                 {
                     Requestid = request2.Requestid,
-                    Firstname = r.FirstName,
-                    Lastname = r.LastName,
-                    Phonenumber = r.Mnumber,
-                    Email = r.Email,
+                    Firstname = r.PatientFirstName,
+                    Lastname = r.PatientLastName,
+                    Phonenumber = r.PatientMobileNumber,
+                    Email = r.PatientEmail,
                     Street = r.Street,
                     Address = r.Street + ", " + r.City + ", " + r.State,
                     Regionid = 1,
@@ -147,10 +147,8 @@ namespace Services.Implementation
                 {
                     uploadFile(r.Upload, request2.Requestid);
                 }
-
                 return true;
             }
-
             else
             {
                 return false;

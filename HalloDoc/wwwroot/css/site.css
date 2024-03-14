@@ -160,6 +160,9 @@ div#passwordFields2 {
     display: none;
 }
 
+.input-validation-error {
+    border: 1px solid red !important;
+}
 
 
     @media only screen and (max-width: 710px) {

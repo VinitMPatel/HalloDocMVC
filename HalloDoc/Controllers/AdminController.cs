@@ -68,18 +68,29 @@ namespace HalloDoc.Controllers
             AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage , searchKey);
             switch (status)
             {
-                case "1":return View("NewState",data);
+                case "1":
+                    return View("NewState",data);
                     break;
-                case "2":return View("PendingState",data);
+                case "2":
+                    return View("PendingState",data);
                     break;
-                case "7":
+                case "3":
                     return View("ToCloseState", data);
                     break;
                 case "4":
                     return View("ActiveState", data);
                     break;
+                case "5":
+                    return View("ActiveState", data);
+                    break;
                 case "6":
                     return View("ConcludeState", data);
+                    break;
+                case "7":
+                    return View("ToCloseState", data);
+                    break;
+                case "8":
+                    return View("ToCloseState", data);
                     break;
                 case "9":
                     return View("UnpaidState", data);

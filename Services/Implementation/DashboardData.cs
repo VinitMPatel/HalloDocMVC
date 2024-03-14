@@ -42,7 +42,19 @@ namespace Services.Implementation
 
             if (requesttype == "0")
             {
-                List<Requestclient> reqc = (List<Requestclient>)_context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == status).ToList();
+                List<Requestclient> reqc = new List<Requestclient>();
+                if (status == "4")
+                {
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == "4" || a.Request.Status.ToString() == "5").ToList();
+                }
+                else if(status == "3")
+                {
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == "3" || a.Request.Status.ToString() == "7" || a.Request.Status.ToString() == "8").ToList();
+                }
+                else
+                {
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == status).ToList();
+                }
                 AdminDashboard obj = new AdminDashboard();
                 
                 if (!string.IsNullOrWhiteSpace(searchKey))
@@ -137,7 +149,6 @@ namespace Services.Implementation
                 _context.SaveChanges();
             }
         }
-
 
         public void SingleDelete(int reqfileid)
         {

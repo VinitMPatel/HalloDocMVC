@@ -2,7 +2,7 @@
 
 
 @Html.Partial("_patient")
-@* 
+@*
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Launch static backdrop modal
 </button> *@
@@ -11,16 +11,16 @@
 
 
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-<div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-        <div class="modal-header bg-info text-white">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Request</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form asp-action="NewRequest">
-        <div class="modal-body">
-            <div class="h6">Here, I want to create new request for...</div>
-             <div class="d-flex justify-content-center mt-3">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Create New Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="NewRequest">
+                <div class="modal-body">
+                    <div class="h6">Here, I want to create new request for...</div>
+                    <div class="d-flex justify-content-center mt-3">
 
                         <input type="radio" class="btn-check" name="flexRadioDefault" id="option1" autocomplete="off" checked value="Me">
                         <label class="btn btn-info me-3 text-white" for="option1">Me</label>
@@ -28,15 +28,15 @@
                         <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" value="else">
                         <label class="btn text-info" for="option2">Some One Else</label>
 
-             </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white">Continue</button>
+                    <button type="button" class="btn ms-3 p-2 rounded border-info bg-transparent text-info px-3" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-                <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white">Continue</button>
-                <button type="button" class="btn ms-3 p-2 rounded border-info bg-transparent text-info px-3" data-bs-dismiss="modal">Cancel</button>
-        </div>
-        </form>
     </div>
-</div>
 </div>
 
 <div class="tab-content" id="pills-tabContent">
@@ -50,10 +50,10 @@
                 </div>
                 <div class="bglight rounded p-3 shadow" id="content">
                     <div class="d-flex justify-content-end">
-                         <button type="button" class="border border-info bg-transparent rounded-2 text-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        <button type="button" class="border border-info bg-transparent rounded-2 text-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                             <i class="bi bi-plus-lg"></i>
                             <span class="new_request">Create new request</span>
-                         </button>
+                        </button>
                     </div>
                     <div class="table-responsive">
                         <table class="table mt-4">
@@ -69,7 +69,40 @@
                                 {
                                     <tr>
                                         <td>@m.Createddate.ToString("MMM dd , yyyy")</td>
-                                        <td>@Model.StatusFind(m.Status)</td>
+
+                                        @switch (m.Status)
+                                        {
+                                            case 1:
+                                                <td>Unassigned</td>
+                                                break;
+                                            case 2:
+                                                <td>Accepted</td>
+                                                break;
+                                            case 3:
+                                                <td>Cancelled</td>
+                                                break;
+                                            case 4:
+                                                <td>MDEnRoute</td>
+                                                break;
+                                            case 5:
+                                                <td>MDONSite</td>
+                                                break;
+                                            case 6:
+                                                <td>Conclude</td>
+                                                break;
+                                            case 7:
+                                                <td>Cancelled By Patient</td>
+                                                break;
+                                            case 8:
+                                                <td>Closed</td>
+                                                break;
+                                            case 9:
+                                                <td>Unpaid</td>
+                                                break;
+                                            case 10:
+                                                <td>Clear</td>
+                                                break;
+                                        }
                                         <td onclick="temp()">
                                             <a asp-action="ViewDocument" asp-route-id=@m.Requestid>
                                                 <button class=" border border-info rounded-2 bg-transparent text-info">
@@ -77,7 +110,7 @@
                                                     Document
                                                 </button>
                                             </a>
-                                            
+
 
                                         </td>
                                     </tr>
@@ -103,7 +136,7 @@
             </div>
 
             <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
-               <form asp-controller="patient" asp-action="Editing">
+                <form asp-controller="patient" asp-action="Editing">
                     <div class="patient-info row">
                         <div class="h4">General information</div>
 
@@ -130,15 +163,15 @@
                         <div class="h4">contact information</div>
 
                         <div class="form-floating mt-3 col-xl-2 col-sm-2 col-4">
-                        <select class="form-control">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
+                            <select class="form-control">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
                             </select>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
-                           @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                            @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
                             <input type="text" asp-for="user.Mobile" class="form-control data" id="floatingInput" placeholder="phone" disabled>
                             <label for="floatingInput" style="left: 5px;">Contact</label>
                         </div>
@@ -175,20 +208,20 @@
                             <label for="floatingInput" style="left: 5px;">Zip Code</label>
                         </div>
 
-                    <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2">
-                        <div class=" rounded border border-info text-info form-control">
-                            <i class="bi bi-geo-alt"></i>Map
+                        <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2">
+                            <div class=" rounded border border-info text-info form-control">
+                                <i class="bi bi-geo-alt"></i>Map
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                    <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()">Edit</div>
+                        <div class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()">Edit</div>
                         <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white me-2" id="submitBtn">Submit</button>
                         @* <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="CancelBtn" onclick="again()">Cancel</div> *@
                         @* <input type="submit" class="bg-info p-2 rounded border-0 px-3 text-white" /> *@
                     </div>
-                   
+
                 </form>
             </div>
         </div>
@@ -208,16 +241,16 @@
             dataFields[i].removeAttribute('disabled')
             editBtn.style.display = "none";
         }
-            submitBtn.style.display = 'block';
-            //cancelBtn.style.display = 'block';
+        submitBtn.style.display = 'block';
+        //cancelBtn.style.display = 'block';
     }
-    // function again() {
-    //     submitBtn.style.display = 'none';
-    //     cancelBtn.style.display = 'none';
-    //     editBtn.style.display = "block";
-    //     for (let i = 0; i < dataFields.length; i++) {
-    //         dataFields[i].setAttribute('disabled')
-    //     }
-    // }
+        // function again() {
+        //     submitBtn.style.display = 'none';
+        //     cancelBtn.style.display = 'none';
+        //     editBtn.style.display = "block";
+        //     for (let i = 0; i < dataFields.length; i++) {
+        //         dataFields[i].setAttribute('disabled')
+        //     }
+        // }
 </script>
 

@@ -3,19 +3,19 @@
 }
 @model Services.ViewModels.FamilyFriendRequest;
 
-    <div class="container mt-3">
-        <div class="d-flex justify-content-between">
-            <div>
-                <h3 class="none">Submit Information</h3>
-            </div>
-            <div>
-            <button class=" border border-info rounded-2 p-2 bg-transparent">
-                    <a class="text-decoration-none text-info " asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
-                </button>
-            </div>
+<div class="container mt-3">
+    <div class="d-flex justify-content-between">
+        <div>
+            <h3 class="none">Submit Information</h3>
         </div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info " asp-controller="Home" asp-action="patient_request_screen">&lt; Back</a>
+            </button>
+        </div>
+    </div>
 
-        <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
+    <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
         <form asp-action="FamilyInsert" asp-controller="Requests" method="post" enctype="multipart/form-data">
             <div class="relative-info row mt-3">
 
@@ -34,8 +34,7 @@
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="text" class="form-control" asp-for="Mnumber" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput" style="left: 5px;">Mobile number</label>
+                    <input type="text" id="phone" class="form-control" asp-for="Mnumber" />
                     <span asp-validation-for="Mnumber" class="text-danger"></span>
                 </div>
 
@@ -92,16 +91,9 @@
                     <span asp-validation-for="PatientEmail" class="text-danger"></span>
                 </div>
 
-                @* <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <!-- <input type="tel" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput" style="left: 5px;">Mobile number</label> -->
-                    <input id="phone" class="form-control" asp-for="PatientMobileNumber" type="tel" name="phone" />
-                    <span asp-validation-for="PatientMobileNumber" class="text-danger"></span>
-                </div> *@
-
-                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" required>
-                    <input id="phone" asp-for="PatientMobileNumber" class="form-control" type="text" maxlength="10" />
-                    <span asp-validation-for="PatientMobileNumber" class="text-danger"></span>
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" id="phone1" class="form-control" asp-for=PatientMobileNumber />
+                    <span asp-validation-for=PatientMobileNumber class="text-danger"></span>
                 </div>
 
             </div>
@@ -143,18 +135,18 @@
 
                 <div class="h4">(Optional) Upload photo or Document</div>
 
-@*                 <div class="row d-flex mt-3">
-                    <div class="py-2 col-12 ">
-                        <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
-                            <div class="px-3 table-responsive">
-                                <input type="file" id="upload" asp-for="Upload" multiple hidden />
-                                <label id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
-                            </div>
-                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
-                                <label for="upload" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
-                            </div>
-                        </div>
-                    </div>
+                @*                 <div class="row d-flex mt-3">
+                <div class="py-2 col-12 ">
+                <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                <div class="px-3 table-responsive">
+                <input type="file" id="upload" asp-for="Upload" multiple hidden />
+                <label id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                </div>
+                <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                <label for="upload" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                </div>
+                </div>
+                </div>
                 </div> *@
 
                 <div class="row d-flex mt-3">
@@ -177,9 +169,9 @@
                 </div>
 
             </div>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
 <script>
     const phoneInputField = document.querySelector("#phone");
@@ -187,11 +179,15 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
-
-        swal("Information",
-            "When Submitting the request, you must provide the correct contact information for the patient or responsibly party.Failure to provide the correct email and phone number will delay the service or be declined.",
-            "warning", {
-            closeOnClickOutside: true,
-        });
+    const phoneInputField1 = document.querySelector("#phone1");
+    const phoneInput1 = window.intlTelInput(phoneInputField1, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+    swal("Information",
+        "When Submitting the request, you must provide the correct contact information for the patient or responsibly party.Failure to provide the correct email and phone number will delay the service or be declined.",
+        "warning", {
+        closeOnClickOutside: true,
+    });
 
 </script>
