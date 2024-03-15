@@ -30,7 +30,11 @@ namespace Services.Implementation
         {
             patient_dashboard dash = new patient_dashboard();
             var userdata = _context.Users.Where(u => u.Userid == id).FirstOrDefault();
-            dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(userdata.Intdate));
+
+            dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), 
+                DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, 
+                Convert.ToInt32(userdata.Intdate));
+
             var req = _context.Requests.Where(m => m.Userid == id);
             dash.user = userdata;
             dash.request = req.ToList();

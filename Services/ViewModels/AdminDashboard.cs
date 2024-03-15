@@ -16,5 +16,9 @@ namespace Services.ViewModels
 
 
         public int totalPages { get; set; }
+
+        public int currentpage { get; set; }
     }
+
+
 }

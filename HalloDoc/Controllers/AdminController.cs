@@ -15,7 +15,7 @@ using System.Web.Helpers;
 namespace HalloDoc.Controllers
 {
 
-   
+
     public class AdminController : Controller
     {
         private readonly IDashboardData dashboardData;
@@ -63,16 +63,16 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult AllState(String status, String requesttype, int currentPage , string searchKey)
+        public IActionResult AllState(String status, String requesttype, int currentPage, string searchKey)
         {
-            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage , searchKey);
+            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, searchKey);
             switch (status)
             {
                 case "1":
-                    return View("NewState",data);
+                    return View("NewState", data);
                     break;
                 case "2":
-                    return View("PendingState",data);
+                    return View("PendingState", data);
                     break;
                 case "3":
                     return View("ToCloseState", data);
@@ -95,10 +95,10 @@ namespace HalloDoc.Controllers
                 case "9":
                     return View("UnpaidState", data);
                     break;
-                default : return View();
+                default: return View();
             }
         }
-    
+
         public IActionResult ViewCase(int requestId)
         {
             CaseActionDetails obj = dashboardData.ViewCaseData(requestId);
@@ -137,7 +137,7 @@ namespace HalloDoc.Controllers
             return physicianList;
         }
 
-        
+
         public IActionResult AssignCase(int requestId)
         {
             Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
@@ -232,12 +232,12 @@ namespace HalloDoc.Controllers
 
         public List<Healthprofessional> GetBusinesses(int professionId)
         {
-            return _context.Healthprofessionals.Where(u=>u.Profession ==  professionId).ToList();
+            return _context.Healthprofessionals.Where(u => u.Profession == professionId).ToList();
         }
 
         public Healthprofessional GetBusinessesDetails(int businessid)
         {
-            return  _context.Healthprofessionals.Where(u => u.Vendorid ==  businessid).FirstOrDefault(); 
+            return _context.Healthprofessionals.Where(u => u.Vendorid == businessid).FirstOrDefault();
         }
 
 
@@ -290,7 +290,20 @@ namespace HalloDoc.Controllers
             string url = baseUrl + resetPasswordPath;
             caseActions.SendingAgreement(requestId, email, url);
         }
-      
+
+
+        public IActionResult CloseCase(int requestId)
+        {
+            CloseCase obj = caseActions.CloseCase(requestId);
+            return PartialView("AdminCaseAction/_CloseCase", obj);
+        }
+        public IActionResult CloseCaseChanges(string email , int requestId , string phone)
+        {
+           caseActions.CloseCaseChanges(email , requestId , phone);
+            return RedirectToAction("CloseCase", new {requestId = requestId});
+        }
+
+
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

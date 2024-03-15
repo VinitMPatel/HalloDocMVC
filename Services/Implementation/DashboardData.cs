@@ -8,6 +8,7 @@ using Services.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
@@ -49,7 +50,7 @@ namespace Services.Implementation
                 }
                 else if(status == "3")
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == "3" || a.Request.Status.ToString() == "7" || a.Request.Status.ToString() == "8").ToList();
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Where(a => a.Request.Status.ToString() == "3" || a.Request.Status.ToString() == "7" || a.Request.Status.ToString() == "8").ToList();
                 }
                 else
                 {
@@ -61,8 +62,9 @@ namespace Services.Implementation
                 {
                     reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
                 }
-                obj.totalPages = reqc.Count();
-                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.totalPages = (int)Math.Ceiling(reqc.Count() / 1.00);
+                obj.currentpage = currnetPage;
+                reqc = reqc.Skip((currnetPage - 1) * 1).Take(1).ToList();
                 obj.requestclients = reqc;
                 return obj;
             }
@@ -74,8 +76,9 @@ namespace Services.Implementation
                 {
                     reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
                 }
-                obj.totalPages = reqc.Count();
-                reqc = reqc.Skip((currnetPage - 1) * 3).Take(3).ToList();
+                obj.totalPages = (int)Math.Ceiling(reqc.Count() / 1.00);
+                obj.currentpage = currnetPage;
+                reqc = reqc.Skip((currnetPage - 1) * 1).Take(1).ToList();
                 obj.requestclients = reqc;
                 return obj;
             }

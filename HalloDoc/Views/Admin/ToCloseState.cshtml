@@ -9,9 +9,9 @@
                 <th>Name</th>
                 <th> </th>
                 <th>Date of birth</th>
-                <th>Requestor</th>
-                <th>Requested date</th>
-                <th>Phone</th>
+                <th>Region</th>
+                <th>Physician</th>
+                <th>Date of Service</th>
                 <th>Address</th>
                 <th>Notes</th>
                 <th>Chat With</th>
@@ -47,22 +47,9 @@
                     <td class="text-white">@obj.Firstname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
-                    <td class="text-white"> @type , @obj.Request.Firstname</td>
+                    <td class="text-white">@obj.Region.Name</td>
+                    <td class="text-white"> @obj.Request.Physician.Firstname</td>
                     <td class="text-white">@obj.Request.Createddate</td>
-                    <td class="text-white">
-                        @if (type == "Patient")
-                        {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
-                            <div>(Patinet)</div>
-                        }
-                        else
-                        {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
-                            <div>(Patinet)</div>
-                            <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
-                            <div>(@type)</div>
-                        }
-                    </td>
                     <td class="text-white">@obj.Address</td>
                     <td class="text-white">@obj.Notes</td>
                     <td class="text-white">
@@ -75,11 +62,14 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
-                                    <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
-                                    <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                    <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                    <li onclick="ViewCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>View Case</a></li>
+                                    <li onclick="ViewUploads(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
+                                    <li onclick="ViewNotes(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                    <li onclick="Orders(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Orders</a></li>
+                                    <li onclick="CloseCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Close Case</a></li>
+                                    <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Doctors Note</a></li>
+                                    <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Clear Case</a></li>
+                                    <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Encounter</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -177,3 +167,71 @@
         </div>
     </div>
 </div>
+<script>
+    function ViewCase(requestId) {
+        $.ajax({
+            url: '/Admin/ViewCase',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function ViewUploads(requestId) {
+        $.ajax({
+            url: '/Admin/ViewUploads',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function ViewNotes(requestId) {
+        $.ajax({
+            url: '/Admin/ViewNotes',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function Orders(requestId) {
+        console.log("Working");
+        $.ajax({
+            url: '/Admin/Orders/',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function CloseCase(requestId) {
+        console.log("Working");
+        $.ajax({
+            url: '/Admin/CloseCase/',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,155 @@
+﻿@model Services.ViewModels.CloseCase
+<div class="container mt-3" id="closeCaseContent">
+
+    <div class="d-flex justify-content-between">
+        <div class="fw-bolder h4">Close Case</div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
+
+        <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column">
+                <div>Patient Name</div>
+                <div>testing</div>
+            </div>
+            <div>
+                <button class=" border border-info rounded-2 p-2 bg-transparent text-info">
+                    Create Invoice
+                </button>
+            </div>
+        </div>
+
+        <p class="h5 mt-3">Documents</p>
+
+        <div class="table-responsive mt-2 d-md-block d-none">
+            <table class="table">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col" style="width:55%">Documents</th>
+                        <th scope="col" style="width:30%">Upload Date <i class="bi bi-arrow-up-short h5"></i></th>
+                        <th class="text-center" scope="col" style="width:15%">Actions</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="d-md-none d-block">
+            <hr />
+
+            <div>
+                <span>Document</span>
+            </div>
+            <div class="my-3">
+                UploadDate
+            </div>
+            <div class="">
+                <a href="" class="btn border-2 border-info rounded-3 pb-2 pt-1 px-2 mr-2" download="">
+                    <i class="bi bi-cloud-arrow-down text-info h4 fw-bolder"></i>
+                </a>
+            </div>
+
+            <hr />
+        </div>
+
+        <input type="text" asp-for="requestId" hidden id="requestId" />
+
+
+
+        <form class="row">
+            <div class="p-2 col-sm-6 col-12 mt-3">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="First Name" name="contact" disabled asp-for="firstName">
+                    <label class="FloatingInput">First Name</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 mt-3">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Last Name" name="contact" disabled asp-for="lastName">
+                    <label class="FloatingInput">Last Name</label>
+                </div>
+            </div>
+
+            <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                <input type="date" class="form-control" id="floatingPassword" placeholder="Date of birth" disabled asp-for="DOB">
+                <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
+            </div>
+
+
+            <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                <input id="phone" asp-for="mobileNumber" class="form-control data" type="text" maxlength="10" disabled />
+                <label for="floatingInput" style="left: 5px;">Contact</label>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 mt-3">
+                <div class="form-floating ">
+                    <input id="newEmail" type="email" class="form-control data" placeholder="Business Contact" name="email" disabled asp-for="email">
+                    <label class="FloatingInput">Email</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="button" class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" id="editBtn">Edit</button>
+                <button type="button" class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" id="saveBtn">Save Chnages</button>
+                <button class="btn ms-3 p-2 rounded border border-info px-3 text-info" id="cancelBtn" type="reset">Cancel</button>
+                <button type="button" class="btn ms-3 p-2 rounded border border-info px-3 text-info" id="mainBtn">Close Case</button>
+            </div>
+
+        </form>
+
+
+    </div>
+
+</div>
+<script>
+    var saveBtn = document.getElementById('saveBtn');
+    saveBtn.style.display = "none";
+    var cancelBtn = document.getElementById('cancelBtn');
+    cancelBtn.style.display = "none";
+    var editBtn = document.getElementById('editBtn');
+    var mainBtn = document.getElementById('mainBtn');
+    var dataFields = document.getElementsByClassName('data');
+    var requestId = $('#requestId').val();
+    $('#editBtn').on('click', function () {
+        for (let i = 0; i < dataFields.length; i++) {
+            dataFields[i].removeAttribute('disabled')
+        }
+        editBtn.style.display = "none";
+        mainBtn.style.display = "none";
+        saveBtn.style.display = "block";
+        cancelBtn.style.display = "block";
+    })
+    $('#saveBtn').on('click', function () {
+        for (let i = 0; i < dataFields.length; i++) {
+            dataFields[i].setAttribute('disabled', 'true')
+        }
+        editBtn.style.display = "block";
+        mainBtn.style.display = "block";
+        saveBtn.style.display = "none";
+        cancelBtn.style.display = "none";
+    })
+    $('#cancelBtn').on('click', function () {
+        for (let i = 0; i < dataFields.length; i++) {
+            dataFields[i].setAttribute('disabled', 'true')
+        }
+        editBtn.style.display = "block";
+        mainBtn.style.display = "block";
+        saveBtn.style.display = "none";
+        cancelBtn.style.display = "none";
+    })
+    $('#saveBtn').on('click', function () {
+        var newEmail = $('#newEmail').val();
+        var requestId = $('#requestId').val();
+        var phone = $('#phone').val();
+        $.ajax({
+            url: '/Admin/CloseCaseChanges',
+            data: { "email": newEmail, "requestId": requestId, "phone": phone },
+        });
+    })
+</script>

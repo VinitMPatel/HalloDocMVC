@@ -14,6 +14,7 @@ using System.Net;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Services.Implementation
 {
@@ -257,5 +258,31 @@ namespace Services.Implementation
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
+
+
+        public CloseCase CloseCase(int requestId)
+        {
+            var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
+            CloseCase obj = new CloseCase();
+            obj.firstName = requestData.Firstname;
+            obj.lastName = requestData.Lastname;
+            obj.email = requestData.Email;
+            obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear), 
+                DateTime.ParseExact(requestData.Requestclients.First().Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
+                Convert.ToInt32(requestData.Requestclients.First().Intdate));
+            obj.mobileNumber = requestData.Phonenumber;
+            obj.requestId = requestId;
+            return obj;
+        }
+
+        public void CloseCaseChanges(string email, int requestId, string phone)
+        {
+            var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
+            requestData.Email = email;
+            requestData.Phonenumber= phone;
+            _context.Update(requestData);
+            _context.SaveChanges();
+        }
+
     }
 }

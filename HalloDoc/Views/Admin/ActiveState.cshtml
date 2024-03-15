@@ -3,7 +3,7 @@
     Layout = "";
 }
 <div class="table-responsive border-top">
-    <table class="table d-md-table d-none">
+    <table class="table d-md-table d-none table-secondary">
         <thead class="bg-body-secondary">
             <tr>
                 <th>Name</th>
@@ -180,28 +180,90 @@
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-center gap-3 my-3">
-    @if (Model.totalPages > 0)
+@if (Model.totalPages > 0)
+{
+    var previous = Model.currentpage - 1;
+    var next = Model.currentpage + 1;
+    if (previous <= 0)
     {
-        var x = 0;
-        if (Model.totalPages % 3 == 0)
+        previous = 1;
+    }
+    if (next > Model.totalPages)
+    {
+        next = Model.totalPages;
+    }
+    <button class="@previous" id="page-0" onclick="ChangePage(@previous)" style="width:68px">
+        Previous
+    </button>
+    @if (Model.totalPages > 5)
+    {
+        @if (Model.currentpage > Model.totalPages - 3)
         {
-            x = 0;
+            <button class="1" id="page-1" onclick="ChangePage(1)" style="width:25px">
+                1
+            </button>
+            <button class="0" id="page-0" style="width:25px">
+                ...
+            </button>
+            @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+            {
+                <button class="@i" id="page-@i" onclick="ChangePage(@i)" style="width:25px">
+                    @i
+                </button>
+            }
+        }
+        else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+        {
+            <button class="1" id="page-1" onclick="ChangePage(1)" style="width:25px">
+                1
+            </button>
+            <button class="0" id="page-0" style="width:25px">
+                ...
+            </button>
+            @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+            {
+                <button class="@i" id="page-@i" onclick="ChangePage(@i)" style="width:25px">
+                    @i
+                </button>
+            }
+            <button class="0" id="page-0" style="width:25px">
+                ...
+            </button>
+            <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)" style="width:25px">
+                @Model.totalPages
+            </button>
         }
         else
         {
-            x = 1;
+            @for (var i = 1; i <= 4; i++)
+            {
+                <button class="@i" id="page-@i" onclick="ChangePage(@i)" style="width:25px">
+                    @i
+                </button>
+            }
+            <button class="0" id="page-0" style="width:25px">
+                ...
+            </button>
+            <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)" style="width:25px">
+                @Model.totalPages
+            </button>
         }
-        @for (int page = 0; page < (Model.totalPages / 3) + x; page++)
+    }
+    else
+    {
+        @for (int page = 0; page < Model.totalPages; page++)
         {
-
             var temp = page + 1;
-            <button class="@temp paginationBtn bg-none rounded-4" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px" name="@temp">
+
+            <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)" style="width:25px">
                 @temp
             </button>
         }
     }
-</div>
+    <button class="@next" id="page-@next" onclick="ChangePage(@next)" style="width:50px">
+        Next
+    </button>
+}
 <script>
     function Orders(requestId) {
         console.log("Working");

@@ -217,7 +217,7 @@
         document.getElementById(0).classList.add('rounded-3');
         $.ajax({
             url: '/Admin/AllState',
-            data: { "status": 1, "requesttype": 0},
+            data: { "status": 1, "requesttype": 0, "currentPage": 1 },
             success: function (response) {
                 requestStatus = 1;
                 $('#status-tabContent').html(response);

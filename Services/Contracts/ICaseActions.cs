@@ -26,5 +26,7 @@ namespace Services.Contracts
         public void SendingAgreement(int requestId, string email, string url);
         void AgreeAgreement(int requestId);
         void CancelAgreement(int requestId);
+        CloseCase CloseCase(int requestId);
+        void CloseCaseChanges(string email, int requestId, string phone);
     }
 }
