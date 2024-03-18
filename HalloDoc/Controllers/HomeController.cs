@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Net.Mail;
 using System.Net;
 using Services.ViewModels;
+using Common.Helper;
 
 namespace HalloDoc.Controllers
 {
@@ -17,12 +18,13 @@ namespace HalloDoc.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HalloDocDbContext _context;
-
+       
 
         public HomeController(ILogger<HomeController> logger, HalloDocDbContext context)
         {
             _logger = logger;
             _context = context;
+            
         }
 
         public IActionResult index()
@@ -55,11 +57,12 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult ViewAgreement(int requestId)
+        public IActionResult ViewAgreement(string requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            obj.requestId = requestId;
-            return View();
+            int decryptReqId = int.Parse(EncryptDecryptHelper.Decrypt(requestId));
+            obj.requestId = decryptReqId;
+            return View(obj);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

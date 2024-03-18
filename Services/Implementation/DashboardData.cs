@@ -44,6 +44,8 @@ namespace Services.Implementation
             if (requesttype == "0")
             {
                 List<Requestclient> reqc = new List<Requestclient>();
+                AdminDashboard obj = new AdminDashboard();
+
                 if (status == "4")
                 {
                     reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == "4" || a.Request.Status.ToString() == "5").ToList();
@@ -56,11 +58,10 @@ namespace Services.Implementation
                 {
                     reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Status.ToString() == status).ToList();
                 }
-                AdminDashboard obj = new AdminDashboard();
-                
+
                 if (!string.IsNullOrWhiteSpace(searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
                 }
                 obj.totalPages = (int)Math.Ceiling(reqc.Count() / 1.00);
                 obj.currentpage = currnetPage;
@@ -72,10 +73,12 @@ namespace Services.Implementation
             {
                 List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
                 AdminDashboard obj = new AdminDashboard();
+
                 if (!string.IsNullOrWhiteSpace(searchKey))
                 {
                     reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
                 }
+
                 obj.totalPages = (int)Math.Ceiling(reqc.Count() / 1.00);
                 obj.currentpage = currnetPage;
                 reqc = reqc.Skip((currnetPage - 1) * 1).Take(1).ToList();

@@ -25,18 +25,17 @@ namespace Services.Implementation
             _context = context;
             _env = env;
         }
-       
+
         public void Insert(PatientInfo r)
         {
-            using(var transaction = _context.Database.BeginTransaction())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
-                    var aspnetuser = _context.Aspnetusers.Where(m => m.Email == r.Email).FirstOrDefault();
-                    User user = new User();
-                    if (aspnetuser == null)
+                    User? user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
+                    
+                    if (user == null)
                     {
-
                         Aspnetuser aspnetuser1 = new Aspnetuser();
                         aspnetuser1.Id = Guid.NewGuid().ToString();
                         aspnetuser1.Passwordhash = r.Password;
@@ -69,11 +68,12 @@ namespace Services.Implementation
                         user.Regionid = 1;
                         _context.Users.Add(user);
                     }
-                    else
-                    {
-                         user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
-                    }
-                    
+                    //else
+                    //{
+                    //    user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
+                    //}
+                    string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
+                    var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
                     Request request = new Request
                     {
                         Requesttypeid = 1,
@@ -84,6 +84,9 @@ namespace Services.Implementation
                         Status = 1,
                         Createddate = DateTime.Now,
                         Modifieddate = DateTime.Now,
+                        Confirmationnumber = region.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') + 
+                                            DateTime.Now.Year.ToString().Substring(2) + r.LastName.ToUpper().Substring(0, 2) + r.FirstName.ToUpper().Substring(0, 2) +
+                                            (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
                         User = user,
                     };
                     _context.Requests.Add(request);
@@ -118,7 +121,8 @@ namespace Services.Implementation
                     transaction.Commit();
 
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     transaction.Rollback();
                 }
             }

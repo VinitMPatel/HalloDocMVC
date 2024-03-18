@@ -1,0 +1,234 @@
+﻿
+<div class="container mt-3" id="closeCaseContent">
+
+    <div class="d-flex justify-content-between">
+        <div class="fw-bolder h4">Close Case</div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
+
+        <div class="row AccountInfo">
+            <div class="h4">Account Information</div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" name="contact">
+                    <label class="FloatingInput">User Name</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="password" class="form-control" placeholder="Password" name="contact">
+                    <label class="FloatingInput">Password</label>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mt-2">
+                <div class="form-floating">
+                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect">
+                        <option value="" selected>Active</option>
+                    </select>
+                    <label for="floatingSelect">
+                        Status
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mt-2">
+                <div class="form-floating">
+                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect">
+                        <option value="" selected>Master Admin</option>
+                    </select>
+                    <label for="floatingSelect">
+                        Role
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button  type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
+            </div>
+        </div>
+
+        <form>
+        <div class="row mt-3">
+            <div class="h4">Administrator Information</div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="First Name" disabled>
+                    <label class="FloatingInput">First Name</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="Last Name" disabled>
+                    <label class="FloatingInput">Last Name</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled>
+                    <label class="FloatingInput">Email</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled>
+                    <label class="FloatingInput">Confirm Email</label>
+                </div>
+            </div>
+
+            <div class=" mt-3 col-xl-6 col-sm-6 col-12">
+                <div class="form-floating">
+                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                    <input class="form-control data1" type="text" maxlength="10" placeholder="contact" disabled />
+                    <label class="floatingInput">Contact</label>
+                </div>
+            </div>
+
+            <div class=" mt-3 col-xl-6 col-sm-6 col-12">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
+                    <label class="form-check-label" for="inlineCheckbox1">New York</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
+                    <label class="form-check-label" for="inlineCheckbox2">Ahmedabad</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3">
+                    <label class="form-check-label" for="inlineCheckbox3">Dubai</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="4">
+                    <label class="form-check-label" for="inlineCheckbox4">Singapore</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-2">
+                <button id="submitBtn1" type="button" class="btn btn-info text-white">Edit</button>
+                <button id="saveBtn1" type="submit" class="btn btn-info text-white">Save Changes</button>
+                <button id="cancelBtn1" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
+            </div>
+        </div>
+        </form>
+
+        <form>
+        <div class="row mt-3">
+            <div class="h4">Mailing and billing information</div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Address1" disabled>
+                    <label class="FloatingInput">Address1</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Address2" disabled>
+                    <label class="FloatingInput">Address2</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="" class="form-control data2" placeholder="city" disabled>
+                    <label class="FloatingInput">City</label>
+                </div>
+            </div>
+            <div class="col-sm-6 col-12 mt-2">
+                <div class="form-floating">
+                    <select class="form-select data2" aria-label="Floating label select example" id="floatingSelect" disabled>
+                        <option value="" selected>Ahmedabad</option>
+                    </select>
+                    <label for="floatingSelect">
+                        State
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-12 mt-2">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Zip Code" disabled>
+                    <label class="FloatingInput">Zip Code</label>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-sm-6 col-12 mt-2">
+                <div class="form-floating">
+                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                    <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled />
+                    <label class="floatingInput">Contact</label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button id="submitBtn2" type="button" class="btn btn-info text-white">Edit</button>
+                <button id="saveBtn2" type="submit" class="btn btn-info text-white">Save Changes</button>
+                <button id="cancelBtn2" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
+            </div>
+        </div>
+        </form>
+    </div>
+
+</div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#cancelBtn1').css('display', 'none');
+        $('#saveBtn1').css('display', 'none');
+
+        $('#submitBtn1').on('click', function () {
+            $('.data1').each(function () {
+                $(this).prop('disabled', false);
+            })
+            $('#cancelBtn1').css('display', 'flex')
+            $('#saveBtn1').css('display', 'flex')
+            $(this).css('display','none')
+        })
+
+        $('#cancelBtn1').on('click', function () {
+            $('.data1').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#submitBtn1').css('display', 'flex')
+            $('#saveBtn1').css('display', 'none')
+            $(this).css('display', 'none')
+        })
+
+        $('#cancelBtn2').css('display', 'none');
+        $('#saveBtn2').css('display', 'none');
+
+        $('#submitBtn2').on('click', function () {
+            $('.data2').each(function () {
+                $(this).prop('disabled', false);
+            })
+            $('#cancelBtn2').css('display', 'flex')
+            $('#saveBtn2').css('display', 'flex')
+            $(this).css('display', 'none')
+        })
+
+        $('#cancelBtn2').on('click', function () {
+            $('.data2').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#submitBtn2').css('display', 'flex')
+            $('#saveBtn2').css('display', 'none')
+            $(this).css('display', 'none')
+        })
+
+    })
+</script>

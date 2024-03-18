@@ -84,19 +84,29 @@
         <div>
             <div class="h3">Patient <span class="text-info">(New)</span></div>
         </div>
+
         <div>
             <a class="text-decoration-none btn btn-info text-white" type="button">
                 <i class="bi bi-send me-2 "></i>
                 <span class="dash-btn">Send Link</span>
             </a>
+
             <a class="text-decoration-none btn btn-info text-white" type="button">
                 <i class="bi bi-file-text me-2 "></i>
                 <span class="dash-btn">Create Requests</span>
             </a>
-            <a class="text-decoration-none btn btn-info text-white" type="button">
+
+            <form asp-action="AllState" class="d-inline">
+            <a class="text-decoration-none btn btn-info text-white" type="submit">
                 <i class="bi bi-arrow-up-short me-2"></i>
                 <span class="dash-btn">Export</span>
             </a>
+            <input type="text"  id="exsearch" hidden/>
+            <input type="text"  id="expage" hidden/>
+            <input type="text"  id="exrequesttype" hidden/>
+            </form>
+
+
             <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
                 <i class="bi bi-arrow-bar-up me-2 "></i>
                 <span class="dash-btn">Export All</span>
@@ -213,6 +223,7 @@
     }
 
     $(document).ready(function () {
+
         document.getElementById(0).style.border = "1px solid black";
         document.getElementById(0).classList.add('rounded-3');
         $.ajax({
@@ -221,6 +232,8 @@
             success: function (response) {
                 requestStatus = 1;
                 $('#status-tabContent').html(response);
+                $('#expage').val(currentPage);
+                $('#exrequesttype').val(0);
             },
             error: function (xhr, status, error) {
                 console.error(error);

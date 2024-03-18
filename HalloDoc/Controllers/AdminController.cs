@@ -1,6 +1,7 @@
 ﻿using Common.Enum;
 using Data.DataContext;
 using Data.Entity;
+using Common.Helper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Npgsql.Replication.PgOutput.Messages;
@@ -24,6 +25,7 @@ namespace HalloDoc.Controllers
         private readonly HalloDocDbContext _context;
         private readonly IJwtRepository _jwtRepository;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
+       
 
         public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
@@ -286,7 +288,8 @@ namespace HalloDoc.Controllers
         {
             var email = _context.Requests.FirstOrDefault(a => a.Requestid == requestId).Email;
             string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-            string resetPasswordPath = Url.Action("ViewAgreement", "Home", new { requestId = requestId });
+            var encryptReqId = EncryptDecryptHelper.Encrypt(requestId.ToString());
+            string resetPasswordPath = Url.Action("ViewAgreement", "Home", new { requestId = encryptReqId });
             string url = baseUrl + resetPasswordPath;
             caseActions.SendingAgreement(requestId, email, url);
         }
@@ -303,7 +306,10 @@ namespace HalloDoc.Controllers
             return RedirectToAction("CloseCase", new {requestId = requestId});
         }
 
-
+        public IActionResult AdminProfile()
+        {
+            return View();
+        }
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

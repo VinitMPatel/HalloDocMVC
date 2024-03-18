@@ -86,24 +86,24 @@
                 <div class="h4">Patient information</div>
 
                 <div class="form-floating mt-3 col-xl-12">
-                    <textarea class="form-control" asp-for=Symptoms placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                    <textarea class="form-control" asp-for=Symptoms placeholder="Symptoms" style="height: 100px"></textarea>
                     <label for="floatingTextarea2" style="left: 5px;">Enter Brief Details Of Symptoms(Optional)</label>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="text" class="form-control" asp-for=PatientFirstName id="floatingInput" placeholder="name@example.com">
+                    <input type="text" class="form-control" asp-for=PatientFirstName placeholder="FirstName">
                     <label for="floatingInput" style="left: 5px;">First Name</label>
                     <span asp-validation-for="PatientFirstName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="text" class="form-control" asp-for=PatientLastName id="floatingPassword" placeholder="Password">
+                    <input type="text" class="form-control" asp-for=PatientLastName  placeholder="LaseName">
                     <label for="floatingPassword" style="left: 5px;">Last Name</label>
                     <span asp-validation-for="PatientLastName" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                    <input type="date" class="form-control" asp-for=DOB id="floatingPassword" placeholder="Password">
+                    <input type="date" class="form-control" asp-for=DOB placeholder="DateOfBirth" max="@DateTime.Now.ToString("yyyy-MM-dd")">
                     <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
                     <span asp-validation-for="DOB" class="text-danger"></span>
                 </div>

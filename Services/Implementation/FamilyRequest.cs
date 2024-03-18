@@ -31,6 +31,8 @@ namespace Services.Implementation
             if (aspnetuser != null)
             {
                 var user = _context.Users.FirstOrDefault(u => u.Email == r.PatientEmail);
+                string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
+                var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
                 if (user == null)
                 {
                     String username = r.PatientFirstName + r.PatientLastName;
@@ -63,6 +65,9 @@ namespace Services.Implementation
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
 
+                    string newRegion = _context.Regions.FirstOrDefault(a => a.Regionid == newUser.Regionid).Abbreviation;
+                    var newRequestCount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == newUser.Userid).ToList();
+
                     Data.Entity.Request request = new Data.Entity.Request();
                     request.Requesttypeid = 2;
                     request.Userid = newUser.Userid;
@@ -74,6 +79,9 @@ namespace Services.Implementation
                     request.Createddate = DateTime.Now;
                     request.Modifieddate = DateTime.Now;
                     request.Relationname = r.Relation;
+                    request.Confirmationnumber = newRegion.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') +
+                                            DateTime.Now.Year.ToString().Substring(2) + r.LastName.ToUpper().Substring(0, 2) + r.FirstName.ToUpper().Substring(0, 2) +
+                                            (newRequestCount.Count() + 1).ToString().PadLeft(4, '0');
 
                     _context.Requests.Add(request);
                     _context.SaveChanges();
@@ -118,6 +126,9 @@ namespace Services.Implementation
                 request2.Createddate = DateTime.Now;
                 request2.Modifieddate = DateTime.Now;
                 request2.Relationname = r.Relation;
+                request2.Confirmationnumber = region.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') +
+                                            DateTime.Now.Year.ToString().Substring(2) + r.LastName.ToUpper().Substring(0, 2) + r.FirstName.ToUpper().Substring(0, 2) +
+                                            (requestcount.Count() + 1).ToString().PadLeft(4, '0');
 
                 _context.Requests.Add(request2);
                 _context.SaveChanges();

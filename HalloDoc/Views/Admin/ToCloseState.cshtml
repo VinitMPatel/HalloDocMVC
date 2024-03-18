@@ -167,6 +167,96 @@
         </div>
     </div>
 </div>
+<div class="d-flex justify-content-center gap-2">
+    @if (Model.totalPages > 0)
+    {
+        var previous = Model.currentpage - 1;
+        var next = Model.currentpage + 1;
+        if (previous <= 0)
+        {
+            previous = 1;
+        }
+        if (next > Model.totalPages)
+        {
+            next = Model.totalPages;
+        }
+        <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
+            Previous
+        </button>
+        @if (Model.totalPages > 5)
+        {
+            @if (Model.currentpage > Model.totalPages - 3)
+            {
+                <button class="1" id="page-1" onclick="ChangePage(1)">
+                    1
+                </button>
+                <button class="0" id="page-0" style="width:25px">
+                    ...
+                </button>
+                @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+                {
+                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+            }
+            else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+            {
+                <button class="1" id="page-1" onclick="ChangePage(1)">
+                    1
+                </button>
+                <button class="0" id="page-0" style="width:25px">
+                    ...
+                </button>
+                @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                {
+                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+                <button class="0" id="page-0" style="width:25px">
+                    ...
+                </button>
+                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                    @Model.totalPages
+                </button>
+            }
+            else
+            {
+                @for (var i = 1; i <= 4; i++)
+                {
+                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+                <button class="0" id="page-0" style="width:25px">
+                    ...
+                </button>
+                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                    @Model.totalPages
+                </button>
+            }
+        }
+        else
+        {
+            @for (int page = 0; page < Model.totalPages; page++)
+            {
+                var temp = page + 1;
+
+                <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)">
+                    @temp
+                </button>
+            }
+        }
+        <button class="@next" id="page-@next" onclick="ChangePage(@next)">
+            Next
+        </button>
+    }
+    else
+    {
+        <div class="h3 text-danger">No Record found</div>
+    }
+</div>
 <script>
     function ViewCase(requestId) {
         $.ajax({
