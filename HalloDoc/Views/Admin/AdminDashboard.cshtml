@@ -87,33 +87,28 @@
 
         <div>
             <a class="text-decoration-none btn btn-info text-white" type="button">
-                <i class="bi bi-send me-2 "></i>
-                <span class="dash-btn">Send Link</span>
+                <i class="bi bi-send"></i>
+                <span class="dash-btn ms-2">Send Link</span>
             </a>
 
             <a class="text-decoration-none btn btn-info text-white" type="button">
-                <i class="bi bi-file-text me-2 "></i>
-                <span class="dash-btn">Create Requests</span>
+                <i class="bi bi-file-text"></i>
+                <span class="dash-btn ms-2">Create Requests</span>
             </a>
-
-            <form asp-action="AllState" class="d-inline">
-            <a class="text-decoration-none btn btn-info text-white" type="submit">
-                <i class="bi bi-arrow-up-short me-2"></i>
-                <span class="dash-btn">Export</span>
-            </a>
-            <input type="text"  id="exsearch" hidden/>
-            <input type="text"  id="expage" hidden/>
-            <input type="text"  id="exrequesttype" hidden/>
-            </form>
-
+            
+            <button class="text-decoration-none btn btn-info text-white" type="submit" id="exportBtn">
+                <i class="bi bi-arrow-up-short"></i>
+                <span class="dash-btn ms-2">Export</span>
+            </button>
+            
 
             <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-                <i class="bi bi-arrow-bar-up me-2 "></i>
-                <span class="dash-btn">Export All</span>
+                <i class="bi bi-arrow-bar-up"></i>
+                <span class="dash-btn ms-2">Export All</span>
             </a>
             <a class="text-decoration-none btn btn-info text-white mt-1 mt-sm-0" type="button">
-                <i class="bi bi-pin-map me-2"></i>
-                <span class="dash-btn">Request DTY Support</span>
+                <i class="bi bi-pin-map"></i>
+                <span class="dash-btn ms-2">Request DTY Support</span>
             </a>
         </div>
     </div>
@@ -232,12 +227,50 @@
             success: function (response) {
                 requestStatus = 1;
                 $('#status-tabContent').html(response);
-                $('#expage').val(currentPage);
                 $('#exrequesttype').val(0);
             },
             error: function (xhr, status, error) {
                 console.error(error);
             }
+        });
+
+        // $('#exportBtn').on('click',function(){
+        //     if (typeof (requestType) == "undefined") {
+        //         requestType = "0";
+        //     }
+        //     $.ajax({
+        //         url : '/Admin/ExportData',
+        //         data : { "status": requestStatus, "requesttype": requestType, "searchKey": searchKey },
+        //         success: function (data) {
+        //             var response = JSON.parse(data);
+        //             console.log(data);
+        //             var contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        //             var filename = "Data";
+        //             var disposition = xhr.getResponseHeader('Content-Disposition');
+        //             try {
+        //                 var blob = new Blob([data], { type: contentType });
+        //                 var downloadUrl = URL.createObjectURL(blob);
+        //                 var a = document.createElement("a");
+        //                 a.href = downloadUrl;
+        //                 a.download = filename;
+        //                 document.body.appendChild(a);
+        //                 a.click();
+        //             } catch (exc) {
+        //                 console.log("Save Blob method failed with the following exception.");
+        //                 console.log(exc);
+        //             }
+        //         },
+        //     })
+        // })
+
+
+        $('#exportBtn').on('click', function () {
+            var link = document.createElement('a');
+            link.href = '/Admin/ExportData?status=' + requestStatus + "&requesttype=" + requestType + "&requestType=" + searchKey;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
 
         $('.dashboardtab').on('click', function (e) {

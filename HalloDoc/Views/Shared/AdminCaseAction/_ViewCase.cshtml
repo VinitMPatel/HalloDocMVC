@@ -43,7 +43,7 @@
                 <div class="h4">Patient information</div>
                 <div class="mt-3">
                     <span class="small">Confirmation number</span>
-                    <div class="text-info fw-bolder fs-3">Coming soon...</div>
+                    <div class="text-info fw-bolder fs-3">@Model.ConfirmationNumber</div>
                 </div>
                 <div class="p-2 col-xl-12 mb-3">
                     <div class="form-floating">
@@ -84,10 +84,6 @@
                     <input type="email" class="form-control" id="patientEmail" onblur="checkEmailExists()" placeholder="name@example.com" asp-for=Email disabled>
                     <label for="floatingInput" style="left: 5px;">Email</label>
                 </div>
-
-                @* <div class="form-floating mt-3 col-xl-1 col-sm-1 col-1 border rounded-2 border-info justify-content-center align-items-center text-info ms-3 d-none d-sm-flex" onclick="allow()">
-                Edit
-                </div> *@
 
             </div>
 

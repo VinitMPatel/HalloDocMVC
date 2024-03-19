@@ -101,6 +101,18 @@ namespace HalloDoc.Controllers
             }
         }
 
+        public IActionResult ExportData(String status, String requesttype, string searchKey)
+        {
+
+            int currentPage = 0;
+            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, searchKey);
+            var record = dashboardData.DownloadExcle(data);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{status}_{strDate}.xlsx";
+            return File(record, contentType, filename);
+        }
+
         public IActionResult ViewCase(int requestId)
         {
             CaseActionDetails obj = dashboardData.ViewCaseData(requestId);

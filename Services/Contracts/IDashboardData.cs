@@ -18,5 +18,6 @@ namespace Services.Contracts
         void UplodingDocument(List<IFormFile> myfile, int reqid);
         void uploadFile(List<IFormFile> upload, int id);
         void SingleDelete(int reqfileid);
+        byte[] DownloadExcle(AdminDashboard model);
     }
 }

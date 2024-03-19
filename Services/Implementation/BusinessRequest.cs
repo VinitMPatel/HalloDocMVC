@@ -44,6 +44,8 @@ namespace Services.Implementation
                 _context.Businesses.Add(business);
                 _context.SaveChanges();
 
+                string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
+                var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
                 Request request = new Request
                 {
                     Userid = user.Userid,
@@ -55,7 +57,10 @@ namespace Services.Implementation
                     Status = 1,
                     Createddate = DateTime.Now,
                     Modifieddate = DateTime.Now,
-                    Relationname = r.Business
+                    Relationname = r.Business,
+                    Confirmationnumber = region.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') +
+                                            DateTime.Now.Year.ToString().Substring(2) + r.PatientLastName.ToUpper().Substring(0, 2) + r.PatientFirstName.ToUpper().Substring(0, 2) +
+                                            (requestcount.Count() + 1).ToString().PadLeft(4, '0')
                 };
                 _context.Requests.Add(request);
                 _context.SaveChanges();

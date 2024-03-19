@@ -80,9 +80,8 @@ namespace Services.Implementation
                     request.Modifieddate = DateTime.Now;
                     request.Relationname = r.Relation;
                     request.Confirmationnumber = newRegion.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') +
-                                            DateTime.Now.Year.ToString().Substring(2) + r.LastName.ToUpper().Substring(0, 2) + r.FirstName.ToUpper().Substring(0, 2) +
+                                            DateTime.Now.Year.ToString().Substring(2) + r.PatientLastName.ToUpper().Substring(0, 2) + r.PatientFirstName.ToUpper().Substring(0, 2) +
                                             (newRequestCount.Count() + 1).ToString().PadLeft(4, '0');
-
                     _context.Requests.Add(request);
                     _context.SaveChanges();
 

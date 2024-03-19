@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Services.Contracts;
 using Services.ViewModels;
+using Common.Helper;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +37,11 @@ namespace Services.Implementation
                     
                     if (user == null)
                     {
+
                         Aspnetuser aspnetuser1 = new Aspnetuser();
                         aspnetuser1.Id = Guid.NewGuid().ToString();
-                        aspnetuser1.Passwordhash = r.Password;
+                        string encryptPassword = EncryptDecryptHelper.Encrypt(r.Password);
+                        aspnetuser1.Passwordhash = encryptPassword;
                         aspnetuser1.Email = r.Email;
                         String username = r.FirstName + r.LastName;
                         aspnetuser1.Username = username;
@@ -49,29 +52,29 @@ namespace Services.Implementation
                         aspnetuser1 = aspnetuser1;
                         _context.Aspnetusers.Add(aspnetuser1);
 
-                        user.Aspnetuserid = aspnetuser1.Id;
-                        user.Firstname = r.FirstName;
-                        user.Lastname = r.LastName;
-                        user.Email = r.Email;
-                        user.Mobile = r.PhoneNumber;
-                        user.Street = r.Street;
-                        user.City = r.City;
-                        user.State = r.State;
-                        user.Zip = r.ZipCode;
-                        user.Createdby = r.FirstName + r.LastName;
-                        user.Intyear = int.Parse(r.DOB.ToString("yyyy"));
-                        user.Intdate = int.Parse(r.DOB.ToString("dd"));
-                        user.Strmonth = r.DOB.ToString("MMM");
-                        user.Createddate = DateTime.Now;
-                        user.Modifieddate = DateTime.Now;
-                        user.Status = 1;
-                        user.Regionid = 1;
+                        User newUser = new User
+                        {
+                            Aspnetuserid = aspnetuser1.Id,
+                            Firstname = r.FirstName,
+                            Lastname = r.LastName,
+                            Email = r.Email,
+                            Mobile = r.PhoneNumber,
+                            Street = r.Street,
+                            City = r.City,
+                            State = r.State,
+                            Zip = r.ZipCode,
+                            Createdby = r.FirstName + r.LastName,
+                            Intyear = int.Parse(r.DOB.ToString("yyyy")),
+                            Intdate = int.Parse(r.DOB.ToString("dd")),
+                            Strmonth = r.DOB.ToString("MMM"),
+                            Createddate = DateTime.Now,
+                            Modifieddate = DateTime.Now,
+                            Status = 1,
+                            Regionid = 1,
+                        };
+                        user = newUser;
                         _context.Users.Add(user);
                     }
-                    //else
-                    //{
-                    //    user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
-                    //}
                     string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
                     var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
                     Request request = new Request

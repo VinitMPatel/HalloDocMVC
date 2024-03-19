@@ -12,9 +12,6 @@ namespace Services.ViewModels
 
         public List<Requestclient> requestclients { get; set; }
 
-        public DateTime DOB { get; set; }
-
-
         public int totalPages { get; set; }
 
         public int currentpage { get; set; }

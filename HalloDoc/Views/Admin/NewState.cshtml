@@ -296,7 +296,6 @@
             success: function (response) {
                 $('#exsearch').val(searchKey);
                 $('#exrequesttype').val(requestType);
-                $('#expage').val(currentPage);
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
