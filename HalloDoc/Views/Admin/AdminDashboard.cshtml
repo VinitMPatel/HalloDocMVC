@@ -82,7 +82,7 @@
     <div class="d-flex justify-content-between mt-5 mx-4">
 
         <div>
-            <div class="h3">Patient <span class="text-info">(New)</span></div>
+            <div class="h3">Patient <span class="text-info" id="status"></span></div>
         </div>
 
         <div>
@@ -225,6 +225,7 @@
             url: '/Admin/AllState',
             data: { "status": 1, "requesttype": 0, "currentPage": 1 },
             success: function (response) {
+                $('#status').html("(New)");
                 requestStatus = 1;
                 $('#status-tabContent').html(response);
                 $('#exrequesttype').val(0);
@@ -234,39 +235,13 @@
             }
         });
 
-        // $('#exportBtn').on('click',function(){
-        //     if (typeof (requestType) == "undefined") {
-        //         requestType = "0";
-        //     }
-        //     $.ajax({
-        //         url : '/Admin/ExportData',
-        //         data : { "status": requestStatus, "requesttype": requestType, "searchKey": searchKey },
-        //         success: function (data) {
-        //             var response = JSON.parse(data);
-        //             console.log(data);
-        //             var contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-        //             var filename = "Data";
-        //             var disposition = xhr.getResponseHeader('Content-Disposition');
-        //             try {
-        //                 var blob = new Blob([data], { type: contentType });
-        //                 var downloadUrl = URL.createObjectURL(blob);
-        //                 var a = document.createElement("a");
-        //                 a.href = downloadUrl;
-        //                 a.download = filename;
-        //                 document.body.appendChild(a);
-        //                 a.click();
-        //             } catch (exc) {
-        //                 console.log("Save Blob method failed with the following exception.");
-        //                 console.log(exc);
-        //             }
-        //         },
-        //     })
-        // })
-
 
         $('#exportBtn').on('click', function () {
+            if (typeof (requestType) == "undefined") {
+                requestType = "0";
+            }
             var link = document.createElement('a');
-            link.href = '/Admin/ExportData?status=' + requestStatus + "&requesttype=" + requestType + "&requestType=" + searchKey;
+            link.href = '/Admin/ExportData?status=' + requestStatus + "&requesttype=" + requestType + "&searchKey=" + searchKey;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
@@ -283,24 +258,31 @@
             switch (target) {
                 case '#s_new':
                     requestStatus = 1;
+                    $('#status').html("(New)");
                     break;
                 case '#s_pending':
                     requestStatus = 2;
+                    $('#status').html("(Pending)");
                     break;
                 case '#s_active':
                     requestStatus = 4 ;
+                    $('#status').html("(Active)");
                     break;
                 case '#s_conclude':
                     requestStatus = 6;
+                    $('#status').html("(Conclude)");
                     break;
                 case '#s_toclose':
                     requestStatus = 3;
+                    $('#status').html("(ToClose)");
                     break;
                 case '#s_unpaid':
                     requestStatus = 9;
+                    $('#status').html("(Unpaid)");
                     break;
                 default:
                     requestStatus = 12;
+                    $('#status').html("(New)");
             }
             requestType = "0";
             $('#search').val("");

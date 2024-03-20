@@ -1,4 +1,7 @@
-﻿
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.AdminProfile
 <div class="container mt-3" id="closeCaseContent">
 
     <div class="d-flex justify-content-between">
@@ -18,21 +21,21 @@
 
             <div class="p-2 col-sm-6 col-12">
                 <div class="form-floating ">
-                    <input type="text" class="form-control" placeholder="User Name" name="contact">
+                    <input type="text" class="form-control" placeholder="User Name" name="contact" disabled asp-for="admin.Firstname">
                     <label class="FloatingInput">User Name</label>
                 </div>
             </div>
 
             <div class="p-2 col-sm-6 col-12">
                 <div class="form-floating ">
-                    <input type="password" class="form-control" placeholder="Password" name="contact">
+                    <input type="password" class="form-control" placeholder="Password">
                     <label class="FloatingInput">Password</label>
                 </div>
             </div>
 
-            <div class="col-sm-6 col-12 mt-2">
+            <div class="col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect">
+                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
                         <option value="" selected>Active</option>
                     </select>
                     <label for="floatingSelect">
@@ -41,9 +44,9 @@
                 </div>
             </div>
 
-            <div class="col-sm-6 col-12 mt-2">
+            <div class="col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect">
+                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
                         <option value="" selected>Master Admin</option>
                     </select>
                     <label for="floatingSelect">
@@ -53,133 +56,159 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
-                <button  type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
+                <button type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
             </div>
         </div>
 
         <form>
-        <div class="row mt-3">
-            <div class="h4">Administrator Information</div>
+            <div class="row mt-3">
+                <div class="h4">Administrator Information</div>
 
-            <div class="p-2 col-sm-6 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control data1" placeholder="First Name" disabled>
-                    <label class="FloatingInput">First Name</label>
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="First Name" disabled asp-for="admin.Firstname" id="firstName">
+                        <label class="FloatingInput">First Name</label>
+                    </div>
+                    <span id="firstNameWarning" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="Last Name" disabled asp-for="admin.Lastname" id="lastName">
+                        <label class="FloatingInput">Last Name</label>
+                    </div>
+                    <span id="lastNameWarning" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control data1" placeholder="name@example.com" disabled asp-for="admin.Email" id="email">
+                        <label class="FloatingInput">Email</label>
+                        <span id="emailWarning" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control data1" placeholder="name@example.com" disabled asp-for="admin.Email" id="confirmEmail">
+                        <label class="FloatingInput">Confirm Email</label>
+                    </div>
+                    <span id="confirmEmailWarning" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-xl-6 col-sm-6 col-12">
+                    <div class="form-floating">
+                        @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                        <input class="form-control data1" type="text" maxlength="10" placeholder="contact" disabled asp-for="admin.Mobile" id="contact" />
+                        <label class="floatingInput">Contact</label>
+                        <span id="contactWarning" class="text-danger"></span>
+                    </div>
+                </div>
+
+              @*   <div class=" mt-3 col-xl-6 col-sm-6 col-12">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
+                        <label class="form-check-label" for="inlineCheckbox1">New York</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
+                        <label class="form-check-label" for="inlineCheckbox2">Ahmedabad</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3">
+                        <label class="form-check-label" for="inlineCheckbox3">Dubai</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="4">
+                        <label class="form-check-label" for="inlineCheckbox4">Singapore</label>
+                    </div>
+                </div> *@
+
+
+                <div class="col-12 col-sm-6 mt-3">
+                    @foreach (var item in Model.regionlist)
+                    {
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input adisabled adminselectedregion-adminprofile data1" type="checkbox"
+                            @if (Model.adminregionlist.Any(adminRegion => adminRegion.Regionid == item.Regionid))
+                            {
+                                @:checked
+                            } value="@item.Regionid"
+                                   disabled>
+                            <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                        </div>
+                    }
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-2">
+                    <button id="submitBtn1" type="button" class="btn btn-info text-white">Edit</button>
+                    <button id="saveBtn1" type="button" class="btn btn-info text-white">Save Changes</button>
+                    <button id="cancelBtn1" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
                 </div>
             </div>
-
-            <div class="p-2 col-sm-6 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control data1" placeholder="Last Name" disabled>
-                    <label class="FloatingInput">Last Name</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-12 ">
-                <div class="form-floating ">
-                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled>
-                    <label class="FloatingInput">Email</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-12 ">
-                <div class="form-floating ">
-                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled>
-                    <label class="FloatingInput">Confirm Email</label>
-                </div>
-            </div>
-
-            <div class=" mt-3 col-xl-6 col-sm-6 col-12">
-                <div class="form-floating">
-                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
-                    <input class="form-control data1" type="text" maxlength="10" placeholder="contact" disabled />
-                    <label class="floatingInput">Contact</label>
-                </div>
-            </div>
-
-            <div class=" mt-3 col-xl-6 col-sm-6 col-12">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="1">
-                    <label class="form-check-label" for="inlineCheckbox1">New York</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="2">
-                    <label class="form-check-label" for="inlineCheckbox2">Ahmedabad</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="3">
-                    <label class="form-check-label" for="inlineCheckbox3">Dubai</label>
-                </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox4" value="4">
-                    <label class="form-check-label" for="inlineCheckbox4">Singapore</label>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-2">
-                <button id="submitBtn1" type="button" class="btn btn-info text-white">Edit</button>
-                <button id="saveBtn1" type="submit" class="btn btn-info text-white">Save Changes</button>
-                <button id="cancelBtn1" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
-            </div>
-        </div>
         </form>
 
         <form>
-        <div class="row mt-3">
-            <div class="h4">Mailing and billing information</div>
+            <div class="row mt-3">
+                <div class="h4">Mailing and billing information</div>
 
-            <div class="p-2 col-sm-6 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control data2" placeholder="Address1" disabled>
-                    <label class="FloatingInput">Address1</label>
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address1" disabled asp-for="admin.Address1" id="address1">
+                        <label class="FloatingInput">Address1</label>
+                    </div>
+                    <span id="address1Warning" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address2" disabled asp-for="admin.Address2" id="address2">
+                        <label class="FloatingInput">Address2</label>
+                    </div>
+                    <span id="address2Warning" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="" class="form-control data2" placeholder="city" disabled asp-for="admin.city" id="city">
+                        <label class="FloatingInput">City</label>
+                    </div>
+                    <span id="cityWarning" class="text-danger"></span>
+                </div>
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+                        <select class="form-select" aria-label="Floating label select example" id="floatingSelect" disabled>
+                            <option value="" selected>Ahmedabad</option>
+                        </select>
+                        <label for="floatingSelect">
+                            State
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Zip Code" disabled asp-for="admin.Zip" id="zip">
+                        <label class="FloatingInput">Zip Code</label>
+                    </div>
+                    <span id="zipWarning" class="text-danger"></span>
+                </div>
+
+                <div class="col-xl-6 col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+                        @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                        <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled asp-for="admin.Mobile" id="billingContact" />
+                        <label class="floatingInput">Contact</label>
+                    </div>
+                    <span id="billingContactWarning" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 mt-4">
+                    <button id="submitBtn2" type="button" class="btn btn-info text-white">Edit</button>
+                    <button id="saveBtn2" type="button" class="btn btn-info text-white">Save Changes</button>
+                    <button id="cancelBtn2" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
                 </div>
             </div>
-
-            <div class="p-2 col-sm-6 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control data2" placeholder="Address2" disabled>
-                    <label class="FloatingInput">Address2</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-12 ">
-                <div class="form-floating ">
-                    <input type="" class="form-control data2" placeholder="city" disabled>
-                    <label class="FloatingInput">City</label>
-                </div>
-            </div>
-            <div class="col-sm-6 col-12 mt-2">
-                <div class="form-floating">
-                    <select class="form-select data2" aria-label="Floating label select example" id="floatingSelect" disabled>
-                        <option value="" selected>Ahmedabad</option>
-                    </select>
-                    <label for="floatingSelect">
-                        State
-                    </label>
-                </div>
-            </div>
-
-            <div class="col-sm-6 col-12 mt-2">
-                <div class="form-floating ">
-                    <input type="text" class="form-control data2" placeholder="Zip Code" disabled>
-                    <label class="FloatingInput">Zip Code</label>
-                </div>
-            </div>
-
-            <div class="col-xl-6 col-sm-6 col-12 mt-2">
-                <div class="form-floating">
-                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
-                    <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled />
-                    <label class="floatingInput">Contact</label>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-end gap-2 mt-4">
-                <button id="submitBtn2" type="button" class="btn btn-info text-white">Edit</button>
-                <button id="saveBtn2" type="submit" class="btn btn-info text-white">Save Changes</button>
-                <button id="cancelBtn2" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
-            </div>
-        </div>
         </form>
     </div>
 
@@ -187,6 +216,9 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
+
+        var selectedregion = [];
+        
 
         $('#cancelBtn1').css('display', 'none');
         $('#saveBtn1').css('display', 'none');
@@ -197,7 +229,7 @@
             })
             $('#cancelBtn1').css('display', 'flex')
             $('#saveBtn1').css('display', 'flex')
-            $(this).css('display','none')
+            $(this).css('display', 'none')
         })
 
         $('#cancelBtn1').on('click', function () {
@@ -207,7 +239,14 @@
             $('#submitBtn1').css('display', 'flex')
             $('#saveBtn1').css('display', 'none')
             $(this).css('display', 'none')
+            $('#confirmEmailWarning').html("")
+            $('#firstNameWarning').html("")
+            $('#lastNameWarning').html("")
+            $('#emailWarning').html("")
+            $('#contactWarning').html("")
+            
         })
+
 
         $('#cancelBtn2').css('display', 'none');
         $('#saveBtn2').css('display', 'none');
@@ -228,7 +267,194 @@
             $('#submitBtn2').css('display', 'flex')
             $('#saveBtn2').css('display', 'none')
             $(this).css('display', 'none')
+            $('#address1Warning').html("")
+            $('#address2Warning').html("")
+            $('#cityWarning').html("")
+            $('#zipWarning').html("")
+            $('#billingContactWarning').html("")
         })
 
+        
+
+        $('#saveBtn1').on('click', function (e) {
+            $('input[type="checkbox"]:checked').each(function () {
+                selectedregion.push($(this).val());
+            });
+  
+            var adminInfo = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                email: $('#email').val(),
+                contact: $('#contact').val(),
+                selectedregion: JSON.stringify(selectedregion),
+            }
+           
+            if ($('#firstNameWarning').text() == "" && $('#lastNameWarning').text() == "" && $('#emailWarning').text() == "" && $('#confirmEmailWarning').text() == "" && $('#contactWarning').text() == "") {
+                $('.data1').each(function () {
+                    $(this).prop('disabled', true);
+                })
+                $('#submitBtn1').css('display', 'flex')
+                $('#cancelBtn1').css('display', 'none')
+                $(this).css('display', 'none')
+                $('#confirmEmailWarning').html("")
+                $('#lastNameWarning').html("")
+                $('#emailWarning').html("")
+                $('#contactWarning').html("")
+              
+                $.ajax({
+                    url: '/Admin/UpdateAdminInfo',
+                    data: adminInfo,
+                    contentType: "application/json",
+                    traditional: true,
+                    success : function(data){
+                        console.log(adminInfo.selectedregion)
+                      
+                    }
+
+                })
+            }
+            else{
+                console.log("NAI THAVA DOV SUBMIT");
+            }
+        })
+
+        $('#saveBtn2').on('click', function () {
+            var billingInfo = {
+                address1: $('#address1').val(),
+                address2: $('#address2').val(),
+                city: $('#city').val(),
+                zip: $('#zip').val(),
+                billingContact: $('#billingContact').val(),
+            }
+
+            if ($('#address1Warning').text() == "" && $('#address2Warning').text() == "" && $('#cityWarning').text() == "" && $('#zipWarning').text() == "" && $('#billingContactWarning').text() == "") {
+                $('.data2').each(function () {
+                    $(this).prop('disabled', true);
+                })
+                $('#submitBtn2').css('display', 'flex')
+                $('#cancelBtn2').css('display', 'none')
+                $(this).css('display', 'none')
+                $('#address1Warning').html("")
+                $('#address2Warning').html("")
+                $('#cityWarning').html("")
+                $('#zipWarning').html("")
+                $('#billingContactWarning').html("")
+                $.ajax({
+                    url: '/Admin/UpdateBillingInfo',
+                    data: billingInfo
+                })
+            }
+            else {
+                console.log("NAI THAVA DOV SUBMIT");
+            }
+        })
+    })
+
+    $('#firstName').on('input', function () {
+        if ($('#firstName').val() == "") {
+            $('#firstNameWarning').html("*Please enter First name")
+        }
+        else {
+            $('#firstNameWarning').html("")
+        }
+    })
+    $('#lastName').on('input', function () {
+        if ($('#lastName').val() == "") {
+            $('#lastNameWarning').html("*Please enter Last name")
+        }
+        else {
+            $('#lastNameWarning').html("")
+        }
+    })
+    $('#email').on('input', function () {
+        if ($('#email').val() == "") {
+            $('#emailWarning').html("*Please enter email")
+        }
+        else {
+            $('#emailWarning').html("")
+        }
+        if ($('#email').val() != $('#confirmEmail').val()) {
+            $('#confirmEmailWarning').html("*Both email must be same")
+        }
+        else {
+            $('#confirmEmailWarning').html("")
+        }
+    })
+    // $('#contact').on('input', function () {
+    //     if ($('#contact').val() == "") {
+    //         $('#contactWarning').html("*Please enter contact detail")
+    //     }
+    //     else {
+    //         var regex = /^[1-9][0-9]{9}$/
+
+    //         if (!regex.test($('#contact').val())) {
+    //             $('#contactWarning').html("*Enter valid number");
+
+    //         } else {
+    //             $('#contactWarning').html("");
+
+    //         }
+    //     }
+    // })
+    $('#confirmEmail').on('input', function () {
+        if ($('#email').val() != $('#confirmEmail').val()) {
+            $('#confirmEmailWarning').html("*Both email must be same")
+        }
+        else {
+            $('#confirmEmailWarning').html("")
+        }
+    })
+    $('#address1').on('input', function () {
+        if ($('#address1').val() == "") {
+            $('#address1Warning').html("*Please enter address")
+        }
+        else {
+            $('#address1Warning').html("")
+        }
+    })
+    $('#address2').on('input', function () {
+        if ($('#address2').val() == "") {
+            $('#address2Warning').html("*Please enter address")
+        }
+        else {
+            $('#address2Warning').html("")
+        }
+    })
+    $('#city').on('input', function () {
+        if ($('#city').val() == "") {
+            $('#cityWarning').html("*Please enter address")
+        }
+        else {
+            $('#cityWarning').html("")
+        }
+    })
+    $('#zip').on('input', function () {
+        if ($('#zip').val() == "") {
+            $('#zipWarning').html("*Please enter Zip Code")
+        }
+        else {
+            var regex = /^[1-9][0-9]{5}$/
+            if(!regex.test($('#zip').val())){
+                $('#zipWarning').html("*Enter valid zip Code")
+            }else{
+                $('#zipWarning').html("")
+            }
+        }
+    })
+    $('#billingContact').on('input', function () {
+        if ($('#billingContact').val() == "") {
+            $('#billingContactWarning').html("*Please enter address")
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
+
+            if (!regex.test($('#billingContact').val())) {
+                $('#billingContactWarning').html("*Enter valid number");
+
+            } else {
+                $('#billingContactWarning').html("");
+
+            }
+        }
     })
 </script>

@@ -269,5 +269,68 @@ namespace Services.Implementation
                 }
             }
         }
+
+        public AdminProfile AdminProfileData(int adminId)
+        {
+            AdminProfile adminData = new AdminProfile();
+            adminData.admin =  _context.Admins.FirstOrDefault(a=>a.Adminid == adminId);
+            List<Region> regionList = _context.Regions.ToList();
+            adminData.regionlist = regionList;
+            List<Adminregion> adminRegions = _context.Adminregions.Where(a=>a.Adminid == adminId).ToList();
+            adminData.adminregionlist = adminRegions;
+            return adminData;
+        }
+        public void UpdateAdminInfo(int adminId , AdminInfo obj)
+        {
+            Admin admin = _context.Admins.FirstOrDefault(a=>a.Adminid==adminId);
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
+            List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
+            for(int  i = 0; i < adminRegions.Count(); i++)
+            {
+                   Adminregion? adminRegionToDelete = _context.Adminregions.FirstOrDefault(ar => ar.Adminid == adminId && ar.Regionid == adminRegions.ElementAt(i).Regionid);
+                   _context.Adminregions.Remove(adminRegionToDelete);
+            }
+            int[] newRegions = obj.selectedregion;
+            Adminregion newAdminRegion = new Adminregion();
+            for(int i=0; i<newRegions.Length; i++)
+            {
+                newAdminRegion.Adminid = adminId;
+                newAdminRegion.Regionid = newRegions[i];
+                _context.Adminregions.Add(newAdminRegion);
+                _context.SaveChanges();
+            }
+            admin.Firstname = obj.firstName;
+            admin.Lastname = obj.lastName;
+            admin.Email = obj.email;
+            admin.Mobile = obj.contact;
+            admin.Modifieddate = DateTime.Now;
+            admin.Modifiedby = aspnetuser.Id;
+
+            aspnetuser.Phonenumber = obj.contact;
+            aspnetuser.Username = obj.firstName+obj.lastName;
+            aspnetuser.Email = obj.email;
+            aspnetuser.Modifieddate = DateTime.Now;
+
+            _context.Update(admin);
+            _context.Update(aspnetuser);
+            _context.SaveChanges();
+        }
+
+        public void UpdateBillingInfo(int adminId, BillingInfo obj)
+        {
+            Admin admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
+            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
+
+            admin.Address1 = obj.address1;
+            admin.Address2 = obj.address2;
+            admin.city = obj.city;
+            admin.Zip = obj.zip;
+            admin.Modifieddate = DateTime.Now;
+            admin.Modifiedby = aspnetuser.Id;
+            admin.Altphone = obj.billingContact;
+
+            _context.Update(admin);
+            _context.SaveChanges();
+        }
     }
 }

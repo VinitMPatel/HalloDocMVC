@@ -103,7 +103,6 @@ namespace HalloDoc.Controllers
 
         public IActionResult ExportData(String status, String requesttype, string searchKey)
         {
-
             int currentPage = 0;
             AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, searchKey);
             var record = dashboardData.DownloadExcle(data);
@@ -320,8 +319,26 @@ namespace HalloDoc.Controllers
 
         public IActionResult AdminProfile()
         {
-            return View();
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            AdminProfile adminData = dashboardData.AdminProfileData(adminId);
+            return View(adminData);
         }
+
+        public IActionResult UpdateAdminInfo(AdminInfo obj)
+        {
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            dashboardData.UpdateAdminInfo(adminId, obj);
+            return RedirectToAction("AdminProfile");
+        }
+
+        public IActionResult UpdateBillingInfo(BillingInfo obj)
+        {
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            dashboardData.UpdateBillingInfo(adminId, obj);
+            return RedirectToAction("AdminProfile");
+        }
+
+
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try
@@ -341,8 +358,8 @@ namespace HalloDoc.Controllers
                 if (result.Status == ResponseStautsEnum.Success)
                 {
                     HttpContext.Session.SetString("AdminName", admindata.Firstname);
+                    HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
                     TempData["success"] = "Login successfully";
-                    //HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
                     return RedirectToAction("AdminDashboard", "Admin");
                 }
                 TempData["error"] = "Incorrect Email or password";

@@ -19,5 +19,8 @@ namespace Services.Contracts
         void uploadFile(List<IFormFile> upload, int id);
         void SingleDelete(int reqfileid);
         byte[] DownloadExcle(AdminDashboard model);
+        AdminProfile AdminProfileData(int adminId);
+        void UpdateAdminInfo(int adminId, AdminInfo obj);
+        void UpdateBillingInfo(int adminId, BillingInfo obj);
     }
 }

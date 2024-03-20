@@ -14,6 +14,8 @@ public partial class Admin
 
     public string? Lastname { get; set; }
 
+    public string? city { get; set; }
+
     public string Email { get; set; } = null!;
 
     public string? Mobile { get; set; }

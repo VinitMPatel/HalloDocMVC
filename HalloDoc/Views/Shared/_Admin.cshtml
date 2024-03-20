@@ -61,20 +61,42 @@
             </div>
         </nav>
 
-        <div class="nav nav-tabs d-none d-sm-flex" id="nav-tab" role="tablist">
-            <button class="nav-link active k fw-bold me-2" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Dashboard</button>
-            <button class="nav-link k text-secondary fw-bold me-1" id="nav-provider-location-tab" data-bs-toggle="tab" data-bs-target="#nav-provider-location" type="button" role="tab" aria-controls="nav-provider-location" aria-selected="false">Provider Location</button>
-            <button class="nav-link k text-secondary fw-bold" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">My Profile</button>
-            <button class="nav-link k text-secondary fw-bold" id="nav-provider-tab" data-bs-toggle="tab" data-bs-target="#nav-provider" type="button" role="tab" aria-controls="nav-provider" aria-selected="false">Providers</button>
-            <button class="nav-link k text-secondary fw-bold" id="nav-partner-tab" data-bs-toggle="tab" data-bs-target="#nav-partner" type="button" role="tab" aria-controls="nav-partner" aria-selected="false">Partners</button>
-            <button class="nav-link k text-secondary fw-bold" id="nav-access-tab" data-bs-toggle="tab" data-bs-target="#nav-access" type="button" role="tab" aria-controls="nav-access" aria-selected="false">Access</button>
-            <button class="nav-link k text-secondary fw-bold" id="nav-record-tab" data-bs-toggle="tab" data-bs-target="#nav-record" type="button" role="tab" aria-controls="nav-record" aria-selected="false">Records</button>
+        <div class="shadow px-4 my-2">
+            <div class=" h6 d-none d-sm-flex gap-4" style="width:93%">
+                @if (Context.Request.Path.Equals("/Admin/AdminDashboard"))
+                {
+                    <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Dashboard</a>
+                }
+                else
+                {
+                    <a asp-action="AdminDashboard" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
+                }
+                <a class="text-decoration-none pr-4" style="color:black;">Providers Location</a>
+                @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
+                {
+                    <a asp-action="AdminProfile" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">My Profile</a>
+                }
+                else
+                {
+                    <a asp-action="AdminProfile" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
+
+                }
+                @if (Context.Request.Path.Equals("/Admin/Provider"))
+                {
+                    <a asp-action="Provider" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Provider</a>
+                }
+                else
+                {
+                    <a asp-action="Provider" class="text-decoration-none pe-2" style="color:black;">Provider</a>
+                }
+                <a class="text-decoration-none pe-2" style="color:black;">Partners</a>
+                <a class="text-decoration-none pe-2" style="color:black;">Access</a>
+                <a class="text-decoration-none pe-2" style="color:black;">Records</a>
+            </div>
         </div>
 
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">...</div>
-            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">...</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">...</div>
+       
         </div>
     </header>
         @RenderBody()
@@ -90,19 +112,4 @@
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 </body>
 </html>
-<script>
 
-$('#nav-profil-tab').click(function () {
-    console.log("hello this is profile");
-    $.ajax({
-        url: '/Admin/AdminProfile',
-        type: 'POST',
-        success: function (response) {
-            $('#nav-profile').html(response);
-        },
-        error: function (xhr, status, error) {
-            console.error(error);
-        }
-    });
-});
-</script>
