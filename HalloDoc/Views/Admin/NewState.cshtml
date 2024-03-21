@@ -3,7 +3,7 @@
     Layout = "";
 }
 <div class="table-responsive border-top">
-    <table class="table d-md-table d-none">
+    <table class="table d-md-table d-none table-secondary">
         <thead class="bg-body-secondary">
             <tr>
                 <th>Name</th>
@@ -176,7 +176,7 @@
             }
         </div>
     </div>
-    <div class="d-flex justify-content-center gap-2">
+    <div class="d-flex justify-content-center gap-2 mb-3">
         @if (Model.totalPages > 0)
         {
             var previous = Model.currentpage - 1;
@@ -189,44 +189,44 @@
             {
                 next = Model.totalPages;
             }
-            <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
+            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
                 Previous
             </button>
             @if (Model.totalPages > 5)
             {
                 @if (Model.currentpage > Model.totalPages - 3)
                 {
-                    <button class="1" id="page-1" onclick="ChangePage(1)">
+                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                         1
                     </button>
-                    <button class="0" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
                     {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                             @i
                         </button>
                     }
                 }
                 else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
                 {
-                    <button class="1" id="page-1" onclick="ChangePage(1)">
+                    <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
                         1
                     </button>
-                    <button class="0" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                     {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                             @i
                         </button>
                     }
-                    <button class="0" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
-                    <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                         @Model.totalPages
                     </button>
                 }
@@ -234,14 +234,14 @@
                 {
                     @for (var i = 1; i <= 4; i++)
                     {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)" >
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                             @i
                         </button>
                     }
-                    <button class="0" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
-                    <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)" >
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                         @Model.totalPages
                     </button>
                 }
@@ -252,12 +252,12 @@
                 {
                     var temp = page + 1;
 
-                    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)" >
+                    <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
                         @temp
                     </button>
                 }
             }
-            <button class="@next" id="page-@next" onclick="ChangePage(@next)" >
+            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
                 Next
             </button>
         }
@@ -275,27 +275,20 @@
 
 <script>
     function ChangePage(Page) {
-        currentPage = Page;
-        if (typeof (requestType) == "undefined") {
-            requestType = "0";
-        }
-        if (typeof (requestStatus) == "undefined") {
-            requestStatus = "1";
-        }
+        param.requestedPage = Page;
         CommonAjax();
     }
 
     function CommonAjax() {
-        console.log("status is : " + requestStatus);
-        console.log("requesttype is : " + requestType);
-        console.log("page is : " + currentPage);
-        console.log("Search is : " + searchKey);
+        console.log("status is : " + param.requestStatus);
+        console.log("requesttype is : " + param.requestType);
+        console.log("page is : " + param.requestedPage);
+        console.log("Search is : " + param.searchKey);
         $.ajax({
             url: '/Admin/AllState',
-            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey , "regionId" : regionId},
+            data: param,
             success: function (response) {
-                $('#exsearch').val(searchKey);
-                $('#exrequesttype').val(requestType);
+             
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -361,7 +354,8 @@
     $(document).ready(function () {
         var temp = document.getElementById('page-' + @Model.currentpage);
         if (temp != null) {
-            temp.style.backgroundColor = "lightblue";
+            temp.style.backgroundColor = "#5dafb2";
+            temp.style.color = "white"
         }
 
         $('.viewCase').on('click', function (e) {

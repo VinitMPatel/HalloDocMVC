@@ -65,50 +65,50 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult AllState(String status, String requesttype, int currentPage, int regionId ,  string searchKey)
+        public IActionResult AllState(AdminDashboard obj)
         {
-            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, regionId , searchKey);
-            switch (status)
+            AdminDashboard data = dashboardData.AllStateData(obj);
+            switch (obj.requeststatus)
             {
-                case "1":
+                case 1:
                     return View("NewState", data);
                     break;
-                case "2":
+                case 2:
                     return View("PendingState", data);
                     break;
-                case "3":
+                case 3:
                     return View("ToCloseState", data);
                     break;
-                case "4":
+                case 4:
                     return View("ActiveState", data);
                     break;
-                case "5":
+                case 5:
                     return View("ActiveState", data);
                     break;
-                case "6":
+                case 6:
                     return View("ConcludeState", data);
                     break;
-                case "7":
+                case 7:
                     return View("ToCloseState", data);
                     break;
-                case "8":
+                case 8:
                     return View("ToCloseState", data);
                     break;
-                case "9":
+                case 9:
                     return View("UnpaidState", data);
                     break;
                 default: return View();
             }
         }
 
-        public IActionResult ExportData(String status, String requesttype , int regionId, string searchKey)
+        public IActionResult ExportData(AdminDashboard obj)
         {
             int currentPage = 0;
-            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, regionId , searchKey);
+            AdminDashboard data = dashboardData.AllStateData(obj);
             var record = dashboardData.DownloadExcle(data);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
-            string filename = $"{status}_{strDate}.xlsx";
+            string filename = $"{obj.requeststatus}_{strDate}.xlsx";
             return File(record, contentType, filename);
         }
 

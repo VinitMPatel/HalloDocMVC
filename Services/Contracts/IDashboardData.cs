@@ -6,7 +6,7 @@ namespace Services.Contracts
 {
     public interface IDashboardData
     {
-        AdminDashboard AllStateData(String a , String b , int p, int regionId , string searchKey);
+        AdminDashboard AllStateData(AdminDashboard obj);
 
         AdminDashboard AllData();
 

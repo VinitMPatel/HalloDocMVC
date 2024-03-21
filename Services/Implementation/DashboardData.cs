@@ -42,94 +42,94 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AdminDashboard AllStateData(String status , String requesttype  , int currnetPage , int regionId , string searchKey = "")
+        public AdminDashboard AllStateData(AdminDashboard obj)
         {
 
-            if (requesttype == "0" && regionId == 0)
+            if (obj.requestType == 0 && obj.regionId == 0)
             {
                 List<Requestclient> reqc = new List<Requestclient>();
-                AdminDashboard obj = new AdminDashboard();
+                AdminDashboard dataobj = new AdminDashboard();
 
-                if (status == "4")
+                if (obj.requeststatus == 4)
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == "4" || a.Request.Status.ToString() == "5").ToList();
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToList();
                 }
-                else if(status == "3")
+                else if(obj.requeststatus == 3)
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == "3" || a.Request.Status.ToString() == "7" || a.Request.Status.ToString() == "8").ToList();
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToList();
                 }
                 else
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status).ToList();
+                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus).ToList();
                 }
 
-                if (!string.IsNullOrWhiteSpace(searchKey))
+                if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
 
-                if (currnetPage != 0)
+                if (obj.requestedPage != 0)
                 {
-                obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
-                obj.currentpage = currnetPage;
-                reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                dataobj.currentpage = obj.requestedPage;
+                reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
-                obj.requestclients = reqc;
-                return obj;
+                dataobj.requestclients = reqc;
+                return dataobj;
             }
-            else if(requesttype != "0" && regionId == 0)
+            else if(obj.requestType != 0 && obj.regionId == 0)
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
-                AdminDashboard obj = new AdminDashboard();
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Request.Requesttypeid == obj.requestType).ToList();
+                AdminDashboard dataobj = new AdminDashboard();
 
-                if (!string.IsNullOrWhiteSpace(searchKey))
+                if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
-                if (currnetPage != 0)
+                if (obj.requestedPage != 0)
                 {
-                    obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
-                    obj.currentpage = currnetPage;
-                    reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.currentpage = obj.requestedPage;
+                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
-                    obj.requestclients = reqc;
-                return obj;
+                    dataobj.requestclients = reqc;
+                return dataobj;
             }
-            else if(regionId != 0 && requesttype == "0")
+            else if(obj.regionId != 0 && obj.requestType == 0)
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Regionid == regionId).ToList();
-                AdminDashboard obj = new AdminDashboard();
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Regionid == obj.regionId).ToList();
+                AdminDashboard dataobj = new AdminDashboard();
 
-                if (!string.IsNullOrWhiteSpace(searchKey))
+                if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
-                if (currnetPage != 0)
+                if (obj.requestedPage != 0)
                 {
-                    obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
-                    obj.currentpage = currnetPage;
-                    reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.currentpage = obj.requestedPage;
+                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
-                obj.requestclients = reqc;
-                return obj;
+                dataobj.requestclients = reqc;
+                return dataobj;
             }
             else
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype && a.Regionid == regionId).ToList();
-                AdminDashboard obj = new AdminDashboard();
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Request.Requesttypeid == obj.requestType && a.Regionid == obj.regionId).ToList();
+                AdminDashboard dataobj = new AdminDashboard();
 
-                if (!string.IsNullOrWhiteSpace(searchKey))
+                if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
-                if (currnetPage != 0)
+                if (obj.requestedPage != 0)
                 {
-                    obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
-                    obj.currentpage = currnetPage;
-                    reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.currentpage = obj.requestedPage;
+                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
-                obj.requestclients = reqc;
-                return obj;
+                dataobj.requestclients = reqc;
+                return dataobj;
             }
         }
 

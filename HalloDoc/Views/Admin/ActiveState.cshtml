@@ -287,25 +287,20 @@
         });
     }
     function ChangePage(Page) {
-        currentPage = Page;
-        if (typeof (requestType) == "undefined") {
-            requestType = "0";
-        }
-        if (typeof (requestStatus) == "undefined") {
-            requestStatus = "1";
-        }
+        param.requestedPage = Page;
         CommonAjax();
     }
 
     function CommonAjax() {
-        console.log("status is : " + requestStatus);
-        console.log("requesttype is : " + requestType);
-        console.log("page is : " + currentPage);
-        console.log("Search is : " + searchKey);
+        console.log("status is : " + param.requestStatus);
+        console.log("requesttype is : " + param.requestType);
+        console.log("page is : " + param.requestedPage);
+        console.log("Search is : " + param.searchKey);
         $.ajax({
             url: '/Admin/AllState',
-            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
+            data: param,
             success: function (response) {
+
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -313,8 +308,13 @@
             }
         });
     }
+    $(document).ready(function () {
+        var temp = document.getElementById('page-' + @Model.currentpage);
+        if (temp != null) {
+            temp.style.backgroundColor = "lightblue";
+        }
+    });
             // $(document).ready(function () {
-
             //     $('.orders').on('click', function (e) {
             //         e.preventDefault();
             //         var requestId = $(this).attr('id');

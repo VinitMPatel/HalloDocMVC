@@ -374,22 +374,22 @@
             $('#confirmEmailWarning').html("")
         }
     })
-    // $('#contact').on('input', function () {
-    //     if ($('#contact').val() == "") {
-    //         $('#contactWarning').html("*Please enter contact detail")
-    //     }
-    //     else {
-    //         var regex = /^[1-9][0-9]{9}$/
+    $('#contact').on('input', function () {
+        if ($('#contact').val() == "") {
+            $('#contactWarning').html("*Please enter contact detail")
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
 
-    //         if (!regex.test($('#contact').val())) {
-    //             $('#contactWarning').html("*Enter valid number");
+            if (!regex.test($('#contact').val())) {
+                $('#contactWarning').html("*Enter valid number");
 
-    //         } else {
-    //             $('#contactWarning').html("");
+            } else {
+                $('#contactWarning').html("");
 
-    //         }
-    //     }
-    // })
+            }
+        }
+    })
     $('#confirmEmail').on('input', function () {
         if ($('#email').val() != $('#confirmEmail').val()) {
             $('#confirmEmailWarning').html("*Both email must be same")

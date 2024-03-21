@@ -2,8 +2,8 @@
 @{
     Layout = "";
 }
-<div class="table-responsive border-top">
-    <table class="table d-md-table d-none">
+<div class="table-responsive border-top" >
+    <table class="table d-md-table d-none table-secondary">
         <thead class="bg-body-secondary">
             <tr>
                 <th>Name</th>
@@ -267,3 +267,34 @@
         <div class="h3 text-danger">No Record found</div>
     }
 </div>
+<script>
+    function ChangePage(Page) {
+        param.requestedPage = Page;
+        CommonAjax();
+    }
+
+    function CommonAjax() {
+        console.log("status is : " + param.requestStatus);
+        console.log("requesttype is : " + param.requestType);
+        console.log("page is : " + param.requestedPage);
+        console.log("Search is : " + param.searchKey);
+        $.ajax({
+            url: '/Admin/AllState',
+            data: param,
+            success: function (response) {
+
+                $('#status-tabContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var temp = document.getElementById('page-' + @Model.currentpage);
+        if (temp != null) {
+            temp.style.backgroundColor = "lightblue";
+        }
+    });
+</script>

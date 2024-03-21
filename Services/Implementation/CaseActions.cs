@@ -57,7 +57,6 @@ namespace Services.Implementation
         public ViewModels.CaseActions Orders(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-           
             return obj;
         }
 
@@ -258,7 +257,6 @@ namespace Services.Implementation
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
         }
-
 
         public CloseCase CloseCase(int requestId)
         {

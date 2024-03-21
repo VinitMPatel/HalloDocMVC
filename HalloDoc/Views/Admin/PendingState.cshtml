@@ -3,7 +3,7 @@
     Layout = "";
 }
 <div class="table-responsive border-top">
-    <table class="table d-md-table d-none">
+    <table class="table d-md-table d-none table-secondary">
         <thead class="bg-body-secondary">
             <tr>
                 <th>Name</th>
@@ -34,15 +34,15 @@
                     color = "rgb(219,161,36)";
                     type = "Family";
                 }
-                else if (obj.Request.Requesttypeid == 4)
-                {
-                    color = "rgb(230, 0 , 115)";
-                    type = "Business";
-                }
                 else if (obj.Request.Requesttypeid == 3)
                 {
-                    color = "rgb(0,172,230)";
+                    color = "rgb(230, 0 , 115)";
                     type = "Concierge";
+                }
+                else if (obj.Request.Requesttypeid == 4)
+                {
+                    color = "rgb(0,172,230)";
+                    type = "Business";
                 }
                 <tr style="--bs-table-bg : @color">
                     <td class="text-white">@obj.Firstname</td>
@@ -91,99 +91,10 @@
             }
         </tbody>
     </table>
-    <div class="d-flex justify-content-center gap-2">
-        @if (Model.totalPages > 0)
-        {
-            var previous = Model.currentpage - 1;
-            var next = Model.currentpage + 1;
-            if (previous <= 0)
-            {
-                previous = 1;
-            }
-            if (next > Model.totalPages)
-            {
-                next = Model.totalPages;
-            }
-            <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
-                Previous
-            </button>
-            @if (Model.totalPages > 5)
-            {
-                @if (Model.currentpage > Model.totalPages - 3)
-                {
-                    <button class="1" id="page-1" onclick="ChangePage(1)">
-                        1
-                    </button>
-                    <button class="0" id="page-0" style="width:25px">
-                        ...
-                    </button>
-                    @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
-                    {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)">
-                            @i
-                        </button>
-                    }
-                }
-                else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
-                {
-                    <button class="1" id="page-1" onclick="ChangePage(1)">
-                        1
-                    </button>
-                    <button class="0" id="page-0" style="width:25px">
-                        ...
-                    </button>
-                    @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
-                    {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)">
-                            @i
-                        </button>
-                    }
-                    <button class="0" id="page-0" style="width:25px">
-                        ...
-                    </button>
-                    <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
-                        @Model.totalPages
-                    </button>
-                }
-                else
-                {
-                    @for (var i = 1; i <= 4; i++)
-                    {
-                        <button class="@i" id="page-@i" onclick="ChangePage(@i)">
-                            @i
-                        </button>
-                    }
-                    <button class="0" id="page-0" style="width:25px">
-                        ...
-                    </button>
-                    <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
-                        @Model.totalPages
-                    </button>
-                }
-            }
-            else
-            {
-                @for (int page = 0; page < Model.totalPages; page++)
-                {
-                    var temp = page + 1;
-
-                    <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)">
-                        @temp
-                    </button>
-                }
-            }
-            <button class="@next" id="page-@next" onclick="ChangePage(@next)">
-                Next
-            </button>
-        }
-        else
-        {
-            <div class="h3 text-danger">No Record found</div>
-        }
-    </div>
 
 
-    <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+    <div class="accordion accordion-flush d-md-none d-block mb-4" id="accordionFlushExample">
 
         <div class="accordion-item">
             @foreach (var item in Model.requestclients)
@@ -200,15 +111,15 @@
                     color = "rgb(219,161,36)";
                     type = "Family";
                 }
-                else if (item.Request.Requesttypeid == 4)
-                {
-                    color = "rgb(230, 0 , 115)";
-                    type = "Business";
-                }
                 else if (item.Request.Requesttypeid == 3)
                 {
-                    color = "rgb(0,172,230)";
+                    color = "rgb(230, 0 , 115)";
                     type = "Concierge";
+                }
+                else if (item.Request.Requesttypeid == 4)
+                {
+                    color = "rgb(0,172,230)";
+                    type = "Business";
                 }
                 <h2 class="accordion-header" id="flush-headingOne">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
@@ -270,6 +181,96 @@
             }
         </div>
     </div>
+    <div class="d-flex justify-content-center gap-2">
+        @if (Model.totalPages > 0)
+        {
+            var previous = Model.currentpage - 1;
+            var next = Model.currentpage + 1;
+            if (previous <= 0)
+            {
+                previous = 1;
+            }
+            if (next > Model.totalPages)
+            {
+                next = Model.totalPages;
+            }
+            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                Previous
+            </button>
+            @if (Model.totalPages > 5)
+            {
+                @if (Model.currentpage > Model.totalPages - 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                        ...
+                    </button>
+                    @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                }
+                else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                        ...
+                    </button>
+                    @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+                else
+                {
+                    @for (var i = 1; i <= 4; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+            }
+            else
+            {
+                @for (int page = 0; page < Model.totalPages; page++)
+                {
+                    var temp = page + 1;
+
+                    <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
+                        @temp
+                    </button>
+                }
+            }
+            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                Next
+            </button>
+        }
+        else
+        {
+            <div class="h3 text-danger">No Record found</div>
+        }
+    </div>
 </div>
 
 <div id="caseView">
@@ -277,25 +278,20 @@
 <script>
 
     function ChangePage(Page) {
-        currentPage = Page;
-        if (typeof (requestType) == "undefined") {
-            requestType = "0";
-        }
-        if (typeof (requestStatus) == "undefined") {
-            requestStatus = "2";
-        }
+        param.requestedPage = Page;
         CommonAjax();
     }
 
     function CommonAjax() {
-        console.log("status is : " + requestStatus);
-        console.log("requesttype is : " + requestType);
-        console.log("page is : " + currentPage);
-        console.log("Search is : " + searchKey);
+        console.log("status is : " + param.requestStatus);
+        console.log("requesttype is : " + param.requestType);
+        console.log("page is : " + param.requestedPage);
+        console.log("Search is : " + param.searchKey);
         $.ajax({
             url: '/Admin/AllState',
-            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
+            data: param,
             success: function (response) {
+
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -361,6 +357,12 @@
 
     $(document).ready(function () {
 
+            var temp = document.getElementById('page-' + @Model.currentpage);
+            if (temp != null) {
+            temp.style.backgroundColor = "#5dafb2";
+                temp.style.color = "white"
+            }
+        
         $('.viewNotes').on('click', function (e) {
             e.preventDefault();
             var requestId = $(this).attr('id');

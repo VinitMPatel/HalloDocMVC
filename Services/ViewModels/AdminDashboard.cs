@@ -17,6 +17,16 @@ namespace Services.ViewModels
         public int currentpage { get; set; }
 
         public List<Region> regionlist { get; set; }
+
+        public int requeststatus { get; set; }
+
+        public int requestType { get; set; }
+
+        public int requestedPage { get; set; }
+
+        public int regionId { get; set; }
+
+        public string searchKey { get; set; }
     }
 
 
