@@ -292,7 +292,7 @@
         console.log("Search is : " + searchKey);
         $.ajax({
             url: '/Admin/AllState',
-            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey },
+            data: { "status": requestStatus, "requesttype": requestType, "currentPage": currentPage, "searchKey": searchKey , "regionId" : regionId},
             success: function (response) {
                 $('#exsearch').val(searchKey);
                 $('#exrequesttype').val(requestType);

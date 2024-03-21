@@ -35,15 +35,17 @@ namespace Services.Implementation
         public AdminDashboard AllData()
         {
             List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).ToList();
+            List<Region> regionList = _context.Regions.ToList();
             AdminDashboard obj = new AdminDashboard();
             obj.requestclients = reqc;
+            obj.regionlist = regionList;
             return obj;
         }
 
-        public AdminDashboard AllStateData(String status , String requesttype  , int currnetPage , string searchKey = "")
+        public AdminDashboard AllStateData(String status , String requesttype  , int currnetPage , int regionId , string searchKey = "")
         {
 
-            if (requesttype == "0" || requesttype == null)
+            if (requesttype == "0" && regionId == 0)
             {
                 List<Requestclient> reqc = new List<Requestclient>();
                 AdminDashboard obj = new AdminDashboard();
@@ -75,7 +77,7 @@ namespace Services.Implementation
                 obj.requestclients = reqc;
                 return obj;
             }
-            else
+            else if(requesttype != "0" && regionId == 0)
             {
                 List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype).ToList();
                 AdminDashboard obj = new AdminDashboard();
@@ -91,6 +93,42 @@ namespace Services.Implementation
                     reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
                 }
                     obj.requestclients = reqc;
+                return obj;
+            }
+            else if(regionId != 0 && requesttype == "0")
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Regionid == regionId).ToList();
+                AdminDashboard obj = new AdminDashboard();
+
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
+                if (currnetPage != 0)
+                {
+                    obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    obj.currentpage = currnetPage;
+                    reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                }
+                obj.requestclients = reqc;
+                return obj;
+            }
+            else
+            {
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status.ToString() == status && a.Request.Requesttypeid.ToString() == requesttype && a.Regionid == regionId).ToList();
+                AdminDashboard obj = new AdminDashboard();
+
+                if (!string.IsNullOrWhiteSpace(searchKey))
+                {
+                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(searchKey.ToLower())).ToList();
+                }
+                if (currnetPage != 0)
+                {
+                    obj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    obj.currentpage = currnetPage;
+                    reqc = reqc.Skip((currnetPage - 1) * 2).Take(2).ToList();
+                }
+                obj.requestclients = reqc;
                 return obj;
             }
         }
@@ -285,19 +323,17 @@ namespace Services.Implementation
             Admin admin = _context.Admins.FirstOrDefault(a=>a.Adminid==adminId);
             Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
             List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
-            for(int  i = 0; i < adminRegions.Count(); i++)
+            foreach(var item in adminRegions)
             {
-                   Adminregion? adminRegionToDelete = _context.Adminregions.FirstOrDefault(ar => ar.Adminid == adminId && ar.Regionid == adminRegions.ElementAt(i).Regionid);
-                   _context.Adminregions.Remove(adminRegionToDelete);
+                _context.Adminregions.Remove(item);
             }
-            int[] newRegions = obj.selectedregion;
-            Adminregion newAdminRegion = new Adminregion();
-            for(int i=0; i<newRegions.Length; i++)
+           
+            foreach (var item in obj.selectedregion)
             {
+                Adminregion newAdminRegion = new Adminregion();
                 newAdminRegion.Adminid = adminId;
-                newAdminRegion.Regionid = newRegions[i];
+                newAdminRegion.Regionid = item;
                 _context.Adminregions.Add(newAdminRegion);
-                _context.SaveChanges();
             }
             admin.Firstname = obj.firstName;
             admin.Lastname = obj.lastName;

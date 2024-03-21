@@ -65,9 +65,9 @@ namespace HalloDoc.Controllers
         }
 
         [Authorization("1")]
-        public IActionResult AllState(String status, String requesttype, int currentPage, string searchKey)
+        public IActionResult AllState(String status, String requesttype, int currentPage, int regionId ,  string searchKey)
         {
-            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, searchKey);
+            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, regionId , searchKey);
             switch (status)
             {
                 case "1":
@@ -101,10 +101,10 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public IActionResult ExportData(String status, String requesttype, string searchKey)
+        public IActionResult ExportData(String status, String requesttype , int regionId, string searchKey)
         {
             int currentPage = 0;
-            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, searchKey);
+            AdminDashboard data = dashboardData.AllStateData(status, requesttype, currentPage, regionId , searchKey);
             var record = dashboardData.DownloadExcle(data);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
