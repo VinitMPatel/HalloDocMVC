@@ -31,6 +31,7 @@ namespace Services.Implementation
             var request = context.HttpContext.Request;
             var token = request.Cookies["jwt"];
 
+            
             if (token == null || !jwtservice.ValidateToken(token, out JwtSecurityToken jwttoken))
             {
                 context.Result = new RedirectToRouteResult(new RouteValueDictionary(new { controller = "Admin", action = "AdminLogin" }));

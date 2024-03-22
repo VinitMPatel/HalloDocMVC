@@ -359,7 +359,7 @@ namespace Services.Implementation
 
             admin.Address1 = obj.address1;
             admin.Address2 = obj.address2;
-            admin.city = obj.city;
+            admin.City = obj.city;
             admin.Zip = obj.zip;
             admin.Modifieddate = DateTime.Now;
             admin.Modifiedby = aspnetuser.Id;
@@ -367,6 +367,20 @@ namespace Services.Implementation
 
             _context.Update(admin);
             _context.SaveChanges();
+        }
+
+        public ProviderViewModel ProviderData(int regionId)
+        {
+            List<Physician> physicinaData = _context.Physicians.Include(a=>a.Role).ToList();
+            if(regionId != 0)
+            {
+                physicinaData = physicinaData.Where(a => a.Regionid == regionId).ToList();
+            }
+            List<int> phynotificationid = _context.Physiciannotifications.Where(u => u.Isnotificationstopped == new BitArray(new[] { true })).Select(u => u.Pysicianid).ToList();
+            ProviderViewModel obj = new ProviderViewModel();
+            obj.physician = physicinaData;
+            obj.physiciannotificationid = phynotificationid;
+            return obj;
         }
     }
 }

@@ -14,8 +14,6 @@ public partial class Admin
 
     public string? Lastname { get; set; }
 
-    public string? city { get; set; }
-
     public string Email { get; set; } = null!;
 
     public string? Mobile { get; set; }
@@ -43,6 +41,8 @@ public partial class Admin
     public BitArray? Isdeleted { get; set; }
 
     public int? Roleid { get; set; }
+
+    public string? City { get; set; }
 
     public virtual ICollection<Adminregion> Adminregions { get; set; } = new List<Adminregion>();
 

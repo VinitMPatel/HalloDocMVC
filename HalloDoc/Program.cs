@@ -1,5 +1,6 @@
 using Data.DataContext;
 using HalloDoc.Models;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 
 using Services.Implementation;
@@ -58,3 +59,6 @@ app.MapControllerRoute(
     pattern: "{controller=Admin}/{action=AdminLogin}/{id?}");
 
 app.Run();
+
+
+//Scaffold - DbContext "User ID =postgres;Password=178@tatva;Server=localhost;Port=5432;Database=HalloDocDb;Integrated Security=true;Pooling=true;" Npgsql.EntityFrameworkCore.PostgreSQL - OutputDir "Entity" –context "HalloDocDbContext" –contextDir "DataContext" -f;

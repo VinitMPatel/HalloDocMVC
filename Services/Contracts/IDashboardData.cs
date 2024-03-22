@@ -22,5 +22,6 @@ namespace Services.Contracts
         AdminProfile AdminProfileData(int adminId);
         void UpdateAdminInfo(int adminId, AdminInfo obj);
         void UpdateBillingInfo(int adminId, BillingInfo obj);
+        ProviderViewModel ProviderData(int regionId);
     }
 }

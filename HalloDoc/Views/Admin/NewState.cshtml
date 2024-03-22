@@ -176,7 +176,7 @@
             }
         </div>
     </div>
-    <div class="d-flex justify-content-center gap-2 mb-3">
+    <div class="d-flex justify-content-center gap-2 mb-3 filter-label">
         @if (Model.totalPages > 0)
         {
             var previous = Model.currentpage - 1;
@@ -270,7 +270,18 @@
 </div>
 <div id="caseView">
 </div>
+<style>
+    .filter-label {
+        font-size: clamp(10px, 3vw, 14px)
+    }
 
+    .filter-color {
+    }
+
+    .dash-button {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+</style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <script>

@@ -198,6 +198,18 @@ input#phone {
     color: #17a2b8 !important;
 }
 
+.dropdown-toggle::after{
+    display : none;
+}
+
+.dropdown-item:hover {
+    background-color: rgb(0 229 234 / 15%);
+    color: #17a2b8;
+    font-weight: 600;
+}
+.providerDropdown{
+    width : 25%;
+}
 @media only screen and (max-width:1050px) {
     .allstatus {
         width: 33.3% !important;
@@ -216,9 +228,17 @@ input#phone {
     .small {
         font-size: 0.75rem
     }
+    .providerDropdown {
+        width: 100%;
+    }
 }
 @media only screen and (max-width:950px) {
     .dash-btn {
         display: none;
+    }
+}
+@media only screen and (max-width:575px) {
+    .providerDropdown {
+        width: 100%;
     }
 }

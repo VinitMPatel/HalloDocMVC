@@ -88,7 +88,7 @@ public partial class HalloDocDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=localhost; Database=HalloDocDb; Username=postgres; Password=178@tatva");
+        => optionsBuilder.UseNpgsql("User ID =postgres;Password=178@tatva;Server=localhost;Port=5432;Database=HalloDocDb;Integrated Security=true;Pooling=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -111,6 +111,9 @@ public partial class HalloDocDbContext : DbContext
             entity.Property(e => e.Aspnetuserid)
                 .HasMaxLength(128)
                 .HasColumnName("aspnetuserid");
+            entity.Property(e => e.City)
+                .HasMaxLength(255)
+                .HasColumnName("city");
             entity.Property(e => e.Createdby)
                 .HasMaxLength(128)
                 .HasColumnName("createdby");
@@ -170,9 +173,7 @@ public partial class HalloDocDbContext : DbContext
 
             entity.ToTable("adminregion");
 
-            entity.Property(e => e.Adminregionid)
-                .UseIdentityAlwaysColumn()
-                .HasColumnName("adminregionid");
+            entity.Property(e => e.Adminregionid).HasColumnName("adminregionid");
             entity.Property(e => e.Adminid).HasColumnName("adminid");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
 
@@ -718,6 +719,10 @@ public partial class HalloDocDbContext : DbContext
             entity.HasOne(d => d.Region).WithMany(p => p.Physicians)
                 .HasForeignKey(d => d.Regionid)
                 .HasConstraintName("fk_physician1");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Physicians)
+                .HasForeignKey(d => d.Roleid)
+                .HasConstraintName("physician_roleid_fkey");
         });
 
         modelBuilder.Entity<Physicianlocation>(entity =>

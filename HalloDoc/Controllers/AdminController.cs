@@ -239,7 +239,6 @@ namespace HalloDoc.Controllers
 
         public IActionResult AdminLogin()
         {
-
             return View();
         }
 
@@ -339,6 +338,20 @@ namespace HalloDoc.Controllers
         }
 
 
+        public IActionResult Provider()
+        {
+            ProviderViewModel obj = new ProviderViewModel();
+            obj.regionlist = _context.Regions.ToList();
+            return View(obj);
+        }
+        public IActionResult ProviderTable(int regionId)
+        {
+            ProviderViewModel obj =  dashboardData.ProviderData(regionId);
+            return PartialView("Provider/_ProviderTable" , obj);
+        }
+
+
+       
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

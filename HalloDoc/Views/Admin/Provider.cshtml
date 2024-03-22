@@ -1,0 +1,58 @@
+﻿@model Services.ViewModels.ProviderViewModel
+@{
+    Layout = "_Admin";
+}
+<div class="container mt-3">
+    <div class="h4">Provider Information</div>
+
+    <div class="border rounded-3 mt-4 bg-transparent">
+
+        <div class="d-flex justify-content-between flex-column flex-sm-row mt-4 mx-4">
+            <div class="providerDropdown">
+                <select class="form-select border border-dark" id="selectedRegion" aria-label="Floating label select example">
+                    <option value="0" selected>All</option>
+                    @foreach (var obj in Model.regionlist)
+                    {
+                        <option value="@obj.Regionid">@obj.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="d-flex justify-content-center mt-3 mt-sm-0">
+                <button type="button" class="btn btn-info text-white">Create Provider Account</button>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var regionId;
+        $.ajax({
+            url: '/Admin/ProviderTable',
+            data: { regionId: regionId },
+            success: function (response) {
+                $('.table-responsive').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        $('#selectedRegion').on('change', function () {
+            regionId = $('#selectedRegion').val();
+            $.ajax({
+                url: '/Admin/ProviderTable',
+                data: { regionId: regionId },
+                success: function (response) {
+                    $('.table-responsive').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        })
+    })
+
+</script>
