@@ -1,0 +1,364 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model Services.ViewModels.EditProviderViewModel
+<div class="d-flex justify-content-between">
+    <div class="fw-bolder h4">Edit Physician Account</div>
+    <div>
+        <button class=" border border-info rounded-2 p-2 bg-transparent">
+            <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+        </button>
+    </div>
+</div>
+
+<div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
+
+    <div class="row AccountInfo">
+        <div class="h4">Account Information</div>
+
+        <div class="p-2 col-sm-6 col-12">
+            <div class="form-floating ">
+                <input type="text" class="form-control" placeholder="User Name" name="contact" disabled>
+                <label class="FloatingInput">User Name</label>
+            </div>
+        </div>
+
+        <div class="p-2 col-sm-6 col-12">
+            <div class="form-floating ">
+                <input type="password" class="form-control" placeholder="Password">
+                <label class="FloatingInput">Password</label>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-12 p-2">
+            <div class="form-floating">
+                <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
+                    <option value="" selected>Active</option>
+                </select>
+                <label for="floatingSelect">
+                    Status
+                </label>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-12 p-2">
+            <div class="form-floating">
+                <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
+                    <option value="" selected>Master Admin</option>
+                </select>
+                <label for="floatingSelect">
+                    Role
+                </label>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
+        </div>
+    </div>
+
+    <form>
+        <div class="row mt-3">
+            <div class="h4">Physician Information</div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="First Name" disabled  id="firstName" asp-for="firstName">
+                    <label class="FloatingInput">First Name</label>
+                </div>
+                <span id="firstNameWarning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="Last Name" disabled id="lastName" asp-for="lastName">
+                    <label class="FloatingInput">Last Name</label>
+                </div>
+                <span id="lastNameWarning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled  id="email" asp-for="email">
+                    <label class="FloatingInput">Email</label>
+                    <span id="emailWarning" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="p-2 col-xl-6 col-sm-6 col-12">
+                <div class="form-floating">
+                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                    <input class="form-control data1" type="text" maxlength="10" placeholder="contact" disabled id="contact" asp-for="contactNumber"/>
+                    <label class="floatingInput">Contact</label>
+                    <span id="contactWarning" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="MedicalLicense" disabled  asp-for="medicalLecense">
+                    <label class="FloatingInput">Medical License # </label>
+                </div>
+                <span id="confirmEmailWarning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data1" placeholder="NPINumber" disabled asp-for="NPINumber">
+                    <label class="FloatingInput">NPI number </label>
+                </div>
+                <span id="confirmEmailWarning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="email" class="form-control data1" placeholder="name@example.com" disabled asp-for="syncEmail">
+                    <label class="FloatingInput">Synchronization Email Address </label>
+                </div>
+                <span id="confirmEmailWarning" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 col-sm-6 mt-3">
+                @foreach (var item in Model.regionList)
+                {
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input adisabled adminselectedregion-adminprofile data1" type="checkbox"
+                        @if (Model.physicianRegionlist.Any(a => a.Regionid == item.Regionid))
+                        {
+                            @:checked
+                        } value="@item.Regionid"
+                               disabled>
+                        <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-2">
+                <button id="submitBtn1" type="button" class="btn btn-info text-white">Edit</button>
+                <button id="saveBtn1" type="button" class="btn btn-info text-white">Save Changes</button>
+                <button id="cancelBtn1" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+    <form>
+        <div class="row mt-3">
+            <div class="h4">Mailing and billing information</div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Address1" disabled  id="address1" asp-for="address1">
+                    <label class="FloatingInput">Address1</label>
+                </div>
+                <span id="address1Warning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Address2" disabled id="address2" asp-for="address2">
+                    <label class="FloatingInput">Address2</label>
+                </div>
+                <span id="address2Warning" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 ">
+                <div class="form-floating ">
+                    <input type="" class="form-control data2" placeholder="city" disabled id="city" asp-for="city">
+                    <label class="FloatingInput">City</label>
+                </div>
+                <span id="cityWarning" class="text-danger"></span>
+            </div>
+
+            <div class="col-sm-6 col-12 p-2">
+                <div class="form-floating">
+                    <select class="form-select" aria-label="Floating label select example" id="floatingSelect" disabled >
+                        <option value="" selected>Ahmedabad</option>
+                    </select>
+                    <label for="floatingSelect">
+                        State
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-12 p-2">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data2" placeholder="Zip Code" disabled id="zip" asp-for="zipcode">
+                    <label class="FloatingInput">Zip Code</label>
+                </div>
+                <span id="zipWarning" class="text-danger"></span>
+            </div>
+
+            <div class="col-xl-6 col-sm-6 col-12 p-2">
+                <div class="form-floating">
+                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
+                    <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled id="billingContact" asp-for="billingContact" />
+                    <label class="floatingInput">Contact</label>
+                </div>
+                <span id="billingContactWarning" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button id="submitBtn2" type="button" class="btn btn-info text-white">Edit</button>
+                <button id="saveBtn2" type="button" class="btn btn-info text-white">Save Changes</button>
+                <button id="cancelBtn2" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row mt-3">
+        <div class="h4">Provider Profile</div>
+
+        <div class="p-2 col-sm-6 col-12">
+            <div class="form-floating ">
+                <input type="text" class="form-control" placeholder="BusinessName" disabled asp-for="businessName">
+                <label class="FloatingInput">Business Name</label>
+            </div>
+        </div>
+
+        <div class="p-2 col-sm-6 col-12">
+            <div class="form-floating ">
+                <input type="email" class="form-control" placeholder="name@example.com" disabled asp-for="businessSite">
+                <label class="FloatingInput">Business Site</label>
+            </div>
+        </div>
+
+        <div class="p-2 col-sm-6 col-12">
+            
+        </div>
+        
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var selectedregion = [];
+
+
+        $('#cancelBtn1').css('display', 'none');
+        $('#saveBtn1').css('display', 'none');
+
+        $('#submitBtn1').on('click', function () {
+            $('.data1').each(function () {
+                $(this).prop('disabled', false);
+            })
+            $('#cancelBtn1').css('display', 'flex')
+            $('#saveBtn1').css('display', 'flex')
+            $(this).css('display', 'none')
+        })
+
+        $('#cancelBtn1').on('click', function () {
+            $('.data1').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#submitBtn1').css('display', 'flex')
+            $('#saveBtn1').css('display', 'none')
+            $(this).css('display', 'none')
+            $('#confirmEmailWarning').html("")
+            $('#firstNameWarning').html("")
+            $('#lastNameWarning').html("")
+            $('#emailWarning').html("")
+            $('#contactWarning').html("")
+
+        })
+
+
+        $('#cancelBtn2').css('display', 'none');
+        $('#saveBtn2').css('display', 'none');
+
+        $('#submitBtn2').on('click', function () {
+            $('.data2').each(function () {
+                $(this).prop('disabled', false);
+            })
+            $('#cancelBtn2').css('display', 'flex')
+            $('#saveBtn2').css('display', 'flex')
+            $(this).css('display', 'none')
+        })
+
+        $('#cancelBtn2').on('click', function () {
+            $('.data2').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#submitBtn2').css('display', 'flex')
+            $('#saveBtn2').css('display', 'none')
+            $(this).css('display', 'none')
+            $('#address1Warning').html("")
+            $('#address2Warning').html("")
+            $('#cityWarning').html("")
+            $('#zipWarning').html("")
+            $('#billingContactWarning').html("")
+        })
+
+
+
+        $('#saveBtn1').on('click', function (e) {
+            $('input[type="checkbox"]:checked').each(function () {
+                selectedregion.push($(this).val());
+            });
+
+            var adminInfo = {
+                firstName: $('#firstName').val(),
+                lastName: $('#lastName').val(),
+                email: $('#email').val(),
+                contact: $('#contact').val(),
+                selectedregion: selectedregion,
+            }
+
+            if ($('#firstNameWarning').text() == "" && $('#lastNameWarning').text() == "" && $('#emailWarning').text() == "" && $('#confirmEmailWarning').text() == "" && $('#contactWarning').text() == "") {
+                $('.data1').each(function () {
+                    $(this).prop('disabled', true);
+                })
+                $('#submitBtn1').css('display', 'flex')
+                $('#cancelBtn1').css('display', 'none')
+                $(this).css('display', 'none')
+                $('#confirmEmailWarning').html("")
+                $('#lastNameWarning').html("")
+                $('#emailWarning').html("")
+                $('#contactWarning').html("")
+                $.ajax({
+                    url: '/Admin/UpdateAdminInfo',
+                    data: adminInfo,
+                    contentType: "application/json",
+                    traditional: true,
+                })
+            }
+            else {
+                console.log("NAI THAVA DOV SUBMIT");
+            }
+        })
+
+        $('#saveBtn2').on('click', function () {
+            var billingInfo = {
+                address1: $('#address1').val(),
+                address2: $('#address2').val(),
+                city: $('#city').val(),
+                zip: $('#zip').val(),
+                billingContact: $('#billingContact').val(),
+            }
+
+            if ($('#address1Warning').text() == "" && $('#address2Warning').text() == "" && $('#cityWarning').text() == "" && $('#zipWarning').text() == "" && $('#billingContactWarning').text() == "") {
+                $('.data2').each(function () {
+                    $(this).prop('disabled', true);
+                })
+                $('#submitBtn2').css('display', 'flex')
+                $('#cancelBtn2').css('display', 'none')
+                $(this).css('display', 'none')
+                $('#address1Warning').html("")
+                $('#address2Warning').html("")
+                $('#cityWarning').html("")
+                $('#zipWarning').html("")
+                $('#billingContactWarning').html("")
+                $.ajax({
+                    url: '/Admin/UpdateBillingInfo',
+                    data: billingInfo
+                })
+            }
+            else {
+                console.log("NAI THAVA DOV SUBMIT");
+            }
+        })
+    })
+
+
+</script>

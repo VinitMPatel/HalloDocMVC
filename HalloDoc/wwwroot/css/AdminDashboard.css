@@ -200,6 +200,10 @@ input#phone {
 
 .dropdown-toggle::after{
     display : none;
+
+}
+#dropdownMenu2::after {
+    display: none;
 }
 
 .dropdown-item:hover {

@@ -130,7 +130,7 @@
 
             var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
             var fileUrls = [];
-
+            debugger;
             // Iterate through selected checkboxes and extract file URLs
             selectedFiles.forEach(function (checkbox) {
                 var row = checkbox.closest('tr');
@@ -189,6 +189,7 @@
 
             $('input[type="checkbox"]:checked').each(function () {
                 formData.append('reqwiseid', $(this).val());
+
             });
             var reqid = $('#docid').attr('name');
             formData.append('reqid', reqid);

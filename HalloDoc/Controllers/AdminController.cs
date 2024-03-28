@@ -144,9 +144,9 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ViewNotes", obj);
         }
 
-        public List<Physician> FilterData(int regionid)
+        public List<Data.Entity.Physician> FilterData(int regionid)
         {
-            List<Physician> physicianList = dashboardData.PhysicianList(regionid);
+            List<Data.Entity.Physician> physicianList = dashboardData.PhysicianList(regionid);
             return physicianList;
         }
 
@@ -336,22 +336,7 @@ namespace HalloDoc.Controllers
             dashboardData.UpdateBillingInfo(adminId, obj);
             return RedirectToAction("AdminProfile");
         }
-
-
-        public IActionResult Provider()
-        {
-            ProviderViewModel obj = new ProviderViewModel();
-            obj.regionlist = _context.Regions.ToList();
-            return View(obj);
-        }
-        public IActionResult ProviderTable(int regionId)
-        {
-            ProviderViewModel obj =  dashboardData.ProviderData(regionId);
-            return PartialView("Provider/_ProviderTable" , obj);
-        }
-
-
-       
+        
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

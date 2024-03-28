@@ -18,7 +18,7 @@
                 </select>
             </div>
             <div class="d-flex justify-content-center mt-3 mt-sm-0">
-                <button type="button" class="btn btn-info text-white">Create Provider Account</button>
+                <button type="button" class="btn btn-info text-white shadow-none">Create Provider Account</button>
             </div>
         </div>
 
@@ -27,11 +27,12 @@
 
     </div>
 </div>
+
 <script>
     $(document).ready(function () {
         var regionId;
         $.ajax({
-            url: '/Admin/ProviderTable',
+            url: '/Provider/ProviderTable',
             data: { regionId: regionId },
             success: function (response) {
                 $('.table-responsive').html(response);
@@ -43,7 +44,7 @@
         $('#selectedRegion').on('change', function () {
             regionId = $('#selectedRegion').val();
             $.ajax({
-                url: '/Admin/ProviderTable',
+                url: '/Provider/ProviderTable',
                 data: { regionId: regionId },
                 success: function (response) {
                     $('.table-responsive').html(response);
@@ -54,5 +55,4 @@
             });
         })
     })
-
 </script>

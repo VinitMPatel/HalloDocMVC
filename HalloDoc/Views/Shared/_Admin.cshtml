@@ -48,7 +48,7 @@
                                 <a asp-action="AdminProfile" class="text-decoration-none" style="color:black;">My Profile</a>
 
                             }
-                            @if (Context.Request.Path.Equals("/Admin/Provider"))
+                            @if (Context.Request.Path.Equals("/Provider/Provider"))
                             {
                                 <a asp-action="Provider" class="text-decoration-none text-info" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Provider</a>
                             }
@@ -91,7 +91,7 @@
                 }
                 else
                 {
-                    <a asp-action="AdminDashboard" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
+                    <a asp-action="AdminDashboard" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
                 }
                 <a class="text-decoration-none pr-4" style="color:black;">Providers Location</a>
                 @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
@@ -100,10 +100,10 @@
                 }
                 else
                 {
-                    <a asp-action="AdminProfile" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
+                    <a asp-action="AdminProfile" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
 
                 }
-                @if (Context.Request.Path.Equals("/Admin/Provider") || Context.Request.Path.Equals("/Admin/Schedulling") || Context.Request.Path.Equals("/Admin/Invoicing"))
+                @if (Context.Request.Path.Equals("/Provider/Provider") || Context.Request.Path.Equals("/Provider/Schedulling") || Context.Request.Path.Equals("/Provider/Invoicing"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Provider</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
@@ -116,9 +116,9 @@
                 {
                     <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Provider</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
-                        <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
-                        <li><a asp-action="Schedulling" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
-                        <li><a asp-action="Invoicing" class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
+                        <li><a asp-action="Provider" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
+                        <li><a asp-action="Schedulling" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                        <li><a asp-action="Invoicing" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                     </ul>
                 }
                

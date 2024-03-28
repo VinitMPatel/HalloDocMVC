@@ -25,7 +25,7 @@ namespace Services.Implementation
         private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
 
-        public DashboardData(HalloDocDbContext context , IHostingEnvironment env)
+        public DashboardData(HalloDocDbContext context, IHostingEnvironment env)
         {
             _context = context;
             _env = env;
@@ -54,7 +54,7 @@ namespace Services.Implementation
                 {
                     reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToList();
                 }
-                else if(obj.requeststatus == 3)
+                else if (obj.requeststatus == 3)
                 {
                     reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToList();
                 }
@@ -70,16 +70,16 @@ namespace Services.Implementation
 
                 if (obj.requestedPage != 0)
                 {
-                dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
-                dataobj.currentpage = obj.requestedPage;
-                reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.currentpage = obj.requestedPage;
+                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
                 dataobj.requestclients = reqc;
                 return dataobj;
             }
-            else if(obj.requestType != 0 && obj.regionId == 0)
+            else if (obj.requestType != 0 && obj.regionId == 0)
             {
-                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r=>r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Request.Requesttypeid == obj.requestType).ToList();
+                List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Request.Requesttypeid == obj.requestType).ToList();
                 AdminDashboard dataobj = new AdminDashboard();
 
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
@@ -92,10 +92,10 @@ namespace Services.Implementation
                     dataobj.currentpage = obj.requestedPage;
                     reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
                 }
-                    dataobj.requestclients = reqc;
+                dataobj.requestclients = reqc;
                 return dataobj;
             }
-            else if(obj.regionId != 0 && obj.requestType == 0)
+            else if (obj.regionId != 0 && obj.requestType == 0)
             {
                 List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(r => r.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus && a.Regionid == obj.regionId).ToList();
                 AdminDashboard dataobj = new AdminDashboard();
@@ -133,28 +133,29 @@ namespace Services.Implementation
             }
         }
 
-        public CaseActionDetails ViewCaseData(int requestId) {
-                var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
-                var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
-                var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
-                var regionList = _context.Regions.ToList();
-                var data = new CaseActionDetails
-                {
-                    //ConfirmationNumber = request.Confirmationnumber,
-                    requestId = requestId,
-                    PatientNotes = requestclient.Notes,
-                    FirstName = request.Firstname,
-                    LastName = request.Lastname,
-                    Email = request.Email,
-                    DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate)),
-                    PhoneNumber = request.Phonenumber,
-                    Region = regiondata.Name,
-                    regionList = regionList,
-                    Address = requestclient.Address,
-                    requestType = request.Requesttypeid,
-                    ConfirmationNumber = request.Confirmationnumber
-                };
-                return data;
+        public CaseActionDetails ViewCaseData(int requestId)
+        {
+            var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
+            var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
+            var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
+            var regionList = _context.Regions.ToList();
+            var data = new CaseActionDetails
+            {
+                //ConfirmationNumber = request.Confirmationnumber,
+                requestId = requestId,
+                PatientNotes = requestclient.Notes,
+                FirstName = request.Firstname,
+                LastName = request.Lastname,
+                Email = request.Email,
+                DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate)),
+                PhoneNumber = request.Phonenumber,
+                Region = regiondata.Name,
+                regionList = regionList,
+                Address = requestclient.Address,
+                requestType = request.Requesttypeid,
+                ConfirmationNumber = request.Confirmationnumber
+            };
+            return data;
         }
 
         public List<Physician> PhysicianList(int regionid)
@@ -167,7 +168,7 @@ namespace Services.Implementation
         {
             CaseActionDetails obj = new CaseActionDetails();
             //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
-            List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m ).ToList();
+            List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToList();
             var patientName = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
             obj.FirstName = patientName;
             obj.requestId = requestId;
@@ -311,29 +312,32 @@ namespace Services.Implementation
         public AdminProfile AdminProfileData(int adminId)
         {
             AdminProfile adminData = new AdminProfile();
-            adminData.admin =  _context.Admins.FirstOrDefault(a=>a.Adminid == adminId);
+            adminData.admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
             List<Region> regionList = _context.Regions.ToList();
             adminData.regionlist = regionList;
-            List<Adminregion> adminRegions = _context.Adminregions.Where(a=>a.Adminid == adminId).ToList();
+            List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
             adminData.adminregionlist = adminRegions;
             return adminData;
         }
-        public void UpdateAdminInfo(int adminId , AdminInfo obj)
+        public void UpdateAdminInfo(int adminId, AdminInfo obj)
         {
-            Admin admin = _context.Admins.FirstOrDefault(a=>a.Adminid==adminId);
+            Admin admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
             Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
             List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
-            foreach(var item in adminRegions)
+            foreach (var item in adminRegions)
             {
                 _context.Adminregions.Remove(item);
             }
-           
-            foreach (var item in obj.selectedregion)
+
+            if (obj.selectedregion != null)
             {
-                Adminregion newAdminRegion = new Adminregion();
-                newAdminRegion.Adminid = adminId;
-                newAdminRegion.Regionid = item;
-                _context.Adminregions.Add(newAdminRegion);
+                foreach (var item in obj.selectedregion)
+                {
+                    Adminregion newAdminRegion = new Adminregion();
+                    newAdminRegion.Adminid = adminId;
+                    newAdminRegion.Regionid = item;
+                    _context.Adminregions.Add(newAdminRegion);
+                }
             }
             admin.Firstname = obj.firstName;
             admin.Lastname = obj.lastName;
@@ -343,7 +347,7 @@ namespace Services.Implementation
             admin.Modifiedby = aspnetuser.Id;
 
             aspnetuser.Phonenumber = obj.contact;
-            aspnetuser.Username = obj.firstName+obj.lastName;
+            aspnetuser.Username = obj.firstName + obj.lastName;
             aspnetuser.Email = obj.email;
             aspnetuser.Modifieddate = DateTime.Now;
 
@@ -371,8 +375,8 @@ namespace Services.Implementation
 
         public ProviderViewModel ProviderData(int regionId)
         {
-            List<Physician> physicinaData = _context.Physicians.Include(a=>a.Role).ToList();
-            if(regionId != 0)
+            List<Physician> physicinaData = _context.Physicians.Include(a => a.Role).ToList();
+            if (regionId != 0)
             {
                 physicinaData = physicinaData.Where(a => a.Regionid == regionId).ToList();
             }
@@ -381,6 +385,51 @@ namespace Services.Implementation
             obj.physician = physicinaData;
             obj.physiciannotificationid = phynotificationid;
             return obj;
+        }
+
+        public void ToStopNotification(List<int> toStopNotifications, List<int> toNotification)
+        {
+            foreach (var item in toStopNotifications)
+            {
+                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
+                physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
+                _context.Physiciannotifications.Update(physiciannotification);
+            }
+            foreach (var item in toNotification)
+            {
+                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
+                physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
+                _context.Physiciannotifications.Update(physiciannotification);
+            }
+            _context.SaveChanges();
+        }
+
+        public EditProviderViewModel EditProvider(int physicianId)
+        {
+            Physician physician = _context.Physicians.FirstOrDefault(a=>a.Physicianid == physicianId);
+            List<Region> regions = _context.Regions.ToList();
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a=>a.Physicianid == physicianId).ToList();
+            EditProviderViewModel editProviderViewModel = new EditProviderViewModel
+            {
+                firstName = physician.Firstname,
+                lastName = physician.Lastname,
+                email = physician.Email,
+                contactNumber = physician.Mobile,
+                medicalLecense = physician.Medicallicense,
+                NPINumber = physician.Npinumber,
+                syncEmail = physician.Syncemailaddress,
+                address1 = physician.Address1,
+                address2 = physician.Address2,
+                city = physician.City,
+                state = _context.Regions.FirstOrDefault(a=>a.Regionid == physician.Regionid).Name,
+                zipcode = physician.Zip,
+                billingContact = physician.Altphone,
+                businessName = physician.Businessname,
+                businessSite = physician.Businesswebsite,
+                regionList = regions,
+                physicianRegionlist = physicianregions,
+            };
+            return editProviderViewModel;
         }
     }
 }

@@ -1,30 +1,30 @@
 ﻿@model Services.ViewModels.ProviderViewModel
 <form>
-<table class="table w-100  border-top mt-5">
+    <table class="table w-100  border-top mt-5">
         <thead class="table-secondary">
-        <tr>
-            <th class="text-center">Stop Notification</th>
-            <th class="text-center">Provider Name</th>
-            <th class ="text-center">Role</th>
-            <th class="text-center">On Call Status</th>
-            <th class="text-center">Status</th>
-            <th class="text-center">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
+            <tr>
+                <th class="text-center">Stop Notification</th>
+                <th class="text-center">Provider Name</th>
+                <th class="text-center">Role</th>
+                <th class="text-center">On Call Status</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var obj in Model.physician)
             {
                 var notificationchk = "";
-                if(Model.physiciannotificationid.Contains(obj.Physicianid))
+                if (Model.physiciannotificationid.Contains(obj.Physicianid))
                 {
                     notificationchk = "checked";
                 }
                 <tr>
                     <td class="text-center">
-                        <input name="chknotification" type="checkbox" class="Notification" value="@obj.Physicianid" @notificationchk/>
+                        <input name="toStopNotification" type="checkbox" class="Notification" value="@obj.Physicianid" @notificationchk />
                     </td>
                     <td class="text-center">@obj.Firstname @obj.Lastname</td>
-                    @if(obj.Role != null)
+                    @if (obj.Role != null)
                     {
                         <td class="text-center">@obj.Role.Name</td>
                     }
@@ -33,43 +33,158 @@
                         <td class="text-center">-</td>
                     }
                     <td class="text-center">Un Available</td>
-                    @if (obj.Status == 4 || obj.Status == 5)
+                    @if (obj.Status == 1)
                     {
                         <td class="text-center">Active</td>
 
                     }
                     else if (obj.Status == 2)
                     {
-                        <td class="text-center">Pending</td>
+                        <td class="text-center">Not Active</td>
                     }
                     else
                     {
-                        <td class="text-center">-</td>
+                        <td class="text-center">Pending</td>
                     }
                     <td class="text-center">
-                        <button type="button" class="btn btn-outline-info" onclick="ContactBtn(@obj.Physicianid)" data-bs-toggle="modal" data-bs-target="#ContactModal">Contact</button>
-                        <a asp-controller="Admin" asp-action="EditPhysician" asp-route-id="@obj.Physicianid" type="button" class="btn btn-outline-info">Edit</a>
+                        <button type="button" class="btn btn-outline-info shadow-none ContactModal"  value="@obj.Physicianid" data-bs-toggle="modal" data-bs-target="#exampleModal">Contact</button>
+                        <button type="button" class="btn btn-outline-info shadow-none editBtn" value="@obj.Physicianid">Edit</button>
                     </td>
                 </tr>
             }
         </tbody>
-</table>
-<div class="d-flex justify-content-end my-4 me-4">
-    <button type="submit" class="btn btn-info text-white d-none savebtn">Save</button>
-    <button type="reset" class="btn btn-outline-info ms-1 d-none cancelbtn">Cancel</button>
-</div>
+    </table>
+    <div class="d-flex justify-content-end my-4 me-4">
+        <button type="submit" class="btn btn-info text-white d-none saveBtn">Save</button>
+        <button type="reset" class="btn btn-outline-info ms-1 d-none cancelBtn">Cancel</button>
+    </div>
 </form>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Assign Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="text-secondary mt-2 mb-4 h6">
+                    Choose Communication to send Message
+                </div>
+                <div class="d-flex flex-column gap-2">
+
+                    <div class="d-flex gap-2">
+                        <input class="radioBtn" type="radio" name="selectedRadio" id="flexRadioDefault1" style="height : 25px; width : 20px; accent-color: #17a2b8;">
+                        <label class="mb-0" for="flexRadioDefault1">
+                            SMS
+                        </label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <input class="radioBtn" type="radio" name="selectedRadio" id="flexRadioDefault2" style="height : 25px; width : 20px; accent-color: #17a2b8;">
+                        <label class="mb-0" for="flexRadioDefault2">
+                            Email
+                        </label>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <input class="radioBtn" type="radio" name="selectedRadio" id="flexRadioDefault3" style="height : 25px; width : 20px; accent-color: #17a2b8;">
+                        <label class="mb-0" for="flexRadioDefault3">
+                            Both
+                        </label>
+                    </div>
+                </div>
+                <span id="radioError" class="text-danger"></span>
+                <div class="form-floating my-3">
+                    <textarea class="form-control message shadow-none" placeholder="message"
+                              id="floatingTextarea2" style="height: 100px"></textarea>
+                    <label for="floatingTextarea2" class="">
+                        Message
+                    </label>
+                    <span id="messageError" class="text-danger"></span>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-info text-white sendBtn shadow-none">Send</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    $(document).ready(function () {
-        $.each($('.Notification'), function () {
-            $(this).on('change', function () {
-                $('.savebtn').removeClass('d-none');
-                $('.cancelbtn').removeClass('d-none');
-            });
-        });
-        $('.cancelbtn').on('click', function () {
-            $('.savebtn').addClass('d-none');
-            $('.cancelbtn').addClass('d-none');
+    var physicianid;
+
+    $.each($('.Notification'), function () {
+        $(this).on('change', function () {
+            $('.saveBtn').removeClass('d-none');
+            $('.cancelBtn').removeClass('d-none');
         });
     });
+    $('.cancelBtn').on('click', function () {
+        $('.saveBtn').addClass('d-none');
+        $('.cancelBtn').addClass('d-none');
+    });
+
+    $('.saveBtn').on('click', function () {
+        var toStopNotification = [];
+        var toNotification = [];
+        console.log("saveworking");
+        $('input[name="toStopNotification"]:checked').each(function () {
+            toStopNotification.push($(this).val());
+        });
+        $('input[name="toStopNotification"]:unchecked').each(function () {
+            toNotification.push($(this).val());
+        });
+        console.log(toStopNotification);
+        $.ajax({
+            url: "/Provider/ToStopNotification",
+            data: { toStopNotification: toStopNotification, toNotification: toNotification },
+            type : 'POST',
+        });
+    })
+
+
+    $('.sendBtn').on('click',function(){
+        var selectedRadio = [];
+        if ($('.message').val() == "") {
+            $('.message').css('border','1px solid red')
+            $('#messageError').html('*Please enter message');
+        }
+        $('input[name="selectedRadio"]:checked').each(function () {
+            selectedRadio.push($(this).val());
+        });
+        if(selectedRadio.length < 1){
+            $('#radioError').html('*Please select one option.');
+        }
+       
+    })
+    $('.radioBtn').on('change',function(){
+        $('#radioError').html('');
+    })
+    $('.message').on('focus', function () {
+        $('.message').css('border', '2px groove #e6eefa');
+        $('#messageError').html('');
+    });
+    
+    $('.ContactModal').click(function(){
+        physicianid = $(this).val();
+            $('input[name="selectedRadio"]').prop('checked',false)
+            $('.message').val("")
+            $('#messageError').html('');
+            $('.message').css('border', '2px groove #e6eefa');
+            $('#radioError').html('');
+    })
+
+    $('.editBtn').on('click',function(){
+        $.ajax({
+            url: "/Provider/EditProvider",
+            data: { "physicianId": $(this).val() },
+            success: function (response) {
+                $('.container').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    })
 </script>

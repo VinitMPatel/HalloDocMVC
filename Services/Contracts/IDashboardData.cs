@@ -23,5 +23,7 @@ namespace Services.Contracts
         void UpdateAdminInfo(int adminId, AdminInfo obj);
         void UpdateBillingInfo(int adminId, BillingInfo obj);
         ProviderViewModel ProviderData(int regionId);
+        void ToStopNotification(List<int> notifications , List<int> toNotification);
+        EditProviderViewModel EditProvider(int physicianId);
     }
 }
