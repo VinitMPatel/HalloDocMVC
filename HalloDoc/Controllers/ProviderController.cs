@@ -49,5 +49,24 @@ namespace HalloDoc.Controllers
             EditProviderViewModel obj = dashboardData.EditProvider(physicianId);
             return View(obj);
         }
+
+        [HttpPost]
+
+        public IActionResult EditProviderPhoto(int providerid, string base64String)
+        {
+            var physiciandata = _context.Physicians.FirstOrDefault(p => p.Physicianid == providerid);
+            physiciandata.Photo = base64String;
+
+            _context.Physicians.Update(physiciandata);
+            _context.SaveChanges();
+
+            return RedirectToAction("EditProviderAccount", new { providerid = providerid });
+        }
+
+        public void UpdatePhysicianInfo(EditProviderViewModel obj , int providerId)
+        {
+
+        }
+
     }
 }

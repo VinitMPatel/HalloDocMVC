@@ -1,8 +1,8 @@
-const btn = document.getElementById("darkbtn");
+const moonBtn = document.getElementById("darkbtn");
 const img = document.getElementById("darkimg");
 const content = document.getElementById("main-content");
 var flag ;
-btn.addEventListener('click', dark)
+moonBtn.addEventListener('click', dark)
 
 function dark(){
     if(flag==0){

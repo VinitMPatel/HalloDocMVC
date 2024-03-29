@@ -9,14 +9,11 @@ try {
     const file = document.getElementById("file-choosen");
 
     btn1.addEventListener('change', function () {
-        console.log("Fun Working");
+    
         for (var i = 0; i < this.files.length; i++) {
             names += this.files[i].name + ", ";
         }
         file.textContent = names;
-        console.log(names);
-        console.log(file.textContent);
-
         file.style.fontSize = "large";
     })
 }
