@@ -1,5 +1,7 @@
 ﻿@model Services.ViewModels.EditProviderViewModel
-
+@{
+    Layout = "";
+}
 <div class="modal fade" id="ModalToOpen" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
@@ -88,8 +90,9 @@
         </div>
     </div>
     @* action="/Provider/UpdatePhysicianInfo" method="post" *@
-    <form id="myForm1">
-        <input type="text" asp-for="providerId" />
+    <form id="myform1">
+        <input type="text" asp-for="providerId" id="providerId" />
+
         <div class="row mt-3">
             <div class="h4">Physician Information</div>
 
@@ -139,7 +142,7 @@
                     <input type="text" class="form-control data1" placeholder="NPINumber" disabled asp-for="NPINumber">
                     <label class="FloatingInput">NPI number </label>
                 </div>
-                <span asp-validation-for="NPINumber" class="text-danger"></span> 
+                <span asp-validation-for="NPINumber" class="text-danger"></span>
             </div>
 
             <div class="p-2 col-sm-6 col-12 ">
@@ -154,7 +157,7 @@
                 @foreach (var item in Model.regionList)
                 {
                     <div class="form-check form-check-inline ">
-                        <input class="form-check-input adisabled adminselectedregion-adminprofile data1" type="checkbox"
+                        <input class="form-check-input adisabled adminselectedregion-adminprofile data1" type="checkbox" name="selectedRegion"
                         @if (Model.physicianRegionlist.Any(a => a.Regionid == item.Regionid))
                         {
                             @:checked
@@ -167,13 +170,14 @@
 
             <div class="d-flex justify-content-end gap-2 mt-2">
                 <button id="submitBtn1" type="button" class="btn btn-info text-white">Edit</button>
-                <button id="saveBtn1" type="submit" class="btn btn-info text-white">Save Changes</button>
+                <button id="saveBtn1" type="submit" class="btn btn-info text-white shadow-none">Save Changes</button>
                 <button id="cancelBtn1" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
             </div>
         </div>
     </form>
 
-    <form>
+    <form id="myForm2">
+        <input type="text" asp-for="providerId" id="providerId2" />
         <div class="row mt-3">
             <div class="h4">Mailing and billing information</div>
 
@@ -182,7 +186,7 @@
                     <input type="text" class="form-control data2" placeholder="Address1" disabled id="address1" asp-for="address1">
                     <label class="FloatingInput">Address1</label>
                 </div>
-                <span id="address1Warning" class="text-danger"></span>
+                <span asp-validation-for="address1" class="text-danger"></span>
             </div>
 
             <div class="p-2 col-sm-6 col-12">
@@ -190,7 +194,7 @@
                     <input type="text" class="form-control data2" placeholder="Address2" disabled id="address2" asp-for="address2">
                     <label class="FloatingInput">Address2</label>
                 </div>
-                <span id="address2Warning" class="text-danger"></span>
+                <span asp-validation-for="address2" class="text-danger"></span>
             </div>
 
             <div class="p-2 col-sm-6 col-12 ">
@@ -198,7 +202,7 @@
                     <input type="" class="form-control data2" placeholder="city" disabled id="city" asp-for="city">
                     <label class="FloatingInput">City</label>
                 </div>
-                <span id="cityWarning" class="text-danger"></span>
+                <span asp-validation-for="city" class="text-danger"></span>
             </div>
 
             <div class="col-sm-6 col-12 p-2">
@@ -209,6 +213,7 @@
                     <label for="floatingSelect">
                         State
                     </label>
+                    <span asp-validation-for="state" class="text-danger"></span>
                 </div>
             </div>
 
@@ -217,7 +222,7 @@
                     <input type="text" class="form-control data2" placeholder="Zip Code" disabled id="zip" asp-for="zipcode">
                     <label class="FloatingInput">Zip Code</label>
                 </div>
-                <span id="zipWarning" class="text-danger"></span>
+                <span asp-validation-for="zipcode" class="text-danger"></span>
             </div>
 
             <div class="col-xl-6 col-sm-6 col-12 p-2">
@@ -226,30 +231,32 @@
                     <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled id="billingContact" asp-for="billingContact" />
                     <label class="floatingInput">Contact</label>
                 </div>
-                <span id="billingContactWarning" class="text-danger"></span>
+                <span asp-validation-for="billingContact" class="text-danger"></span>
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <button id="submitBtn2" type="button" class="btn btn-info text-white">Edit</button>
-                <button id="saveBtn2" type="button" class="btn btn-info text-white">Save Changes</button>
+                <button id="saveBtn2" type="submit" class="btn btn-info text-white shadow-none">Save Changes</button>
                 <button id="cancelBtn2" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
             </div>
         </div>
     </form>
 
     <div class="row mt-3">
+
         <div class="h4">Provider Profile</div>
 
+        <form class="row">
         <div class="p-2 col-sm-6 col-12">
             <div class="form-floating ">
-                <input type="text" class="form-control" placeholder="BusinessName" disabled asp-for="businessName">
+                <input type="text" class="form-control data3" placeholder="BusinessName" disabled asp-for="businessName">
                 <label class="FloatingInput">Business Name</label>
             </div>
         </div>
 
         <div class="p-2 col-sm-6 col-12">
             <div class="form-floating ">
-                <input type="email" class="form-control" placeholder="name@example.com" disabled asp-for="businessSite">
+                <input type="email" class="form-control data3" placeholder="name@example.com" disabled asp-for="businessSite">
                 <label class="FloatingInput">Business Site</label>
             </div>
         </div>
@@ -264,12 +271,13 @@
                             <label role="button" for="uploadPhoto" id="photoLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
                         </div>
 
-                        <button class="photoUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none">
+                        <button class="photoUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none data-3" disabled>
                             <div class="d-flex align-items-center shadow-none text-white"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
                         </button>
 
                     </div>
                 </div>
+                <span id="photoError" class="text-danger"></span>
             </div>
         </div>
 
@@ -281,15 +289,16 @@
                     <label role="button" for="uploadSign" id="signLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
                 </div>
 
-                <button class="signUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none">
+                <button class="signUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none data-3" disabled>
                     <div class="d-flex align-items-center shadow-none text-white"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
                 </button>
 
             </div>
+            <span id="signError" class="text-danger"></span>
         </div>
 
         <div class="col-sm-2 col-1 p-2">
-            <button type="button" id="ModalToOpen" data-bs-target="#ModalToOpen" data-bs-toggle="modal" class="uploadbtn d-flex py-1 border-0 rounded-2 btn-info text-white shadow-none">
+            <button type="button" id="ModalToOpen" data-bs-target="#ModalToOpen" data-bs-toggle="modal" class="uploadbtn d-flex py-1 border-0 rounded-2 btn-info text-white shadow-none data-3" disabled>
                 <label role="button" class="d-flex align-items-center">
                     <i class="bi bi-pencil-fill p-2"></i>
                     <div class="d-none d-md-block">Create</div>
@@ -298,19 +307,18 @@
         </div>
 
         <div class="d-flex my-3">
-
-            <div class="w-50 d-flex justify-content-center align-items-center " style="object-fit:contain">
-                <img src="@Model.photo" style="width:25vw; height:25vh; object-fit:contain" id="photoImg" />
-            </div>
-
-            <div class="w-50 d-flex justify-content-center align-items-center">
-                <img src="" style="width:25vw; height:25vh; object-fit:contain" id="signImg" />
-            </div>
+                <div class="w-50 d-flex justify-content-center align-items-center" style="object-fit:contain">
+                    <img src="@Model.photo" style="width:25vw; height:25vh; object-fit:contain" id="photoImg"/>
+                </div>
+           
+                <div class="w-50 d-flex justify-content-center align-items-center">
+                    <img src="@Model.signature" style="width:25vw; height:25vh; object-fit:contain" id="signImg" />
+                </div>
         </div>
 
         <div class="col-12 mt-3">
             <div class="form-floating">
-                <textarea asp-for="adminnote" class="form-control shadow-none"
+                <textarea asp-for="adminnote" class="form-control shadow-none data-3"
                           placeholder="Admin Notes" id="adminnote-editprovider"
                           style="height: 100px" disabled></textarea>
                 <label for="floatingTextarea2">Admin Notes</label>
@@ -318,11 +326,12 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end col-12 mt-3 mb-3">
-            <button class="btn btn-info text-white px-4 me-2" id="editbtn-adminnote-editprovider">Edit</button>
-            <button class="btn btn-info text-white px-4 me-2 d-none" id="savebtn-adminnote-editprovider">Save</button>
-        </div>
-
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button id="submitBtn3" type="button" class="btn btn-info text-white">Edit</button>
+                <button id="saveBtn3" type="submit" class="btn btn-info text-white shadow-none">Save Changes</button>
+                <button id="cancelBtn3" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
+            </div>
+        </form>
         <hr class="text-muted" style="border : 1px solid black" />
 
         <h5>Onboarding</h5>
@@ -495,11 +504,10 @@
 </div>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 
 <script>
-
+    
     $('.photoUploadBtn').on('click', function (e) {
         if ($('#photoLabel').html() != "No item selected") {
             var reader = new FileReader();
@@ -507,6 +515,10 @@
                 $('#photoImg').attr('src', e.target.result);
             };
             reader.readAsDataURL($('#uploadPhoto')[0].files[0]);
+            $('#photoError').html("");
+        }
+        else {
+            $('#photoError').html("*Please upload photo");
         }
     })
 
@@ -517,6 +529,10 @@
                 $('#signImg').attr('src', e.target.result);
             };
             reader.readAsDataURL($('#uploadSign')[0].files[0]);
+            $('#signError').html("");
+        }
+        else {
+            $('#signError').html("*Please upload photo");
         }
     })
 
@@ -661,6 +677,8 @@
 
         $('#cancelBtn1').css('display', 'none');
         $('#saveBtn1').css('display', 'none');
+        $('#cancelBtn2').css('display', 'none');
+        $('#saveBtn2').css('display', 'none');
 
         $('#submitBtn1').on('click', function () {
             $('.data1').each(function () {
@@ -678,16 +696,33 @@
             $('#submitBtn1').css('display', 'flex')
             $('#saveBtn1').css('display', 'none')
             $(this).css('display', 'none')
-            $('#confirmEmailWarning').html("")
-            $('#firstNameWarning').html("")
-            $('#lastNameWarning').html("")
-            $('#emailWarning').html("")
-            $('#contactWarning').html("")
-
+            $('#form1 span').html("");
+            $('#form1 input').removeClass("input-validation-error");
         })
 
-        $('#cancelBtn2').css('display', 'none');
-        $('#saveBtn2').css('display', 'none');
+        $('#myform1').submit(function (e) {
+            e.preventDefault();
+            if ($(this).valid()) {
+
+                console.log($('#myform1').serialize())
+                $.ajax({
+                    //type: 'POST',
+                    url: '/Provider/UpdatePhysicianInfo',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        $('.data1').each(function () {
+                            $(this).prop('disabled', true);
+                        })
+                        $('#submitBtn1').css('display', 'flex')
+                        $('#saveBtn1').css('display', 'none')
+                        $('#cancelBtn1').css('display', 'none')
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                    }
+                });
+            }
+        });
 
         $('#submitBtn2').on('click', function () {
             $('.data2').each(function () {
@@ -705,74 +740,33 @@
             $('#submitBtn2').css('display', 'flex')
             $('#saveBtn2').css('display', 'none')
             $(this).css('display', 'none')
-            $('#address1Warning').html("")
-            $('#address2Warning').html("")
-            $('#cityWarning').html("")
-            $('#zipWarning').html("")
-            $('#billingContactWarning').html("")
+            $('#myForm2 span').html("");
+            $('#myForm2 input').removeClass("input-validation-error");
         })
 
-        // $('#saveBtn1').on('click', function (e) {
-        //     $('input[type="checkbox"]:checked').each(function () {
-        //         selectedregion.push($(this).val());
-        //     });
-
-        //     $.ajax({
-        //         url: '/Provider/UpdatePhysicianInfo',
-        //         data: { "providerId": $('#providerId').val() }
-        //     })
-
-        // })
-
-        $('#myForm1').submit(function (e) {
+        $('#myForm2').submit(function (e) {
             e.preventDefault();
-            console.log("H1");
-             if ($('#myForm1').valid()) {
-                console.log("H2");
+            if ($(this).valid()) {
                 $.ajax({
-                    url: '/Provider/UpdatePhysicianInfo',
-                    type: 'post',
-                    data: $(this).serialize(),
+                    //type: 'POST',
+                    url: '/Provider/UpdateBillingInfo',
+                    data: $('#myForm2').serialize(),
+                    //data: $(this).serialize(),
                     success: function (response) {
-                        // Handle success response
+                        $('.data2').each(function () {
+                            $(this).prop('disabled', true);
+                        })
+                        $('#submitBtn2').css('display', 'flex')
+                        $('#saveBtn2').css('display', 'none')
+                        $('#cancelBtn2').css('display', 'none')
                     },
                     error: function (xhr, status, error) {
                         // Handle error response
                     }
                 });
-             }
+            }
         });
 
-        $('#saveBtn2').on('click', function () {
-            var billingInfo = {
-                address1: $('#address1').val(),
-                address2: $('#address2').val(),
-                city: $('#city').val(),
-                zip: $('#zip').val(),
-                billingContact: $('#billingContact').val(),
-            }
-
-            if ($('#address1Warning').text() == "" && $('#address2Warning').text() == "" && $('#cityWarning').text() == "" && $('#zipWarning').text() == "" && $('#billingContactWarning').text() == "") {
-                $('.data2').each(function () {
-                    $(this).prop('disabled', true);
-                })
-                $('#submitBtn2').css('display', 'flex')
-                $('#cancelBtn2').css('display', 'none')
-                $(this).css('display', 'none')
-                $('#address1Warning').html("")
-                $('#address2Warning').html("")
-                $('#cityWarning').html("")
-                $('#zipWarning').html("")
-                $('#billingContactWarning').html("")
-                $.ajax({
-                    url: '/Admin/UpdateBillingInfo',
-                    data: billingInfo
-                })
-            }
-            else {
-                console.log("NAI THAVA DOV SUBMIT");
-            }
-        })
     })
 
     $('#uploadPhoto').change(function (e) {
@@ -786,5 +780,3 @@
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
-

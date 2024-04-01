@@ -49,16 +49,23 @@ namespace Services.ViewModels
 
         public List<Region> regionList { get; set; }
 
+        [Required(ErrorMessage = "*Address is required")]
         public string address1 { get; set; }
 
         public string address2 { get; set; }
 
+        [Required(ErrorMessage = "*City is required")]
         public string city { get; set; }
 
+        [Required(ErrorMessage = "*State is required")]
         public string state { get; set; }
 
+        [RegularExpression(@"^[1-9][0-9]{5}$", ErrorMessage = "Enter a valid 6-digit Zip Code")]
+        [Required(ErrorMessage = "Plese enter zip code")]
         public string zipcode { get; set; }
 
+        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
+        [Required(ErrorMessage = "Plese enter billing contact number")]
         public string billingContact {  get; set; }
 
         public string businessName { get; set; }
@@ -77,7 +84,7 @@ namespace Services.ViewModels
 
         public bool IsLicenseDoc { get; set; }
 
-        public int[] selectedregion { get; set; }
+        //public int[] selectedregion { get; set; }
 
         public string photo { get; set; }
 

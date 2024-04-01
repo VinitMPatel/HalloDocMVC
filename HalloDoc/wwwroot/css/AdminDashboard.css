@@ -214,6 +214,9 @@ input#phone {
 .providerDropdown{
     width : 25%;
 }
+.input-validation-error{
+    border : 1px solid red;
+}
 @media only screen and (max-width:1050px) {
     .allstatus {
         width: 33.3% !important;

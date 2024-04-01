@@ -25,5 +25,7 @@ namespace Services.Contracts
         ProviderViewModel ProviderData(int regionId);
         void ToStopNotification(List<int> notifications , List<int> toNotification);
         EditProviderViewModel EditProvider(int physicianId);
+        void UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
+        void UpdateBillingInfo(EditProviderViewModel obj);
     }
 }

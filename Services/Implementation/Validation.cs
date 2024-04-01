@@ -54,7 +54,7 @@ namespace Services.Implementation
         public PatientLogin AdminValidate(Aspnetuser user)
         {
             var x = _context.Aspnetusers.Where(u => u.Email == user.Email).FirstOrDefault();
-
+            string decryptPassword = EncryptDecryptHelper.Decrypt(x.Passwordhash);
             if (user.Email == null && user.Passwordhash == null)
             {
                 return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Enter Email", passwordError = "*Enter password" };
@@ -67,7 +67,7 @@ namespace Services.Implementation
             {
                 return new PatientLogin { Status = ResponseStautsEnum.Failed, emailError = "*Email not found" };
             }
-            else if (user.Passwordhash != x.Passwordhash)
+            else if (user.Passwordhash != decryptPassword)
             {
                 return new PatientLogin { Status = ResponseStautsEnum.Failed, passwordError = "*Enter correct password" };
             }

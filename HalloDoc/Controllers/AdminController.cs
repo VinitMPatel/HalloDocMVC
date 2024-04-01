@@ -12,6 +12,7 @@ using System.Net.Mail;
 using System.Net;
 using Authorization = Services.Implementation.Authorization;
 using System.Web.Helpers;
+using System.Security.Policy;
 
 namespace HalloDoc.Controllers
 {
@@ -104,12 +105,39 @@ namespace HalloDoc.Controllers
         public IActionResult ExportData(AdminDashboard obj)
         {
             int currentPage = 0;
+            if(obj.searchKey == "null")
+            {
+                obj.searchKey = null;
+            }
             AdminDashboard data = dashboardData.AllStateData(obj);
             var record = dashboardData.DownloadExcle(data);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
             string filename = $"{obj.requeststatus}_{strDate}.xlsx";
             return File(record, contentType, filename);
+        }
+
+        public void SendMailForRequest(string firstName , string email)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(mail),
+                Subject = "Agreement",
+                Body = "You can view agreement by using this link : " +firstName,
+                IsBodyHtml = true // Set to true if your message contains HTML
+            };
+
+            mailMessage.To.Add(email);
+            client.SendMailAsync(mailMessage);
         }
 
         public IActionResult ViewCase(int requestId)
@@ -355,9 +383,12 @@ namespace HalloDoc.Controllers
                 Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
                 if (result.Status == ResponseStautsEnum.Success)
                 {
+                    if(admindata != null)
+                    {
                     HttpContext.Session.SetString("AdminName", admindata.Firstname);
                     HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
                     TempData["success"] = "Login successfully";
+                    }
                     return RedirectToAction("AdminDashboard", "Admin");
                 }
                 TempData["error"] = "Incorrect Email or password";

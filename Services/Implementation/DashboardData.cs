@@ -410,9 +410,9 @@ namespace Services.Implementation
 
         public EditProviderViewModel EditProvider(int physicianId)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(a=>a.Physicianid == physicianId);
+            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
             List<Region> regions = _context.Regions.ToList();
-            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a=>a.Physicianid == physicianId).ToList();
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
             EditProviderViewModel editProviderViewModel = new EditProviderViewModel
             {
                 firstName = physician.Firstname,
@@ -425,16 +425,61 @@ namespace Services.Implementation
                 address1 = physician.Address1,
                 address2 = physician.Address2,
                 city = physician.City,
-                state = _context.Regions.FirstOrDefault(a=>a.Regionid == physician.Regionid).Name,
+                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid).Name,
                 zipcode = physician.Zip,
                 billingContact = physician.Altphone,
                 businessName = physician.Businessname,
                 businessSite = physician.Businesswebsite,
                 regionList = regions,
                 physicianRegionlist = physicianregions,
-                providerId= physicianId,
+                providerId = physicianId,
+                photo = physician.Photo
             };
             return editProviderViewModel;
+        }
+
+        public void UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
+        {
+            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
+            physician.Firstname = obj.firstName;
+            physician.Lastname = obj.lastName;
+            physician.Email = obj.email;
+            physician.Mobile = obj.contactNumber;
+            physician.Syncemailaddress = obj.syncEmail;
+            physician.Medicallicense = obj.medicalLecense;
+            physician.Npinumber = obj.NPINumber;
+            physician.Modifieddate = DateTime.Now;
+            List<Physicianregion> physicianRegions = _context.Physicianregions.Where(a => a.Physicianid == obj.providerId).ToList();
+            foreach (var item in physicianRegions)
+            {
+                _context.Physicianregions.Remove(item);
+            }
+
+            if (selectedRegion.Count() > 0)
+            {
+                foreach (var item in selectedRegion)
+                {
+                    Physicianregion newphysicianRegions = new Physicianregion();
+                    newphysicianRegions.Physicianid = obj.providerId;
+                    newphysicianRegions.Regionid = item;
+                    _context.Physicianregions.Add(newphysicianRegions);
+                }
+            }
+            _context.Update(physician);
+            _context.SaveChanges();
+        }
+
+        public void UpdateBillingInfo(EditProviderViewModel obj)
+        {
+            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
+            physician.Address1 = obj.address1;
+            physician.Address2 = obj.address2;
+            physician.City = obj.city;
+            physician.Zip = obj.zipcode;
+            physician.Altphone = obj.billingContact;
+            physician.Modifieddate = DateTime.Now;
+            _context.Update(physician);
+            _context.SaveChanges();
         }
     }
 }

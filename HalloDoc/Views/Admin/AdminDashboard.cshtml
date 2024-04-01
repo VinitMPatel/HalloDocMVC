@@ -7,6 +7,51 @@
 @{
     Layout = "_Admin";
 }
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Send mail to patient for submitting the request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body d-flex flex-column gap-4">
+
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="First Name" id="firstName">
+                    <label class="FloatingInput">First Name</label>
+                    <span id="firstNameError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Last Name" id="lastName">
+                    <label class="FloatingInput">Last Name</label>
+                    <span id="lastNameError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="number" class="form-control" placeholder="9867876587" id="contactNumber" maxlength="10">
+                    <label class="FloatingInput">Contact Number</label>
+                    <span id="contactError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="email" class="form-control " placeholder="nav@example.com" id="email">
+                    <label class="FloatingInput">Email</label>
+                    <span id="emailError" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="sendLinkSubmitBtn" type="submit" class="btn btn-info text-white confirm" data-bs-dismiss="modal">Send</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>
 <div id="viewCaseContent">
     <nav>
         <div class="nav nav-tabs row mt-3 mx-1 pb-2" id="status-tab" role="tablist">
@@ -86,17 +131,20 @@
         </div>
 
         <div>
-            <a class="text-decoration-none btn btn-info text-white  dash-button p-2" type="button">
-                <i class="bi bi-send  "></i>
-                <span class="dash-btn ms-2">Send Link</span>
-            </a>
+
+            <button type="button" class="btn p-0 shadow-none sendLinkBtn" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                <a class="text-decoration-none btn btn-info text-white  dash-button p-2" type="button">
+                    <i class="bi bi-send "></i>
+                    <span class="dash-btn ms-2">Send Link</span>
+                </a>
+            </button>
 
             <a class="text-decoration-none btn btn-info text-white dash-button p-2" type="button">
                 <i class="bi bi-file-text dash-button"></i>
                 <span class="dash-btn ms-2">Create Requests</span>
             </a>
 
-            <button class="text-decoration-none btn btn-info text-white dash-button p-2" type="submit" id="exportBtn">
+            <button class="text-decoration-none btn btn-info text-white dash-button p-2 shadow-none" type="submit" id="exportBtn">
                 <i class="bi bi-arrow-up-short dash-button"></i>
                 <span class="dash-btn ms-2">Export</span>
             </button>
@@ -140,27 +188,27 @@
             <div class="d-flex mt-2">
 
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="0" onclick="filter(0)">
-                    <label class="border-0 px-2 filter-label" for="requestbyAll" >All</label>
+                    <label class="border-0 px-2 filter-label" for="requestbyAll">All</label>
                 </div>
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="1" onclick="filter(1)">
-                   <i class="bi bi-circle-fill  filter-color" style="color :#5fbc61"></i>
-                    <label class="btn p-1 border-0 d-block filter-label" for="1" >Patient</label>
+                    <i class="bi bi-circle-fill  filter-color" style="color :#5fbc61"></i>
+                    <label class="btn p-1 border-0 d-block filter-label" for="1">Patient</label>
                 </div>
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="2" onclick="filter(2)">
                     <i class="bi bi-circle-fill filter-color" style="color:  #ed9124;"></i>
-                    <label class="btn p-1 border-0 text-small filter-label" for="2" >Family</label>
+                    <label class="btn p-1 border-0 text-small filter-label" for="2">Family</label>
                 </div>
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="3" onclick="filter(3)">
                     <i class="bi bi-circle-fill filter-color" style="color:#e36478;"></i>
-                    <label class="btn p-1 border-0 filter-label" for="3" >Concierge</label>
+                    <label class="btn p-1 border-0 filter-label" for="3">Concierge</label>
                 </div>
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="4" onclick="filter(4)">
                     <i class="bi bi-circle-fill filter-color" style="color:  #0c7db7;"></i>
-                    <label class="btn p-1 border-0 filter-label" for="4" >Business</label>
+                    <label class="btn p-1 border-0 filter-label" for="4">Business</label>
                 </div>
                 <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row" id="5" onclick="filter(5)">
-                   <i class="bi bi-circle-fill filter-color" style="color:  #943db8;"></i>
-                    <label class="btn p-1 border-0 filter-label" for="5" >VIP</label>
+                    <i class="bi bi-circle-fill filter-color" style="color:  #943db8;"></i>
+                    <label class="btn p-1 border-0 filter-label" for="5">VIP</label>
                 </div>
 
             </div>
@@ -184,15 +232,15 @@
 </div>
 
 <style>
-    .filter-label{
-        font-size:clamp(10px, 3vw, 14px)
-    }
-    .filter-color{
+    .filter-label {
+        font-size: clamp(10px, 3vw, 14px)
     }
 
-    .dash-button{
-        font-size:clamp(10px, 3vw, 14px)
+    .filter-color {
+    }
 
+    .dash-button {
+        font-size: clamp(10px, 3vw, 14px)
     }
 </style>
 
@@ -225,7 +273,7 @@
     }
 
     function RegionFilter() {
-         param.requestedPage = 1;
+        param.requestedPage = 1;
         param.regionId = $('#selectedRegion').val();
         CommonAjax();
     }
@@ -234,6 +282,76 @@
         param.requestedPage = 1;
         CommonAjax();
     }
+
+
+    $('#sendLinkSubmitBtn').on('click', function () {
+        if ($('#firstName').val() == "") {
+            $('#firstNameError').html("*Please Enter First Name")
+            $('#firstName').css('border', '1px solid red');
+        }
+        if ($('#lastName').val() == "") {
+            $('#lastNameError').html("*Please Enter Lase Name")
+            $('#lastName').css('border', '1px solid red');
+        }
+        if ($('#contactNumber').val() == "") {
+            $('#contactError').html("*Please Enter Contact Number")
+            $('#contactNumber').css('border', '1px solid red');
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
+
+            if (!regex.test($('#contactNumber').val())) {
+                $('#contactError').html("*Enter valid number");
+                $('#contactNumber').css('border', '1px solid red');
+
+            } else {
+                $('#contactError').html("");
+
+            }
+        }
+        if ($('#email').val() == "") {
+            $('#emailError').html("*Please Enter email")
+            $('#email').css('border', '1px solid red');
+        }
+        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == ""){
+            $.ajax({
+                url : '/Admin/SendMailForRequest',
+                data: { "firstName": $('#firstName').val(), "email": $('#email').val() }
+            })
+        }
+    })
+
+    $('.sendLinkBtn').click(function(){
+        $('#firstName').val("")
+        $('#lastName').val("")
+        $('#contactNumber').val("")
+        $('#email').val("")
+        $('#firstNameError').html("")
+        $('#firstName').css('border', '1px groove black');
+        $('#lastNameError').html("")
+        $('#lastName').css('border', '1px groove black');
+        $('#contactError').html("")
+        $('#contactNumber').css('border', '1px groove black');
+        $('#emailError').html("")
+        $('#email').css('border', '1px groove black');
+    })
+
+    $('#firstName').on('focus',function(){
+        $('#firstNameError').html("")
+        $('#firstName').css('border', '1px groove black');
+    })
+    $('#lastName').on('focus', function () {
+        $('#lastNameError').html("")
+        $('#lastName').css('border', '1px groove black');
+    })
+    $('#contactNumber').on('focus', function () {
+        $('#contactError').html("")
+        $('#contactNumber').css('border', '1px groove black');
+    })
+    $('#email').on('focus', function () {
+        $('#emailError').html("")
+        $('#email').css('border', '1px groove black');
+    })
 
     $(document).ready(function () {
 
@@ -255,9 +373,10 @@
 
 
         $('#exportBtn').on('click', function () {
-            
+            console.log(param)
             var link = document.createElement('a');
-            link.href = '/Admin/ExportData?status=' + param.requestStatus + "&requesttype=" + param.requestType + "&searchKey=" + param.searchKey;
+            link.href = '/Admin/ExportData?requeststatus=' + param.requestStatus + "&requestType=" + param.requestType + "&searchKey=" + param.searchKey;
+            //link.href = '/Admin/ExportData?obj=' + param;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
