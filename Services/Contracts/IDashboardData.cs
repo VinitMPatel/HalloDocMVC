@@ -27,5 +27,6 @@ namespace Services.Contracts
         EditProviderViewModel EditProvider(int physicianId);
         void UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
         void UpdateBillingInfo(EditProviderViewModel obj);
+        void UpdateProfile(EditProviderViewModel obj);
     }
 }

@@ -88,18 +88,21 @@ namespace Services.Implementation
 
         public void CancelAgreement(int requestId)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Status = 7;
-            _context.Requests.Update(requestData);
-            Requeststatuslog requeststatuslog = new Requeststatuslog
+            var requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            if(requestData != null)
             {
-                Requestid = requestId,
-                Status = 7,
-                Createddate = DateTime.Now,
-            };
-            _context.Add(requeststatuslog);
-            _context.SaveChanges();
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Status = 7;
+                _context.Requests.Update(requestData);
+                Requeststatuslog requeststatuslog = new Requeststatuslog
+                {
+                    Requestid = requestId,
+                    Status = 7,
+                    Createddate = DateTime.Now,
+                };
+                _context.Add(requeststatuslog);
+                _context.SaveChanges();
+            }
         }
         public void SubmitAssign(int requestId, int physicianId, string assignNote)
         {

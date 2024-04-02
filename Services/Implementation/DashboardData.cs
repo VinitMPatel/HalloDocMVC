@@ -2,6 +2,7 @@
 using Data.Entity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -433,7 +434,8 @@ namespace Services.Implementation
                 regionList = regions,
                 physicianRegionlist = physicianregions,
                 providerId = physicianId,
-                photo = physician.Photo
+                photoName = physician.Photo,
+                signName = physician.Signature
             };
             return editProviderViewModel;
         }
@@ -471,15 +473,44 @@ namespace Services.Implementation
 
         public void UpdateBillingInfo(EditProviderViewModel obj)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            physician.Address1 = obj.address1;
-            physician.Address2 = obj.address2;
-            physician.City = obj.city;
-            physician.Zip = obj.zipcode;
-            physician.Altphone = obj.billingContact;
-            physician.Modifieddate = DateTime.Now;
-            _context.Update(physician);
-            _context.SaveChanges();
+            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
+            if(physician != null)
+            {
+                physician.Address1 = obj.address1;
+                physician.Address2 = obj.address2;
+                physician.City = obj.city;
+                physician.Zip = obj.zipcode;
+                physician.Altphone = obj.billingContact;
+                physician.Modifieddate = DateTime.Now;
+                _context.Update(physician);
+                _context.SaveChanges();
+            }
+        }
+
+        [HttpPost]
+        public void UpdateProfile(EditProviderViewModel obj)
+        {
+            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
+            if(physician != null)
+            {
+                physician.Businessname = obj.businessName;
+                physician.Businesswebsite = obj.businessSite;
+                physician.Adminnotes = obj.adminnote;
+                physician.Modifieddate = DateTime.Now;
+                physician.Photo = obj.photo.FileName;
+                physician.Signature = obj.signature.FileName;
+
+                string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
+                FileStream stream = new FileStream(path, FileMode.Create);
+                obj.photo.CopyTo(stream);
+
+                string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
+                FileStream signstream = new FileStream(signpath, FileMode.Create);
+                obj.signature.CopyTo(signstream);
+
+                _context.Update(physician);
+                _context.SaveChanges();
+            }
         }
     }
 }

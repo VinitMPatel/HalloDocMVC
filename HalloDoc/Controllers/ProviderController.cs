@@ -1,4 +1,5 @@
 ﻿using Data.DataContext;
+using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
@@ -9,21 +10,17 @@ namespace HalloDoc.Controllers
     public class ProviderController : Controller
     {
         private readonly IDashboardData dashboardData;
-        private readonly IValidation validation;
-        private readonly ICaseActions caseActions;
+        private readonly IProviderServices providerServices;
         private readonly HalloDocDbContext _context;
-        private readonly IJwtRepository _jwtRepository;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
 
-        public ProviderController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public ProviderController(IDashboardData dashboardData, HalloDocDbContext context, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
         {
             this.dashboardData = dashboardData;
             _context = context;
-            this.caseActions = caseActions;
-            this.validation = validation;
-            _jwtRepository = jwtRepository;
             _env = env;
+            this.providerServices = providerServices;
         }
         public IActionResult Provider()
         {
@@ -57,11 +54,21 @@ namespace HalloDoc.Controllers
             //return RedirectToAction("EditProvider", new { physicianId = obj.providerId });
             //return NoContent();
         }
-
         
         public void UpdateBillingInfo(EditProviderViewModel obj)
         {
             dashboardData.UpdateBillingInfo(obj);
+        }
+
+        public void UpdateProfile(EditProviderViewModel obj)
+        {
+            dashboardData.UpdateProfile(obj);
+        }
+
+        public IActionResult CreateProvider()
+        {
+            EditProviderViewModel obj = providerServices.CreateProvider();
+            return View(obj);
         }
     }
 }

@@ -30,7 +30,7 @@ builder.Services.AddScoped<IDashboardData, DashboardData>();
 builder.Services.AddScoped<ICaseActions, CaseActions>();
 builder.Services.AddScoped<IJwtRepository, JwtRepository>();
 builder.Services.AddScoped<IAuthorization, Authorization>();
-
+builder.Services.AddScoped<IProviderServices, ProviderServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

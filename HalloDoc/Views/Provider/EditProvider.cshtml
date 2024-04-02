@@ -37,12 +37,10 @@
     <div class="fw-bolder h4">Edit Physician Account</div>
     <div>
         <button class=" border border-info rounded-2 p-2 bg-transparent">
-            <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+            <a class="text-decoration-none text-info" asp-action="Provider">&lt; Back</a>
         </button>
     </div>
 </div>
-
-
 
 <div class="border rounded-3 p-3 mt-4 bg-transparent" id="main-content">
 
@@ -89,7 +87,6 @@
             <button type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
         </div>
     </div>
-    @* action="/Provider/UpdatePhysicianInfo" method="post" *@
     <form id="myform1">
         <input type="text" asp-for="providerId" id="providerId" />
 
@@ -122,7 +119,6 @@
 
             <div class="p-2 col-xl-6 col-sm-6 col-12">
                 <div class="form-floating">
-                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
                     <input class="form-control data1" type="text" maxlength="10" placeholder="contact" disabled id="contact" asp-for="contactNumber" />
                     <label class="floatingInput">Contact</label>
                     <span asp-validation-for="contactNumber" class="text-danger"></span>
@@ -227,7 +223,6 @@
 
             <div class="col-xl-6 col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
                     <input class="form-control data2" type="text" maxlength="10" placeholder="contact" disabled id="billingContact" asp-for="billingContact" />
                     <label class="floatingInput">Contact</label>
                 </div>
@@ -246,85 +241,92 @@
 
         <div class="h4">Provider Profile</div>
 
-        <form class="row">
-        <div class="p-2 col-sm-6 col-12">
-            <div class="form-floating ">
-                <input type="text" class="form-control data3" placeholder="BusinessName" disabled asp-for="businessName">
-                <label class="FloatingInput">Business Name</label>
+        <form class="row" id="myForm3" enctype="multipart/form-data">
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data3" placeholder="BusinessName" disabled asp-for="businessName" id="businessName">
+                    <label class="FloatingInput">Business Name</label>
+                </div>
+                <span asp-validation-for="businessName" class="text-danger"></span>
             </div>
-        </div>
 
-        <div class="p-2 col-sm-6 col-12">
-            <div class="form-floating ">
-                <input type="email" class="form-control data3" placeholder="name@example.com" disabled asp-for="businessSite">
-                <label class="FloatingInput">Business Site</label>
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control data3" placeholder="example.com" disabled asp-for="businessSite" id="businessSite">
+                    <label class="FloatingInput">Business Site</label>
+                </div>
+                <span asp-validation-for="businessSite" class="text-danger"></span>
             </div>
-        </div>
 
-        <div class="p-2 col-sm-6 col-12">
-            <div class="row d-flex">
-                <div class="col-12 ">
-                    <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
-
-                        <div class="px-3 table-responsive">
-                            <input type="file" id="uploadPhoto" hidden />
-                            <label role="button" for="uploadPhoto" id="photoLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
+            <div class="p-2 col-sm-6 col-12">
+                <div class="row d-flex">
+                    <div class="col-12 ">
+                        <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                            <div class="px-3 table-responsive">
+                                <input type="file" id="uploadPhoto" hidden asp-for="photo" class="data3" disabled />
+                                <label role="button" for="uploadPhoto" id="photoLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                            </div>
+                            <button class="photoUploadBtn px-2 py-1 d-flex ms-1 border-1 rounded-2 shadow-none data3 toEnable" disabled type="button">
+                                <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                            </button>
                         </div>
-
-                        <button class="photoUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none data-3" disabled>
-                            <div class="d-flex align-items-center shadow-none text-white"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
-                        </button>
-
                     </div>
+                    <span id="photoError" class="text-danger"></span>
                 </div>
-                <span id="photoError" class="text-danger"></span>
             </div>
-        </div>
 
-        <div class="col-sm-4 col-9 p-2">
-            <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+            <div class="col-sm-4 col-9 p-2">
+                <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
 
-                <div class="px-3 table-responsive">
-                    <input type="file" id="uploadSign" hidden />
-                    <label role="button" for="uploadSign" id="signLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                    <div class="px-3 table-responsive">
+                        <input type="file" id="uploadSign" hidden asp-for="signature" class="data3" disabled />
+
+                        <label role="button" for="uploadSign" id="signLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                    </div>
+
+                    <button class="signUploadBtn px-2 py-1 d-flex ms-1 border-1 rounded-2 shadow-none data3 toEnable" disabled type="button">
+                        <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                    </button>
+
                 </div>
+                <span asp-validation-for="photo" class="text-danger"></span>
+                <span id="signError" class="text-danger"></span>
+            </div>
 
-                <button class="signUploadBtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info shadow-none data-3" disabled>
-                    <div class="d-flex align-items-center shadow-none text-white"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+            <div class="col-sm-2 col-1 p-2">
+                <button type="button" id="ModalToOpen" data-bs-target="#ModalToOpen" data-bs-toggle="modal" class="uploadbtn d-flex py-1 border-1 rounded-2 shadow-none data3 toEnable" disabled>
+                    <div role="button" class="d-flex align-items-center">
+                        <i class="bi bi-pencil-fill p-2"></i>
+                        <div class="d-none d-md-block">Create</div>
+                    </div>
                 </button>
+            </div>
+
+            <div class="d-flex my-3">
+                @if (Model.photoName != null)
+                {
+                    <div class="w-50 d-flex justify-content-center align-items-center" style="object-fit:contain">
+                        <img src="~/upload/@Model.photoName" style="width:25vw; height:25vh; object-fit:contain" id="photoImg" />
+                    </div>
+                }
+                @if (Model.signName != null)
+                {
+                    <div class="w-50 d-flex justify-content-center align-items-center">
+                        <img src="~/upload/@Model.signName" style="width:25vw; height:25vh; object-fit:contain" id="signImg" />
+                    </div>
+                }
 
             </div>
-            <span id="signError" class="text-danger"></span>
-        </div>
 
-        <div class="col-sm-2 col-1 p-2">
-            <button type="button" id="ModalToOpen" data-bs-target="#ModalToOpen" data-bs-toggle="modal" class="uploadbtn d-flex py-1 border-0 rounded-2 btn-info text-white shadow-none data-3" disabled>
-                <label role="button" class="d-flex align-items-center">
-                    <i class="bi bi-pencil-fill p-2"></i>
-                    <div class="d-none d-md-block">Create</div>
-                </label>
-            </button>
-        </div>
-
-        <div class="d-flex my-3">
-                <div class="w-50 d-flex justify-content-center align-items-center" style="object-fit:contain">
-                    <img src="@Model.photo" style="width:25vw; height:25vh; object-fit:contain" id="photoImg"/>
+            <div class="col-12 mt-3">
+                <div class="form-floating">
+                    <textarea asp-for="adminnote" class="form-control shadow-none data3"
+                              placeholder="Admin Notes"
+                              style="height: 100px" disabled id="adminNote"></textarea>
+                    <label for="floatingTextarea2">Admin Notes</label>
+                    <span class="text-danger" asp-validation-for="adminnote"></span>
                 </div>
-           
-                <div class="w-50 d-flex justify-content-center align-items-center">
-                    <img src="@Model.signature" style="width:25vw; height:25vh; object-fit:contain" id="signImg" />
-                </div>
-        </div>
-
-        <div class="col-12 mt-3">
-            <div class="form-floating">
-                <textarea asp-for="adminnote" class="form-control shadow-none data-3"
-                          placeholder="Admin Notes" id="adminnote-editprovider"
-                          style="height: 100px" disabled></textarea>
-                <label for="floatingTextarea2">Admin Notes</label>
-                <span class="text-danger small" id="adminnote-editprovider-span"></span>
             </div>
-        </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
                 <button id="submitBtn3" type="button" class="btn btn-info text-white">Edit</button>
@@ -507,7 +509,19 @@
 
 
 <script>
-    
+    var flag = 1;
+
+    function dataURLtoBlob(dataURL) {
+        var byteString = atob(dataURL.split(",")[1]);
+        var mimeString = dataURL.split(",")[0].split(":")[1].split(";")[0];
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        return new Blob([ab], { type: mimeString });
+    }
+
     $('.photoUploadBtn').on('click', function (e) {
         if ($('#photoLabel').html() != "No item selected") {
             var reader = new FileReader();
@@ -530,6 +544,7 @@
             };
             reader.readAsDataURL($('#uploadSign')[0].files[0]);
             $('#signError').html("");
+            flag = 1;
         }
         else {
             $('#signError').html("*Please upload photo");
@@ -546,6 +561,9 @@
     }
 
     $(document).ready(function () {
+
+        $('#photoLabel').html("@Model.photoName");
+        $('#signLabel').html("@Model.signName");
 
         (function fun() {
             window.requestAnimFrame = (function (callback) {
@@ -679,6 +697,8 @@
         $('#saveBtn1').css('display', 'none');
         $('#cancelBtn2').css('display', 'none');
         $('#saveBtn2').css('display', 'none');
+        $('#cancelBtn3').css('display', 'none');
+        $('#saveBtn3').css('display', 'none');
 
         $('#submitBtn1').on('click', function () {
             $('.data1').each(function () {
@@ -704,7 +724,6 @@
             e.preventDefault();
             if ($(this).valid()) {
 
-                console.log($('#myform1').serialize())
                 $.ajax({
                     //type: 'POST',
                     url: '/Provider/UpdatePhysicianInfo',
@@ -765,6 +784,76 @@
                     }
                 });
             }
+        });
+
+        $('#submitBtn3').on('click', function () {
+            $('.data3').each(function () {
+                $(this).prop('disabled', false);
+            })
+            $('#myForm3 .toEnable').addClass("btn-info");
+            $('#myForm3 .toEnable div').addClass("text-white");
+            $('#cancelBtn3').css('display', 'flex')
+            $('#saveBtn3').css('display', 'flex')
+            $(this).css('display', 'none')
+        })
+
+        $('#cancelBtn3').on('click', function () {
+            $('.data3').each(function () {
+                $(this).prop('disabled', true);
+            })
+            $('#submitBtn3').css('display', 'flex')
+            $('#saveBtn3').css('display', 'none')
+            $(this).css('display', 'none')
+            $('#myForm3 span').html("");
+            $('#myForm3 input').removeClass("input-validation-error");
+            $('#myForm3 textarea').removeClass("input-validation-error");
+            $('#myForm3 .toEnable').removeClass("btn-info");
+            $('#myForm3 .toEnable div').removeClass("text-white");
+        })
+
+        $('#myForm3').submit(function (e) {
+            console.log($('#signImg').attr('src'))
+
+            e.preventDefault();
+            console.log($('#adminNote').val())
+            if ($(this).valid()) {
+                const formData = new FormData();
+                debugger
+                formData.append('photo', $('#uploadPhoto')[0].files[0]);
+                if (flag == 0) {
+                    formData.append('signature', $('#uploadSign')[0].files[0]);
+                }
+                else {
+                    var blob = dataURLtoBlob($('#signImg').attr('src'));
+                    formData.append("signature", blob, @Model.providerId+"_sign");
+                }
+                formData.append('businessName', $('#businessName').val());
+                formData.append('businessSite', $('#businessSite').val());
+                formData.append('adminnote', $('#adminNote').val());
+                formData.append('providerId', $('#providerId').val());
+                $.ajax({
+                    type: 'POST',
+                    url: '/Provider/UpdateProfile',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+
+                    success: function (response) {
+                        $('#myForm3 .toEnable').removeClass("btn-info");
+                        $('#myForm3 .toEnable div').removeClass("text-white");
+                        $('.data3').each(function () {
+                            $(this).prop('disabled', true);
+                        })
+                        $('#submitBtn3').css('display', 'flex')
+                        $('#saveBtn3').css('display', 'none')
+                        $('#cancelBtn3').css('display', 'none')
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                    }
+                });
+            }
+
         });
 
     })

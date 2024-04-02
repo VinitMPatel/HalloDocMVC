@@ -1,0 +1,330 @@
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.EditProviderViewModel
+<div class="container mt-3">
+
+    <div class="d-flex justify-content-between">
+        <div class="fw-bolder h4">Edit Physician Account</div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="Provider" asp-controller="Provider">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+    <form>
+        <div class="shadow p-3 mt-3">
+
+            <div class="accountInfo row">
+
+                <div class="h4">Account Information</div>
+
+                <div class="p-2 col-sm-4 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="User Name" name="contact" asp-for="userName">
+                        <label class="FloatingInput">User Name</label>
+                    </div>
+                    <span asp-validation-for="userName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-4 col-12">
+                    <div class="form-floating ">
+                        <input type="password" class="form-control" placeholder="Password" asp-for="password">
+                        <label class="FloatingInput">Password</label>
+                    </div>
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-4 col-12 p-2">
+                    <div class="form-floating">
+                        <select class="form-select businesses">
+                            <option value="" selected>Select Role</option>
+                        </select>
+                        <label for="floatingSelect">
+                            Role
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="administrationInfo row mt-5">
+
+                <div class="h4">Administration Information</div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="First Name" asp-for="firstName">
+                        <label class="FloatingInput">First Name</label>
+                    </div>
+                    <span asp-validation-for="firstName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="Last Name" asp-for="lastName">
+                        <label class="FloatingInput">Last Name</label>
+                    </div>
+                    <span asp-validation-for="lastName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control data1" placeholder="name@example.com" asp-for=email>
+                        <label class="FloatingInput">Email</label>
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="p-2 col-xl-6 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input class="form-control data1" type="text" maxlength="10" placeholder="contact" asp-for=contactNumber />
+                        <label class="floatingInput">Contact</label>
+                        <span asp-validation-for="contactNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="MedicalLicense" asp-for=medicalLecense>
+                        <label class="FloatingInput">Medical License # </label>
+                    </div>
+                    <span asp-validation-for="medicalLecense" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="NPINumber" asp-for=NPINumber>
+                        <label class="FloatingInput">NPI number </label>
+                    </div>
+                    <span asp-validation-for="NPINumber" class="text-danger"></span>
+                </div>
+
+                <div class="col-12 col-sm-6 mt-3">
+                    @foreach (var item in Model.regionList)
+                    {
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input" type="checkbox" name="selectedRegion" value="@item.Regionid">
+                            <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="billingInfo mt-5 row">
+
+                <div class="h4">Mailing and Billing Information</div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address1" asp-for=address1>
+                        <label class="FloatingInput">Address1</label>
+                    </div>
+                    <span asp-validation-for="address1" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address2" asp-for=address2>
+                        <label class="FloatingInput">Address2</label>
+                    </div>
+                    <span asp-validation-for="address2" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="" class="form-control data2" placeholder="city" asp-for=city>
+                        <label class="FloatingInput">City</label>
+                    </div>
+                    <span asp-validation-for="city" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+                        <select class="form-select" aria-label="Floating label select example" asp-for=state>
+                            <option value="" selected>Ahmedabad</option>
+                        </select>
+                        <label for="floatingSelect">
+                            State
+                        </label>
+                        <span asp-validation-for="state" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Zip Code" asp-for=zipcode>
+                        <label class="FloatingInput">Zip Code</label>
+                    </div>
+                    <span asp-validation-for="zipcode" class="text-danger"></span>
+                </div>
+
+                <div class="col-xl-6 col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+                        <input class="form-control data2" type="text" maxlength="10" placeholder="contact" asp-for=billingContact />
+                        <label class="floatingInput">Contact</label>
+                    </div>
+                    <span asp-validation-for="billingContact" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="providerInfo row mt-5">
+                <div class="h4">Provider Profile</div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data3" placeholder="BusinessName" asp-for=businessName>
+                        <label class="FloatingInput">Business Name</label>
+                    </div>
+                    <span asp-validation-for="businessName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data3" placeholder="example.com" asp-for=businessSite>
+                        <label class="FloatingInput">Business Site</label>
+                    </div>
+                    <span asp-validation-for="businessSite" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="row d-flex">
+                        <div class="col-12 ">
+                            <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                                <div class="px-3 table-responsive">
+                                    <input type="file" id="uploadPhoto" hidden class="data3" />
+                                    <label role="button" for="uploadPhoto" id="photoLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                                </div>
+                                <button class="photoUploadBtn px-2 py-1 d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                </button>
+                            </div>
+                        </div>
+                        <span id="photoError" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 mt-3">
+                    <div class="form-floating">
+                        <textarea class="form-control shadow-none data3"
+                                  placeholder="Admin Notes"
+                                  style="height: 200px" asp-for="adminnote"></textarea>
+                        <label for="floatingTextarea2">Admin Notes</label>
+                        <span class="text-danger" asp-validation-for="adminnote"></span>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="text-muted" style="border : 1px solid black" />
+
+            <div class="onboarding">
+                <div class="h4">Onboarding</div>
+                <div class="table-responsive">
+                    <table>
+                        <tr class="p-1">
+                            <td class="p-2">
+                                <input type="checkbox" disabled name="agreementDoc"/>
+                            </td>
+                            <td class="p-2 px-3">
+                                Independent Contractor Agreement
+                            </td>
+                            <td class="p-2">
+                                <input type="file" hidden id="agreementDoc" />
+                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <label for="agreementDoc" id="agreementDocLabel">
+                                        <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                    </label>
+                                </button>
+                            </td>
+
+                        </tr>
+                        <tr class="p-1">
+                            <td class="p-2">
+                                <input type="checkbox" disabled name="backgroundDoc" />
+                            </td>
+                            <td class="p-2 px-3">
+                                Background Check
+                            </td>
+                            <td class="p-2">
+                                <input type="file" hidden id="backgroundDoc" />
+                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <label for="backgroundDoc">
+                                        <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                    </label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="p-1">
+                            <td class="p-2">
+                                <input type="checkbox" disabled name="HIPAADoc" />
+                            </td>
+                            <td class="p-2 px-3">
+                                HIPAA Compliance
+                            </td>
+                            <td class="p-2">
+                                <input type="file" hidden id="HIPAADoc" />
+                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <label for="HIPAADoc">
+                                        <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                    </label>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="p-1">
+                            <td class="p-2">
+                                <input type="checkbox" disabled name="nonDisclosureDoc" />
+                            </td>
+                            <td class="p-2 px-3">
+                                Non-Disclosure Agreement
+                            </td>
+                            <td class="p-2">
+                                <input type="file" hidden id="nonDisclosureDoc" />
+                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <label for="nonDisclosureDoc">
+                                        <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                    </label>
+                                </button>
+                            </td>
+                        </tr>
+                        @* <tr class="p-1">
+                            <td class="p-2">
+                                <input type="checkbox" disabled />
+                            </td>
+                            <td class="p-2 px-3">
+                                License Document
+                            </td>
+                            <td class="p-2">
+                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
+                                    <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
+                                </button>
+                            </td>
+                        </tr> *@
+                    </table>
+                </div>
+            </div>
+
+            <hr class="text-muted" style="border : 1px solid black" />
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success">Create Account</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $('#uploadPhoto').change(function (e) {
+        $('#photoLabel').html($(this)[0].files[0].name)
+    })
+    $('#agreementDoc').change(function (e) {
+        $('input[name=agreementDoc]').prop('checked',true)
+    })
+    $('#backgroundDoc').change(function (e) {
+        $('input[name=backgroundDoc]').prop('checked', true)
+    })
+    $('#HIPAADoc').change(function (e) {
+        $('input[name=HIPAADoc]').prop('checked', true)
+    })
+    $('#nonDisclosureDoc').change(function (e) {
+        $('input[name=nonDisclosureDoc]').prop('checked', true)
+    })
+</script>

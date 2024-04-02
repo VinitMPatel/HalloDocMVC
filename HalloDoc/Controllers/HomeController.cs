@@ -78,7 +78,7 @@ namespace HalloDoc.Controllers
         
         public IActionResult PatientResetPasswordEmail(Aspnetuser user)
         {
-            string Id = (_context.Aspnetusers.FirstOrDefault(x => x.Email == user.Email)).Id;
+            string Id = _context.Aspnetusers.Where(x => x.Email == user.Email).Select(x => x.Id).FirstOrDefault();
             string resetPasswordUrl = GenerateResetPasswordUrl(Id);
             SendEmail(user.Email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
 
@@ -118,12 +118,12 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
-        public IActionResult SetPassword(Aspnetuser aspnetuser)
+        public async Task<IActionResult> SetPassword(Aspnetuser aspnetuser)
         {
             var aspuser = _context.Aspnetusers.FirstOrDefault(x => x.Id == aspnetuser.Id);
             aspuser.Passwordhash = aspnetuser.Passwordhash;
             _context.Aspnetusers.Update(aspuser);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return RedirectToAction("patient_login");
         }
     }

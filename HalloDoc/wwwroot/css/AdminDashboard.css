@@ -217,6 +217,23 @@ input#phone {
 .input-validation-error{
     border : 1px solid red;
 }
+
+.form-floating:hover ~ label {
+    color: #00b8e6;
+}
+
+.form-floating .form-control:focus ~ label {
+    color: #00b8e6;
+}
+
+.form-control:focus {
+    border: 1px solid #00b8e6;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
 @media only screen and (max-width:1050px) {
     .allstatus {
         width: 33.3% !important;

@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +23,12 @@ namespace Services.ViewModels
     public class EditProviderViewModel
     {
         public int providerId { get; set; }
+
+        [Required(ErrorMessage = "*User Name is required")]
+        public string userName { get; set; }
+
+        [Required(ErrorMessage = "*Password is required")]
+        public string password { get; set; }
 
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Enter Valid First Name")]
         [Required(ErrorMessage = "*First Name is required")]
@@ -60,16 +67,18 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "*State is required")]
         public string state { get; set; }
 
-        [RegularExpression(@"^[1-9][0-9]{5}$", ErrorMessage = "Enter a valid 6-digit Zip Code")]
-        [Required(ErrorMessage = "Plese enter zip code")]
+        [RegularExpression(@"^[1-9][0-9]{5}$", ErrorMessage = "*Enter a valid 6-digit Zip Code")]
+        [Required(ErrorMessage = "*Plese enter zip code")]
         public string zipcode { get; set; }
 
-        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "Plese enter billing contact number")]
+        [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "*Enter a valid 10-digit mobile number")]
+        [Required(ErrorMessage = "*Plese enter billing contact number")]
         public string billingContact {  get; set; }
 
+        [Required(ErrorMessage = "*Plese enter business name")]
         public string businessName { get; set; }
 
+        [Required(ErrorMessage = "*Plese enter business site")]
         public string businessSite { get; set; }
 
         public List<Physicianregion> physicianRegionlist { get; set; }
@@ -86,10 +95,17 @@ namespace Services.ViewModels
 
         //public int[] selectedregion { get; set; }
 
-        public string photo { get; set; }
-
-        public string signature { get; set; }
         
+        public IFormFile photo { get; set; }
+
+   
+        public IFormFile signature { get; set; }
+
+        public string photoName { get; set; }
+
+        public string signName { get; set; }
+
+        [Required(ErrorMessage = "*Please add note")]
         public string adminnote { get; set; }
     }
 }
