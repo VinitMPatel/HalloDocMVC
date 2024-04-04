@@ -63,11 +63,6 @@ namespace Services.Implementation
                 {
                     reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus).ToList();
                 }
-
-
-
-
-
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
                     reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();

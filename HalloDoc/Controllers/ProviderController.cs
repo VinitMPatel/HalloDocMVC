@@ -70,5 +70,10 @@ namespace HalloDoc.Controllers
             EditProviderViewModel obj = providerServices.CreateProvider();
             return View(obj);
         }
+
+        public void SubmitCreateProvider(EditProviderViewModel obj , List<int> selectedRegion)
+        {
+
+        }
     }
 }

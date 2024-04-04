@@ -184,9 +184,9 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
-        public IActionResult SubmitAssign(int requestId, int physicianId, string assignNote)
-        {
-            caseActions.SubmitAssign(requestId, physicianId, assignNote);
+        public async Task<IActionResult> SubmitAssign(int requestId, int physicianId, string assignNote)
+        {   
+            await caseActions.SubmitAssign(requestId, physicianId, assignNote);
             return RedirectToAction("AdminDashboard");
         }
 

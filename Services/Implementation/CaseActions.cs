@@ -15,6 +15,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Services.Implementation
 {
@@ -38,19 +39,25 @@ namespace Services.Implementation
         public ViewModels.CaseActions CancelCase(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-            var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
+            var name = _context.Requests.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefault();
             obj.cancelList = _context.Casetags.ToList();
             obj.requestId = requestId;
-            obj.patietName = name;
+            if (name != null)
+            {
+                obj.patietName = name;
+            }
             return obj;
         }
 
         public ViewModels.CaseActions BlockCase(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-            var name = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
+            var name = _context.Requests.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefault();
             obj.requestId = requestId;
-            obj.patietName = name;
+            if (name != null)
+            {
+                obj.patietName = name;
+            }
             return obj;
         }
 
@@ -63,19 +70,25 @@ namespace Services.Implementation
         public AgreementDetails Agreement(int requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            obj.mobile = requestData.Phonenumber;
-            obj.email = requestData.Email;
-            obj.type = requestData.Requesttypeid;
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            if (requestData != null)
+            {
+                obj.mobile = requestData.Phonenumber;
+                obj.email = requestData.Email;
+                obj.type = requestData.Requesttypeid;
+            }
             return obj;
         }
 
         public void AgreeAgreement(int requestId)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Status = 4;
-            _context.Requests.Update(requestData);
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            if (requestData != null)
+            {
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Status = 4;
+                _context.Requests.Update(requestData);
+            }
             Requeststatuslog requeststatuslog = new Requeststatuslog
             {
                 Requestid = requestId,
@@ -86,50 +99,77 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public void CancelAgreement(int requestId)
+        public async Task CancelAgreement(int requestId)
         {
-            var requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
-            if(requestData != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                requestData.Modifieddate = DateTime.Now;
-                requestData.Status = 7;
-                _context.Requests.Update(requestData);
-                Requeststatuslog requeststatuslog = new Requeststatuslog
+                try
                 {
-                    Requestid = requestId,
-                    Status = 7,
-                    Createddate = DateTime.Now,
-                };
-                _context.Add(requeststatuslog);
-                _context.SaveChanges();
+                    Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+                    if (requestData != null)
+                    {
+                        requestData.Modifieddate = DateTime.Now;
+                        requestData.Status = 7;
+                        _context.Requests.Update(requestData);
+                    }
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog
+                    {
+                        Requestid = requestId,
+                        Status = 7,
+                        Createddate = DateTime.Now,
+                    };
+                    await _context.AddAsync(requeststatuslog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
             }
         }
-        public void SubmitAssign(int requestId, int physicianId, string assignNote)
-        {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Status = 2;
-            requestData.Physicianid = physicianId;
-            _context.Requests.Update(requestData);
 
-            Requeststatuslog requeststatuslog = new Requeststatuslog
+        public async Task SubmitAssign(int requestId, int physicianId, string assignNote)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                Requestid = requestId,
-                Status = 2,
-                Physicianid = physicianId,
-                Notes = assignNote,
-                Createddate = DateTime.Now,
-                Transtophysicianid = physicianId
-            };
-            _context.Add(requeststatuslog);
-            _context.SaveChanges();
+                try
+                {
+                    Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+                    if (requestData != null)
+                    {
+                        requestData.Modifieddate = DateTime.Now;
+                        requestData.Status = 2;
+                        requestData.Physicianid = physicianId;
+                        _context.Requests.Update(requestData);
+                    }
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog
+                    {
+                        Requestid = requestId,
+                        Status = 2,
+                        Physicianid = physicianId,
+                        Notes = assignNote,
+                        Createddate = DateTime.Now,
+                        Transtophysicianid = physicianId
+                    };
+                    await _context.AddAsync(requeststatuslog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
 
         public void SubmitCancel(int requestId, int caseId, string cancelNote)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
-            requestData.Casetag = _context.Casetags.FirstOrDefault(a=> a.Casetagid == caseId).Name;
+            requestData.Casetag = _context.Casetags.FirstOrDefault(a => a.Casetagid == caseId).Name;
             requestData.Status = 3;
             _context.Requests.Update(requestData);
 
@@ -146,7 +186,7 @@ namespace Services.Implementation
 
         public void SubmitBlock(int requestId, string blockNote)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
             requestData.Status = 11;
             _context.Requests.Update(requestData);
@@ -157,7 +197,7 @@ namespace Services.Implementation
                 Phonenumber = requestData.Phonenumber,
                 Email = requestData.Email,
                 Reason = blockNote,
-                Createddate= DateTime.Now,
+                Createddate = DateTime.Now,
             };
             _context.Add(blockrequest);
             _context.SaveChanges();
@@ -165,7 +205,7 @@ namespace Services.Implementation
 
         public void SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             Requestnote requestnote = new Requestnote();
             var existRequestNote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
             requestnote.Requestid = requestId;
@@ -196,7 +236,7 @@ namespace Services.Implementation
 
         public void SubmitTransfer(int requestId, int physicianId, string transferNote)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
             requestData.Physicianid = physicianId;
             _context.Requests.Update(requestData);
@@ -216,7 +256,7 @@ namespace Services.Implementation
 
         public void SubmitClearCase(int requestId)
         {
-            var requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
             requestData.Modifieddate = DateTime.Now;
             requestData.Status = 10;
             _context.Requests.Update(requestData);
@@ -231,7 +271,7 @@ namespace Services.Implementation
             _context.SaveChanges();
         }
 
-        public void SendingAgreement(int requestId , string email , string url)
+        public void SendingAgreement(int requestId, string email, string url)
         {
             try
             {
@@ -268,7 +308,7 @@ namespace Services.Implementation
             obj.firstName = requestData.Firstname;
             obj.lastName = requestData.Lastname;
             obj.email = requestData.Email;
-            obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear), 
+            obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear),
                 DateTime.ParseExact(requestData.Requestclients.First().Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
                 Convert.ToInt32(requestData.Requestclients.First().Intdate));
             obj.mobileNumber = requestData.Phonenumber;
@@ -280,7 +320,7 @@ namespace Services.Implementation
         {
             var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
             requestData.Email = email;
-            requestData.Phonenumber= phone;
+            requestData.Phonenumber = phone;
             _context.Update(requestData);
             _context.SaveChanges();
         }

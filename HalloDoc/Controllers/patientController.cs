@@ -156,9 +156,9 @@ namespace HalloDoc.Controllers
             caseActions.AgreeAgreement(requestId);
         }
 
-        public void CancelAgreement(int requestId)
+        public async Task CancelAgreement(int requestId)
         {
-            caseActions.CancelAgreement(requestId);
+             await caseActions.CancelAgreement(requestId);
         }
     }
 }

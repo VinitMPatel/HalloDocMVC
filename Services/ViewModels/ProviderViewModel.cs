@@ -92,14 +92,15 @@ namespace Services.ViewModels
         public bool IsNonDisclosureDoc { get; set; }
 
         public bool IsLicenseDoc { get; set; }
-
-        //public int[] selectedregion { get; set; }
-
         
         public IFormFile photo { get; set; }
-
    
         public IFormFile signature { get; set; }
+
+        public IFormFile agreementDoc { get; set; }
+        public IFormFile backgroundDoc { get; set; }
+        public IFormFile HIPAADoc { get; set; }
+        public IFormFile nonDisclosureDoc { get; set; }
 
         public string photoName { get; set; }
 
@@ -107,5 +108,8 @@ namespace Services.ViewModels
 
         [Required(ErrorMessage = "*Please add note")]
         public string adminnote { get; set; }
+
+        [Required(ErrorMessage = "*Please select region")]
+        public int physicianRegion {  get; set; }
     }
 }

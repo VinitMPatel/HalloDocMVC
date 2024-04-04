@@ -6,12 +6,11 @@ namespace Services.Contracts
     {
         AgreementDetails Agreement(int requestId);
         CaseActions AssignCase(int requestId);
+        Task SubmitAssign(int requestId, int physicianId, string assignNote);
         CaseActions BlockCase(int requestId);
         CaseActions CancelCase(int requestId);
 
         CaseActions Orders(int requestId);
-
-        void SubmitAssign(int requestId, int physicianId, string assignNote);
 
         void SubmitBlock(int requestId, string blockNote);
 
@@ -25,8 +24,9 @@ namespace Services.Contracts
 
         public void SendingAgreement(int requestId, string email, string url);
         void AgreeAgreement(int requestId);
-        void CancelAgreement(int requestId);
+    
         CloseCase CloseCase(int requestId);
         void CloseCaseChanges(string email, int requestId, string phone);
+        Task CancelAgreement(int requestId);
     }
 }
