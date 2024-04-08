@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
+using System.Runtime.CompilerServices;
 
 namespace HalloDoc.Controllers
 {
@@ -36,9 +37,9 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
-        public IActionResult ToStopNotification(List<int> toStopNotification, List<int> toNotification)
+        public async Task<IActionResult> ToStopNotification(List<int> toStopNotification, List<int> toNotification)
         {
-            dashboardData.ToStopNotification(toStopNotification, toNotification);
+            await dashboardData.ToStopNotification(toStopNotification, toNotification);
             return RedirectToAction("Provider");
         }
 
@@ -48,21 +49,21 @@ namespace HalloDoc.Controllers
         }
 
         
-        public void UpdatePhysicianInfo(EditProviderViewModel obj , List<int> selectedRegion)
+        public async Task UpdatePhysicianInfo(EditProviderViewModel obj , List<int> selectedRegion)
         {
-            dashboardData.UpdatePhysicianInfo(obj, selectedRegion);
+            await dashboardData.UpdatePhysicianInfo(obj, selectedRegion);
             //return RedirectToAction("EditProvider", new { physicianId = obj.providerId });
             //return NoContent();
         }
         
-        public void UpdateBillingInfo(EditProviderViewModel obj)
+        public async Task UpdateBillingInfo(EditProviderViewModel obj)
         {
-            dashboardData.UpdateBillingInfo(obj);
+            await dashboardData.UpdateBillingInfo(obj);
         }
 
-        public void UpdateProfile(EditProviderViewModel obj)
+        public async Task UpdateProfile(EditProviderViewModel obj)
         {
-            dashboardData.UpdateProfile(obj);
+            await dashboardData.UpdateProfile(obj);
         }
 
         public IActionResult CreateProvider()
@@ -71,9 +72,11 @@ namespace HalloDoc.Controllers
             return View(obj);
         }
 
-        public void SubmitCreateProvider(EditProviderViewModel obj , List<int> selectedRegion)
+        public async Task<IActionResult> SubmitCreateProvider(EditProviderViewModel obj , List<int> selectedRegion)
         {
-
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            await providerServices.CreateProviderAccount(obj, selectedRegion,adminId);
+            return RedirectToAction("Provider");
         }
     }
 }

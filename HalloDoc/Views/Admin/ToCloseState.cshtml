@@ -43,12 +43,20 @@
                     color = "rgb(0,172,230)";
                     type = "Concierge";
                 }
+               
                 <tr style="--bs-table-bg : @color">
                     <td class="text-white">@obj.Firstname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
                     <td class="text-white">@obj.Request.User.Region.Name</td>
-                    <td class="text-white"> @obj.Request.Physician.Firstname</td>
+                    @if (obj.Request.Physician != null)
+                    {
+                        <td class="text-white">@obj.Request.Physician.Firstname</td>
+                    }
+                    else
+                    {
+                        <td class="text-white"> - </td>
+                    }
                     <td class="text-white">@obj.Request.Createddate</td>
                     <td class="text-white">@obj.Address</td>
                     <td class="text-white">@obj.Notes</td>

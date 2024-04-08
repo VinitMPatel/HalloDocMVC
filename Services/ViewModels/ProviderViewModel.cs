@@ -42,13 +42,13 @@ namespace Services.ViewModels
         public string email { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "Plese enter your contact number")]
+        [Required(ErrorMessage = "Contact number is required")]
         public string contactNumber { get; set; }
 
-        [Required(ErrorMessage = "Plese enter your medical license")]
+        [Required(ErrorMessage = "Medical license is required")]
         public string medicalLecense { get; set; }
 
-        [Required(ErrorMessage = "Plese enter your NPI number")]
+        [Required(ErrorMessage = "NPI number is required")]
         public string NPINumber { get; set; }
 
         [Required(ErrorMessage = "*Sync Email is required")]
@@ -59,7 +59,7 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "*Address is required")]
         public string address1 { get; set; }
 
-        public string address2 { get; set; }
+        public string? address2 { get; set; }
 
         [Required(ErrorMessage = "*City is required")]
         public string city { get; set; }
@@ -68,17 +68,17 @@ namespace Services.ViewModels
         public string state { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]{5}$", ErrorMessage = "*Enter a valid 6-digit Zip Code")]
-        [Required(ErrorMessage = "*Plese enter zip code")]
+        [Required(ErrorMessage = "*Zip code is required")]
         public string zipcode { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "*Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "*Plese enter billing contact number")]
+        [Required(ErrorMessage = "*Billing contact number is required")]
         public string billingContact {  get; set; }
 
-        [Required(ErrorMessage = "*Plese enter business name")]
+        [Required(ErrorMessage = "*Business name is required")]
         public string businessName { get; set; }
 
-        [Required(ErrorMessage = "*Plese enter business site")]
+        [Required(ErrorMessage = "*Business site is required")]
         public string businessSite { get; set; }
 
         public List<Physicianregion> physicianRegionlist { get; set; }
@@ -93,21 +93,23 @@ namespace Services.ViewModels
 
         public bool IsLicenseDoc { get; set; }
         
-        public IFormFile photo { get; set; }
+        public IFormFile? photo { get; set; }
    
-        public IFormFile signature { get; set; }
+        public IFormFile? signature { get; set; }
 
-        public IFormFile agreementDoc { get; set; }
-        public IFormFile backgroundDoc { get; set; }
-        public IFormFile HIPAADoc { get; set; }
-        public IFormFile nonDisclosureDoc { get; set; }
+        public IFormFile? agreementDoc { get; set; }
 
-        public string photoName { get; set; }
+        public IFormFile? backgroundDoc { get; set; }
 
-        public string signName { get; set; }
+        public IFormFile? HIPAADoc { get; set; }
 
-        [Required(ErrorMessage = "*Please add note")]
-        public string adminnote { get; set; }
+        public IFormFile? nonDisclosureDoc { get; set; }
+
+        public string? photoName { get; set; }
+
+        public string? signName { get; set; }
+
+        public string? adminnote { get; set; }
 
         [Required(ErrorMessage = "*Please select region")]
         public int physicianRegion {  get; set; }

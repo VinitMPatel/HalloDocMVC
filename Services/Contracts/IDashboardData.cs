@@ -15,18 +15,32 @@ namespace Services.Contracts
         List<Physician> PhysicianList(int regionid);
 
         CaseActionDetails ViewUploads(int requestId);
+
         void UplodingDocument(List<IFormFile> myfile, int reqid);
+
         void uploadFile(List<IFormFile> upload, int id);
-        void SingleDelete(int reqfileid);
+
+        Task SingleDelete(int reqfileid);
+
         byte[] DownloadExcle(AdminDashboard model);
+
         AdminProfile AdminProfileData(int adminId);
-        void UpdateAdminInfo(int adminId, AdminInfo obj);
-        void UpdateBillingInfo(int adminId, BillingInfo obj);
+
+        Task UpdateAdminInfo(int adminId, AdminInfo obj);
+
+        Task UpdateBillingInfo(int adminId, BillingInfo obj);
+
         ProviderViewModel ProviderData(int regionId);
-        void ToStopNotification(List<int> notifications , List<int> toNotification);
+
+        Task ToStopNotification(List<int> notifications , List<int> toNotification);
+
         EditProviderViewModel EditProvider(int physicianId);
-        void UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
-        void UpdateBillingInfo(EditProviderViewModel obj);
-        void UpdateProfile(EditProviderViewModel obj);
+
+        Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
+       
+       
+        Task UpdateProfile(EditProviderViewModel obj);
+
+        Task UpdateBillingInfo(EditProviderViewModel obj);
     }
 }

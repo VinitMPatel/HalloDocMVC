@@ -169,7 +169,7 @@ namespace Services.Implementation
             CaseActionDetails obj = new CaseActionDetails();
             //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
             List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToList();
-            var patientName = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault().Firstname;
+            var patientName = _context.Requests.FirstOrDefault(a => a.Requestid == requestId).Firstname;
             obj.FirstName = patientName;
             obj.requestId = requestId;
             obj.requestwisefile = files;
@@ -204,13 +204,16 @@ namespace Services.Implementation
             }
         }
 
-        public void SingleDelete(int reqfileid)
+        public async Task SingleDelete(int reqfileid)
         {
             var requestwisefile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == reqfileid);
-            int reqid = requestwisefile.Requestid;
-            requestwisefile.Isdeleted = new BitArray(new[] { true });
-            _context.Requestwisefiles.Update(requestwisefile);
-            _context.SaveChanges();
+            if(requestwisefile != null)
+            {
+                int reqid = requestwisefile.Requestid;
+                requestwisefile.Isdeleted = new BitArray(new[] { true });
+                _context.Requestwisefiles.Update(requestwisefile);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public byte[] DownloadExcle(AdminDashboard model)
@@ -319,10 +322,11 @@ namespace Services.Implementation
             adminData.adminregionlist = adminRegions;
             return adminData;
         }
-        public void UpdateAdminInfo(int adminId, AdminInfo obj)
+
+        public async Task UpdateAdminInfo(int adminId, AdminInfo obj)
         {
-            Admin admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
-            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
+            Admin? admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
+            Aspnetuser? aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
             List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
             foreach (var item in adminRegions)
             {
@@ -339,38 +343,45 @@ namespace Services.Implementation
                     _context.Adminregions.Add(newAdminRegion);
                 }
             }
-            admin.Firstname = obj.firstName;
-            admin.Lastname = obj.lastName;
-            admin.Email = obj.email;
-            admin.Mobile = obj.contact;
-            admin.Modifieddate = DateTime.Now;
-            admin.Modifiedby = aspnetuser.Id;
+            if (admin != null && aspnetuser != null)
+            {
+                admin.Firstname = obj.firstName;
+                admin.Lastname = obj.lastName;
+                admin.Email = obj.email;
+                admin.Mobile = obj.contact;
+                admin.Modifieddate = DateTime.Now;
+                admin.Modifiedby = aspnetuser.Id;
+                _context.Update(admin);
+            }
 
-            aspnetuser.Phonenumber = obj.contact;
-            aspnetuser.Username = obj.firstName + obj.lastName;
-            aspnetuser.Email = obj.email;
-            aspnetuser.Modifieddate = DateTime.Now;
-
-            _context.Update(admin);
-            _context.Update(aspnetuser);
-            _context.SaveChanges();
+            if(aspnetuser != null)
+            {
+                aspnetuser.Phonenumber = obj.contact;
+                aspnetuser.Username = obj.firstName + obj.lastName;
+                aspnetuser.Email = obj.email;
+                aspnetuser.Modifieddate = DateTime.Now;
+                _context.Update(aspnetuser);
+            }
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateBillingInfo(int adminId, BillingInfo obj)
+        public async Task UpdateBillingInfo(int adminId, BillingInfo obj)
         {
-            Admin admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
-            Aspnetuser aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
+            Admin? admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
+            Aspnetuser? aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
+            if(admin != null && aspnetuser != null)
+            {
+                admin.Address1 = obj.address1;
+                admin.Address2 = obj.address2;
+                admin.City = obj.city;
+                admin.Zip = obj.zip;
+                admin.Modifieddate = DateTime.Now;
+                admin.Modifiedby = aspnetuser.Id;
+                admin.Altphone = obj.billingContact;
 
-            admin.Address1 = obj.address1;
-            admin.Address2 = obj.address2;
-            admin.City = obj.city;
-            admin.Zip = obj.zip;
-            admin.Modifieddate = DateTime.Now;
-            admin.Modifiedby = aspnetuser.Id;
-            admin.Altphone = obj.billingContact;
-
-            _context.Update(admin);
-            _context.SaveChanges();
+                _context.Update(admin);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public ProviderViewModel ProviderData(int regionId)
@@ -387,21 +398,27 @@ namespace Services.Implementation
             return obj;
         }
 
-        public void ToStopNotification(List<int> toStopNotifications, List<int> toNotification)
+        public async Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification)
         {
             foreach (var item in toStopNotifications)
             {
                 Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
-                _context.Physiciannotifications.Update(physiciannotification);
+                if(physiciannotification != null)
+                {
+                    physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
+                    _context.Physiciannotifications.Update(physiciannotification);
+                }
             }
             foreach (var item in toNotification)
             {
                 Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
-                _context.Physiciannotifications.Update(physiciannotification);
+                if(physiciannotification != null)
+                {
+                    physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
+                    _context.Physiciannotifications.Update(physiciannotification);
+                }
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public EditProviderViewModel EditProvider(int physicianId)
@@ -435,38 +452,41 @@ namespace Services.Implementation
             return editProviderViewModel;
         }
 
-        public void UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
+        public async Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
         {
             Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            physician.Firstname = obj.firstName;
-            physician.Lastname = obj.lastName;
-            physician.Email = obj.email;
-            physician.Mobile = obj.contactNumber;
-            physician.Syncemailaddress = obj.syncEmail;
-            physician.Medicallicense = obj.medicalLecense;
-            physician.Npinumber = obj.NPINumber;
-            physician.Modifieddate = DateTime.Now;
-            List<Physicianregion> physicianRegions = _context.Physicianregions.Where(a => a.Physicianid == obj.providerId).ToList();
-            foreach (var item in physicianRegions)
+            if(physician != null)
             {
-                _context.Physicianregions.Remove(item);
-            }
-
-            if (selectedRegion.Count() > 0)
-            {
-                foreach (var item in selectedRegion)
+                physician.Firstname = obj.firstName;
+                physician.Lastname = obj.lastName;
+                physician.Email = obj.email;
+                physician.Mobile = obj.contactNumber;
+                physician.Syncemailaddress = obj.syncEmail;
+                physician.Medicallicense = obj.medicalLecense;
+                physician.Npinumber = obj.NPINumber;
+                physician.Modifieddate = DateTime.Now;
+                List<Physicianregion> physicianRegions = _context.Physicianregions.Where(a => a.Physicianid == obj.providerId).ToList();
+                foreach (var item in physicianRegions)
                 {
-                    Physicianregion newphysicianRegions = new Physicianregion();
-                    newphysicianRegions.Physicianid = obj.providerId;
-                    newphysicianRegions.Regionid = item;
-                    _context.Physicianregions.Add(newphysicianRegions);
+                    _context.Physicianregions.Remove(item);
                 }
+
+                if (selectedRegion.Count() > 0)
+                {
+                    foreach (var item in selectedRegion)
+                    {
+                        Physicianregion newphysicianRegions = new Physicianregion();
+                        newphysicianRegions.Physicianid = obj.providerId;
+                        newphysicianRegions.Regionid = item;
+                        _context.Physicianregions.Add(newphysicianRegions);
+                    }
+                }
+                _context.Update(physician);
+                await _context.SaveChangesAsync();
             }
-            _context.Update(physician);
-            _context.SaveChanges();
         }
 
-        public void UpdateBillingInfo(EditProviderViewModel obj)
+        public async Task UpdateBillingInfo(EditProviderViewModel obj)
         {
             Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
             if(physician != null)
@@ -478,12 +498,12 @@ namespace Services.Implementation
                 physician.Altphone = obj.billingContact;
                 physician.Modifieddate = DateTime.Now;
                 _context.Update(physician);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
         [HttpPost]
-        public void UpdateProfile(EditProviderViewModel obj)
+        public async Task UpdateProfile(EditProviderViewModel obj)
         {
             Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
             if(physician != null)
@@ -492,19 +512,22 @@ namespace Services.Implementation
                 physician.Businesswebsite = obj.businessSite;
                 physician.Adminnotes = obj.adminnote;
                 physician.Modifieddate = DateTime.Now;
-                physician.Photo = obj.photo.FileName;
-                physician.Signature = obj.signature.FileName;
-
-                string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
-                FileStream stream = new FileStream(path, FileMode.Create);
-                obj.photo.CopyTo(stream);
-
-                string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
-                FileStream signstream = new FileStream(signpath, FileMode.Create);
-                obj.signature.CopyTo(signstream);
-
+                if(obj.photo != null)
+                {
+                    physician.Photo = obj.photo.FileName;
+                    string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
+                    FileStream stream = new FileStream(path, FileMode.Create);
+                    obj.photo.CopyTo(stream);
+                }
+                if(obj.signature  != null)
+                {
+                    physician.Signature = obj.signature.FileName;
+                    string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
+                    FileStream signstream = new FileStream(signpath, FileMode.Create);
+                    obj.signature.CopyTo(signstream);
+                }
                 _context.Update(physician);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
     }

@@ -305,17 +305,22 @@
             <div class="d-flex my-3">
                 @if (Model.photoName != null)
                 {
-                    <div class="w-50 d-flex justify-content-center align-items-center" style="object-fit:contain">
+                    <div class="w-50 d-flex justify-content-center align-items-center photoDiv" style="object-fit:contain">
                         <img src="~/upload/@Model.photoName" style="width:25vw; height:25vh; object-fit:contain" id="photoImg" />
                     </div>
                 }
+                <div class="w-50 d-flex justify-content-center align-items-center uploadedPhotoDiv d-none" style="object-fit:contain">
+                    <img src="" style="width:25vw; height:25vh; object-fit:contain" id="uploadedPhotoImg" />
+                </div>
                 @if (Model.signName != null)
                 {
-                    <div class="w-50 d-flex justify-content-center align-items-center">
+                    <div class="w-50 d-flex justify-content-center align-items-center signDiv">
                         <img src="~/upload/@Model.signName" style="width:25vw; height:25vh; object-fit:contain" id="signImg" />
                     </div>
                 }
-
+                <div class="w-50 d-flex justify-content-center align-items-center uploadedSignDiv d-none">
+                    <img src="" style="width:25vw; height:25vh; object-fit:contain" id="uploadedSignImg" />
+                </div>
             </div>
 
             <div class="col-12 mt-3">
@@ -526,10 +531,12 @@
         if ($('#photoLabel').html() != "No item selected") {
             var reader = new FileReader();
             reader.onload = function (e) {
-                $('#photoImg').attr('src', e.target.result);
+                $('#uploadedPhotoImg').attr('src', e.target.result);
             };
             reader.readAsDataURL($('#uploadPhoto')[0].files[0]);
             $('#photoError').html("");
+            $('.uploadedPhotoDiv').removeClass('d-none');
+            $('.photoDiv').addClass('d-none');
         }
         else {
             $('#photoError').html("*Please upload photo");
@@ -540,11 +547,13 @@
         if ($('#signLabel').html() != "No item selected") {
             var reader = new FileReader();
             reader.onload = function (e) {
-                $('#signImg').attr('src', e.target.result);
+                $('#uploadedSignImg').attr('src', e.target.result);
             };
             reader.readAsDataURL($('#uploadSign')[0].files[0]);
             $('#signError').html("");
-            flag = 1;
+            flag = 0;
+            $('.uploadedSignDiv').removeClass('d-none');
+            $('.signDiv').addClass('d-none');
         }
         else {
             $('#signError').html("*Please upload photo");
@@ -557,13 +566,13 @@
         var signName = $('#providerId').val() + "_sign";
         $('#signLabel').html(signName)
         image.src = canvas.toDataURL(); // Convert canvas to data URI
-        document.getElementById("signImg").src = image.src;
+        $('.uploadedSignDiv').removeClass('d-none');
+        $('.signDiv').addClass('d-none');
+        document.getElementById("uploadedSignImg").src = image.src;
+        flag = 1;
     }
 
     $(document).ready(function () {
-
-        $('#photoLabel').html("@Model.photoName");
-        $('#signLabel').html("@Model.signName");
 
         (function fun() {
             window.requestAnimFrame = (function (callback) {
@@ -818,14 +827,13 @@
             console.log($('#adminNote').val())
             if ($(this).valid()) {
                 const formData = new FormData();
-                debugger
                 formData.append('photo', $('#uploadPhoto')[0].files[0]);
                 if (flag == 0) {
                     formData.append('signature', $('#uploadSign')[0].files[0]);
                 }
                 else {
-                    var blob = dataURLtoBlob($('#signImg').attr('src'));
-                    formData.append("signature", blob, @Model.providerId+"_sign");
+                    var blob = dataURLtoBlob($('#uploadedSignImg').attr('src'));
+                    formData.append("signature", blob, @Model.providerId+"_sign.png");
                 }
                 formData.append('businessName', $('#businessName').val());
                 formData.append('businessSite', $('#businessSite').val());

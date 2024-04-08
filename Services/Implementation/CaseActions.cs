@@ -70,7 +70,7 @@ namespace Services.Implementation
         public AgreementDetails Agreement(int requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
             if (requestData != null)
             {
                 obj.mobile = requestData.Phonenumber;
@@ -80,9 +80,9 @@ namespace Services.Implementation
             return obj;
         }
 
-        public void AgreeAgreement(int requestId)
+        public async Task AgreeAgreement(int requestId)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
             if (requestData != null)
             {
                 requestData.Modifieddate = DateTime.Now;
@@ -95,8 +95,8 @@ namespace Services.Implementation
                 Status = 4,
                 Createddate = DateTime.Now,
             };
-            _context.Add(requeststatuslog);
-            _context.SaveChanges();
+            await _context.AddAsync(requeststatuslog);
+            await _context.SaveChangesAsync();
         }
 
         public async Task CancelAgreement(int requestId)
@@ -165,13 +165,16 @@ namespace Services.Implementation
             }
         }
 
-        public void SubmitCancel(int requestId, int caseId, string cancelNote)
+        public async Task SubmitCancel(int requestId, int caseId, string cancelNote)
         {
             Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Casetag = _context.Casetags.FirstOrDefault(a => a.Casetagid == caseId).Name;
-            requestData.Status = 3;
-            _context.Requests.Update(requestData);
+            if(requestData != null)
+            {
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Casetag = _context.Casetags.FirstOrDefault(a => a.Casetagid == caseId).Name;
+                requestData.Status = 3;
+                _context.Requests.Update(requestData);
+            }
 
             Requeststatuslog requeststatuslog = new Requeststatuslog
             {
@@ -180,16 +183,19 @@ namespace Services.Implementation
                 Notes = cancelNote,
                 Createddate = DateTime.Now
             };
-            _context.Add(requeststatuslog);
-            _context.SaveChanges();
+            await _context.AddAsync(requeststatuslog);
+            await _context.SaveChangesAsync();
         }
 
-        public void SubmitBlock(int requestId, string blockNote)
+        public async Task SubmitBlock(int requestId, string blockNote)
         {
             Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Status = 11;
-            _context.Requests.Update(requestData);
+            if( requestData != null )
+            {
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Status = 11;
+                _context.Requests.Update(requestData);
+            }
 
             Blockrequest blockrequest = new Blockrequest
             {
@@ -199,24 +205,24 @@ namespace Services.Implementation
                 Reason = blockNote,
                 Createddate = DateTime.Now,
             };
-            _context.Add(blockrequest);
-            _context.SaveChanges();
+            await _context.AddAsync(blockrequest);
+            await _context.SaveChangesAsync();
         }
 
-        public void SubmitNotes(int requestId, string notes, CaseActionDetails obj)
+        public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
             Requestnote requestnote = new Requestnote();
             var existRequestNote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
             requestnote.Requestid = requestId;
             requestnote.Createddate = DateTime.Now;
             requestnote.Adminnotes = notes;
             requestnote.Createdby = "1";
-            _context.Requestnotes.Add(requestnote);
-            _context.SaveChanges();
+            await _context.Requestnotes.AddAsync(requestnote);
+            await _context.SaveChangesAsync();
         }
 
-        public void SubmitOrder(Orders obj)
+        public async Task SubmitOrder(Orders obj)
         {
             Orderdetail orderdetail = new Orderdetail
             {
@@ -230,16 +236,19 @@ namespace Services.Implementation
                 Createddate = DateTime.Now,
                 Createdby = obj.createdby
             };
-            _context.Orderdetails.Add(orderdetail);
-            _context.SaveChanges();
+            await _context.Orderdetails.AddAsync(orderdetail);
+            await _context.SaveChangesAsync();
         }
 
-        public void SubmitTransfer(int requestId, int physicianId, string transferNote)
+        public async Task SubmitTransfer(int requestId, int physicianId, string transferNote)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Physicianid = physicianId;
-            _context.Requests.Update(requestData);
+            Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            if(requestData != null)
+            {
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Physicianid = physicianId;
+                _context.Requests.Update(requestData);
+            }
 
             Requeststatuslog requeststatuslog = new Requeststatuslog
             {
@@ -250,16 +259,19 @@ namespace Services.Implementation
                 Createddate = DateTime.Now,
                 Transtophysicianid = physicianId
             };
-            _context.Requeststatuslogs.Add(requeststatuslog);
-            _context.SaveChanges();
+            await _context.Requeststatuslogs.AddAsync(requeststatuslog);
+            await _context.SaveChangesAsync();
         }
 
-        public void SubmitClearCase(int requestId)
+        public async Task SubmitClearCase(int requestId)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            requestData.Modifieddate = DateTime.Now;
-            requestData.Status = 10;
-            _context.Requests.Update(requestData);
+            Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            if (requestData != null)
+            {
+                requestData.Modifieddate = DateTime.Now;
+                requestData.Status = 10;
+                _context.Requests.Update(requestData);
+            }
 
             Requeststatuslog requeststatuslog = new Requeststatuslog
             {
@@ -267,8 +279,8 @@ namespace Services.Implementation
                 Status = 10,
                 Createddate = DateTime.Now,
             };
-            _context.Requeststatuslogs.Add(requeststatuslog);
-            _context.SaveChanges();
+            await _context.Requeststatuslogs.AddAsync(requeststatuslog);
+            await _context.SaveChangesAsync();
         }
 
         public void SendingAgreement(int requestId, string email, string url)
@@ -316,13 +328,16 @@ namespace Services.Implementation
             return obj;
         }
 
-        public void CloseCaseChanges(string email, int requestId, string phone)
+        public async Task CloseCaseChanges(string email, int requestId, string phone)
         {
             var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
-            requestData.Email = email;
-            requestData.Phonenumber = phone;
-            _context.Update(requestData);
-            _context.SaveChanges();
+            if(requestData != null)
+            {
+                requestData.Email = email;
+                requestData.Phonenumber = phone;
+                _context.Update(requestData);
+                await _context.SaveChangesAsync();
+            }
         }
 
     }

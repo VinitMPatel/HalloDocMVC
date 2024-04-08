@@ -197,9 +197,9 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = caseActions.CancelCase(requestId);
             return PartialView("AdminCaseAction/_CancelCase", obj);
         }
-        public IActionResult SubmitCancel(int requestId, int caseId, string cancelNote)
+        public async Task<IActionResult> SubmitCancel(int requestId, int caseId, string cancelNote)
         {
-            caseActions.SubmitCancel(requestId, caseId, cancelNote);
+            await caseActions.SubmitCancel(requestId, caseId, cancelNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -210,21 +210,18 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = caseActions.BlockCase(requestId);
             return PartialView("AdminCaseAction/_BlockCase", obj);
         }
-        public IActionResult SubmitBlock(int requestId, string blockNote)
+        public async Task<IActionResult> SubmitBlock(int requestId, string blockNote)
         {
-
-            caseActions.SubmitBlock(requestId, blockNote);
+            await caseActions.SubmitBlock(requestId, blockNote);
             return RedirectToAction("AdminDashboard");
         }
 
 
-
-        public IActionResult SubmitNotes(int requestId, string notes, CaseActionDetails obj)
+        public async Task<IActionResult> SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
-            caseActions.SubmitNotes(requestId, notes, obj);
+            await caseActions.SubmitNotes(requestId, notes, obj);
             return RedirectToAction("AdminDashboard");
         }
-
 
 
         public IActionResult ViewUploads(int requestId)
@@ -237,21 +234,22 @@ namespace HalloDoc.Controllers
             dashboardData.UplodingDocument(myfile, reqid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
-        public IActionResult SingleDelete(int reqfileid, int reqid)
+        public async Task<IActionResult> SingleDelete(int reqfileid, int reqid)
         {
-            dashboardData.SingleDelete(reqfileid);
+            await dashboardData.SingleDelete(reqfileid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
 
         [HttpPost]
-        public IActionResult DeleteAll(List<int> reqwiseid, int reqid)
+        public async Task<IActionResult> DeleteAll(List<int> reqwiseid, int reqid)
         {
             foreach (var obj in reqwiseid)
             {
-                dashboardData.SingleDelete(obj);
+                await dashboardData.SingleDelete(obj);
             }
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
+
 
         public IActionResult Orders(int requestId)
         {
@@ -281,13 +279,12 @@ namespace HalloDoc.Controllers
         }
 
 
-        public IActionResult SubmitOrder(Orders obj)
+        public async Task<IActionResult> SubmitOrder(Orders obj)
         {
             obj.createdby = HttpContext.Session.GetString("AdminName");
-            caseActions.SubmitOrder(obj);
+            await caseActions.SubmitOrder(obj);
             return RedirectToAction("AdminDashboard");
         }
-
 
 
         public IActionResult TransferCase(int requestId)
@@ -295,9 +292,9 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_TransferCase", obj);
         }
-        public IActionResult SubmitTransfer(int requestId, int physicianId, string transferNote)
+        public async Task<IActionResult> SubmitTransfer(int requestId, int physicianId, string transferNote)
         {
-            caseActions.SubmitTransfer(requestId, physicianId, transferNote);
+            await caseActions.SubmitTransfer(requestId, physicianId, transferNote);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -309,9 +306,9 @@ namespace HalloDoc.Controllers
             obj.requestId = requestId;
             return PartialView("AdminCaseAction/_ClearCase", obj);
         }
-        public IActionResult SubmitClearCase(int requestId)
+        public async Task<IActionResult> SubmitClearCase(int requestId)
         {
-            caseActions.SubmitClearCase(requestId);
+            await caseActions.SubmitClearCase(requestId);
             return RedirectToAction("AdminDashboard");
         }
 
@@ -338,9 +335,9 @@ namespace HalloDoc.Controllers
             CloseCase obj = caseActions.CloseCase(requestId);
             return PartialView("AdminCaseAction/_CloseCase", obj);
         }
-        public IActionResult CloseCaseChanges(string email , int requestId , string phone)
+        public async Task<IActionResult> CloseCaseChanges(string email , int requestId , string phone)
         {
-           caseActions.CloseCaseChanges(email , requestId , phone);
+            await caseActions.CloseCaseChanges(email , requestId , phone);
             return RedirectToAction("CloseCase", new {requestId = requestId});
         }
 
@@ -351,17 +348,17 @@ namespace HalloDoc.Controllers
             return View(adminData);
         }
 
-        public IActionResult UpdateAdminInfo(AdminInfo obj)
+        public async Task<IActionResult> UpdateAdminInfo(AdminInfo obj)
         {
             int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            dashboardData.UpdateAdminInfo(adminId, obj);
+            await dashboardData.UpdateAdminInfo(adminId, obj);
             return RedirectToAction("AdminProfile");
         }
 
-        public IActionResult UpdateBillingInfo(BillingInfo obj)
+        public async Task<IActionResult> UpdateBillingInfo(BillingInfo obj)
         {
             int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            dashboardData.UpdateBillingInfo(adminId, obj);
+            await dashboardData.UpdateBillingInfo(adminId, obj);
             return RedirectToAction("AdminProfile");
         }
         

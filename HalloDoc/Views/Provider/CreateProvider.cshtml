@@ -22,7 +22,7 @@
 
                 <div class="p-2 col-sm-4 col-12">
                     <div class="form-floating ">
-                        <input type="text" class="form-control" placeholder="User Name" name="contact" asp-for="userName">
+                        <input type="text" class="form-control" placeholder="User Name" asp-for="userName">
                         <label class="FloatingInput">User Name</label>
                     </div>
                     <span asp-validation-for="userName" class="text-danger"></span>
@@ -128,7 +128,6 @@
                         <input type="text" class="form-control data2" placeholder="Address2" asp-for=address2>
                         <label class="FloatingInput">Address2</label>
                     </div>
-                    <span asp-validation-for="address2" class="text-danger"></span>
                 </div>
 
                 <div class="p-2 col-sm-6 col-12 ">
@@ -212,7 +211,6 @@
                                   placeholder="Admin Notes"
                                   style="height: 200px" asp-for="adminnote"></textarea>
                         <label for="floatingTextarea2">Admin Notes</label>
-                        <span class="text-danger" asp-validation-for="adminnote"></span>
                     </div>
                 </div>
             </div>

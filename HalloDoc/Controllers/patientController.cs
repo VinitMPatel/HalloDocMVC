@@ -7,7 +7,7 @@ using Services.Contracts;
 using Services.Implementation;
 using Common.Enum;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
-
+using System.Runtime.CompilerServices;
 
 namespace HalloDoc.Controllers
 {
@@ -151,9 +151,9 @@ namespace HalloDoc.Controllers
             return RedirectToAction("family_friend_request", "requests");
         }
 
-        public void AgreeAgreement(int requestId)
+        public async Task AgreeAgreement(int requestId)
         {
-            caseActions.AgreeAgreement(requestId);
+            await caseActions.AgreeAgreement(requestId);
         }
 
         public async Task CancelAgreement(int requestId)
