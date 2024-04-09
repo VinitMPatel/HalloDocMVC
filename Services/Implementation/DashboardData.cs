@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -207,7 +208,7 @@ namespace Services.Implementation
         public async Task SingleDelete(int reqfileid)
         {
             var requestwisefile = _context.Requestwisefiles.FirstOrDefault(u => u.Requestwisefileid == reqfileid);
-            if(requestwisefile != null)
+            if (requestwisefile != null)
             {
                 int reqid = requestwisefile.Requestid;
                 requestwisefile.Isdeleted = new BitArray(new[] { true });
@@ -354,7 +355,7 @@ namespace Services.Implementation
                 _context.Update(admin);
             }
 
-            if(aspnetuser != null)
+            if (aspnetuser != null)
             {
                 aspnetuser.Phonenumber = obj.contact;
                 aspnetuser.Username = obj.firstName + obj.lastName;
@@ -369,7 +370,7 @@ namespace Services.Implementation
         {
             Admin? admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
             Aspnetuser? aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == admin.Aspnetuserid);
-            if(admin != null && aspnetuser != null)
+            if (admin != null && aspnetuser != null)
             {
                 admin.Address1 = obj.address1;
                 admin.Address2 = obj.address2;
@@ -403,7 +404,7 @@ namespace Services.Implementation
             foreach (var item in toStopNotifications)
             {
                 Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                if(physiciannotification != null)
+                if (physiciannotification != null)
                 {
                     physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
                     _context.Physiciannotifications.Update(physiciannotification);
@@ -412,7 +413,7 @@ namespace Services.Implementation
             foreach (var item in toNotification)
             {
                 Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                if(physiciannotification != null)
+                if (physiciannotification != null)
                 {
                     physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
                     _context.Physiciannotifications.Update(physiciannotification);
@@ -455,7 +456,7 @@ namespace Services.Implementation
         public async Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
         {
             Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if(physician != null)
+            if (physician != null)
             {
                 physician.Firstname = obj.firstName;
                 physician.Lastname = obj.lastName;
@@ -489,7 +490,7 @@ namespace Services.Implementation
         public async Task UpdateBillingInfo(EditProviderViewModel obj)
         {
             Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if(physician != null)
+            if (physician != null)
             {
                 physician.Address1 = obj.address1;
                 physician.Address2 = obj.address2;
@@ -506,20 +507,20 @@ namespace Services.Implementation
         public async Task UpdateProfile(EditProviderViewModel obj)
         {
             Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if(physician != null)
+            if (physician != null)
             {
                 physician.Businessname = obj.businessName;
                 physician.Businesswebsite = obj.businessSite;
                 physician.Adminnotes = obj.adminnote;
                 physician.Modifieddate = DateTime.Now;
-                if(obj.photo != null)
+                if (obj.photo != null)
                 {
                     physician.Photo = obj.photo.FileName;
                     string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
                     FileStream stream = new FileStream(path, FileMode.Create);
                     obj.photo.CopyTo(stream);
                 }
-                if(obj.signature  != null)
+                if (obj.signature != null)
                 {
                     physician.Signature = obj.signature.FileName;
                     string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
@@ -529,6 +530,76 @@ namespace Services.Implementation
                 _context.Update(physician);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public RoleAccess CreateAccessRole(int accountType)
+        {
+            List<Menu> menuList = new List<Menu>();
+            if (accountType == 0)
+            {
+                menuList = _context.Menus.ToList();
+            }
+            else
+            {
+                menuList = _context.Menus.Where(a => a.Accounttype == accountType).ToList();
+            }
+            RoleAccess roleAccess = new RoleAccess();
+            roleAccess.menuList = menuList;
+            return roleAccess;
+        }
+
+        public RoleAccess AddedRoles()
+        {
+            RoleAccess obj = new RoleAccess();
+            obj.rolemenuList = _context.Roles.ToList();
+            return obj;
+        }
+
+        public async Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    Role role = new Role
+                    {
+                        Name = roleName,
+                        Accounttype = accountType,
+                        Createdby = adminId.ToString(),
+                        Createddate = DateTime.Now,
+                        Modifieddate = DateTime.Now,
+                        Isdeleted = new BitArray(new[] { false })
+                    };
+                    await _context.AddAsync(role);
+                    await _context.SaveChangesAsync();
+
+                    foreach (var item in menus)
+                    {
+                        Rolemenu rolemenu = new Rolemenu();
+                        rolemenu.Roleid = role.Roleid;
+                        rolemenu.Menuid = item;
+                        await _context.AddAsync(rolemenu);
+                    }
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+            
+        }
+
+        public RoleAccess EditRole(int roleId) 
+        {
+            RoleAccess roleAccess = new RoleAccess();
+            roleAccess.menuList = _context.Menus.ToList();
+            roleAccess.roleId = roleId;
+            roleAccess.roleName = _context.Roles.FirstOrDefault(a => a.Roleid == roleId).Name;
+            roleAccess.accountType = _context.Roles.FirstOrDefault(a => a.Roleid == roleId).Accounttype;
+            //_context.Aspnetroles.FirstOrDefault(a => a.Id == roleId.ToString()).Name
+            return roleAccess;
         }
     }
 }

@@ -1,0 +1,11 @@
+﻿@model Services.ViewModels.RoleAccess
+<div class="col-12 d-flex gap-3 flex-wrap m-2">
+    @foreach (var item in Model.menuList)
+    {
+        <div>
+            <input type="checkbox" value="@item.Menuid" onchange="validation()">
+            <label>@item.Name</label>
+        </div>
+    }
+</div>
+

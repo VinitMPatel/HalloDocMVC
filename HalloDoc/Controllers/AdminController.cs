@@ -362,6 +362,37 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminProfile");
         }
         
+
+        public IActionResult RoleAccess()
+        {
+            RoleAccess obj = dashboardData.AddedRoles();
+            return View(obj);
+        }
+        public IActionResult CreateRoleAccess(int accountType)
+        {
+            RoleAccess obj = dashboardData.CreateAccessRole(accountType);
+            return PartialView("AdminCaseAction/_CreateRoleAccess",obj);
+        }
+
+        public IActionResult RolesList(int accountType)
+        {
+            RoleAccess obj = dashboardData.CreateAccessRole(accountType);
+            return PartialView("AdminCaseAction/_RolesList", obj);
+        }
+
+        [HttpPost]
+        public async Task AddNewRole(List<int> menus , short accountType, string roleName)
+        {
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            await dashboardData.AddNewRole(menus , accountType , roleName , adminId);
+        }
+
+        public IActionResult EditRole(int roleId)
+        {
+            RoleAccess obj = dashboardData.EditRole(roleId);
+            return PartialView("AdminCaseAction/_EditRole", obj);
+        }
+
         public IActionResult AdminValidate(Aspnetuser obj)
         {
             try

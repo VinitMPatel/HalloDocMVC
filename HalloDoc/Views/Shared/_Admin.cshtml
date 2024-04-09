@@ -30,6 +30,7 @@
                     </div>
                     <div class="offcanvas-body">
                         <div class="nav nav-tabs d-block d-flex flex-column gap-3" id="nav-tab" role="tablist">
+
                             @if (Context.Request.Path.Equals("/Admin/AdminDashboard"))
                             {
                                 <a asp-action="AdminDashboard" class="text-decoration-none text-info" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Dashboard</a>
@@ -38,7 +39,9 @@
                             {
                                 <a asp-action="AdminDashboard" class="text-decoration-none" style="color:black;">Dashboard</a>
                             }
+
                             <a class="text-decoration-none pr-4" style="color:black;">Providers Location</a>
+
                             @if (Context.Request.Path.Equals("/Admin/AdminProfile"))
                             {
                                 <a asp-action="AdminProfile" class="text-decoration-none text-info" style="border-bottom: 4px solid #17a2b8!important; height : 40px">My Profile</a>
@@ -48,6 +51,7 @@
                                 <a asp-action="AdminProfile" class="text-decoration-none" style="color:black;">My Profile</a>
 
                             }
+
                             @if (Context.Request.Path.Equals("/Provider/Provider"))
                             {
                                 <a asp-action="Provider" class="text-decoration-none text-info" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Provider</a>
@@ -87,7 +91,7 @@
             <div class=" h6 d-none d-md-flex gap-4" style="width:93%">
                 @if (Context.Request.Path.Equals("/Admin/AdminDashboard"))
                 {
-                    <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Dashboard</a>
+                    <a asp-action="AdminDashboard" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">Dashboard</a>
                 }
                 else
                 {
@@ -105,7 +109,7 @@
                 }
                 @if (Context.Request.Path.Equals("/Provider/Provider") || Context.Request.Path.Equals("/Provider/Schedulling") || Context.Request.Path.Equals("/Provider/Invoicing") || Context.Request.Path.Equals("/Provider/CreateProvider"))
                 {
-                    <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Provider</a>
+                    <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Provider</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                         <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
                         <li><a asp-action="Schedulling" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
@@ -123,7 +127,14 @@
                 }
                
                 <a class="text-decoration-none pe-2" style="color:black;">Partners</a>
-                <a class="text-decoration-none pe-2" style="color:black;">Access</a>
+                @if (Context.Request.Path.Equals("/Admin/RoleAccess"))
+                {
+                    <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Access</a>
+                }
+                else
+                {
+                    <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Access</a>
+                }
                 <a class="text-decoration-none pe-2" style="color:black;">Records</a>
             </div>
         </div>
@@ -131,7 +142,6 @@
         <div class="tab-content" id="nav-tabContent">
        
         </div>
-        <div>HelloAdmin</div>
     </header>
         @RenderBody()
 @*         <div class="bg-dark p-2 d-flex justify-content-end w-100 mt-5 position-absolute bottom-0">

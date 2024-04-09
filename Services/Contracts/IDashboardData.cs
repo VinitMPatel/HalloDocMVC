@@ -42,5 +42,9 @@ namespace Services.Contracts
         Task UpdateProfile(EditProviderViewModel obj);
 
         Task UpdateBillingInfo(EditProviderViewModel obj);
+        RoleAccess CreateAccessRole(int roleid);
+        Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
+        RoleAccess AddedRoles();
+        RoleAccess EditRole(int roleId);
     }
 }

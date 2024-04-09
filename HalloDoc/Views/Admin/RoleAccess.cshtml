@@ -1,0 +1,56 @@
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.RoleAccess
+<div class="container mt-5" id="mainContent">
+    <div class="h4">
+        Account Access
+    </div>
+    <div class="shadow mt-3">
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-outline-info shadow-none m-2" id="createAccessBtn">
+                Create Access
+            </button>
+        </div>
+        <table class="w-100 table">
+            <thead class="table-secondary">
+                <tr>
+                    <th style="width : 45%">Name</th>
+                    <th style="width : 45%">Account type</th>
+                    <th style="width : 10%">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(var item in Model.rolemenuList)
+                {
+                    <tr>
+                        <td>
+                            @item.Name
+                        </td>
+                        
+                        @if(item.Accounttype == 1)
+                        {
+                            <td>
+                                Admin
+                            </td>
+                        }
+                        @if (item.Accounttype == 2)
+                        {
+                            <td>
+                                Physician
+                            </td>
+                        }
+
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-info editRoleBtn" value="@item.Roleid">Edit</button>
+                                <button class="btn btn-outline-info" value="@item.Roleid">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="~/js/RoleAccess.js"></script>
