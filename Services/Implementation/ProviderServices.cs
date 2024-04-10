@@ -3,6 +3,7 @@ using Data.DataContext;
 using Data.Entity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -25,10 +26,10 @@ namespace Services.Implementation
             _env = env;
         }
 
-        public EditProviderViewModel CreateProvider()
+        public async Task<EditProviderViewModel> CreateProvider()
         {
             EditProviderViewModel obj = new EditProviderViewModel();
-            obj.regionList = _context.Regions.ToList();
+            obj.regionList = await _context.Regions.ToListAsync();
             return obj;
         }
 

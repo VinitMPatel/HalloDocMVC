@@ -5,11 +5,11 @@ namespace Services.Contracts
 {
     public interface IDashboard
     {
-        patient_dashboard PatientDashboard(int id);
+        Task<patient_dashboard> PatientDashboard(int id);
 
-        public String editing(patient_dashboard r, int id);
+        Task<String> editing(patient_dashboard r, int id);
 
-        public patient_dashboard ViewDocuments(int reqId, int userId);
+        Task<patient_dashboard> ViewDocuments(int reqId, int userId);
 
         public void UplodingDocument(patient_dashboard obj, int reqId);
 

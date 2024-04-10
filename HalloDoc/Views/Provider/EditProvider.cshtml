@@ -365,11 +365,15 @@
                     </td>
                     @if (Model.IsAgreementDoc)
                     {
+                        var name = Model.providerId + "_agreement.pdf";
                         <td class="p-2">
+                            <a href="~/upload/@name">
                             <button type="button" data-url="/AdminArea/AdminProviderTab/ViewICAdoc" class="p-1 px-2 text-white bg-info fileviewbtn rounded border-info d-flex align-items-center h-100">
                                 <i class="bi  bi-eye-fill"></i>
                                 <span class="d-none d-lg-block ps-2">View</span>
                             </button>
+                                
+                            </a>
                         </td>
                     }
                 </tr>
@@ -450,11 +454,14 @@
                     </td>
                     @if (Model.IsNonDisclosureDoc)
                     {
+                        var name = Model.providerId + "_nonDisclosure.pdf";
                         <td class="p-2">
+                            <a href="~/upload/@name">
                             <button type="button" data-url="/AdminArea/AdminProviderTab/ViewNDAdoc" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
                                 <i class="bi  bi-eye-fill"></i>
                                 <span class="d-none d-lg-block ps-2">View</span>
                             </button>
+                            </a>
                         </td>
                     }
                 </tr>
@@ -535,6 +542,7 @@
             };
             reader.readAsDataURL($('#uploadPhoto')[0].files[0]);
             $('#photoError').html("");
+            flag = 0;
             $('.uploadedPhotoDiv').removeClass('d-none');
             $('.photoDiv').addClass('d-none');
         }

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Services.Implementation
 {
@@ -27,13 +27,13 @@ namespace Services.Implementation
             _env = env;
         }
 
-        public void Insert(PatientInfo r)
+        public async Task Insert(PatientInfo r)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    User? user = _context.Users.Where(m => m.Email == r.Email).FirstOrDefault();
+                    User? user = await _context.Users.FirstOrDefaultAsync(m => m.Email == r.Email);
                     
                     if (user == null)
                     {
@@ -48,10 +48,10 @@ namespace Services.Implementation
                         aspnetuser1.Phonenumber = r.PhoneNumber;
                         aspnetuser1.Createddate = DateTime.Now;
                         aspnetuser1.Modifieddate = DateTime.Now;
-                        _context.Aspnetusers.Add(aspnetuser1);
+                        await _context.Aspnetusers.AddAsync(aspnetuser1);
+                        
                         aspnetuser1 = aspnetuser1;
-                        _context.Aspnetusers.Add(aspnetuser1);
-
+                         
                         User newUser = new User
                         {
                             Aspnetuserid = aspnetuser1.Id,
@@ -73,10 +73,10 @@ namespace Services.Implementation
                             Regionid = 1,
                         };
                         user = newUser;
-                        _context.Users.Add(user);
+                        await _context.Users.AddAsync(user);
                     }
                     string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
-                    var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
+                    var requestcount = await _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToListAsync();
                     Request request = new Request
                     {
                         Requesttypeid = 1,
@@ -92,7 +92,7 @@ namespace Services.Implementation
                                             (requestcount.Count() + 1).ToString().PadLeft(4, '0'),
                         User = user,
                     };
-                    _context.Requests.Add(request);
+                    await _context.Requests.AddAsync(request);
 
                     Requestclient requestclient = new Requestclient
                     {
@@ -112,13 +112,13 @@ namespace Services.Implementation
                         Intdate = int.Parse(r.DOB.ToString("dd")),
                         Strmonth = r.DOB.ToString("MMM")
                     };
-                    _context.Requestclients.Add(requestclient);
+                    await _context.Requestclients.AddAsync(requestclient);
 
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
 
                     if (r.Upload != null)
                     {
-                        uploadFile(r.Upload, request.Requestid);
+                        await uploadFile(r.Upload, request.Requestid);
                     }
 
                     transaction.Commit();
@@ -131,7 +131,7 @@ namespace Services.Implementation
             }
         }
 
-        public void uploadFile(List<IFormFile> upload, int id)
+        public async Task uploadFile(List<IFormFile> upload, int id)
         {
             foreach (var item in upload)
             {
@@ -146,12 +146,12 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
 
                 };
-                _context.Add(requestwisefile);
-                _context.SaveChanges();
+                await _context.AddAsync(requestwisefile);
+                await _context.SaveChangesAsync();
             }
         }
 
-        public void NewAccount(Aspnetuser model)
+        public async Task NewAccount(Aspnetuser model)
         {
             Aspnetuser aspnetuser1 = new Aspnetuser();
             aspnetuser1.Id = Guid.NewGuid().ToString();
@@ -159,8 +159,8 @@ namespace Services.Implementation
             aspnetuser1.Email = model.Email;
             aspnetuser1.Username = "Temp";
 
-            _context.Aspnetusers.Add(aspnetuser1);
-            _context.SaveChanges();
+            await _context.Aspnetusers.AddAsync(aspnetuser1);
+            await _context.SaveChangesAsync();
 
         }
     }

@@ -326,6 +326,7 @@ namespace HalloDoc.Controllers
         }
         
 
+
         public IActionResult RoleAccess()
         {
             RoleAccess obj = dashboardData.AddedRoles();
@@ -399,6 +400,19 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminLogin", "Admin");
         }
 
+
+        public async Task<IActionResult> Partners()
+        {
+            PartnerViewModel obj = await dashboardData.Partners();
+            return View(obj);
+        }
+
+        public async Task<IActionResult> GetPartnerData(int professionType)
+        {
+            PartnerViewModel obj = await dashboardData.PartnerData(professionType);
+            return PartialView("AdminCaseAction/_PartnerTable", obj);
+        }
+
         [HttpPost]
         public IActionResult SendMail(List<int> reqwiseid, int reqid)
         {
@@ -410,7 +424,7 @@ namespace HalloDoc.Controllers
                 filenames.Add(file);
             }
 
-            Sendemail("vinit2273@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
+            Sendemail("agrawalvishesh9271@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
 
         }

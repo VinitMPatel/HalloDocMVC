@@ -66,9 +66,9 @@ namespace HalloDoc.Controllers
             await dashboardData.UpdateProfile(obj);
         }
 
-        public IActionResult CreateProvider()
+        public async Task<IActionResult> CreateProvider()
         {
-            EditProviderViewModel obj = providerServices.CreateProvider();
+            EditProviderViewModel obj = await providerServices.CreateProvider();
             return View(obj);
         }
 

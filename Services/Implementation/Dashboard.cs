@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Common.Enum;
 using System.Globalization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Services.Implementation
 {
@@ -26,52 +27,54 @@ namespace Services.Implementation
             _env = env;
         }
 
-        public patient_dashboard PatientDashboard(int id)
+        public async Task<patient_dashboard> PatientDashboard(int id)
         {
             patient_dashboard dash = new patient_dashboard();
-            var userdata = _context.Users.Where(u => u.Userid == id).FirstOrDefault();
+            var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Userid == id);
 
             dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), 
                 DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, 
                 Convert.ToInt32(userdata.Intdate));
 
-            var req = _context.Requests.Where(m => m.Userid == id);
+            var req = await _context.Requests.Where(m => m.Userid == id).ToListAsync();
             dash.user = userdata;
-            dash.request = req.ToList();
-            List<Requestwisefile> files = (from m in _context.Requestwisefiles select m).ToList();
+            dash.request = req;
+            List<Requestwisefile> files = await (from m in _context.Requestwisefiles select m).ToListAsync();
             dash.requestwisefile = files;
             return dash;
         }
 
-        public String editing(patient_dashboard r , int id)
+        public async Task<String> editing(patient_dashboard r , int id)
         {
             //int id = (int)HttpContext.Session.GetInt32("UserId");
-            var userdata = _context.Users.FirstOrDefault(m => m.Userid == id);
+            var userdata = await _context.Users.FirstOrDefaultAsync(m => m.Userid == id);
+            if(userdata != null)
+            {
+                userdata.Firstname = r.user.Firstname;
+                userdata.Lastname = r.user.Lastname;
+                userdata.Street = r.user.Street;
+                userdata.City = r.user.City;
+                userdata.State = r.user.State;
+                userdata.Zip = r.user.Zip;
+                userdata.Modifieddate = DateTime.Now;
+                userdata.Intyear = int.Parse(r.DOB.ToString("yyyy"));
+                userdata.Intdate = int.Parse(r.DOB.ToString("dd"));
+                userdata.Strmonth = r.DOB.ToString("MMM");
+                userdata.Mobile = r.user.Mobile;
+                _context.Users.Update(userdata);
+            }
 
-            userdata.Firstname = r.user.Firstname;
-            userdata.Lastname = r.user.Lastname;
-            userdata.Street = r.user.Street;
-            userdata.City = r.user.City;
-            userdata.State = r.user.State;
-            userdata.Zip = r.user.Zip;
-            userdata.Modifieddate = DateTime.Now;
-            userdata.Intyear = int.Parse(r.DOB.ToString("yyyy"));
-            userdata.Intdate = int.Parse(r.DOB.ToString("dd"));
-            userdata.Strmonth = r.DOB.ToString("MMM");
-            userdata.Mobile = r.user.Mobile;
-
-            _context.Users.Update(userdata);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return userdata.Firstname;
         }
 
-        public patient_dashboard ViewDocuments(int userId , int reqId)
+        public async Task<patient_dashboard> ViewDocuments(int userId , int reqId)
         {
                 patient_dashboard dash = new patient_dashboard();
-                var userdata = _context.Users.Where(u => u.Userid == userId).FirstOrDefault();
+                var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Userid == userId);
                 dash.user = userdata;
-                List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == reqId select m).ToList();
+                List<Requestwisefile> files = await (from m in _context.Requestwisefiles where m.Requestid == reqId select m).ToListAsync();
                 dash.requestwisefile = files;
                 dash.reqId = reqId;
                 return dash;

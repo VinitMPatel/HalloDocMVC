@@ -57,12 +57,12 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public IActionResult PatientDashboard()
+        public async Task<IActionResult> PatientDashboard()
         {
             if (HttpContext.Session.GetString("UserId") != null)
             {
                 int id = (int)HttpContext.Session.GetInt32("UserId");
-                return View(dashboard.PatientDashboard(id));
+                return View(await dashboard.PatientDashboard(id));
             }
             else
             {
@@ -70,10 +70,10 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public IActionResult editing(patient_dashboard r)
+        public async Task<IActionResult> editing(patient_dashboard r)
         {
             int id = (int)HttpContext.Session.GetInt32("UserId");            
-            String temp =  dashboard.editing(r, id);
+            String temp =  await dashboard.editing(r, id);
             HttpContext.Session.SetString("UserName", temp);
             return RedirectToAction("patientdashboard", "patient");
         }
@@ -102,12 +102,12 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult ViewDocument(int id)
+        public async Task<IActionResult> ViewDocument(int id)
         {
             if (HttpContext.Session.GetString("UserId") != null)
             {
                 var userId = (int)HttpContext.Session.GetInt32("UserId");
-                return View(dashboard.ViewDocuments(userId , id));
+                return View(await dashboard.ViewDocuments(userId , id));
             }
             else
             {
@@ -121,9 +121,9 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
-        public IActionResult Insert(PatientInfo r)
+        public async Task<IActionResult> Insert(PatientInfo r)
         {
-            patientRequest.Insert(r);
+            await patientRequest.Insert(r);
             return RedirectToAction("patient_login", "Home");
         }
 

@@ -49,5 +49,7 @@ namespace Services.Contracts
         Task<List<Healthprofessionaltype>> GetProfessions();
         Task<List<Healthprofessional>> GetBusinesses(int professionId);
         Task<Healthprofessional> GetBusinessesDetails(int businessid);
+        Task<PartnerViewModel> Partners();
+        Task<PartnerViewModel> PartnerData(int professionType);
     }
 }

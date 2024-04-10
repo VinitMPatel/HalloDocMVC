@@ -7,8 +7,8 @@ namespace Services.Contracts
     public interface IPatientRequest
     {
         //IActionResult CheckEmail(string email);
-        void Insert(PatientInfo r);
-        void uploadFile(List<IFormFile> upload, int id);
-        void NewAccount(Aspnetuser model);
+        Task Insert(PatientInfo r);
+        Task uploadFile(List<IFormFile> upload, int id);
+        Task NewAccount(Aspnetuser model);
     }
 }

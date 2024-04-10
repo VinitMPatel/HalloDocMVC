@@ -33,7 +33,6 @@ namespace Services.Implementation
             _env = env;
         }
 
-
         public async Task<AdminDashboard> AllData()
         {
             List<Requestclient> reqc = await _context.Requestclients.Include(a => a.Request).ToListAsync();
@@ -68,7 +67,7 @@ namespace Services.Implementation
                 {
                     reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
-
+               
                 if (obj.requestedPage != 0)
                 {
                     dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
@@ -468,6 +467,14 @@ namespace Services.Implementation
                 photoName = physician.Photo,
                 signName = physician.Signature
             };
+            if (physician.Isagreementdoc[0] == true)
+            {
+                editProviderViewModel.IsAgreementDoc = true;
+            }
+            if (physician.Isnondisclosuredoc[0] == true)
+            {
+                editProviderViewModel.IsNonDisclosureDoc = true;
+            }
             return editProviderViewModel;
         }
 
@@ -618,6 +625,28 @@ namespace Services.Implementation
             roleAccess.accountType = _context.Roles.FirstOrDefault(a => a.Roleid == roleId).Accounttype;
             //_context.Aspnetroles.FirstOrDefault(a => a.Id == roleId.ToString()).Name
             return roleAccess;
+        }
+
+        public async Task<PartnerViewModel> PartnerData(int professionType)
+        {
+            PartnerViewModel obj = new PartnerViewModel();
+            if(professionType == 0)
+            {
+                obj.professionList = await _context.Healthprofessionals.Include(a=>a.ProfessionNavigation).ToListAsync();
+            }
+            else
+            {
+                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a=>a.ProfessionNavigation.Healthprofessionalid == professionType).ToListAsync();
+
+            }
+            return obj;
+        }
+
+        public async Task<PartnerViewModel> Partners()
+        {
+            PartnerViewModel obj = new PartnerViewModel();
+            obj.professionTypeList  = await _context.Healthprofessionaltypes.ToListAsync();
+            return obj;
         }
     }
 }

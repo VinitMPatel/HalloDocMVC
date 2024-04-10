@@ -9,7 +9,7 @@ namespace Services.Contracts
 {
     public interface IProviderServices
     {
-        EditProviderViewModel CreateProvider();
+        Task<EditProviderViewModel> CreateProvider();
         Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, int adminId);
     }
 }

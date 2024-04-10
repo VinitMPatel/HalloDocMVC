@@ -1,0 +1,38 @@
+﻿@model Services.ViewModels.PartnerViewModel
+<div class="table table-responsive w-100">
+    <table class="table">
+        <thead>
+            <tr class="table-secondary">
+                <th>Profession</th>
+                <th>Business Name</th>
+                <th>Emmail</th>
+                <th>Fax Number</th>
+                <th>Phone Number</th>
+                <th>Business Contact</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model.professionList)
+            {
+                <tr>
+                    <td>@item.ProfessionNavigation.Professionname</td>
+                    <td>@item.Vendorname</td>
+                    <td>@item.Email</td>
+                    <td>@item.Faxnumber</td>
+                    <td>@item.Phonenumber</td>
+                    <td>@item.Businesscontact</td>
+                    <td>
+                        <button class="btn btn-outline-info shadow-none editProfessionBtn" value="@item.Vendorid">
+                            Edit
+                        </button>
+                        <button class="btn btn-outline-info shadow-none">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/js/Partners.js"></script>

@@ -126,7 +126,14 @@
                     </ul>
                 }
                
-                <a class="text-decoration-none pe-2" style="color:black;">Partners</a>
+                @if (Context.Request.Path.Equals("/Admin/Partners"))
+                {
+                    <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Partners</a>
+                }
+                else
+                {
+                    <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Partners</a>
+                }
                 @if (Context.Request.Path.Equals("/Admin/RoleAccess"))
                 {
                     <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Access</a>
