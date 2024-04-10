@@ -6,25 +6,25 @@ namespace Services.Contracts
 {
     public interface IDashboardData
     {
-        AdminDashboard AllStateData(AdminDashboard obj);
+        Task<AdminDashboard> AllStateData(AdminDashboard obj);
 
-        AdminDashboard AllData();
+        Task<AdminDashboard> AllData();
 
-        CaseActionDetails ViewCaseData(int requestId);
+        Task<CaseActionDetails> ViewCaseData(int requestId);
 
-        List<Physician> PhysicianList(int regionid);
+        Task<List<Physician>> PhysicianList(int regionid);
 
-        CaseActionDetails ViewUploads(int requestId);
+        Task<CaseActionDetails> ViewUploads(int requestId);
 
-        void UplodingDocument(List<IFormFile> myfile, int reqid);
+        Task UplodingDocument(List<IFormFile> myfile, int reqid);
 
-        void uploadFile(List<IFormFile> upload, int id);
+        Task uploadFile(List<IFormFile> upload, int id);
 
         Task SingleDelete(int reqfileid);
 
         byte[] DownloadExcle(AdminDashboard model);
 
-        AdminProfile AdminProfileData(int adminId);
+        Task<AdminProfile> AdminProfileData(int adminId);
 
         Task UpdateAdminInfo(int adminId, AdminInfo obj);
 
@@ -46,5 +46,8 @@ namespace Services.Contracts
         Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
         RoleAccess AddedRoles();
         RoleAccess EditRole(int roleId);
+        Task<List<Healthprofessionaltype>> GetProfessions();
+        Task<List<Healthprofessional>> GetBusinesses(int professionId);
+        Task<Healthprofessional> GetBusinessesDetails(int businessid);
     }
 }

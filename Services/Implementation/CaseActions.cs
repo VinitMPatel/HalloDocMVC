@@ -28,19 +28,19 @@ namespace Services.Implementation
             _context = context;
         }
 
-        public ViewModels.CaseActions AssignCase(int requestId)
+        public async Task<ViewModels.CaseActions> AssignCase(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-            obj.regionList = _context.Regions.ToList();
+            obj.regionList = await _context.Regions.ToListAsync();
             obj.requestId = requestId;
             return obj;
         }
 
-        public ViewModels.CaseActions CancelCase(int requestId)
+        public async Task<ViewModels.CaseActions> CancelCase(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-            var name = _context.Requests.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefault();
-            obj.cancelList = _context.Casetags.ToList();
+            var name = await _context.Requestclients.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefaultAsync();
+            obj.cancelList = await _context.Casetags.ToListAsync();
             obj.requestId = requestId;
             if (name != null)
             {
@@ -49,10 +49,10 @@ namespace Services.Implementation
             return obj;
         }
 
-        public ViewModels.CaseActions BlockCase(int requestId)
+        public async Task<ViewModels.CaseActions> BlockCase(int requestId)
         {
             ViewModels.CaseActions obj = new ViewModels.CaseActions();
-            var name = _context.Requests.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefault();
+            var name = await _context.Requestclients.Where(a => a.Requestid == requestId).Select(a => a.Firstname).FirstOrDefaultAsync();
             obj.requestId = requestId;
             if (name != null)
             {
@@ -70,12 +70,13 @@ namespace Services.Implementation
         public AgreementDetails Agreement(int requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            Data.Entity.Request requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+            Data.Entity.Request requestData = _context.Requests.Include(a=>a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
             if (requestData != null)
             {
-                obj.mobile = requestData.Phonenumber;
-                obj.email = requestData.Email;
+                obj.mobile = requestData.Requestclients.ElementAt(0).Phonenumber;
+                obj.email = requestData.Requestclients.ElementAt(0).Email;
                 obj.type = requestData.Requesttypeid;
+               
             }
             return obj;
         }
@@ -283,8 +284,10 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public void SendingAgreement(int requestId, string email, string url)
+        public async Task SendingAgreement(int requestId, string url)
         {
+            Data.Entity.Request requestData = await _context.Requests.Include(a => a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
+            string email = requestData.Requestclients.ElementAt(0).Email;
             try
             {
                 var mail = "tatva.dotnet.vinitpatel@outlook.com";
@@ -305,7 +308,7 @@ namespace Services.Implementation
                 };
 
                 mailMessage.To.Add(email);
-                client.SendMailAsync(mailMessage);
+                await client.SendMailAsync(mailMessage);
             }
             catch (Exception ex)
             {
@@ -313,18 +316,21 @@ namespace Services.Implementation
             }
         }
 
-        public CloseCase CloseCase(int requestId)
+        public async Task<CloseCase> CloseCase(int requestId)
         {
-            var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
+            var requestData = await _context.Requests.Include(a => a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
             CloseCase obj = new CloseCase();
-            obj.firstName = requestData.Firstname;
-            obj.lastName = requestData.Lastname;
-            obj.email = requestData.Email;
-            obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear),
-                DateTime.ParseExact(requestData.Requestclients.First().Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
-                Convert.ToInt32(requestData.Requestclients.First().Intdate));
-            obj.mobileNumber = requestData.Phonenumber;
-            obj.requestId = requestId;
+            if(requestData != null)
+            {
+                obj.firstName = requestData.Firstname!;
+                obj.lastName = requestData.Lastname!;
+                obj.email = requestData.Email!;
+                obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear),
+                    DateTime.ParseExact(requestData.Requestclients.First().Strmonth!, "MMM", CultureInfo.InvariantCulture).Month,
+                    Convert.ToInt32(requestData.Requestclients.First().Intdate));
+                obj.mobileNumber = requestData.Phonenumber!;
+                obj.requestId = requestId;
+            }
             return obj;
         }
 

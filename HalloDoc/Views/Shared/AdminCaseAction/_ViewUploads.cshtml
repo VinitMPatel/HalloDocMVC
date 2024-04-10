@@ -33,7 +33,6 @@
                         <div class="px-3 table-responsive">
                             <input type="file" id="actual-btn" asp-for="Upload" multiple hidden />
                             <input type="text" id="docid" name="@Model.requestId" hidden />
-                            <input type="hidden" />
                             <label role="button" for="actual-btn" id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
                         </div>
                         <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
@@ -106,15 +105,10 @@
 </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
-        var fileName = document.getElementById('file-choosen');
-        var actualBtn = document.getElementById('actual-btn');
-        actualBtn.addEventListener('change', function () {
 
-            for (var i = 0; i < this.files.length; i++) {
-                names += this.files[i].name + ", ";
-            }
-            fileName.textContent = names;
-        })
+    $('#actual-btn').change(function (e) {
+        $('#file-choosen').html($(this)[0].files[0].name)
+    })
 
         $(document).ready(function () {
             $('#alldoc').click(function () {
@@ -130,7 +124,6 @@
 
             var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
             var fileUrls = [];
-            debugger;
             // Iterate through selected checkboxes and extract file URLs
             selectedFiles.forEach(function (checkbox) {
                 var row = checkbox.closest('tr');
@@ -156,7 +149,7 @@
             var reqid = $('#docid').attr('name');
             console.log(myfile);
             if (myfile.length > 0) {
-                for (var i = 0; i < files.length; i++) {
+            for (var i = 0; i < myfile.length; i++) {
                     formData.append('myfile', myfile[i]);
                 }
             }

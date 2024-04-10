@@ -38,19 +38,17 @@ namespace HalloDoc.Controllers
             _env = env;
         }
 
-
-        public IActionResult Index()
+        public IActionResult AdminLogin()
         {
             return View();
         }
 
-
         [Authorization("1")]
-        public IActionResult AdminDashboard()
+        public async Task<IActionResult> AdminDashboard()
         {
             if (HttpContext.Session.GetString("AdminName") != null)
             {
-                AdminDashboard obj = dashboardData.AllData();
+                AdminDashboard obj = await dashboardData.AllData();
                 return View(obj);
             }
             else
@@ -59,16 +57,10 @@ namespace HalloDoc.Controllers
             }
         }
 
-
-        public IActionResult Error()
-        {
-            return View();
-        }
-
         [Authorization("1")]
-        public IActionResult AllState(AdminDashboard obj)
+        public async Task<IActionResult> AllState(AdminDashboard obj)
         {
-            AdminDashboard data = dashboardData.AllStateData(obj);
+            AdminDashboard data =  await dashboardData.AllStateData(obj);
             switch (obj.requeststatus)
             {
                 case 1:
@@ -102,14 +94,14 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public IActionResult ExportData(AdminDashboard obj)
+        public async Task<IActionResult> ExportData(AdminDashboard obj)
         {
             int currentPage = 0;
             if(obj.searchKey == "null")
             {
                 obj.searchKey = null;
             }
-            AdminDashboard data = dashboardData.AllStateData(obj);
+            AdminDashboard data = await dashboardData.AllStateData(obj);
             var record = dashboardData.DownloadExcle(data);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             var strDate = DateTime.Now.ToString("yyyyMMdd");
@@ -117,32 +109,10 @@ namespace HalloDoc.Controllers
             return File(record, contentType, filename);
         }
 
-        public void SendMailForRequest(string firstName , string email)
+
+        public async Task<IActionResult> ViewCase(int requestId)
         {
-            var mail = "tatva.dotnet.vinitpatel@outlook.com";
-            var password = "016@ldce";
-
-            var client = new SmtpClient("smtp.office365.com", 587)
-            {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(mail, password)
-            };
-
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress(mail),
-                Subject = "Agreement",
-                Body = "You can view agreement by using this link : " +firstName,
-                IsBodyHtml = true // Set to true if your message contains HTML
-            };
-
-            mailMessage.To.Add(email);
-            client.SendMailAsync(mailMessage);
-        }
-
-        public IActionResult ViewCase(int requestId)
-        {
-            CaseActionDetails obj = dashboardData.ViewCaseData(requestId);
+            CaseActionDetails obj = await dashboardData.ViewCaseData(requestId);
             return PartialView("AdminCaseAction/_ViewCase", obj);
         }
 
@@ -172,16 +142,16 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ViewNotes", obj);
         }
 
-        public List<Data.Entity.Physician> FilterData(int regionid)
+        public async Task<List<Physician>> FilterData(int regionid)
         {
-            List<Data.Entity.Physician> physicianList = dashboardData.PhysicianList(regionid);
+            List<Data.Entity.Physician> physicianList = await dashboardData.PhysicianList(regionid);
             return physicianList;
         }
 
 
-        public IActionResult AssignCase(int requestId)
+        public async Task<IActionResult> AssignCase(int requestId)
         {
-            Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
+            Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
         public async Task<IActionResult> SubmitAssign(int requestId, int physicianId, string assignNote)
@@ -192,9 +162,9 @@ namespace HalloDoc.Controllers
 
 
 
-        public IActionResult CancelCase(int requestId)
+        public async Task<IActionResult> CancelCase(int requestId)
         {
-            Services.ViewModels.CaseActions obj = caseActions.CancelCase(requestId);
+            Services.ViewModels.CaseActions obj = await caseActions.CancelCase(requestId);
             return PartialView("AdminCaseAction/_CancelCase", obj);
         }
         public async Task<IActionResult> SubmitCancel(int requestId, int caseId, string cancelNote)
@@ -205,9 +175,9 @@ namespace HalloDoc.Controllers
 
 
 
-        public IActionResult BlockCase(int requestId)
+        public async Task<IActionResult> BlockCase(int requestId)
         {
-            Services.ViewModels.CaseActions obj = caseActions.BlockCase(requestId);
+            Services.ViewModels.CaseActions obj = await caseActions.BlockCase(requestId);
             return PartialView("AdminCaseAction/_BlockCase", obj);
         }
         public async Task<IActionResult> SubmitBlock(int requestId, string blockNote)
@@ -224,14 +194,14 @@ namespace HalloDoc.Controllers
         }
 
 
-        public IActionResult ViewUploads(int requestId)
+        public async Task<IActionResult> ViewUploads(int requestId)
         {
-            CaseActionDetails obj = dashboardData.ViewUploads(requestId);
+            CaseActionDetails obj = await dashboardData.ViewUploads(requestId);
             return PartialView("AdminCaseAction/_ViewUploads", obj);
         }
-        public IActionResult UploadDocument(List<IFormFile> myfile, int reqid)
+        public async Task<IActionResult> UploadDocument(List<IFormFile> myfile, int reqid)
         {
-            dashboardData.UplodingDocument(myfile, reqid);
+            await dashboardData.UplodingDocument(myfile, reqid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
         public async Task<IActionResult> SingleDelete(int reqfileid, int reqid)
@@ -251,33 +221,12 @@ namespace HalloDoc.Controllers
         }
 
 
-        public IActionResult Orders(int requestId)
+        public async Task<IActionResult> Orders(int requestId)
         {
             Orders obj = new Orders();
             obj.requestId = requestId;
             return PartialView("AdminCaseAction/_Orders", obj);
         }
-
-        public List<Healthprofessionaltype> GetProfessions()
-        {
-            return _context.Healthprofessionaltypes.ToList();
-        }
-
-        public IActionResult AdminLogin()
-        {
-            return View();
-        }
-
-        public List<Healthprofessional> GetBusinesses(int professionId)
-        {
-            return _context.Healthprofessionals.Where(u => u.Profession == professionId).ToList();
-        }
-
-        public Healthprofessional GetBusinessesDetails(int businessid)
-        {
-            return _context.Healthprofessionals.Where(u => u.Vendorid == businessid).FirstOrDefault();
-        }
-
 
         public async Task<IActionResult> SubmitOrder(Orders obj)
         {
@@ -286,10 +235,25 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-
-        public IActionResult TransferCase(int requestId)
+        public async Task<List<Healthprofessionaltype>> GetProfessions()
         {
-            Services.ViewModels.CaseActions obj = caseActions.AssignCase(requestId);
+            return await dashboardData.GetProfessions();
+        }
+
+        public async Task<List<Healthprofessional>> GetBusinesses(int professionId)
+        {
+            return await dashboardData.GetBusinesses(professionId);
+        }
+
+        public async Task<Healthprofessional> GetBusinessesDetails(int businessid)
+        {
+            return await dashboardData.GetBusinessesDetails(businessid);
+        }
+
+
+        public async Task<IActionResult> TransferCase(int requestId)
+        {
+            Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_TransferCase", obj);
         }
         public async Task<IActionResult> SubmitTransfer(int requestId, int physicianId, string transferNote)
@@ -319,20 +283,19 @@ namespace HalloDoc.Controllers
             obj.requestId = requestId;
             return PartialView("AdminCaseAction/_Agreement", obj);
         }
-        public void SendAgreement(int requestId)
+        public async Task SendAgreement(int requestId)
         {
-            var email = _context.Requests.FirstOrDefault(a => a.Requestid == requestId).Email;
             string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
             var encryptReqId = EncryptDecryptHelper.Encrypt(requestId.ToString());
             string resetPasswordPath = Url.Action("ViewAgreement", "Home", new { requestId = encryptReqId });
             string url = baseUrl + resetPasswordPath;
-            caseActions.SendingAgreement(requestId, email, url);
+            await caseActions.SendingAgreement(requestId, url);
         }
 
 
-        public IActionResult CloseCase(int requestId)
+        public async Task<IActionResult> CloseCase(int requestId)
         {
-            CloseCase obj = caseActions.CloseCase(requestId);
+            CloseCase obj = await caseActions.CloseCase(requestId);
             return PartialView("AdminCaseAction/_CloseCase", obj);
         }
         public async Task<IActionResult> CloseCaseChanges(string email , int requestId , string phone)
@@ -341,10 +304,10 @@ namespace HalloDoc.Controllers
             return RedirectToAction("CloseCase", new {requestId = requestId});
         }
 
-        public IActionResult AdminProfile()
+        public async Task<IActionResult> AdminProfile()
         {
             int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            AdminProfile adminData = dashboardData.AdminProfileData(adminId);
+            AdminProfile adminData = await dashboardData.AdminProfileData(adminId);
             return View(adminData);
         }
 
@@ -436,6 +399,7 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminLogin", "Admin");
         }
 
+        [HttpPost]
         public IActionResult SendMail(List<int> reqwiseid, int reqid)
         {
 
@@ -447,10 +411,10 @@ namespace HalloDoc.Controllers
             }
 
             Sendemail("vinit2273@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
-            return PartialView("_ViewDocument", reqid);
+            return RedirectToAction("ViewUploads", new { requestId = reqid });
 
         }
-        public async Task Sendemail(string email, string subject, string message, List<string> attachmentPaths)
+        public void Sendemail(string email, string subject, string message, List<string> attachmentPaths)
         {
             try
             {
@@ -483,12 +447,35 @@ namespace HalloDoc.Controllers
                     }
                 }
 
-                await client.SendMailAsync(mailMessage);
+                client.SendMailAsync(mailMessage);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error sending email: {ex.Message}");
             }
+        }
+
+        public void SendMailForRequest(string firstName, string email)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(mail),
+                Subject = "Agreement",
+                Body = "You can view agreement by using this link : " + firstName,
+                IsBodyHtml = true // Set to true if your message contains HTML
+            };
+
+            mailMessage.To.Add(email);
+            client.SendMailAsync(mailMessage);
         }
     }
 }

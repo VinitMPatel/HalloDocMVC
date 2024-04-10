@@ -34,17 +34,17 @@ namespace Services.Implementation
         }
 
 
-        public AdminDashboard AllData()
+        public async Task<AdminDashboard> AllData()
         {
-            List<Requestclient> reqc = _context.Requestclients.Include(a => a.Request).ToList();
-            List<Region> regionList = _context.Regions.ToList();
+            List<Requestclient> reqc = await _context.Requestclients.Include(a => a.Request).ToListAsync();
+            List<Region> regionList = await _context.Regions.ToListAsync();
             AdminDashboard obj = new AdminDashboard();
             obj.requestclients = reqc;
             obj.regionlist = regionList;
             return obj;
         }
 
-        public AdminDashboard AllStateData(AdminDashboard obj)
+        public async Task<AdminDashboard> AllStateData(AdminDashboard obj)
         {
 
             if (obj.requestType == 0 && obj.regionId == 0)
@@ -54,15 +54,15 @@ namespace Services.Implementation
 
                 if (obj.requeststatus == 4)
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToList();
+                    reqc = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToListAsync();
                 }
                 else if (obj.requeststatus == 3)
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToList();
+                    reqc = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.User.Region).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == 3 || a.Request.Status == 7 || a.Request.Status == 8).ToListAsync();
                 }
                 else
                 {
-                    reqc = _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus).ToList();
+                    reqc = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requeststatuslogs).Where(a => a.Request.Status == obj.requeststatus).ToListAsync();
                 }
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
@@ -134,12 +134,12 @@ namespace Services.Implementation
             }
         }
 
-        public CaseActionDetails ViewCaseData(int requestId)
+        public async Task<CaseActionDetails> ViewCaseData(int requestId)
         {
-            var request = _context.Requests.FirstOrDefault(m => m.Requestid == requestId);
-            var requestclient = _context.Requestclients.FirstOrDefault(m => m.Requestid == requestId);
-            var regiondata = _context.Regions.FirstOrDefault(m => m.Regionid == requestclient.Regionid);
-            var regionList = _context.Regions.ToList();
+            var request = await _context.Requests.FirstOrDefaultAsync(m => m.Requestid == requestId);
+            var requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
+            var regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
+            var regionList = await _context.Regions.ToListAsync();
             var data = new CaseActionDetails
             {
                 //ConfirmationNumber = request.Confirmationnumber,
@@ -159,33 +159,51 @@ namespace Services.Implementation
             return data;
         }
 
-        public List<Physician> PhysicianList(int regionid)
+        public async Task<List<Physician>> PhysicianList(int regionid)
         {
-            List<Physician> physicianList = _context.Physicians.Where(a => a.Regionid == regionid).ToList();
+            List<Physician> physicianList = await _context.Physicians.Where(a => a.Regionid == regionid).ToListAsync();
             return physicianList;
         }
 
-        public CaseActionDetails ViewUploads(int requestId)
+        public async Task<CaseActionDetails> ViewUploads(int requestId)
         {
             CaseActionDetails obj = new CaseActionDetails();
             //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
-            List<Requestwisefile> files = (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToList();
-            var patientName = _context.Requests.FirstOrDefault(a => a.Requestid == requestId).Firstname;
-            obj.FirstName = patientName;
+            List<Requestwisefile> files = await (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToListAsync();
+            var patientName = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if(patientName != null)
+            {
+                obj.FirstName = patientName.Firstname;
+            }
             obj.requestId = requestId;
             obj.requestwisefile = files;
             return obj;
         }
 
-        public void UplodingDocument(List<IFormFile> myfile, int requestId)
+        public async Task UplodingDocument(List<IFormFile> myfile, int requestId)
         {
             if (myfile.Count() > 0)
             {
-                uploadFile(myfile, requestId);
+                await uploadFile(myfile, requestId);
             }
         }
 
-        public void uploadFile(List<IFormFile> upload, int id)
+        public async Task<List<Healthprofessionaltype>> GetProfessions()
+        {
+            return await _context.Healthprofessionaltypes.ToListAsync();
+        }
+
+        public async Task<List<Healthprofessional>> GetBusinesses(int professionId)
+        {
+            return await _context.Healthprofessionals.Where(u => u.Profession == professionId).ToListAsync();
+        }
+
+        public async Task<Healthprofessional> GetBusinessesDetails(int businessid)
+        {
+            return await _context.Healthprofessionals.FirstOrDefaultAsync(u => u.Vendorid == businessid);
+        }
+
+        public async Task uploadFile(List<IFormFile> upload, int id)
         {
             foreach (var item in upload)
             {
@@ -200,8 +218,8 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
 
                 };
-                _context.Add(requestwisefile);
-                _context.SaveChanges();
+                await _context.AddAsync(requestwisefile);
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -313,13 +331,13 @@ namespace Services.Implementation
             }
         }
 
-        public AdminProfile AdminProfileData(int adminId)
+        public async Task<AdminProfile> AdminProfileData(int adminId)
         {
             AdminProfile adminData = new AdminProfile();
-            adminData.admin = _context.Admins.FirstOrDefault(a => a.Adminid == adminId);
-            List<Region> regionList = _context.Regions.ToList();
+            adminData.admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == adminId);
+            List<Region> regionList = await _context.Regions.ToListAsync();
             adminData.regionlist = regionList;
-            List<Adminregion> adminRegions = _context.Adminregions.Where(a => a.Adminid == adminId).ToList();
+            List<Adminregion> adminRegions = await _context.Adminregions.Where(a => a.Adminid == adminId).ToListAsync();
             adminData.adminregionlist = adminRegions;
             return adminData;
         }

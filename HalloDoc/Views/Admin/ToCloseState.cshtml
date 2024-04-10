@@ -43,7 +43,7 @@
                     color = "rgb(0,172,230)";
                     type = "Concierge";
                 }
-               
+
                 <tr style="--bs-table-bg : @color">
                     <td class="text-white">@obj.Firstname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
@@ -188,44 +188,44 @@
         {
             next = Model.totalPages;
         }
-        <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
+        <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
             Previous
         </button>
         @if (Model.totalPages > 5)
         {
             @if (Model.currentpage > Model.totalPages - 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
                     ...
                 </button>
                 @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
             }
             else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
                     ...
                 </button>
                 @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -233,14 +233,14 @@
             {
                 @for (var i = 1; i <= 4; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -251,12 +251,12 @@
             {
                 var temp = page + 1;
 
-                <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)">
+                <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
                     @temp
                 </button>
             }
         }
-        <button class="@next" id="page-@next" onclick="ChangePage(@next)">
+        <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
             Next
         </button>
     }
