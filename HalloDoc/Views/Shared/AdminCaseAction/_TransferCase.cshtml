@@ -104,10 +104,9 @@
                 url: '/Admin/SubmitTransfer',
                 data: { "requestId": @Model.requestId, "physicianId": physicianId, "transferNote": transferNote },
                 success: function (response) {
-                    $('#status-tabContent').html(response);
-                    $("body").removeAttr("style");
-                    $(".modal-backdrop").remove();
-                    window.location.reload();
+                    $("#exampleModal1 .btn-close").click()
+                    toastr.success("Transfered successfully");
+                    // $("#status-pending").click()
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
@@ -116,3 +115,4 @@
         }
     });
 </script>
+

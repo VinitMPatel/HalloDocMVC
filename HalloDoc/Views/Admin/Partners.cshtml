@@ -1,7 +1,11 @@
-﻿@{
+﻿<Partial name="_Notification" />
+@{
     Layout = "_Admin";
 }
 @model Services.ViewModels.PartnerViewModel
+<div id="main-content">
+
+
 <div class="container-fluid">
     <div class="h4 mt-5">
         Vendor(s)
@@ -14,12 +18,12 @@
                 <div class="col-12 col-sm-6">
                     <div class="d-flex rounded-2 border border-dark h-100">
                         <span class="search-icon"></span>
-                        <input id="search" onkeyup="Search()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
+                        <input id="searchKey" onkeyup="Search()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Business">
                     </div>
                 </div>
 
                 <div class="col-12 col-sm-6 mt-3 mt-sm-0">
-                    <select class="form-select border border-dark h-100" id="selectProfession" aria-label="Floating label select example">
+                    <select class="form-select border border-dark h-100" id="professions" aria-label="Floating label select example">
                         <option value="0" selected>All Professions</option>
                         @foreach(var item in Model.professionTypeList)
                         {
@@ -30,9 +34,9 @@
             </div>
 
             <div class="mt-2 mt-sm-0">
-                <button class="btn btn-outline-info shadow-none w-100">
-                    + Add Business
-                </button>
+                <a asp-action="AddBusiness" asp-controller="Admin" class="btn btn-outline-info shadow-none w-100">
+                        + Add Business
+                </a>
             </div>
 
         </div>
@@ -42,10 +46,12 @@
         </div>
     </div>
 </div>
-<script src="~/js/Partners.js"></script>
+
+</div>
 <script>
     $(document).ready(function () {
         var professionType = 0;
+        console.log("Ready")
         $.ajax({
             url: '/Admin/GetPartnerData',
             data: { "professionType": professionType },
@@ -53,8 +59,9 @@
                 $('#dataTable').html(response);
             },
             error: function (xhr, status, error) {
-                alert("Something went wrong");
+                alert("Main partner page");
             }
         })
     });
 </script>
+<script src="~/js/Partners.js"></script>

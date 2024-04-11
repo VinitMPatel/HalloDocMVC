@@ -107,7 +107,10 @@
                     // $('#status-tabContent').html(response);
                     // $("body").removeAttr("style");
                     // $(".modal-backdrop").remove();
-                    window.location.reload();
+                    //$('#exampleModal1').modal('hide');
+                    $("#exampleModal1 .btn-close").click()
+                    $('#status-pending').html($(response).find('#status-pending').html());
+                    $('#status-new').html($(response).find('#status-new').html());
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

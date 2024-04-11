@@ -26,7 +26,7 @@
                         <button class="btn btn-outline-info shadow-none editProfessionBtn" value="@item.Vendorid">
                             Edit
                         </button>
-                        <button class="btn btn-outline-info shadow-none">
+                        <button class="btn btn-outline-info shadow-none deleteProfessionBtn" value="@item.Vendorid">
                             Delete
                         </button>
                     </td>
@@ -35,4 +35,30 @@
         </tbody>
     </table>
 </div>
-<script src="~/js/Partners.js"></script>
+<script>
+    $('.editProfessionBtn').click(function(){
+        $.ajax({
+            url : '/Admin/EditProfession',
+            data: {"professionId" : $(this).val()},
+            success: function (response) {
+                $('#main-content').html(response)
+            },
+            error: function (xhr, status, error) {
+                alert("Error in _PartnerTable page");
+            }
+        })
+    })
+
+    $('.deleteProfessionBtn').click(function () {
+        $.ajax({
+            url: '/Admin/DeleteProfession',
+            data: { "professionId": $(this).val() },
+            success: function (response) {
+                $('#dataTable').html(response)
+            },
+            error: function (xhr, status, error) {
+                alert("Error in _PartnerTable page");
+            }
+        })
+    })
+</script>

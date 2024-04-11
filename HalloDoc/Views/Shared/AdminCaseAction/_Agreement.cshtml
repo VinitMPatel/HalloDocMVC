@@ -51,12 +51,12 @@
 <script>
     $(document).ready(function () {
         $('.confirm').on('click', function (e) {
-            console.log("Calling");
             $.ajax({
                 url: '/Admin/SendAgreement',
                 data: { "requestId": @Model.requestId },
                 success: function (response) {
                     console.log(response);
+                    toastr.success("Email sent successfully");
                 },
                 error: function (xhr, status, error) {
                     console.log(error);

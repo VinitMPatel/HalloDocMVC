@@ -627,17 +627,22 @@ namespace Services.Implementation
             return roleAccess;
         }
 
-        public async Task<PartnerViewModel> PartnerData(int professionType)
+        public async Task<PartnerViewModel> PartnerData(int professionType , string searchKey)
         {
             PartnerViewModel obj = new PartnerViewModel();
             if(professionType == 0)
             {
-                obj.professionList = await _context.Healthprofessionals.Include(a=>a.ProfessionNavigation).ToListAsync();
+                obj.professionList = await _context.Healthprofessionals.Include(a=>a.ProfessionNavigation).Where(a=>a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
             }
             else
             {
-                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a=>a.ProfessionNavigation.Healthprofessionalid == professionType).ToListAsync();
+                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a=>a.ProfessionNavigation.Healthprofessionalid == professionType && a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
 
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchKey))
+            {
+                obj.professionList = obj.professionList.Where(a => a.Vendorname.ToLower().Contains(searchKey.ToLower())).ToList();
             }
             return obj;
         }
@@ -646,6 +651,108 @@ namespace Services.Implementation
         {
             PartnerViewModel obj = new PartnerViewModel();
             obj.professionTypeList  = await _context.Healthprofessionaltypes.ToListAsync();
+            return obj;
+        }
+
+        public async Task<BusinessData> GetProfessionsTypes()
+        {
+            BusinessData obj = new BusinessData();
+            obj.professionTypeList = await _context.Healthprofessionaltypes.ToListAsync();
+            return obj;
+        }
+
+        public async Task AddNewBusiness(BusinessData obj)
+        {
+            if (obj != null)
+            {
+                Healthprofessional healthprofessional = new Healthprofessional
+                {
+                    Vendorname = obj.businessName,
+                    Profession = obj.professionType,
+                    Faxnumber = obj.faxNumber,
+                    Address = obj.street + ", " + obj.city,
+                    City = obj.city,
+                    State = obj.state,
+                    Zip = obj.zip,
+                    Createddate = DateTime.Now,
+                    Modifieddate = DateTime.Now,
+                    Phonenumber = obj.phoneNumber,
+                    Email = obj.email,
+                    Businesscontact = obj.businessContact,
+                    Isdeleted = new BitArray(new[] { false })
+            };
+                await _context.AddAsync(healthprofessional);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<BusinessData> ExistingBusinessData(int professionId)
+        {
+            Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a=> a.Vendorid == professionId);
+            BusinessData businessData = new BusinessData();
+            if(healthprofessional != null)
+            {
+                businessData.businessName = healthprofessional.Vendorname;
+                businessData.professionType = (int)healthprofessional.Profession!;
+                businessData.faxNumber = healthprofessional.Faxnumber;
+                businessData.phoneNumber = healthprofessional.Phonenumber!;
+                businessData.email = healthprofessional.Email!;
+                businessData.businessContact = healthprofessional.Businesscontact!;
+                businessData.city = healthprofessional.City!;
+                businessData.state = healthprofessional.State!;
+                businessData.zip = healthprofessional.Zip!;
+                businessData.street = healthprofessional.Address!.Split(',')[0];
+                businessData.professionTypeList = await _context.Healthprofessionaltypes.ToListAsync();
+                businessData.vendorId = healthprofessional.Vendorid;
+            }
+            return businessData;
+        }
+
+
+        public async Task DeleteBusiness(int profesionId)
+        {
+            Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a => a.Vendorid == profesionId);
+            if(healthprofessional != null)
+            {
+                healthprofessional.Isdeleted = new BitArray(new[] {true });
+                _context.Update(healthprofessional);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UpdateBusiness(BusinessData obj)
+        {
+            Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a => a.Vendorid == obj.vendorId);
+            if (healthprofessional != null)
+            {
+                healthprofessional.Vendorname = obj.businessName;
+                healthprofessional.Profession = obj.professionType;
+                healthprofessional.Faxnumber = obj.faxNumber;
+                healthprofessional.Phonenumber = obj.phoneNumber;
+                healthprofessional.Email = obj.email;
+                healthprofessional.Businesscontact = obj.businessContact;
+                healthprofessional.City = obj.city;
+                healthprofessional.State = obj.state;
+                healthprofessional.Zip = obj.zip;
+                healthprofessional.Address = obj.street + ", " +obj.city;
+                healthprofessional.Modifieddate = DateTime.Now;
+                _context.Update(healthprofessional);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+        public async Task<RecordsViewModel> SearchRecordsService()
+        {
+            RecordsViewModel obj = new RecordsViewModel();
+            obj.requestTypeList = await _context.Requesttypes.ToListAsync();
+            return obj;
+        }
+
+        public async Task<SearchRecordsData> GetSearchRecordData()
+        {
+            SearchRecordsData obj = new SearchRecordsData();
+            obj.requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a=>a.Request.Requesttype).ToListAsync();
             return obj;
         }
     }

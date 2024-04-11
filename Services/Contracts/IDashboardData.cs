@@ -50,6 +50,13 @@ namespace Services.Contracts
         Task<List<Healthprofessional>> GetBusinesses(int professionId);
         Task<Healthprofessional> GetBusinessesDetails(int businessid);
         Task<PartnerViewModel> Partners();
-        Task<PartnerViewModel> PartnerData(int professionType);
+        Task<PartnerViewModel> PartnerData(int professionType , string searchKey);
+        Task<BusinessData> GetProfessionsTypes();
+        Task AddNewBusiness(BusinessData obj);
+        Task<BusinessData> ExistingBusinessData(int professionId);
+        Task DeleteBusiness(int profesionId);
+        Task UpdateBusiness(BusinessData obj);
+        Task<RecordsViewModel> SearchRecordsService();
+        Task<SearchRecordsData> GetSearchRecordData();
     }
 }

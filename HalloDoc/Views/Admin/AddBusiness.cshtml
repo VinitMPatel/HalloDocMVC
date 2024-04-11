@@ -1,0 +1,111 @@
+﻿@model Services.ViewModels.BusinessData
+@{
+    Layout = "_Admin";
+}
+<div class="container">
+
+    <div class="d-flex justify-content-between mt-4">
+        <div class="h4">
+            Add Business
+        </div>
+        <a class="btn btn-outline-info shadow-none" asp-action="Partners">
+            &lt; Back
+        </a>
+    </div>
+
+    <div class="shadow p-3 my-3">
+
+        <div class="mt-2 h5">Submit Information</div>
+
+        <form class="row" asp-action="AddNewBusiness">
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="businessName">
+                    <label class="FloatingInput">Business Name</label>
+                </div>
+                <span asp-validation-for="businessName" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 col-sm-6 p-2">
+                <div class="form-floating">
+                    <select class="form-select p-2" aria-label="Floating label select example" asp-for="professionType">
+                        <option value="" selected disabled>Select Profession</option>
+                        @foreach (var obj in Model.professionTypeList)
+                        {
+                            <option value="@obj.Healthprofessionalid">@obj.Professionname</option>
+                        }
+                    </select>
+                </div>
+                <span asp-validation-for="professionType" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="faxNumber">
+                    <label class="FloatingInput">Fax Number</label>
+                </div>
+                <span asp-validation-for="faxNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating p-2 col-xl-6 col-sm-6 col-12" required>
+                <input id="phone" asp-for="phoneNumber" class="form-control" type="text" maxlength="10" />
+                <span asp-validation-for="phoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="email">
+                    <label class="FloatingInput">Email</label>
+                </div>
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="businessContact">
+                    <label class="FloatingInput">Business Contact</label>
+                </div>
+                <span asp-validation-for="businessContact" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="street">
+                    <label class="FloatingInput">Street</label>
+                </div>
+                <span asp-validation-for="street" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="city">
+                    <label class="FloatingInput">City</label>
+                </div>
+                <span asp-validation-for="city" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="state">
+                    <label class="FloatingInput">State</label>
+                </div>
+                <span asp-validation-for="state" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="User Name" asp-for="zip">
+                    <label class="FloatingInput">Zip Code</label>
+                </div>
+                <span asp-validation-for="zip" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3">
+                <button class="btn btn-info text-white shadow-none saveData" type="submit">Save</button>
+                <button class="btn btn-outline-info shadow-none cancelData" type="reset">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/js/Partners.js" asp-append-version="true"></script>

@@ -147,30 +147,60 @@
                     </div>
 
                     <div class="accordion-body d-flex flex-column gap-1">
-                        <div><i class="bi bi-calendar2-minus me-2 icn"></i>Date of birth: @item.Strmonth @item.Intdate, @item.Intyear</div>
-                        <div><i class="bi bi-envelope me-2 icn"></i>Email: @item.Request.Email</div>
-                        <div><i class="bi bi-telephone me-2 icn"></i>Patient: @item.Request.Phonenumber</div>
-                        <div><i class="bi bi-person me-2 icn"></i>Requestor: @item.Request.Firstname, @item.Request.Lastname</div>
+                        <div><i class="bi bi-calendar2-minus me-2 icn"></i><span class="text-secondary">Date Of Birth : </span> @item.Strmonth @item.Intdate, @item.Intyear</div>
+                        <div><i class="bi bi-envelope me-2 icn"></i><span class="text-secondary">Email : </span> @item.Request.Email</div>
+                        <div><i class="bi bi-telephone me-2 icn"></i><span class="text-secondary">Patient : </span> @item.Request.Phonenumber</div>
+                        <div>
+                            <i class="bi bi-person me-2 icn"></i><span class="text-secondary">Transfer Note : </span>
+                            @if (item.Request.Physician != null)
+                            {
+                                <span> Admin transfered to Dr. @item.Request.Physician.Firstname on @item.Request.Modifieddate </span>
+                            }
+                            else
+                            {
+                                <span> - </span>
+                            }
+                        </div>
+                        <div><i class="bi bi-calendar2-minus me-2 icn"></i><span class="text-secondary">Date Of Service : </span> @item.Strmonth @item.Intdate, @item.Intyear</div>
+                        <div>
+                            <i class="bi bi-person me-2 icn"></i><span class="text-secondary">Physician : </span>
+                            @if (item.Request.Physician != null)
+                            {
+                                <span> Dr. @item.Request.Physician.Firstname </span>
+                            }
+                            else
+                            {
+                                <span> - </span>
+                            }
+                        </div>
+                        <div><i class="bi bi-globe-central-south-asia icn me-2"></i><span class="text-secondary">Region : </span> @item.Request.User.Region.Name</div>
                     </div>
 
                     <div class="row mx-3">
-                        <div class="col-6" onclick="AssignCase(@item.Request.Requestid)">
-                            <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+                        <div class="col-6" onclick="CloseCase(@item.Request.Requestid)">
+                            <a class="btn w-100  text-white rounded-pill p-1 btn-sm bg-danger">Close Case</a>
                         </div>
-                        <div class="col-6" onclick="CancelCase(@item.Request.Requestid)">
-                            <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
-                        </div>
-                        <div class="col-6 mt-2">
+                        <div class="col-6" onclick="ViewNotes(@item.Request.Requestid)">
                             <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
                         </div>
-                        <div class="col-6 mt-2" onclick="BlockCase(@item.Request.Requestid)">
-                            <a class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
+                        <div class="col-6 mt-2">
+                            <a class="btn w-100 text-white rounded-pill p-1 btn-sm" style="background-color : #025c21">Doctors Notes</a>
+                        </div>
+                        <div class="col-6 mt-2 viewUpload" onclick="ViewUploads(@item.Request.Requestid)">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                        </div>
+                        <div class="col-6 mt-2">
+                            <a class="btn w-100 bg-warning text-white rounded-pill p-1 btn-sm">Clear Case</a>
                         </div>
                         <div class="col-6 mt-2">
                             <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                         </div>
                     </div>
                 </div>
+                <hr class="my-1" />
             }
         </div>
     </div>

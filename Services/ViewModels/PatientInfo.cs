@@ -27,7 +27,7 @@ namespace Services.ViewModels {
         public String ConfirmPassword { get; set; }
 
         [RegularExpression(@"^[1-9][0-9]{9}$", ErrorMessage = "Enter a valid 10-digit mobile number")]
-        [Required(ErrorMessage = "Plese enter your Phone Number")]
+        [Required(ErrorMessage = "Please enter your Phone Number")]
         public String PhoneNumber { get; set; }
 
         [Required]

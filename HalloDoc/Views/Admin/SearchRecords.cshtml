@@ -1,0 +1,114 @@
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.RecordsViewModel
+@using Common.Enum
+<div class="container-fluid mt-5">
+
+    <div class="d-flex justify-content-between mx-3">
+        <div class="h4">
+            Search Records
+        </div>
+        <button class="btn btn-info d-flex flex-row gap-2">
+            <i class="bi bi-box-arrow-up-right"></i>
+            <span class="d-none d-sm-block">Export Data To Excel</span>
+        </button>
+    </div>
+
+    <div class="shadow mt-3">
+
+        <div class="row m-4">
+
+            <div class="col-12 col-sm-6 col-md-3 p-2">
+                <div class="form-floating">
+                    <select class="form-select p-2" aria-label="Floating label select example">
+                        <option value="" selected disabled>Select Request Status</option>
+                        @foreach (var item in Enum.GetValues(typeof(RequestStatus)))
+                        {
+                            <option value="@((int)item)">@item.ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-md-3 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Patient Name">
+                    <label class="FloatingInput">Patient Name</label>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3 p-2">
+                <div class="form-floating">
+                    <select class="form-select p-2" aria-label="Floating label select example">
+                        <option value="0" selected disabled>Select Request Type</option>
+                        @foreach (var obj in Model.requestTypeList)
+                        {
+                        <option value="@obj.Requesttypeid">@obj.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="p-2 col-md-3 col-sm-6 col-12">
+                <div class="form-floating">
+                    <input type="date" class="form-control" placeholder="From Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    <label class="FloatingInput">From Date of Service</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-md-3 col-sm-6 col-12">
+                <div class="form-floating">
+                    <input type="date" class="form-control"  placeholder="To Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    <label class="FloatingInput">To Date of Service</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-md-3 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Provider Name">
+                    <label class="FloatingInput">Provider Name</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-md-3 col-12">
+                <div class="form-floating ">
+                    <input type="email" class="form-control" placeholder="nav@example.com">
+                    <label class="FloatingInput">Email</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 col-md-3 ">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Phone Number">
+                    <label class="FloatingInput">Phone Number</label>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-end gap-3 mt-2">
+                <button class="btn btn-outline-info shadow-none">Clear</button>
+                <button class="btn btn-info shadow-none text-white">Search</button>
+            </div>
+        </div>
+
+
+        <div id="dataTable">
+
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            url : '/Admin/SearchRecordTable',
+            success : function(response){
+                $('#dataTable').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+    })
+</script>

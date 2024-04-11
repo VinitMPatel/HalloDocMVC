@@ -1,0 +1,49 @@
+﻿@model Services.ViewModels.SearchRecordsData
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-secondary">
+            <tr class="p-2 fw-bold">
+                <td>Patient Name</td>
+                <td>Requestor</td>
+                <td>Date of Service</td>
+                <td>Close Case Date</td>
+                <td>Email</td>
+                <td>Phone Number</td>
+                <td>Address</td>
+                <td>Zip</td>
+                <td>Request Status</td>
+                <td>Physician</td>
+                <td>Physician Note</td>
+                <td>Cancelled By Provider Note</td>
+                <td>Admin Note</td>
+                <td>Patient Note</td>
+                <td>Delete Permanenatly</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.requestclients)
+            {
+
+                <tr>
+                    <td>@item.Firstname, @item.Lastname</td>
+                    <td>@item.Request.Requesttype.Name</td>
+                    <td>Date Of Service</td>
+                    <td>@item.Request.Requeststatuslogs.FirstOrDefault(a=> a.Status == 6)?.Createddate.ToString("MMM dd yyyy")</td>
+                    <td>@item.Email</td>
+                    <td>@item.Phonenumber</td>
+                    <td>@item.Street, @item.City, @item.State</td>
+                    <td>@item.Zipcode</td>
+                    <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Requesttypeid.ToString())</td>
+                    <td>@item.Request.Physician?.Firstname</td>
+                    <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Physiciannotes</td>
+                    <td>Cancel Notes</td>
+                    <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Adminnotes</td>
+                    <td>@item.Notes</td>
+                    <td class="text-center">
+                        <a class="btn btn-outline-info">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

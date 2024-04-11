@@ -13,6 +13,8 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet" href="~/css/AdminDashboard.css" asp-append-version="true" />
 </head>
 <body >
@@ -126,7 +128,7 @@
                     </ul>
                 }
                
-                @if (Context.Request.Path.Equals("/Admin/Partners"))
+                @if (Context.Request.Path.Equals("/Admin/Partners") || Context.Request.Path.Equals("/Admin/AddBusiness"))
                 {
                     <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Partners</a>
                 }
@@ -142,7 +144,28 @@
                 {
                     <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Access</a>
                 }
-                <a class="text-decoration-none pe-2" style="color:black;">Records</a>
+                @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockedHistory"))
+                {
+                    <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Records</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                        <li><a asp-action="SearchRecords" class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
+                        <li><a asp-action="EmailLogs" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
+                        <li><a asp-action="SMSLogs" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
+                        <li><a asp-action="PatientRecords" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
+                        <li><a asp-action="BlockedHistory" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
+                    </ul>
+                }
+                else
+                {
+                    <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Records</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
+                        <li><a asp-action="SearchRecords" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
+                        <li><a asp-action="EmailLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
+                        <li><a asp-action="SMSLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
+                        <li><a asp-action="PatientRecords" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
+                        <li><a asp-action="BlockedHistory" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
+                    </ul>
+                }
             </div>
         </div>
 
@@ -157,6 +180,7 @@
             <a href="#" class="text-decoration-none text-white mx-1">Privacy Policy</a>
         </div> *@
 </body>
+
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <script src="~/js/darkmode.js"></script>
     <script src="~/lib/jquery/jquery.min.js"></script>

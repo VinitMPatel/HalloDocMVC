@@ -407,10 +407,41 @@ namespace HalloDoc.Controllers
             return View(obj);
         }
 
-        public async Task<IActionResult> GetPartnerData(int professionType)
+        public async Task<IActionResult> GetPartnerData(int professionType , string searchKey)
         {
-            PartnerViewModel obj = await dashboardData.PartnerData(professionType);
+            PartnerViewModel obj = await dashboardData.PartnerData(professionType , searchKey);
             return PartialView("AdminCaseAction/_PartnerTable", obj);
+        }
+
+        public async Task<IActionResult> AddBusiness()
+        {
+            BusinessData obj = await dashboardData.GetProfessionsTypes();
+            return View(obj);
+        }
+
+        public async Task<IActionResult> AddNewBusiness(BusinessData obj)
+        {
+            await dashboardData.AddNewBusiness(obj);
+            return RedirectToAction("Partners");
+        }
+
+        public async Task<IActionResult> EditProfession(int professionId)
+        {
+            BusinessData obj = await dashboardData.ExistingBusinessData(professionId);
+            return PartialView("AdminCaseAction/_EditProfession", obj);
+        }
+
+        public async Task<IActionResult> DeleteProfession(int professionId)
+        {
+            await dashboardData.DeleteBusiness(professionId);
+            return RedirectToAction("GetPartnerData");
+        }
+
+        public async Task<IActionResult> UpdateBusiness(BusinessData obj)
+        {
+            await dashboardData.UpdateBusiness(obj);
+            TempData["success"] = "Updated successfully";
+            return RedirectToAction("Partners");
         }
 
         [HttpPost]
@@ -491,5 +522,18 @@ namespace HalloDoc.Controllers
             mailMessage.To.Add(email);
             client.SendMailAsync(mailMessage);
         }
+
+        public async Task<IActionResult> SearchRecords()
+        {
+            RecordsViewModel obj = await dashboardData.SearchRecordsService();
+            return View(obj);
+        }
+
+        public async Task<IActionResult> SearchRecordTable()
+        {
+            SearchRecordsData obj = await dashboardData.GetSearchRecordData();
+            return PartialView("AdminCaseAction/_SearchRecordTable",obj);
+        }
+
     }
 }
