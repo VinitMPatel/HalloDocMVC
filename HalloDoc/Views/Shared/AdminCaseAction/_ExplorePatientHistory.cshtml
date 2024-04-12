@@ -1,0 +1,86 @@
+﻿@model Services.ViewModels.ExplorePatientHistory
+@using Common.Enum
+<div class="container-fluid mt-3" id="main-content">
+
+    <div class="d-flex justify-content-between">
+        <div class="h4">Patient Record</div>
+        <a class="btn btn-outline-info" asp-action="PatientRecords">&lt; Back</a>
+    </div>
+
+    <div class="table-responsive mt-3">
+        <table class="table">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Client/Member</th>
+                    <th>Created Date</th>
+                    <th>Confirmation Number</th>
+                    <th>Provider Name</th>
+                    <th>Concluded date</th>
+                    <th>Status</th>
+                    <th>Final report</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.reqcList.Count() > 0)
+                {
+                    @foreach (var item in Model.reqcList)
+                    {
+                        <tr>
+                            <td>@item.Firstname</td>
+                            <td>@item.Request.Createddate</td>
+                            <td>@item.Request.Confirmationnumber</td>
+                            @if(item.Request.Physician != null)
+                            {
+                                <td>@item.Request.Physician.Firstname</td>
+                            }
+                            else
+                            {
+                                <td> - </td>   
+                            }
+                            <td>Date</td>
+                            <td> @Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Status.ToString()) </td>
+                            <td>
+                                <button class="btn btn-outline-info shadow-none exploreBtn">View</button>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-info shadow-none" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                        Action
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li style="cursor : pointer" class="viewCase" id="@item.Request.Requestid"><a class="dropdown-item">View Case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item">Assign Case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item">Documents</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <th colspan="6" class="text-center text-danger h4">No Records Found</th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $('.viewCase').on('click', function (e) {
+        e.preventDefault();
+        var requestId = $(this).attr('id');
+        $.ajax({
+            url: '/Admin/ViewCase',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#main-content').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+</script>

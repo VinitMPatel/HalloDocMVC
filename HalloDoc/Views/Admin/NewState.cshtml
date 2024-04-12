@@ -43,7 +43,7 @@
                     color = "rgb(0,172,230)";
                     type = "Business";
                 }
-                <tr style="--bs-table-bg : @color">
+                <tr style="--bs-table-bg : @color; border-bottom : 2px solid grey">
                     <td class="text-white">@obj.Firstname @obj.Lastname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
@@ -85,6 +85,7 @@
                         </div>
                     </td>
                 </tr>
+
             }
         </tbody>
     </table>
@@ -141,7 +142,7 @@
                     <hr class="m-0">
                 </h2>
 
-                <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black">
+                <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse p-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black; border-bottom : 2px solid black;">
                     <div class="d-flex justify-content-end">
                         <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid" style="cursor : pointer">
                             View Case
@@ -173,10 +174,11 @@
                         </div>
                     </div>
                 </div>
-                <hr class="my-1"/>
+                @*        <hr class="my-1" /> *@
             }
         </div>
     </div>
+
     <div class="d-flex justify-content-center gap-2 mb-3 filter-label">
         @if (Model.totalPages > 0)
         {
@@ -190,9 +192,12 @@
             {
                 next = Model.totalPages;
             }
-            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
-                Previous
-            </button>
+            if (Model.currentpage != 1)
+            {
+                <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                    Previous
+                </button>
+            }
             @if (Model.totalPages > 5)
             {
                 @if (Model.currentpage > Model.totalPages - 3)
@@ -258,15 +263,21 @@
                     </button>
                 }
             }
-            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
-                Next
-            </button>
+            if (Model.currentpage != Model.totalPages)
+            {
+                <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                    Next
+                </button>
+
+            }
         }
         else
         {
             <div class="h3 text-danger">No Record found</div>
         }
     </div>
+
+
 
 </div>
 <div id="caseView">
@@ -286,21 +297,25 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <script>
+
     function ChangePage(Page) {
         param.requestedPage = Page;
         CommonAjax();
     }
+
+
 
     function CommonAjax() {
         console.log("status is : " + param.requestStatus);
         console.log("requesttype is : " + param.requestType);
         console.log("page is : " + param.requestedPage);
         console.log("Search is : " + param.searchKey);
+        console.log("Entity is : " + param.totalEntity);
         $.ajax({
             url: '/Admin/AllState',
             data: param,
             success: function (response) {
-             
+
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -319,11 +334,6 @@
                 $("#caseView").html(data);
                 const myModal = new bootstrap.Modal("#exampleModal1", {});
                 myModal.show();
-
-
-               
-
-
             },
             error: function () {
                 alert("No Projects Found");

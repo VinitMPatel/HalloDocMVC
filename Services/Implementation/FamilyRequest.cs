@@ -126,7 +126,7 @@ namespace Services.Implementation
                 request2.Modifieddate = DateTime.Now;
                 request2.Relationname = r.Relation;
                 request2.Confirmationnumber = region.Substring(0, 2) + DateTime.Now.Day.ToString().PadLeft(2, '0') + DateTime.Now.Month.ToString().PadLeft(2, '0') +
-                                            DateTime.Now.Year.ToString().Substring(2) + r.LastName.ToUpper().Substring(0, 2) + r.FirstName.ToUpper().Substring(0, 2) +
+                                            DateTime.Now.Year.ToString().Substring(2) + r.PatientLastName.ToUpper().Substring(0, 2) + r.PatientFirstName.ToUpper().Substring(0, 2) +
                                             (requestcount.Count() + 1).ToString().PadLeft(4, '0');
 
                 _context.Requests.Add(request2);

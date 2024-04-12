@@ -47,8 +47,6 @@
                 <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
             </div>
 
-
-
         </div>
     </div>
 </div>
@@ -144,13 +142,13 @@
                 <span class="dash-btn ms-2">Create Requests</span>
             </a>
 
-            <button class="text-decoration-none btn btn-info text-white dash-button p-2 shadow-none" type="submit" id="exportBtn">
+            <button class="text-decoration-none btn btn-info text-white dash-button p-2 shadow-none" type="button" id="exportBtn">
                 <i class="bi bi-arrow-up-short dash-button"></i>
                 <span class="dash-btn ms-2">Export</span>
             </button>
 
 
-            <a class="text-decoration-none btn btn-info text-white mt-sm-0 dash-button p-2" type="button">
+            <a class="text-decoration-none btn btn-info text-white mt-sm-0 dash-button p-2" type="button" id="exportAllBtn">
                 <i class="bi bi-arrow-bar-up dash-button"></i>
                 <span class="dash-btn ms-2">Export All</span>
             </a>
@@ -228,7 +226,18 @@
             </div>
             @* <partial name="_AssignCase" /> *@
         </div>
+
+        <div class="d-flex justify-content-end m-3">
+            Select entity :
+            <select id="selectedEntity" class="mx-2">
+                <option value="3" selected>3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+
     </div>
+
 </div>
 
 <style>
@@ -256,7 +265,8 @@
         requestType: 0,
         requestStatus: 1,
         searchKey: null,
-        regionId: 0
+        regionId: 0,
+        totalEntity: 3
     }
 
     console.log(param)
@@ -283,6 +293,11 @@
         CommonAjax();
     }
 
+    $('#selectedEntity').on('change', function () {
+        param.totalEntity = $(this).val();
+        param.requestedPage = 1;
+        CommonAjax();
+    })
 
     $('#sendLinkSubmitBtn').on('click', function () {
         if ($('#firstName').val() == "") {
@@ -313,15 +328,15 @@
             $('#emailError').html("*Please Enter email")
             $('#email').css('border', '1px solid red');
         }
-        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == ""){
+        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == "") {
             $.ajax({
-                url : '/Admin/SendMailForRequest',
+                url: '/Admin/SendMailForRequest',
                 data: { "firstName": $('#firstName').val(), "email": $('#email').val() }
             })
         }
     })
 
-    $('.sendLinkBtn').click(function(){
+    $('.sendLinkBtn').click(function () {
         $('#firstName').val("")
         $('#lastName').val("")
         $('#contactNumber').val("")
@@ -336,7 +351,7 @@
         $('#email').css('border', '1px groove black');
     })
 
-    $('#firstName').on('focus',function(){
+    $('#firstName').on('focus', function () {
         $('#firstNameError').html("")
         $('#firstName').css('border', '1px groove black');
     })
@@ -373,7 +388,6 @@
 
 
         $('#exportBtn').on('click', function () {
-            console.log(param)
             var link = document.createElement('a');
             link.href = '/Admin/ExportData?requeststatus=' + param.requestStatus + "&requestType=" + param.requestType + "&searchKey=" + param.searchKey;
             //link.href = '/Admin/ExportData?obj=' + param;
@@ -382,6 +396,17 @@
             link.click();
             document.body.removeChild(link);
         });
+
+        $('#exportAllBtn').on('click', function () {
+            var link = document.createElement('a');
+            link.href = '/Admin/ExportAllData';
+            //link.href = '/Admin/ExportData?obj=' + param;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        })
+        
 
         $('.dashboardtab').on('click', function (e) {
             e.preventDefault();
@@ -417,10 +442,12 @@
                     param.requestStatus = 12;
                     $('#status').html("(New)");
             }
+            //param.totalEntity = 3;
             param.requestType = 0;
             param.regionId = 0;
             $('#search').val("");
             $("#selectedRegion").val('0').change();
+            //$("#selectedEntity").val('3').change();
             param.searchKey = "";
             $('.filter').css('border', 'none');
             document.getElementById(0).style.border = "1px solid black";

@@ -36,12 +36,12 @@
                 }
                 else if (obj.Request.Requesttypeid == 4)
                 {
-                    color = "rgb(230, 0 , 115)";
+                    color = "rgb(0,172,230)";
                     type = "Business";
                 }
                 else if (obj.Request.Requesttypeid == 3)
                 {
-                    color = "rgb(0,172,230)";
+                    color = "#e36478;";
                     type = "Concierge";
                 }
                 <tr style="--bs-table-bg : @color">
@@ -111,7 +111,7 @@
                 }
                 else if (item.Request.Requesttypeid == 4)
                 {
-                    color = "rgb(230, 0 , 115)";
+                    color = "rgb(0,172,230)";
                     type = "Business";
                 }
                 else if (item.Request.Requesttypeid == 3)
@@ -180,7 +180,7 @@
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-center gap-2">
+<div class="d-flex justify-content-center gap-2 mb-3 filter-label">
     @if (Model.totalPages > 0)
     {
         var previous = Model.currentpage - 1;
@@ -193,44 +193,47 @@
         {
             next = Model.totalPages;
         }
-        <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
-            Previous
-        </button>
+        if (Model.currentpage != 1)
+        {
+            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                Previous
+            </button>
+        }
         @if (Model.totalPages > 5)
         {
             @if (Model.currentpage > Model.totalPages - 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
                 @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
             }
             else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
                 @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -238,14 +241,14 @@
             {
                 @for (var i = 1; i <= 4; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -256,14 +259,18 @@
             {
                 var temp = page + 1;
 
-                <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)">
+                <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
                     @temp
                 </button>
             }
         }
-        <button class="@next" id="page-@next" onclick="ChangePage(@next)">
-            Next
-        </button>
+        if (Model.currentpage != Model.totalPages)
+        {
+            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                Next
+            </button>
+
+        }
     }
     else
     {
@@ -311,25 +318,26 @@
     $(document).ready(function () {
         var temp = document.getElementById('page-' + @Model.currentpage);
         if (temp != null) {
-            temp.style.backgroundColor = "lightblue";
+            temp.style.backgroundColor = "#5dafb2";
+            temp.style.color = "white"
         }
     });
-            // $(document).ready(function () {
-            //     $('.orders').on('click', function (e) {
-            //         e.preventDefault();
-            //         var requestId = $(this).attr('id');
-            //         console.log(requestId);
-            //         $.ajax({
-            //             url: '/Admin/Orders',
-            //             data: { "requestId": requestId },
-            //             success: function (response) {
-            //                 $('#viewCaseContent').html(response);
-            //             },
-            //             error: function (xhr, status, error) {
-            //                 console.error(error);
-            //             }
-            //         });
-            //     });
+                // $(document).ready(function () {
+                //     $('.orders').on('click', function (e) {
+                //         e.preventDefault();
+                //         var requestId = $(this).attr('id');
+                //         console.log(requestId);
+                //         $.ajax({
+                //             url: '/Admin/Orders',
+                //             data: { "requestId": requestId },
+                //             success: function (response) {
+                //                 $('#viewCaseContent').html(response);
+                //             },
+                //             error: function (xhr, status, error) {
+                //                 console.error(error);
+                //             }
+                //         });
+                //     });
 
-            // });
+                // });
 </script>

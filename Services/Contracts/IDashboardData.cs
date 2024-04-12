@@ -38,25 +38,42 @@ namespace Services.Contracts
 
         Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
        
-       
         Task UpdateProfile(EditProviderViewModel obj);
 
         Task UpdateBillingInfo(EditProviderViewModel obj);
+
         RoleAccess CreateAccessRole(int roleid);
+
         Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
+
         RoleAccess AddedRoles();
+
         RoleAccess EditRole(int roleId);
+
         Task<List<Healthprofessionaltype>> GetProfessions();
+
         Task<List<Healthprofessional>> GetBusinesses(int professionId);
+
         Task<Healthprofessional> GetBusinessesDetails(int businessid);
+
         Task<PartnerViewModel> Partners();
+
         Task<PartnerViewModel> PartnerData(int professionType , string searchKey);
+
         Task<BusinessData> GetProfessionsTypes();
+
         Task AddNewBusiness(BusinessData obj);
+
         Task<BusinessData> ExistingBusinessData(int professionId);
+
         Task DeleteBusiness(int profesionId);
+
         Task UpdateBusiness(BusinessData obj);
+
         Task<RecordsViewModel> SearchRecordsService();
-        Task<SearchRecordsData> GetSearchRecordData();
+
+        Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj);
+        Task<PatientHistory> GetPatientHistoryData(PatientHistory obj);
+        Task<ExplorePatientHistory> ExplorePatientHistory(int userId);
     }
 }

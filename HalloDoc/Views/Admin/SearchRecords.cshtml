@@ -15,96 +15,115 @@
         </button>
     </div>
 
-    <div class="shadow mt-3">
+    <div class="shadow mt-3 pb-4">
 
-        <div class="row m-4">
+        <form>
+            <div class="row m-4">
 
-            <div class="col-12 col-sm-6 col-md-3 p-2">
-                <div class="form-floating">
-                    <select class="form-select p-2" aria-label="Floating label select example">
-                        <option value="" selected disabled>Select Request Status</option>
-                        @foreach (var item in Enum.GetValues(typeof(RequestStatus)))
-                        {
-                            <option value="@((int)item)">@item.ToString()</option>
-                        }
+                <div class="col-12 col-sm-6 col-md-3 p-2">
+                    <div class="form-floating">
+                        <select class="form-select p-2" aria-label="Floating label select example" id="selectedStatus">
+                            <option value="" selected disabled>Select Request Status</option>
+                            <option value="0">All</option>
+                            @foreach (var item in Enum.GetValues(typeof(RequestStatus)))
+                            {
+                                <option value="@((int)item)">@item.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Patient Name" id="searchedPatient">
+                        <label class="FloatingInput">Patient Name</label>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-3 p-2">
+                    <div class="form-floating">
+                        <select class="form-select p-2" aria-label="Floating label select example" id="selectedType">
+                            <option value="0" selected disabled>Select Request Type</option>
+                            <option value="0">All</option>
+                            @foreach (var obj in Model.requestTypeList)
+                            {
+                                <option value="@obj.Requesttypeid">@obj.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 col-md-3 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" placeholder="From Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <label class="FloatingInput">From Date of Service</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-md-3 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" placeholder="To Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <label class="FloatingInput">To Date of Service</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Provider Name" id="searchedProvider">
+                        <label class="FloatingInput">Provider Name</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control" placeholder="nav@example.com" id="searchedEmail">
+                        <label class="FloatingInput">Email</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 col-md-3 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Phone Number" id="searchedPhone">
+                        <label class="FloatingInput">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end p-0 my-3">
+                    Select entity :
+                    <select id="selectedEntity" class="mx-2">
+                        <option value="3" selected>3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
                     </select>
                 </div>
-            </div>
 
-            <div class="p-2 col-sm-6 col-md-3 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control" placeholder="Patient Name">
-                    <label class="FloatingInput">Patient Name</label>
+                <div class="d-flex justify-content-end gap-3 mt-2">
+                    <button class="btn btn-outline-info shadow-none" type="reset" id="clearBtn">Clear</button>
+                    <button class="btn btn-info shadow-none text-white" id="searchBtn" type="button">Search</button>
                 </div>
+
+
             </div>
-
-            <div class="col-12 col-sm-6 col-md-3 p-2">
-                <div class="form-floating">
-                    <select class="form-select p-2" aria-label="Floating label select example">
-                        <option value="0" selected disabled>Select Request Type</option>
-                        @foreach (var obj in Model.requestTypeList)
-                        {
-                        <option value="@obj.Requesttypeid">@obj.Name</option>
-                        }
-                    </select>
-                </div>
-            </div>
-
-            <div class="p-2 col-md-3 col-sm-6 col-12">
-                <div class="form-floating">
-                    <input type="date" class="form-control" placeholder="From Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
-                    <label class="FloatingInput">From Date of Service</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-md-3 col-sm-6 col-12">
-                <div class="form-floating">
-                    <input type="date" class="form-control"  placeholder="To Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
-                    <label class="FloatingInput">To Date of Service</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-md-3 col-12">
-                <div class="form-floating ">
-                    <input type="text" class="form-control" placeholder="Provider Name">
-                    <label class="FloatingInput">Provider Name</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-md-3 col-12">
-                <div class="form-floating ">
-                    <input type="email" class="form-control" placeholder="nav@example.com">
-                    <label class="FloatingInput">Email</label>
-                </div>
-            </div>
-
-            <div class="p-2 col-sm-6 col-12 col-md-3 ">
-                <div class="form-floating ">
-                    <input type="text" class="form-control" placeholder="Phone Number">
-                    <label class="FloatingInput">Phone Number</label>
-                </div>
-            </div>
-
-
-            <div class="d-flex justify-content-end gap-3 mt-2">
-                <button class="btn btn-outline-info shadow-none">Clear</button>
-                <button class="btn btn-info shadow-none text-white">Search</button>
-            </div>
-        </div>
-
+        </form>
 
         <div id="dataTable">
-
         </div>
+
 
     </div>
 </div>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $.ajax({
-            url : '/Admin/SearchRecordTable',
-            success : function(response){
+            url: '/Admin/SearchRecordTable',
+            data: { "requestedPage": 1, "totalEntity": 3 },
+            success: function (response) {
                 $('#dataTable').html(response);
+                var temp = document.getElementById('page-1');
+                if (temp != null) {
+                    temp.style.backgroundColor = "#5dafb2";
+                    temp.style.color = "white"
+                }
             },
             error: function (xhr, status, error) {
                 console.log(error);
@@ -112,3 +131,4 @@
         })
     })
 </script>
+<script src="~/js/SearchRecords.js" asp-append-version="true"></script>

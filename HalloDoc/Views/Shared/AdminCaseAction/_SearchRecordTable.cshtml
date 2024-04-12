@@ -21,29 +21,135 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.requestclients)
+            @if (Model.requestclients.Count() > 0)
             {
-
+                @foreach (var item in Model.requestclients)
+                {
+                    <tr>
+                        <td>@item.Firstname, @item.Lastname</td>
+                        <td>@item.Request.Requesttype.Name</td>
+                        <td>Date Of Service</td>
+                        <td>@item.Request.Requeststatuslogs.FirstOrDefault(a=> a.Status == 6)?.Createddate.ToString("MMM dd yyyy")</td>
+                        <td>@item.Email</td>
+                        <td>@item.Phonenumber</td>
+                        <td>@item.Street, @item.City, @item.State</td>
+                        <td>@item.Zipcode</td>
+                        <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Status.ToString())</td>
+                        <td>@item.Request.Physician?.Firstname</td>
+                        <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Physiciannotes</td>
+                        <td>Cancel Notes</td>
+                        <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Adminnotes</td>
+                        <td>@item.Notes</td>
+                        <td class="text-center">
+                            <a class="btn btn-outline-info">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
                 <tr>
-                    <td>@item.Firstname, @item.Lastname</td>
-                    <td>@item.Request.Requesttype.Name</td>
-                    <td>Date Of Service</td>
-                    <td>@item.Request.Requeststatuslogs.FirstOrDefault(a=> a.Status == 6)?.Createddate.ToString("MMM dd yyyy")</td>
-                    <td>@item.Email</td>
-                    <td>@item.Phonenumber</td>
-                    <td>@item.Street, @item.City, @item.State</td>
-                    <td>@item.Zipcode</td>
-                    <td>@Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Requesttypeid.ToString())</td>
-                    <td>@item.Request.Physician?.Firstname</td>
-                    <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Physiciannotes</td>
-                    <td>Cancel Notes</td>
-                    <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Adminnotes</td>
-                    <td>@item.Notes</td>
-                    <td class="text-center">
-                        <a class="btn btn-outline-info">Delete</a>
-                    </td>
+                    <th colspan="15" class="text-center text-danger h4">No Records Found</th>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+<div class="d-flex justify-content-center gap-2 filter-label mt-3">
+    @if (Model.totalPages > 0)
+    {
+        var previous = Model.currentpage - 1;
+        var next = Model.currentpage + 1;
+        if (previous <= 0)
+        {
+            previous = 1;
+        }
+        if (next > Model.totalPages)
+        {
+            next = Model.totalPages;
+        }
+        if(Model.currentpage != 1)
+        {
+            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                Previous
+            </button>
+        }
+        @if (Model.totalPages > 5)
+        {
+            @if (Model.currentpage > Model.totalPages - 3)
+            {
+                <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
+                    1
+                </button>
+                <button class="0 btn btn-outline-info" id="page-0">
+                    ...
+                </button>
+                @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+                {
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+            }
+            else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+            {
+                <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
+                    1
+                </button>
+                <button class="0 btn btn-outline-info" id="page-0">
+                    ...
+                </button>
+                @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                {
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+                <button class="0 btn btn-outline-info" id="page-0">
+                    ...
+                </button>
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                    @Model.totalPages
+                </button>
+            }
+            else
+            {
+                @for (var i = 1; i <= 4; i++)
+                {
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                        @i
+                    </button>
+                }
+                <button class="0 btn btn-outline-info" id="page-0">
+                    ...
+                </button>
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                    @Model.totalPages
+                </button>
+            }
+        }
+        else
+        {
+            @for (int page = 0; page < Model.totalPages; page++)
+            {
+                var temp = page + 1;
+
+                <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
+                    @temp
+                </button>
+            }
+        }
+        if(Model.currentpage != Model.totalPages)
+        {
+            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                Next
+            </button>
+            
+        }
+    }
+    else
+    {
+        <div class="h3 text-danger">No Record found</div>
+    }
+</div>
+

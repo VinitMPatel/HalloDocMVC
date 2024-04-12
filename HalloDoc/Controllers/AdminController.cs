@@ -13,6 +13,7 @@ using System.Net;
 using Authorization = Services.Implementation.Authorization;
 using System.Web.Helpers;
 using System.Security.Policy;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace HalloDoc.Controllers
 {
@@ -109,6 +110,16 @@ namespace HalloDoc.Controllers
             return File(record, contentType, filename);
         }
 
+        public async Task<IActionResult> ExportAllData()
+        {
+            AdminDashboard data = await dashboardData.AllData();
+            var record = dashboardData.DownloadExcle(data);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = "All data " + strDate +".xlsx";
+            return File(record, contentType, filename);
+        }
+
 
         public async Task<IActionResult> ViewCase(int requestId)
         {
@@ -151,6 +162,7 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> AssignCase(int requestId)
         {
+            
             Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
@@ -529,11 +541,27 @@ namespace HalloDoc.Controllers
             return View(obj);
         }
 
-        public async Task<IActionResult> SearchRecordTable()
+        public async Task<IActionResult> SearchRecordTable(SearchRecordsData obj)
         {
-            SearchRecordsData obj = await dashboardData.GetSearchRecordData();
-            return PartialView("AdminCaseAction/_SearchRecordTable",obj);
+            SearchRecordsData newObj = await dashboardData.GetSearchRecordData(obj);
+            return PartialView("AdminCaseAction/_SearchRecordTable", newObj);
         }
 
+        public IActionResult PatientRecords()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetPatientHistory(PatientHistory obj)
+        {
+            PatientHistory dataObj = await dashboardData.GetPatientHistoryData(obj);
+            return PartialView("AdminCaseAction/_PatientHistoryTable" , dataObj);
+        }
+
+        public async Task<IActionResult> ExplorePatientHistory(int patientId)
+        {
+            ExplorePatientHistory dataObj = await dashboardData.ExplorePatientHistory(patientId);
+            return PartialView("AdminCaseAction/_ExplorePatientHistory" , dataObj);
+        }
     }
 }

@@ -1,0 +1,71 @@
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.RecordsViewModel
+@using Common.Enum
+<div class="container-fluid mt-5" id="main-content">
+
+    <div class="h4 mx-3">
+        Patient History
+    </div>
+
+    <div class="shadow mt-3">
+
+        <form>
+            <div class="row m-2">
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="First Name" id="firstName">
+                        <label class="FloatingInput">First Name</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Last Name" id="lastName">
+                        <label class="FloatingInput">Last Name</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control" placeholder="nav@example.com" id="email">
+                        <label class="FloatingInput">Email</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 col-md-3 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Phone Number" id="phone">
+                        <label class="FloatingInput">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-2">
+                    <button class="btn btn-outline-info shadow-none" type="reset" id="clearBtnPatientHistory">Clear</button>
+                    <button class="btn btn-info shadow-none text-white" id="searchBtnPatientHistory" type="button">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <div id="dataTable">
+
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Admin/GetPatientHistory',
+            success: function (response) {
+                $('#dataTable').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+    })
+</script>
+<script src="~/js/SearchRecords.js" asp-append-version="true"></script>

@@ -1,0 +1,55 @@
+﻿@model Services.ViewModels.PatientHistory
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-secondary">
+            <tr class="p-2 fw-bold">
+                <td>First Name</td>
+                <td>Last Name</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Address</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.userList.Count() > 0)
+            {
+                @foreach (var item in Model.userList)
+                {
+                    <tr>
+                        <td>@item.Firstname</td>
+                        <td>@item.Lastname</td>
+                        <td>@item.Email</td>
+                        <td>@item.Mobile</td>
+                        <td>@item.Street, @item.City - @item.Zip</td>
+                        <td>
+                            <button class="btn btn-outline-info shadow-none exploreBtn" value="@item.Userid">Explore</button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <th colspan="8" class="text-center text-danger h4">No Records Found</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $('.exploreBtn').on('click',function(){
+        var patientId = $(this).val();
+        $.ajax({
+            url: '/Admin/ExplorePatientHistory',
+            data: { "patientId": patientId },
+            success: function (response) {
+                $('#main-content').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    })
+</script>

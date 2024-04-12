@@ -32,7 +32,14 @@
         </div>
         <div>
             <button class=" border border-info rounded-2 p-2 bg-transparent">
-                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+                @if (Context.Request.Headers.Referer.Equals("http://localhost:5086/Admin/AdminDashboard"))
+                {
+                    <a asp-action="AdminDashboard" class="text-decoration-none text-info">&lt; Back</a>
+                }
+                else
+                {
+                    <a asp-action="PatientRecords" class="text-decoration-none text-info">&lt; Back</a>
+                }
             </button>
         </div>
     </div>

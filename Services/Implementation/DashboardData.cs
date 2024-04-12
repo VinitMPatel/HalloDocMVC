@@ -3,10 +3,12 @@ using Data.Entity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
@@ -67,12 +69,12 @@ namespace Services.Implementation
                 {
                     reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
-               
+
                 if (obj.requestedPage != 0)
                 {
-                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / (double)obj.totalEntity);
                     dataobj.currentpage = obj.requestedPage;
-                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
+                    reqc = reqc.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
                 }
                 dataobj.requestclients = reqc;
                 return dataobj;
@@ -84,13 +86,13 @@ namespace Services.Implementation
 
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
                 if (obj.requestedPage != 0)
                 {
-                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / (double)obj.totalEntity);
                     dataobj.currentpage = obj.requestedPage;
-                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
+                    reqc = reqc.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
                 }
                 dataobj.requestclients = reqc;
                 return dataobj;
@@ -102,13 +104,13 @@ namespace Services.Implementation
 
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
                 if (obj.requestedPage != 0)
                 {
-                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / (double)obj.totalEntity);
                     dataobj.currentpage = obj.requestedPage;
-                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
+                    reqc = reqc.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
                 }
                 dataobj.requestclients = reqc;
                 return dataobj;
@@ -120,13 +122,13 @@ namespace Services.Implementation
 
                 if (!string.IsNullOrWhiteSpace(obj.searchKey))
                 {
-                    reqc = reqc.Where(a => a.Request.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Request.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
+                    reqc = reqc.Where(a => a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())).ToList();
                 }
                 if (obj.requestedPage != 0)
                 {
-                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / 2.00);
+                    dataobj.totalPages = (int)Math.Ceiling(reqc.Count() / (double)obj.totalEntity);
                     dataobj.currentpage = obj.requestedPage;
-                    reqc = reqc.Skip((obj.requestedPage - 1) * 2).Take(2).ToList();
+                    reqc = reqc.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
                 }
                 dataobj.requestclients = reqc;
                 return dataobj;
@@ -139,6 +141,7 @@ namespace Services.Implementation
             var requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
             var regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
             var regionList = await _context.Regions.ToListAsync();
+            
             var data = new CaseActionDetails
             {
                 //ConfirmationNumber = request.Confirmationnumber,
@@ -170,7 +173,7 @@ namespace Services.Implementation
             //List<Requestwisefile> files = _context.Requestwisefiles(a => a.requestId == requestId).ToList();
             List<Requestwisefile> files = await (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToListAsync();
             var patientName = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
-            if(patientName != null)
+            if (patientName != null)
             {
                 obj.FirstName = patientName.Firstname;
             }
@@ -613,10 +616,10 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-            
+
         }
 
-        public RoleAccess EditRole(int roleId) 
+        public RoleAccess EditRole(int roleId)
         {
             RoleAccess roleAccess = new RoleAccess();
             roleAccess.menuList = _context.Menus.ToList();
@@ -627,16 +630,16 @@ namespace Services.Implementation
             return roleAccess;
         }
 
-        public async Task<PartnerViewModel> PartnerData(int professionType , string searchKey)
+        public async Task<PartnerViewModel> PartnerData(int professionType, string searchKey)
         {
             PartnerViewModel obj = new PartnerViewModel();
-            if(professionType == 0)
+            if (professionType == 0)
             {
-                obj.professionList = await _context.Healthprofessionals.Include(a=>a.ProfessionNavigation).Where(a=>a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
+                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a => a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
             }
             else
             {
-                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a=>a.ProfessionNavigation.Healthprofessionalid == professionType && a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
+                obj.professionList = await _context.Healthprofessionals.Include(a => a.ProfessionNavigation).Where(a => a.ProfessionNavigation.Healthprofessionalid == professionType && a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
 
             }
 
@@ -650,7 +653,7 @@ namespace Services.Implementation
         public async Task<PartnerViewModel> Partners()
         {
             PartnerViewModel obj = new PartnerViewModel();
-            obj.professionTypeList  = await _context.Healthprofessionaltypes.ToListAsync();
+            obj.professionTypeList = await _context.Healthprofessionaltypes.ToListAsync();
             return obj;
         }
 
@@ -680,7 +683,7 @@ namespace Services.Implementation
                     Email = obj.email,
                     Businesscontact = obj.businessContact,
                     Isdeleted = new BitArray(new[] { false })
-            };
+                };
                 await _context.AddAsync(healthprofessional);
                 await _context.SaveChangesAsync();
             }
@@ -688,9 +691,9 @@ namespace Services.Implementation
 
         public async Task<BusinessData> ExistingBusinessData(int professionId)
         {
-            Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a=> a.Vendorid == professionId);
+            Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a => a.Vendorid == professionId);
             BusinessData businessData = new BusinessData();
-            if(healthprofessional != null)
+            if (healthprofessional != null)
             {
                 businessData.businessName = healthprofessional.Vendorname;
                 businessData.professionType = (int)healthprofessional.Profession!;
@@ -712,9 +715,9 @@ namespace Services.Implementation
         public async Task DeleteBusiness(int profesionId)
         {
             Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a => a.Vendorid == profesionId);
-            if(healthprofessional != null)
+            if (healthprofessional != null)
             {
-                healthprofessional.Isdeleted = new BitArray(new[] {true });
+                healthprofessional.Isdeleted = new BitArray(new[] { true });
                 _context.Update(healthprofessional);
                 await _context.SaveChangesAsync();
             }
@@ -734,7 +737,7 @@ namespace Services.Implementation
                 healthprofessional.City = obj.city;
                 healthprofessional.State = obj.state;
                 healthprofessional.Zip = obj.zip;
-                healthprofessional.Address = obj.street + ", " +obj.city;
+                healthprofessional.Address = obj.street + ", " + obj.city;
                 healthprofessional.Modifieddate = DateTime.Now;
                 _context.Update(healthprofessional);
                 await _context.SaveChangesAsync();
@@ -749,11 +752,51 @@ namespace Services.Implementation
             return obj;
         }
 
-        public async Task<SearchRecordsData> GetSearchRecordData()
+        public async Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj)
         {
-            SearchRecordsData obj = new SearchRecordsData();
-            obj.requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a=>a.Request.Requesttype).ToListAsync();
-            return obj;
+            SearchRecordsData dataObj = new SearchRecordsData();
+            List<Requestclient> requestclients = new List<Requestclient>();
+
+            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a => a.Request.Requesttype).ToListAsync();
+
+            requestclients = requestclients.Where( a =>
+                                (obj.selectedStatus == 0 || a.Request.Status == obj.selectedStatus) &&
+                                (string.IsNullOrWhiteSpace(obj.searchedPatient) || a.Firstname.ToLower().Contains(obj.searchedPatient.ToLower()) || a.Lastname.ToLower().Contains(obj.searchedPatient.ToLower())) &&
+                                (obj.selectedType == 0 || a.Request.Requesttypeid == obj.selectedType) &&
+                                (string.IsNullOrWhiteSpace(obj.searchedProvider) || a.Request.Physicianid != null && a.Request.Physician.Firstname.ToLower().Contains(obj.searchedProvider.ToLower())) &&
+                                (string.IsNullOrWhiteSpace(obj.searchedEmail) || a.Email.ToLower().Contains(obj.searchedEmail.ToLower())) &&
+                                (string.IsNullOrWhiteSpace(obj.searchedPhone) || a.Phonenumber.Contains(obj.searchedPhone))).ToList();
+
+            dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
+            dataObj.currentpage = obj.requestedPage;
+            requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
+
+            dataObj.requestclients = requestclients;
+            return dataObj;
+        }
+
+
+        public async Task<PatientHistory> GetPatientHistoryData(PatientHistory obj)
+        {
+            List<User> userList = new List<User>();
+            PatientHistory dataObj = new PatientHistory();
+            userList = await _context.Users.ToListAsync();
+
+            userList = userList.Where(a =>
+            ((string.IsNullOrWhiteSpace(obj.firstName)) || a.Firstname.ToLower().Contains(obj.firstName.ToLower()) ) &&
+            ((string.IsNullOrWhiteSpace(obj.lastName)) || a.Lastname.ToLower().Contains(obj.lastName.ToLower())) &&
+            ((string.IsNullOrWhiteSpace(obj.mobile)) || a.Mobile.ToLower().Contains(obj.mobile.ToLower())) &&
+            ((string.IsNullOrWhiteSpace(obj.email)) || a.Email.ToLower().Contains(obj.email.ToLower()))).ToList();
+
+            dataObj.userList = userList;
+            return dataObj;
+        }
+
+        public async Task<ExplorePatientHistory> ExplorePatientHistory(int patientId)
+        {
+            ExplorePatientHistory dataObj = new ExplorePatientHistory();
+            dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Where(a=>a.Request.Userid == patientId).Include(a=>a.Request.Physician).ToListAsync();
+            return dataObj;
         }
     }
 }

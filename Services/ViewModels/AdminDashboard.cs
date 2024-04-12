@@ -27,6 +27,8 @@ namespace Services.ViewModels
         public int regionId { get; set; }
 
         public string searchKey { get; set; }
+
+        public int totalEntity { get; set; }
     }
 
 
