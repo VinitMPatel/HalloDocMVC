@@ -30,18 +30,6 @@ namespace Services.Contracts
 
         Task UpdateBillingInfo(int adminId, BillingInfo obj);
 
-        ProviderViewModel ProviderData(int regionId);
-
-        Task ToStopNotification(List<int> notifications , List<int> toNotification);
-
-        EditProviderViewModel EditProvider(int physicianId);
-
-        Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
-       
-        Task UpdateProfile(EditProviderViewModel obj);
-
-        Task UpdateBillingInfo(EditProviderViewModel obj);
-
         RoleAccess CreateAccessRole(int roleid);
 
         Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
@@ -75,5 +63,6 @@ namespace Services.Contracts
         Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj);
         Task<PatientHistory> GetPatientHistoryData(PatientHistory obj);
         Task<ExplorePatientHistory> ExplorePatientHistory(int userId);
+
     }
 }

@@ -13,7 +13,7 @@ public class patient_dashboard
 
     public int reqId { get; set; }
 
-    public List<IFormFile> Upload { get; set; }
+    public List<IFormFile>? Upload { get; set; }
 
     public DateTime DOB {  get; set; }
 }

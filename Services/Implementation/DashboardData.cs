@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using NuGet.Protocol;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Org.BouncyCastle.Ocsp;
 using Services.Contracts;
@@ -405,160 +406,8 @@ namespace Services.Implementation
             }
         }
 
-        public ProviderViewModel ProviderData(int regionId)
-        {
-            List<Physician> physicinaData = _context.Physicians.Include(a => a.Role).ToList();
-            if (regionId != 0)
-            {
-                physicinaData = physicinaData.Where(a => a.Regionid == regionId).ToList();
-            }
-            List<int> phynotificationid = _context.Physiciannotifications.Where(u => u.Isnotificationstopped == new BitArray(new[] { true })).Select(u => u.Pysicianid).ToList();
-            ProviderViewModel obj = new ProviderViewModel();
-            obj.physician = physicinaData;
-            obj.physiciannotificationid = phynotificationid;
-            return obj;
-        }
 
-        public async Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification)
-        {
-            foreach (var item in toStopNotifications)
-            {
-                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                if (physiciannotification != null)
-                {
-                    physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
-                    _context.Physiciannotifications.Update(physiciannotification);
-                }
-            }
-            foreach (var item in toNotification)
-            {
-                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
-                if (physiciannotification != null)
-                {
-                    physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
-                    _context.Physiciannotifications.Update(physiciannotification);
-                }
-            }
-            await _context.SaveChangesAsync();
-        }
 
-        public EditProviderViewModel EditProvider(int physicianId)
-        {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-            List<Region> regions = _context.Regions.ToList();
-            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
-            EditProviderViewModel editProviderViewModel = new EditProviderViewModel
-            {
-                firstName = physician.Firstname,
-                lastName = physician.Lastname,
-                email = physician.Email,
-                contactNumber = physician.Mobile,
-                medicalLecense = physician.Medicallicense,
-                NPINumber = physician.Npinumber,
-                syncEmail = physician.Syncemailaddress,
-                address1 = physician.Address1,
-                address2 = physician.Address2,
-                city = physician.City,
-                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid).Name,
-                zipcode = physician.Zip,
-                billingContact = physician.Altphone,
-                businessName = physician.Businessname,
-                businessSite = physician.Businesswebsite,
-                regionList = regions,
-                physicianRegionlist = physicianregions,
-                providerId = physicianId,
-                photoName = physician.Photo,
-                signName = physician.Signature
-            };
-            if (physician.Isagreementdoc[0] == true)
-            {
-                editProviderViewModel.IsAgreementDoc = true;
-            }
-            if (physician.Isnondisclosuredoc[0] == true)
-            {
-                editProviderViewModel.IsNonDisclosureDoc = true;
-            }
-            return editProviderViewModel;
-        }
-
-        public async Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
-        {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if (physician != null)
-            {
-                physician.Firstname = obj.firstName;
-                physician.Lastname = obj.lastName;
-                physician.Email = obj.email;
-                physician.Mobile = obj.contactNumber;
-                physician.Syncemailaddress = obj.syncEmail;
-                physician.Medicallicense = obj.medicalLecense;
-                physician.Npinumber = obj.NPINumber;
-                physician.Modifieddate = DateTime.Now;
-                List<Physicianregion> physicianRegions = _context.Physicianregions.Where(a => a.Physicianid == obj.providerId).ToList();
-                foreach (var item in physicianRegions)
-                {
-                    _context.Physicianregions.Remove(item);
-                }
-
-                if (selectedRegion.Count() > 0)
-                {
-                    foreach (var item in selectedRegion)
-                    {
-                        Physicianregion newphysicianRegions = new Physicianregion();
-                        newphysicianRegions.Physicianid = obj.providerId;
-                        newphysicianRegions.Regionid = item;
-                        _context.Physicianregions.Add(newphysicianRegions);
-                    }
-                }
-                _context.Update(physician);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UpdateBillingInfo(EditProviderViewModel obj)
-        {
-            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if (physician != null)
-            {
-                physician.Address1 = obj.address1;
-                physician.Address2 = obj.address2;
-                physician.City = obj.city;
-                physician.Zip = obj.zipcode;
-                physician.Altphone = obj.billingContact;
-                physician.Modifieddate = DateTime.Now;
-                _context.Update(physician);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        [HttpPost]
-        public async Task UpdateProfile(EditProviderViewModel obj)
-        {
-            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
-            if (physician != null)
-            {
-                physician.Businessname = obj.businessName;
-                physician.Businesswebsite = obj.businessSite;
-                physician.Adminnotes = obj.adminnote;
-                physician.Modifieddate = DateTime.Now;
-                if (obj.photo != null)
-                {
-                    physician.Photo = obj.photo.FileName;
-                    string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
-                    FileStream stream = new FileStream(path, FileMode.Create);
-                    obj.photo.CopyTo(stream);
-                }
-                if (obj.signature != null)
-                {
-                    physician.Signature = obj.signature.FileName;
-                    string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
-                    FileStream signstream = new FileStream(signpath, FileMode.Create);
-                    obj.signature.CopyTo(signstream);
-                }
-                _context.Update(physician);
-                await _context.SaveChangesAsync();
-            }
-        }
 
         public RoleAccess CreateAccessRole(int accountType)
         {
@@ -711,7 +560,6 @@ namespace Services.Implementation
             return businessData;
         }
 
-
         public async Task DeleteBusiness(int profesionId)
         {
             Healthprofessional? healthprofessional = await _context.Healthprofessionals.FirstOrDefaultAsync(a => a.Vendorid == profesionId);
@@ -744,7 +592,6 @@ namespace Services.Implementation
             }
         }
 
-
         public async Task<RecordsViewModel> SearchRecordsService()
         {
             RecordsViewModel obj = new RecordsViewModel();
@@ -775,7 +622,6 @@ namespace Services.Implementation
             return dataObj;
         }
 
-
         public async Task<PatientHistory> GetPatientHistoryData(PatientHistory obj)
         {
             List<User> userList = new List<User>();
@@ -798,5 +644,18 @@ namespace Services.Implementation
             dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Where(a=>a.Request.Userid == patientId).Include(a=>a.Request.Physician).ToListAsync();
             return dataObj;
         }
+
+        public async Task<List<Physician>> GetPhysicianData()
+        {
+            return await _context.Physicians.ToListAsync();
+        }
+
+        public async Task<List<Physicianlocation>> GetPhysicianLocation()
+        {
+            return await _context.Physicianlocations.ToListAsync();
+        }
+
+
+
     }
 }

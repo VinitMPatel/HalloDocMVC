@@ -27,7 +27,6 @@ namespace HalloDoc.Controllers
         private readonly HalloDocDbContext _context;
         private readonly IJwtRepository _jwtRepository;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
-       
 
         public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
@@ -40,6 +39,11 @@ namespace HalloDoc.Controllers
         }
 
         public IActionResult AdminLogin()
+        {
+            return View();
+        }
+
+        public IActionResult ProviderLocation()
         {
             return View();
         }
@@ -563,5 +567,7 @@ namespace HalloDoc.Controllers
             ExplorePatientHistory dataObj = await dashboardData.ExplorePatientHistory(patientId);
             return PartialView("AdminCaseAction/_ExplorePatientHistory" , dataObj);
         }
+
+
     }
 }

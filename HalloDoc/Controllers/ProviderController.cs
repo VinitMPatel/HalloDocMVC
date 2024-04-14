@@ -10,60 +10,58 @@ namespace HalloDoc.Controllers
 {
     public class ProviderController : Controller
     {
-        private readonly IDashboardData dashboardData;
         private readonly IProviderServices providerServices;
-        private readonly HalloDocDbContext _context;
-        private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
-
-        public ProviderController(IDashboardData dashboardData, HalloDocDbContext context, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
+        public ProviderController(IProviderServices providerServices)
         {
-            this.dashboardData = dashboardData;
-            _context = context;
-            _env = env;
             this.providerServices = providerServices;
         }
-        public IActionResult Provider()
+
+        public async Task<IActionResult> Provider()
         {
             ProviderViewModel obj = new ProviderViewModel();
-            obj.regionlist = _context.Regions.ToList();
+            obj.regionlist = await providerServices.GetRegions();
             return View(obj);
         }
 
-        public IActionResult ProviderTable(int regionId)
+        public IActionResult ProviderLocation()
         {
-            ProviderViewModel obj = dashboardData.ProviderData(regionId);
+            return View();
+        }
+
+        public async Task<IActionResult> ProviderTable(int regionId)
+        {
+            ProviderViewModel obj = await providerServices.ProviderData(regionId);
             return PartialView("Provider/_ProviderTable", obj);
         }
 
         [HttpPost]
         public async Task<IActionResult> ToStopNotification(List<int> toStopNotification, List<int> toNotification)
         {
-            await dashboardData.ToStopNotification(toStopNotification, toNotification);
+            await providerServices.ToStopNotification(toStopNotification, toNotification);
             return RedirectToAction("Provider");
         }
 
         public IActionResult EditProvider(int physicianId) { 
-            EditProviderViewModel obj = dashboardData.EditProvider(physicianId);
+            EditProviderViewModel obj = providerServices.EditProvider(physicianId);
             return View(obj);
         }
-
         
         public async Task UpdatePhysicianInfo(EditProviderViewModel obj , List<int> selectedRegion)
         {
-            await dashboardData.UpdatePhysicianInfo(obj, selectedRegion);
+            await providerServices.UpdatePhysicianInfo(obj, selectedRegion);
             //return RedirectToAction("EditProvider", new { physicianId = obj.providerId });
             //return NoContent();
         }
         
         public async Task UpdateBillingInfo(EditProviderViewModel obj)
         {
-            await dashboardData.UpdateBillingInfo(obj);
+            await providerServices.UpdateBillingInfo(obj);
         }
 
         public async Task UpdateProfile(EditProviderViewModel obj)
         {
-            await dashboardData.UpdateProfile(obj);
+            await providerServices.UpdateProfile(obj);
         }
 
         public async Task<IActionResult> CreateProvider()
@@ -77,6 +75,12 @@ namespace HalloDoc.Controllers
             int adminId = (int)HttpContext.Session.GetInt32("AdminId");
             await providerServices.CreateProviderAccount(obj, selectedRegion,adminId);
             return RedirectToAction("Provider");
+        }
+
+        public async Task<string> GetLocationS()
+        {
+            string LocationData = await providerServices.GetLocations();
+            return LocationData;
         }
     }
 }

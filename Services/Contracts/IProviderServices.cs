@@ -1,4 +1,5 @@
-﻿using Services.ViewModels;
+﻿using Data.Entity;
+using Services.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,13 @@ namespace Services.Contracts
     {
         Task<EditProviderViewModel> CreateProvider();
         Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, int adminId);
+        EditProviderViewModel EditProvider(int physicianId);
+        Task<string> GetLocations();
+        Task<List<Region>> GetRegions();
+        Task<ProviderViewModel> ProviderData(int regionId);
+        Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification);
+        Task UpdateBillingInfo(EditProviderViewModel obj);
+        Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
+        Task UpdateProfile(EditProviderViewModel obj);
     }
 }

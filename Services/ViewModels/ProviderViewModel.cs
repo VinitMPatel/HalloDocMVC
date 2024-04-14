@@ -38,6 +38,9 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "*Last Name is required")]
         public string lastName { get; set; }
 
+        [Required(ErrorMessage = "*Role is required")]
+        public int role {  get; set; }
+
         [Required(ErrorMessage = "*Email is required")]
         public string email { get; set; }
 
@@ -55,6 +58,8 @@ namespace Services.ViewModels
         public string syncEmail { get; set; }
 
         public List<Region> regionList { get; set; }
+
+       public List<Role> rolesList {  get; set; }
 
         [Required(ErrorMessage = "*Address is required")]
         public string address1 { get; set; }
@@ -111,7 +116,16 @@ namespace Services.ViewModels
 
         public string? adminnote { get; set; }
 
-        [Required(ErrorMessage = "*Please select region")]
+        [Required(ErrorMessage = "*Region is required")]
         public int physicianRegion {  get; set; }
+    }
+
+    public class ProviderLocationViewModel
+    {
+        public string Photo { get; set; }
+        public string Lat { get; set; }
+        public string Long { get; set; }
+        public string Physicianid { get; set; }
+        public string Name { get; set; }
     }
 }

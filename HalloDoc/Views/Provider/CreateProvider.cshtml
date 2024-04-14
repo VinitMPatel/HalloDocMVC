@@ -37,12 +37,16 @@
 
                 <div class="col-sm-4 col-12 p-2">
                     <div class="form-floating">
-                        <select class="form-select businesses">
-                            <option value="" selected>Select Role</option>
+                        <select class="form-select businesses" asp-for="role">
+                            <option value="" selected disabled>Select Role</option>
+                            @foreach(var item in Model.rolesList){
+                                <option value="@item.Roleid">@item.Name</option>
+                            }
                         </select>
-                        <label for="floatingSelect">
+                        <label for="floatingSelect" class="FloatingInput">
                             Role
                         </label>
+                        <span class="text-danger" asp-validation-for="role"></span>
                     </div>
                 </div>
             </div>
@@ -204,6 +208,10 @@
                     </div>
                 </div>
 
+                <div class="d-flex justify-content-start align-items-center uploadedPhotoDiv d-none" style="object-fit:contain">
+                    <img src="" style="width:25vw; height:25vh; object-fit:contain" id="uploadedPhotoImg" />
+                </div>
+
                 <div class="col-12 mt-3">
                     <div class="form-floating">
                         <textarea class="form-control shadow-none data3"
@@ -285,19 +293,6 @@
                                 </button>
                             </td>
                         </tr>
-                        @* <tr class="p-1">
-                            <td class="p-2">
-                                <input type="checkbox" disabled />
-                            </td>
-                            <td class="p-2 px-3">
-                                License Document
-                            </td>
-                            <td class="p-2">
-                                <button class=" d-flex ms-1 border-1 rounded-2 shadow-none btn-info" type="button">
-                                    <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
-                                </button>
-                            </td>
-                        </tr> *@
                     </table>
                 </div>
             </div>
@@ -311,6 +306,24 @@
     </form>
 </div>
 <script>
+
+    $('.photoUploadBtn').on('click', function (e) {
+        if ($('#photoLabel').html() != "No item selected") {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#uploadedPhotoImg').attr('src', e.target.result);
+            };
+            reader.readAsDataURL($('#uploadPhoto')[0].files[0]);
+            $('#photoError').html("");
+            flag = 0;
+            $('.uploadedPhotoDiv').removeClass('d-none');
+            $('.photoDiv').addClass('d-none');
+        }
+        else {
+            $('#photoError').html("*Please upload photo");
+        }
+    })
+
     $('#uploadPhoto').change(function (e) {
         $('#photoLabel').html($(this)[0].files[0].name)
     })
