@@ -1,0 +1,178 @@
+﻿@model Services.ViewModels.BlockedHistory
+<Partial name="_Notification" />
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-secondary">
+            <tr class="p-2 fw-bold">
+                <td>Patient Name</td>
+                <td>Phone</td>
+                <td>Email</td>
+                <td>Created Date</td>
+                <td>Notes</td>
+                <td>Is Active</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.requestclients.Count() > 0)
+            {
+                @foreach (var item in Model.requestclients)
+                {
+                    <tr>
+                        <td>@item.Firstname @item.Lastname</td>
+                        <td>@item.Phonenumber</td>
+                        <td>@item.Email</td>
+                        <td>@item.Request.Createddate</td>
+                        <td>NA</td>
+                        <td>
+                            <input type="checkbox" name="@item.Requestid"
+                            @foreach(var obj in item.Request.Blockrequests)
+                            {
+                                @if(obj.Isactive![0] == true)
+                                {
+                                    @:checked
+                                }
+                            }
+                            disabled>
+                        </td>
+                        <td>
+                            @foreach (var obj in item.Request.Blockrequests)
+                            {
+                                @if (obj.Isactive![0] == true)
+                                {
+                                    <span>Patient is unblocked</span>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-info shadow-none unblockBtn" value="@item.Requestid">UnBlock</button>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <th colspan="8" class="text-center text-danger h4">No Records Found</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="d-flex justify-content-center gap-2 filter-label mt-3">
+    @if (Model.totalPages > Model.totalEntity)
+    {
+        @if (Model.totalPages > 0)
+        {
+            var previous = Model.currentpage - 1;
+            var next = Model.currentpage + 1;
+            if (previous <= 0)
+            {
+                previous = 1;
+            }
+            if (next > Model.totalPages)
+            {
+                next = Model.totalPages;
+            }
+            if (Model.currentpage != 1)
+            {
+                <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangeBlockDataPage(@previous)">
+                    Previous
+                </button>
+            }
+            @if (Model.totalPages > 5)
+            {
+                @if (Model.currentpage > Model.totalPages - 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangeBlockDataPage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangeBlockDataPage(@i)">
+                            @i
+                        </button>
+                    }
+                }
+                else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangeBlockDataPage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangeBlockDataPage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangeBlockDataPage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+                else
+                {
+                    @for (var i = 1; i <= 4; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangeBlockDataPage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangeBlockDataPage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+            }
+            else
+            {
+                @for (int page = 0; page < Model.totalPages; page++)
+                {
+                    var temp = page + 1;
+
+                    <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangeBlockDataPage(@temp)">
+                        @temp
+                    </button>
+                }
+            }
+            if (Model.currentpage != Model.totalPages)
+            {
+                <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangeBlockDataPage(@next)">
+                    Next
+                </button>
+
+            }
+        }
+        else
+        {
+            <div class="h3 text-danger">No Record found</div>
+        }
+    }
+</div>
+<script>
+    $('.unblockBtn').on('click',function(){
+        $.ajax({
+            url : '/Admin/UnblockPatient',
+            data: {"requestId" : $(this).val()},
+            success: function (response) {
+                $('.table-responsive').html(response);
+                toastr.success("Patient unblocked")
+            },
+            error : function (xhr, status, error) {
+                console.log(error + "At _BlockeHistoryData");
+            }
+        })
+    })
+</script>
+

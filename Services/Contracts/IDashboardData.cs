@@ -30,7 +30,7 @@ namespace Services.Contracts
 
         Task UpdateBillingInfo(int adminId, BillingInfo obj);
 
-        RoleAccess CreateAccessRole(int roleid);
+        Task<RoleAccess> CreateAccessRole(int accountType , int roleid);
 
         Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
 
@@ -63,6 +63,8 @@ namespace Services.Contracts
         Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj);
         Task<PatientHistory> GetPatientHistoryData(PatientHistory obj);
         Task<ExplorePatientHistory> ExplorePatientHistory(int userId);
-        Task UpdateAdminPassword(int adminId, string password);
+        Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj);
+        Task UnblockPatient(int requestId);
+        Task<CaseActionDetails> ViewNotes(int requestId);
     }
 }

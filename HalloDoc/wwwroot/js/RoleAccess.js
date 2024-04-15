@@ -1,17 +1,5 @@
-﻿$('#createAccessBtn').click(function () {
-    $.ajax({
-        url: '/Admin/CreateRoleAccess',
-        success: function (response) {
-            $('#mainContent').html(response);
-        },
-        error: function (xhr, status, error) {
-            alert("Something went wrong");
-        }
-    })
-})
-
-$('#floatingSelect').on('change', function () {
-    var type = $('#floatingSelect').val();
+﻿$('#accountType').on('change', function () {
+    var type = $('#accountType').val();
     $.ajax({
         url: '/Admin/RolesList',
         data: { "accountType": type },
@@ -35,13 +23,14 @@ $('#createRoleBtn').on('click', function () {
         $.ajax({
 
             url: '/Admin/AddNewRole',
-            data: { "menus": selectedMenu, "accountType": $('#floatingSelect').val(), "roleName": $('#roleName').val() },
+            data: { "menus": selectedMenu, "accountType": $('#accountType').val(), "roleName": $('#roleName').val() },
             type: 'POST',
             async : false,
             success: function (response) {
                 var link = document.createElement('a');
                 link.href = "/Admin/RoleAccess";
                 link.click();
+                toastr.success("Role added successfully.")
             },
             error: function (xhr, status, error) {
                 alert("2");
@@ -89,19 +78,6 @@ $('.editRoleBtn').click(function () {
         data: { "roleId" : $(this).val()},
         success: function (response) {
             $('#mainContent').html(response);
-        },
-        error: function (xhr, status, error) {
-            alert("1");
-        }
-    })
-})
-$(document).ready(function () {
-    var type = 0;
-    $.ajax({
-        url: '/Admin/RolesList',
-        data: { "accountType": type },
-        success: function (response) {
-            $('#rolesList').html(response);
         },
         error: function (xhr, status, error) {
             alert("1");

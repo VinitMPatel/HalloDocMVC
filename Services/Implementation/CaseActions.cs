@@ -141,7 +141,7 @@ namespace Services.Implementation
                     if (requestData != null)
                     {
                         requestData.Modifieddate = DateTime.Now;
-                        requestData.Status = 2;
+                        requestData.Status = 1;
                         requestData.Physicianid = physicianId;
                         _context.Requests.Update(requestData);
                     }
@@ -149,7 +149,7 @@ namespace Services.Implementation
                     Requeststatuslog requeststatuslog = new Requeststatuslog
                     {
                         Requestid = requestId,
-                        Status = 2,
+                        Status = 1,
                         Physicianid = physicianId,
                         Notes = assignNote,
                         Createddate = DateTime.Now,
@@ -190,7 +190,8 @@ namespace Services.Implementation
 
         public async Task SubmitBlock(int requestId, string blockNote)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+            Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a => a.Requestid == requestId);
             if( requestData != null )
             {
                 requestData.Modifieddate = DateTime.Now;
@@ -201,9 +202,10 @@ namespace Services.Implementation
             Blockrequest blockrequest = new Blockrequest
             {
                 Requestid = requestId,
-                Phonenumber = requestData.Phonenumber,
-                Email = requestData.Email,
+                Phonenumber = requestclient!.Phonenumber!,
+                Email = requestclient.Email!,
                 Reason = blockNote,
+                Isactive = new System.Collections.BitArray(new[] {false}),
                 Createddate = DateTime.Now,
             };
             await _context.AddAsync(blockrequest);
@@ -318,16 +320,16 @@ namespace Services.Implementation
 
         public async Task<CloseCase> CloseCase(int requestId)
         {
-            var requestData = await _context.Requests.Include(a => a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
+            var requestData = await _context.Requestclients.Include(a => a.Request).FirstOrDefaultAsync(a => a.Requestid == requestId);
             CloseCase obj = new CloseCase();
             if(requestData != null)
             {
-                obj.firstName = requestData.Firstname!;
+                obj.firstName = requestData.Firstname;
                 obj.lastName = requestData.Lastname!;
                 obj.email = requestData.Email!;
-                obj.DOB = new DateTime(Convert.ToInt32(requestData.Requestclients.First().Intyear),
-                    DateTime.ParseExact(requestData.Requestclients.First().Strmonth!, "MMM", CultureInfo.InvariantCulture).Month,
-                    Convert.ToInt32(requestData.Requestclients.First().Intdate));
+                obj.DOB = new DateTime(Convert.ToInt32(requestData.Intyear),
+                    DateTime.ParseExact(requestData.Strmonth!, "MMM", CultureInfo.InvariantCulture).Month,
+                    Convert.ToInt32(requestData.Intdate));
                 obj.mobileNumber = requestData.Phonenumber!;
                 obj.requestId = requestId;
             }

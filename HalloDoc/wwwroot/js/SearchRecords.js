@@ -143,3 +143,85 @@ $('#clearBtnPatientHistory').on('click', function () {
         }
     });
 })
+
+
+var requestedBlockData = {
+    name: "",
+    email: "",
+    phone: "",
+    requestedPage: 1,
+    totalEntity: 3
+}
+
+$('#searchBlockedBtn').click(function () {
+   
+    requestedBlockData.name = $('#blockedPatient').val();
+    requestedBlockData.email = $('#blockedEmail').val();
+    requestedBlockData.phone = $('#blockedPhone').val();
+    requestedData.requestedPage = 1;
+
+    $.ajax({
+        url: '/Admin/BlockHistoryData',
+        data: requestedBlockData,
+        success: function (response) {
+            $('#dataTable').html(response);
+            var temp = document.getElementById('page-1');
+            if (temp != null) {
+                temp.style.backgroundColor = "#5dafb2";
+                temp.style.color = "white"
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+})
+
+$('#clearBlockedBtn').on('click', function () {
+  
+    requestedBlockData.name = "";
+    requestedBlockData.email = "";
+    requestedBlockData.phone = "";
+    requestedBlockData.requestedPage = 1;
+    requestedBlockData.totalEntity = 3;
+    $.ajax({
+        url: '/Admin/BlockHistoryData',
+        data: requestedBlockData,
+        success: function (response) {
+            $('#dataTable').html(response);
+            var temp = document.getElementById('page-1');
+            if (temp != null) {
+                temp.style.backgroundColor = "#5dafb2";
+                temp.style.color = "white"
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+})
+
+
+function ChangeBlockDataPage(Page) {
+    requestedBlockData.requestedPage = Page;
+    var temp = document.getElementById('page-' + Page);
+    if (temp != null) {
+        temp.style.backgroundColor = "#5dafb2";
+        temp.style.color = "white"
+    }
+    $.ajax({
+        url: '/Admin/BlockHistoryData',
+        data: requestedBlockData,
+        success: function (response) {
+            $('#dataTable').html(response);
+            var temp = document.getElementById('page-' + Page);
+            if (temp != null) {
+                temp.style.backgroundColor = "#5dafb2";
+                temp.style.color = "white"
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+        }
+    });
+}

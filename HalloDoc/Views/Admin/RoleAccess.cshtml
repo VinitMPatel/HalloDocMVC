@@ -2,15 +2,16 @@
     Layout = "_Admin";
 }
 @model Services.ViewModels.RoleAccess
+<Partial name="_Notification" />
 <div class="container mt-5" id="mainContent">
     <div class="h4">
         Account Access
     </div>
     <div class="shadow mt-3">
         <div class="d-flex justify-content-end">
-            <button class="btn btn-outline-info shadow-none m-2" id="createAccessBtn">
+            <a class="btn btn-outline-info shadow-none m-2 text-decoration-none" asp-action="CreateRoleAccess">
                 Create Access
-            </button>
+            </a>
         </div>
         <table class="w-100 table">
             <thead class="table-secondary">

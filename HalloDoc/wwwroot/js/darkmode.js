@@ -1,8 +1,10 @@
 const moonBtn = document.getElementById("darkbtn");
 const img = document.getElementById("darkimg");
 const content = document.getElementById("main-content");
-var flag ;
-moonBtn.addEventListener('click', dark)
+var flag;
+if (moonBtn != null) {
+    moonBtn.addEventListener('click', dark)
+}
 
 function dark(){
     if(flag==0){

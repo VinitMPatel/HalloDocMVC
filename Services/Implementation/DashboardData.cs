@@ -16,6 +16,7 @@ using Services.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
@@ -162,6 +163,23 @@ namespace Services.Implementation
             };
             return data;
         }
+
+        public async Task<CaseActionDetails> ViewNotes(int requestId)
+        {
+            CaseActionDetails obj = new CaseActionDetails();
+            obj.requestId = requestId;
+
+            var requestnote = await _context.Requestnotes.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if (requestnote != null)
+            {
+                obj.adminNote = requestnote.Adminnotes!;
+            }
+
+            List<Requeststatuslog> requeststatuslogs = await _context.Requeststatuslogs.Where(a => a.Requestid == obj.requestId).ToListAsync();
+            obj.requeststatuslogs = requeststatuslogs;
+            return obj;
+        }
+        
 
         public async Task<List<Physician>> PhysicianList(int regionid)
         {
@@ -434,19 +452,27 @@ namespace Services.Implementation
 
 
 
-        public RoleAccess CreateAccessRole(int accountType)
+        public async Task<RoleAccess> CreateAccessRole(int accountType , int roleId)
         {
             List<Menu> menuList = new List<Menu>();
             if (accountType == 0)
             {
-                menuList = _context.Menus.ToList();
+                menuList = await _context.Menus.ToListAsync();
             }
             else
             {
-                menuList = _context.Menus.Where(a => a.Accounttype == accountType).ToList();
+                menuList = await _context.Menus.Where(a => a.Accounttype == accountType).ToListAsync();
             }
             RoleAccess roleAccess = new RoleAccess();
             roleAccess.menuList = menuList;
+            roleAccess.roleId = roleId;
+            List<Rolemenu> rolemenus = await _context.Rolemenus.Where(a => a.Roleid == roleId).ToListAsync();
+            List<Menu> selectedMenus = new List<Menu>();
+            foreach (var item in rolemenus)
+            {
+                selectedMenus.Add(await _context.Menus.FirstOrDefaultAsync(a => a.Menuid == item.Menuid));
+            }
+            roleAccess.selectedMenu = selectedMenus;
             return roleAccess;
         }
 
@@ -680,7 +706,37 @@ namespace Services.Implementation
             return await _context.Physicianlocations.ToListAsync();
         }
 
+        public async Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj)
+        {
+            BlockedHistory dataObj = new BlockedHistory();
+            List<Requestclient> requestclients = new List<Requestclient>();
 
+            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a=>a.Request.Blockrequests).Where(a=>a.Request.Status == 11).ToListAsync();
+
+            requestclients = requestclients.Where(a =>
+                                (string.IsNullOrWhiteSpace(obj.name) || a.Firstname.ToLower().Contains(obj.name.ToLower()) || a.Lastname!.ToLower().Contains(obj.name.ToLower())) &&
+                                (string.IsNullOrWhiteSpace(obj.email) || a.Email!.ToLower().Contains(obj.email.ToLower())) &&
+                                (string.IsNullOrWhiteSpace(obj.phone) || a.Phonenumber!.Contains(obj.phone))).ToList();
+
+            dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
+            dataObj.currentpage = obj.requestedPage;
+            requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
+            dataObj.totalEntity = obj.totalEntity;
+            dataObj.requestclients = requestclients;
+
+            return dataObj;
+        }
+
+        public async Task UnblockPatient(int requestId)
+        {
+            Blockrequest? blockData = await _context.Blockrequests.FirstOrDefaultAsync(a=>a.Requestid == requestId);
+            if(blockData != null)
+            {
+                blockData.Isactive = new BitArray(new[] { true });
+                _context.Update(blockData);
+                await _context.SaveChangesAsync();
+            }
+        }
 
     }
 }

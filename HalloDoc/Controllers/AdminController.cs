@@ -14,6 +14,7 @@ using Authorization = Services.Implementation.Authorization;
 using System.Web.Helpers;
 using System.Security.Policy;
 using Org.BouncyCastle.Asn1.Ocsp;
+using NPOI.SS.Formula.Functions;
 
 namespace HalloDoc.Controllers
 {
@@ -101,11 +102,6 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> ExportData(AdminDashboard obj)
         {
-            int currentPage = 0;
-            if(obj.searchKey == "null")
-            {
-                obj.searchKey = null;
-            }
             AdminDashboard data = await dashboardData.AllStateData(obj);
             var record = dashboardData.DownloadExcle(data);
             string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
@@ -131,29 +127,9 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ViewCase", obj);
         }
 
-        public IActionResult ViewNotes(int requestId)
+        public async Task<IActionResult> ViewNotes(int requestId)
         {
-            var requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
-            var requestnote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
-            CaseActionDetails obj = new CaseActionDetails();
-            if (requestnote != null)
-            {
-                obj.adminNote = requestnote.Adminnotes;
-            }
-
-            obj.requestId = requestId;
-            var transferNote = _context.Requeststatuslogs.FirstOrDefault(a => a.Requestid == obj.requestId && a.Status == 2);
-            if (transferNote != null)
-            {
-                var physicianName = _context.Physicians.FirstOrDefault(a => a.Physicianid == transferNote.Physicianid).Firstname;
-                obj.adminName = HttpContext.Session.GetString("AdminName");
-                obj.physicianName = physicianName;
-                obj.assignTime = transferNote.Createddate;
-            }
-
-            //bol jaldi bol ungh aave he
-
-            //CaseDetails obj = dashboardData.ViewCaseData(requestId);
+            CaseActionDetails obj = await dashboardData.ViewNotes(requestId);
             return PartialView("AdminCaseAction/_ViewNotes", obj);
         }
 
@@ -170,10 +146,10 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
-        public async Task<IActionResult> SubmitAssign(int requestId, int physicianId, string assignNote)
+        public async Task SubmitAssign(int requestId, int physicianId, string assignNote)
         {   
             await caseActions.SubmitAssign(requestId, physicianId, assignNote);
-            return RedirectToAction("AdminDashboard");
+            //return RedirectToAction("AdminDashboard");
         }
 
 
@@ -327,11 +303,11 @@ namespace HalloDoc.Controllers
             return View(adminData);
         }
 
-        public async Task AdminPasswordReset(string password)
-        {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-            await dashboardData.UpdateAdminPassword(adminId, password);
-        }
+        //public async Task AdminPasswordReset(string password)
+        //{
+        //    int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
+        //    await dashboardData.UpdateAdminPassword(adminId, password);
+        //}
 
         public async Task UpdateAdminInfo(AdminInfo obj)
         {
@@ -352,15 +328,14 @@ namespace HalloDoc.Controllers
             RoleAccess obj = dashboardData.AddedRoles();
             return View(obj);
         }
-        public IActionResult CreateRoleAccess(int accountType)
+        public IActionResult CreateRoleAccess()
         {
-            RoleAccess obj = dashboardData.CreateAccessRole(accountType);
-            return PartialView("AdminCaseAction/_CreateRoleAccess",obj);
+            return View();
         }
 
-        public IActionResult RolesList(int accountType)
+        public async Task<IActionResult> RolesList(int accountType , int roleId)
         {
-            RoleAccess obj = dashboardData.CreateAccessRole(accountType);
+            RoleAccess obj = await dashboardData.CreateAccessRole(accountType, roleId);
             return PartialView("AdminCaseAction/_RolesList", obj);
         }
 
@@ -572,6 +547,21 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ExplorePatientHistory" , dataObj);
         }
 
+        public IActionResult BlockHistory()
+        {
+            return View();
+        }
 
+        public async Task<IActionResult> BlockHistoryData(BlockedHistory obj)
+        {
+            BlockedHistory dataObj = await dashboardData.GetBlockHistoryData(obj);
+            return PartialView("AdminCaseAction/_BlockHistoryData", dataObj);
+        }
+
+        public async Task<IActionResult> UnblockPatient(int requestId)
+        {
+            await dashboardData.UnblockPatient(requestId);
+            return RedirectToAction("BlockHistoryData", new { requestedPage = 1 , totalEntity = 3});
+        }
     }
 }

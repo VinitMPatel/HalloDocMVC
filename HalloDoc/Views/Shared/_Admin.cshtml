@@ -156,7 +156,7 @@
                 }
                 else
                 {
-                    <a asp-action="AdminDashboard" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
+                    <a asp-action="AdminDashboard" asp-controller="Admin" class="text-decoration-none pe-2 text-dark">Dashboard</a>
                 }
                 @if (Context.Request.Path.Equals("/Provider/ProviderLocation"))
                 {
@@ -210,7 +210,7 @@
                 {
                     <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Access</a>
                 }
-                @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockedHistory"))
+                @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockHistory"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Records</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
@@ -218,7 +218,7 @@
                         <li><a asp-action="EmailLogs" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
                         <li><a asp-action="SMSLogs" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
                         <li><a asp-action="PatientRecords" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
-                        <li><a asp-action="BlockedHistory" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
+                        <li><a asp-action="BlockHistory" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
                     </ul>
                 }
                 else
@@ -229,7 +229,7 @@
                         <li><a asp-action="EmailLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
                         <li><a asp-action="SMSLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
                         <li><a asp-action="PatientRecords" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
-                        <li><a asp-action="BlockedHistory" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
+                        <li><a asp-action="BlockHistory" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
                     </ul>
                 }
             </div>

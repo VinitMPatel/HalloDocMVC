@@ -69,6 +69,12 @@ namespace HalloDoc.Controllers
             await providerServices.UploadNewDocument(obj);
         }
 
+        public async Task DeleteAccount(int providerId)
+        {
+            await providerServices.DeleteAccount(providerId);
+            TempData["success"] = "Account Deleted successfully";
+        }
+
         public async Task<IActionResult> CreateProvider()
         {
             EditProviderViewModel obj = await providerServices.CreateProvider();

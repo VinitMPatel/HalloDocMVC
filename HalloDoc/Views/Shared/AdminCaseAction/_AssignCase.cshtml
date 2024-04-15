@@ -108,9 +108,10 @@
                     // $("body").removeAttr("style");
                     // $(".modal-backdrop").remove();
                     //$('#exampleModal1').modal('hide');
+                    console.log(response);
                     $("#exampleModal1 .btn-close").click()
-                    $('#status-pending').html($(response).find('#status-pending').html());
-                    $('#status-new').html($(response).find('#status-new').html());
+          
+                    toastr.success("Case assigned successfully");
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

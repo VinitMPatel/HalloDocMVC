@@ -1,4 +1,5 @@
 ﻿@model Services.ViewModels.PartnerViewModel
+<Partial name="_Notification" />
 <div class="table table-responsive w-100">
     <table class="table">
         <thead>
@@ -16,7 +17,7 @@
             @foreach(var item in Model.professionList)
             {
                 <tr>
-                    <td>@item.ProfessionNavigation.Professionname</td>
+                    <td>@item.ProfessionNavigation!.Professionname</td>
                     <td>@item.Vendorname</td>
                     <td>@item.Email</td>
                     <td>@item.Faxnumber</td>
@@ -49,16 +50,35 @@
         })
     })
 
-    $('.deleteProfessionBtn').click(function () {
-        $.ajax({
-            url: '/Admin/DeleteProfession',
-            data: { "professionId": $(this).val() },
-            success: function (response) {
-                $('#dataTable').html(response)
-            },
-            error: function (xhr, status, error) {
-                alert("Error in _PartnerTable page");
+    $('.deleteProfessionBtn').on('click', function (e) {
+        e.preventDefault();
+        var professionId = $(this).val()
+        console.log($(this).val())
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                console.log("Yes Btn");
+                $.ajax({
+                    url: '/Admin/DeleteProfession',
+                    data: { "professionId": professionId },
+                    success: function (response) {
+                        $('#dataTable').html(response)
+                        toastr.success("Deleted successfully.");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error in _PartnerTable page");
+                    }
+                })
+            } else {
+                console.log('Cancelled!');
             }
-        })
-    })
+        });
+    });
+
 </script>

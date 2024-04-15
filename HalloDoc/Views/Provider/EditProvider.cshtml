@@ -614,6 +614,15 @@
         }).then(function (result) {
             if (result.value) {
                 console.log("Yes Btn");
+                $.ajax({
+                    url: '/Provider/DeleteAccount',
+                    data: { "providerId": $('#providerId').val() },
+                    success: function (response) {
+                        var link = document.createElement('a');
+                        link.href = "/Provider/Provider";
+                        link.click();
+                    }
+                })
             } else {
                 // User clicked the cancel button or closed the dialog
                 console.log('Cancelled!');

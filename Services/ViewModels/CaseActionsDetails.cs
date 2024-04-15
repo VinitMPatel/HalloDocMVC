@@ -47,6 +47,8 @@ namespace Services.ViewModels
         public ICollection<Requestwisefile> requestwisefile { get; set; }
 
         public List<IFormFile> Upload { get; set; }
+
+        public List<Requeststatuslog> requeststatuslogs { get; set; }
     }
 
     public class Orders

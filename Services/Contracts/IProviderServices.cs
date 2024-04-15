@@ -12,6 +12,7 @@ namespace Services.Contracts
     {
         Task<EditProviderViewModel> CreateProvider();
         Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, int adminId);
+        Task DeleteAccount(int providerId);
         EditProviderViewModel EditProvider(int physicianId);
         Task<string> GetLocations();
         Task<List<Region>> GetRegions();

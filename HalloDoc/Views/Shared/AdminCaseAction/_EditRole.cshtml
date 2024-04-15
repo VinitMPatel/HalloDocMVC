@@ -14,6 +14,7 @@
         <form>
 
             <div class="row">
+                <input type="text" id="roleId" value="@Model.roleId" hidden/>
                 <div class="p-2 col-sm-6 col-12">
                     <div class="form-floating ">
                         <input type="text" class="form-control" placeholder="Role Name" id="roleName" asp-for="roleName">
@@ -24,39 +25,42 @@
 
                 <div class="col-sm-6 col-12 p-2">
                     <div class="form-floating">
-                        <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" asp-for="accountType">
+                        <select class="form-select businesses" aria-label="Floating label select example" id="selectedType" asp-for="accountType" disabled>
                             <option value="0" selected>All</option>
                             <option value="1">Admin</option>
                             <option value="2">Physician</option>
                         </select>
-                        <label for="floatingSelect">
+                        <label for="selectedType" class="FloatingInput">
                             Account type
                         </label>
                     </div>
                 </div>
 
                 <div id="rolesList">
-                    <div class="col-12 d-flex gap-3 flex-wrap m-2">
-                        @foreach (var item in Model.menuList)
-                        {
-                            <div>
-                                <input type="checkbox" value="@item.Menuid">
-                                <label>@item.Name</label>
-                            </div>
-                        }
-                    </div>
+                    
                 </div>
                 <span class="text-danger" id="errorSpan"></span>
             </div>
 
             <div class="d-flex justify-content-end gap-3">
-                <button class="btn btn-info text-white shadow-none" type="button" id="createRoleBtn">Save</button>
-                <button class="btn border border-info text-info shadow-none" type="reset" id="cancelBtn">Cancel</button>
+                <button class="btn btn-info text-white shadow-none" type="button">Save</button>
+                <button class="btn border border-info text-info shadow-none" type="reset">Cancel</button>
             </div>
         </form>
     </div>
 </div>
-<script src="~/js/RoleAccess.js"></script>
-
-
-
+<script>
+    $(document).ready(function () {
+        var type = $('#selectedType').val();
+        $.ajax({
+            url: '/Admin/RolesList',
+            data: { "accountType": type , "roleId" : $('#roleId').val()},
+            success: function (response) {
+                $('#rolesList').html(response);
+            },
+            error: function (xhr, status, error) {
+                alert("1");
+            }
+        })
+    })
+</script>

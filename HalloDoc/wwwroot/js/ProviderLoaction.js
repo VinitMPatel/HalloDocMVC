@@ -45,7 +45,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 for (var i = 0; i < locationdata.length; i++) {
     var popupContent;
-    var photoSrc = "~/upload/" + locationdata[i].Photo
+    var photoSrc = "/upload/" + locationdata[i].Photo
     var iconHtml = '<div class="d-flex" style="width: 30px; height: 30px; border-radius: 50%; overflow: hidden; border: 4px solid #008000;">' +
         '<img src="'+ photoSrc+ '" style="width: 100%; height: auto;" />' +
         '</div>' +

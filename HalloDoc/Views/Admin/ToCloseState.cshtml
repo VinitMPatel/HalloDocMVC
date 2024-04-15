@@ -35,7 +35,7 @@
                 }
                 else if (obj.Request.Requesttypeid == 4)
                 {
-                    color = "rgb(230, 0 , 115)";
+                    color = "rgb(0,172,230)";
                     type = "Business";
                 }
                 else if (obj.Request.Requesttypeid == 3)
@@ -48,7 +48,7 @@
                     <td class="text-white">@obj.Firstname</td>
                     <td class="text-white"><i class="bi bi-envelope"></i></td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
-                    <td class="text-white">@obj.Request.User.Region.Name</td>
+                    <td class="text-white">@obj.Request.User!.Region!.Name</td>
                     @if (obj.Request.Physician != null)
                     {
                         <td class="text-white">@obj.Request.Physician.Firstname</td>
@@ -59,9 +59,26 @@
                     }
                     <td class="text-white">@obj.Request.Createddate</td>
                     <td class="text-white">@obj.Address</td>
-                    <td class="text-white">@obj.Notes</td>
                     <td class="text-white">
-                        <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-person-fill me-2"></i>Provider</div>
+                        @foreach (var item in obj.Request.Requeststatuslogs)
+                        {
+                            if (item.Notes != null)
+                            {
+                                <div class="mb-2">
+                                    @item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt")
+                                </div>
+                            }
+                            else
+                            {
+                                <div> - </div>
+                            }
+                        }
+                    </td>
+                    <td class="text-white">
+                        @if (obj.Request.Physicianid != null)
+                        {
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-person-fill me-2"></i>Provider</div>
+                        }
                     </td>
                     <td>
                         <div class="border border-light rounded-2 text-center">

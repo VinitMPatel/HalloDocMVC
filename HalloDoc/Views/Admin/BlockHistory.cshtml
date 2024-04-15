@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "_Admin";
+}
+
+<div class="container-fluid mt-5">
+
+    <div class="d-flex justify-content-start mx-3">
+        <div class="h4">
+           Block History
+        </div>
+    </div>
+
+    <div class="shadow mt-3 pb-4">
+
+        <form>
+            <div class="row m-4">
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Patient Name" id="blockedPatient">
+                        <label class="blockedPatient" for="">Patient Name</label>
+                    </div>
+                </div>
+             
+
+                <div class="p-2 col-md-3 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" placeholder="Date" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <label class="FloatingInput">Date</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-3 col-12">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control" placeholder="nav@example.com" id="blockedEmail">
+                        <label class="FloatingInput">Email</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 col-md-3 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Phone Number" id="blockedPhone">
+                        <label class="FloatingInput">Phone Number</label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end p-0 my-3">
+                    Select entity :
+                    <select id="selectedBlockEntity" class="mx-2">
+                        <option value="3" selected>3</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-2">
+                    <button class="btn btn-outline-info shadow-none" type="reset" id="clearBlockedBtn">Clear</button>
+                    <button class="btn btn-info shadow-none text-white" id="searchBlockedBtn" type="button">Search</button>
+                </div>
+
+            </div>
+        </form>
+
+        <div id="dataTable">
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Admin/BlockHistoryData',
+            data: { "requestedPage": 1, "totalEntity": 3 },
+            success: function (response) {
+                $('#dataTable').html(response);
+                var temp = document.getElementById('page-1');
+                if (temp != null) {
+                    temp.style.backgroundColor = "#5dafb2";
+                    temp.style.color = "white"
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+    })
+</script>
+<script src="~/js/SearchRecords.js" asp-append-version="true"></script>

@@ -37,7 +37,7 @@ namespace Services.Implementation
 
         public async Task<ProviderViewModel> ProviderData(int regionId)
         {
-            List<Physician> physicinaData = await _context.Physicians.Include(a => a.Role).ToListAsync();
+            List<Physician> physicinaData = await _context.Physicians.Include(a => a.Role).Where(a=>a.Isdeleted == new BitArray(new[] {false})).ToListAsync();
             if (regionId != 0)
             {
                 physicinaData = physicinaData.Where(a => a.Regionid == regionId).ToList();
@@ -232,6 +232,17 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAccount(int providerId)
+        {
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Physicianid == providerId);
+            if(physician != null)
+            {
+                physician.Isdeleted = new BitArray(new[] { true });
+                _context.Update(physician);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<EditProviderViewModel> CreateProvider()
         {
             EditProviderViewModel obj = new EditProviderViewModel();
@@ -299,7 +310,8 @@ namespace Services.Implementation
                 Businesswebsite = obj.businessSite,
                 Npinumber = obj.NPINumber,
                 Roleid = obj.role,
-                Islicensedoc = new BitArray(new[] { false })
+                Islicensedoc = new BitArray(new[] { false }),
+                Isdeleted = new BitArray(new[] { false })
             };
             if (obj.photo != null)
             {

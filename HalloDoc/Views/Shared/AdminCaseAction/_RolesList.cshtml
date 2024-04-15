@@ -1,9 +1,20 @@
 ﻿@model Services.ViewModels.RoleAccess
 <div class="col-12 d-flex gap-3 flex-wrap m-2">
-    @foreach (var item in Model.menuList)
+    @foreach (var item in Model.menuList!)
     {
         <div>
-            <input type="checkbox" value="@item.Menuid" onchange="validation()">
+            <input type="checkbox" value="@item.Menuid" onchange="validation()" 
+            @if(Model.selectedMenu != null)
+            {
+                @foreach(var obj in Model.selectedMenu)
+                {
+                    @if(obj.Name == item.Name)
+                    {
+                        @:checked
+                    }
+                }
+            }
+            />
             <label>@item.Name</label>
         </div>
     }

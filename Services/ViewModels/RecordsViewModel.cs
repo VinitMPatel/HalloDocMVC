@@ -60,4 +60,24 @@ namespace Services.ViewModels
 
     }
 
+    public class BlockedHistory
+    {
+        public List<Requestclient> requestclients { get; set; }
+
+        public int totalPages { get; set; }
+
+        public int currentpage { get; set; }
+
+        public int totalEntity { get; set; }
+
+        public int requestedPage { get; set; }
+
+        public string name { get; set; }
+
+        public string email { get; set; }
+
+        public string phone { get; set; }
+
+        public bool isActive { get; set; }
+    }
 }
