@@ -10,13 +10,13 @@ public partial class Shiftdetail
 
     public int Shiftid { get; set; }
 
-    public DateOnly Shiftdate { get; set; }
+    public DateTime Shiftdate { get; set; }
 
     public int? Regionid { get; set; }
 
-    public DateTime Starttime { get; set; }
+    public TimeOnly Starttime { get; set; }
 
-    public DateTime Endtime { get; set; }
+    public TimeOnly Endtime { get; set; }
 
     public short Status { get; set; }
 

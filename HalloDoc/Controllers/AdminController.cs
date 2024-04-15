@@ -563,5 +563,114 @@ namespace HalloDoc.Controllers
             await dashboardData.UnblockPatient(requestId);
             return RedirectToAction("BlockHistoryData", new { requestedPage = 1 , totalEntity = 3});
         }
+
+        public IActionResult Scheduling()
+        {
+            return View(dashboardData.Scheduling());
+        }
+
+        public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
+        {
+            var currentDate = DateTime.Parse(date);
+            List<Physician> physician = _context.Physicians.ToList();
+
+            switch (PartialName)
+            {
+                case "_DayWise":
+                    return PartialView("Provider/_DayWise", dashboardData.Daywise(regionid, currentDate, physician));
+
+                case "_WeekWise":
+                    return PartialView("Provider/_WeekWise", dashboardData.Weekwise(regionid, currentDate, physician));
+
+                case "_MonthWise":
+                    return PartialView("Provider/_MonthWise", dashboardData.Monthwise(regionid, currentDate, physician));
+
+                default:
+                    return PartialView("Provider/_DayWise");
+            }
+        }
+        public IActionResult AddShift(Scheduling model)
+        {
+            if (model.starttime > model.endtime)
+            {
+                TempData["error"] = "Starttime Must be Less than Endtime";
+                return RedirectToAction("Scheduling");
+            }
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            var chk = Request.Form["repeatdays"].ToList();
+            bool f = dashboardData.AddShift(model, adminId, chk);
+            if (f == false)
+            {
+                TempData["error"] = "Shift is already assigned in this time";
+            }
+            return RedirectToAction("Scheduling");
+        }
+
+
+        public Scheduling viewshift(int shiftdetailid)
+        {
+            return dashboardData.viewshift(shiftdetailid);
+        }
+        public void ViewShiftreturn(int shiftdetailid)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            dashboardData.ViewShiftreturn(shiftdetailid, adminname);
+        }
+        public bool ViewShiftedit(Scheduling modal)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            return dashboardData.ViewShiftedit(modal, adminname);
+        }
+        public void DeleteShift(int shiftdetailid)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            dashboardData.DeleteShift(shiftdetailid, adminname);
+        }
+        public IActionResult ProvidersOnCall(Scheduling modal)
+        {
+            return View(dashboardData.ProvidersOnCall(modal));
+        }
+        [HttpPost]
+        public IActionResult ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
+        {
+            return PartialView("AdminLayout/_ProviderOnCallData", dashboardData.ProvidersOnCallbyRegion(regionid, oncall, offcall));
+        }
+
+        public IActionResult ShiftForReview()
+        {
+            return View(dashboardData.ShiftForReview());
+        }
+        public IActionResult ShiftReviewTable(int currentPage, int regionid)
+        {
+            return PartialView("AdminLayout/_ShiftForReviewTable", dashboardData.ShiftReviewTable(currentPage, regionid));
+        }
+        public IActionResult ApproveSelected(int[] shiftchk)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                dashboardData.ApproveSelected(shiftchk, adminname);
+                TempData["success"] = "Shifts Approved Successfuly";
+            }
+            return RedirectToAction("ShiftForReview");
+        }
+        public IActionResult DeleteSelected(int[] shiftchk)
+        {
+            string adminname = HttpContext.Session.GetString("Adminname");
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                dashboardData.DeleteSelected(shiftchk, adminname);
+                TempData["success"] = "Shifts Deleted Successfuly";
+            }
+            return RedirectToAction("ShiftForReview");
+        }
     }
 }

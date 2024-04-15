@@ -608,7 +608,9 @@ public partial class HalloDocDbContext : DbContext
 
             entity.ToTable("physician");
 
-            entity.Property(e => e.Physicianid).HasColumnName("physicianid");
+            entity.Property(e => e.Physicianid)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("physicianid");
             entity.Property(e => e.Address1)
                 .HasMaxLength(500)
                 .HasColumnName("address1");
@@ -1333,9 +1335,7 @@ public partial class HalloDocDbContext : DbContext
             entity.Property(e => e.Shiftdetailid)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("shiftdetailid");
-            entity.Property(e => e.Endtime)
-                .HasColumnType("timestamp without time zone")
-                .HasColumnName("endtime");
+            entity.Property(e => e.Endtime).HasColumnName("endtime");
             entity.Property(e => e.Eventid)
                 .HasMaxLength(100)
                 .HasColumnName("eventid");
@@ -1355,11 +1355,11 @@ public partial class HalloDocDbContext : DbContext
                 .HasColumnType("timestamp without time zone")
                 .HasColumnName("modifieddate");
             entity.Property(e => e.Regionid).HasColumnName("regionid");
-            entity.Property(e => e.Shiftdate).HasColumnName("shiftdate");
-            entity.Property(e => e.Shiftid).HasColumnName("shiftid");
-            entity.Property(e => e.Starttime)
+            entity.Property(e => e.Shiftdate)
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("starttime");
+                .HasColumnName("shiftdate");
+            entity.Property(e => e.Shiftid).HasColumnName("shiftid");
+            entity.Property(e => e.Starttime).HasColumnName("starttime");
             entity.Property(e => e.Status).HasColumnName("status");
 
             entity.HasOne(d => d.ModifiedbyNavigation).WithMany(p => p.Shiftdetails)
