@@ -67,9 +67,7 @@
                 <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
                     <option value="" selected>Active</option>
                 </select>
-                <label for="floatingSelect">
-                    Status
-                </label>
+                <label for="floatingSelect">Status</label>
             </div>
         </div>
 
@@ -78,9 +76,7 @@
                 <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
                     <option value="" selected>Master Admin</option>
                 </select>
-                <label for="floatingSelect">
-                    Role
-                </label>
+                <label for="floatingSelect">Role</label>
             </div>
         </div>
 
@@ -90,8 +86,8 @@
     </div>
     <form id="myform1">
         <input type="text" asp-for="providerId" id="providerId" />
-
         <div class="row mt-3">
+
             <div class="h4">Physician Information</div>
 
             <div class="p-2 col-sm-6 col-12">
@@ -158,8 +154,7 @@
                         @if (Model.physicianRegionlist.Any(a => a.Regionid == item.Regionid))
                         {
                             @:checked
-                        } value="@item.Regionid"
-                               disabled>
+                        } value="@item.Regionid" disabled>
                         <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
                     </div>
                 }
@@ -204,12 +199,10 @@
 
             <div class="col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    <select class="form-select" aria-label="Floating label select example" id="floatingSelect" disabled>
+                    <select class="form-select" aria-label="Floating label select example" disabled>
                         <option value="" selected>Ahmedabad</option>
                     </select>
-                    <label for="floatingSelect">
-                        State
-                    </label>
+                    <label class="FloatingInput">State</label>
                     <span asp-validation-for="state" class="text-danger"></span>
                 </div>
             </div>
@@ -278,17 +271,13 @@
 
             <div class="col-sm-4 col-9 p-2">
                 <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
-
                     <div class="px-3 table-responsive">
                         <input type="file" id="uploadSign" hidden asp-for="signature" class="data3" disabled />
-
                         <label role="button" for="uploadSign" id="signLabel" class="choosenfile text-nowrap text-secondary">No item selected</label>
                     </div>
-
                     <button class="signUploadBtn px-2 py-1 d-flex ms-1 border-1 rounded-2 shadow-none data3 toEnable" disabled type="button">
                         <div class="d-flex align-items-center shadow-none"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-md-block">Upload</div></div>
                     </button>
-
                 </div>
                 <span asp-validation-for="photo" class="text-danger"></span>
                 <span id="signError" class="text-danger"></span>
@@ -340,219 +329,218 @@
                 <button id="cancelBtn3" type="reset" class="btn btn-outline-info ms-1">Cancel</button>
             </div>
         </form>
-        <hr class="text-muted" style="border : 1px solid black" />
+
+        <hr class="my-2" />
 
         <h5>Onboarding</h5>
 
-
-        <div class="table-responsive small" style="font-weight: bold">
-            <table>
-                <tr class="p-1">
-                    <td class="p-2">
-                        <input type="checkbox" class="form-check-input" disabled id="agreementDocCheck"
+        <form id="myForm4" enctype="multipart/form-data">
+            <div class="table-responsive small" style="font-weight: bold">
+                <table>
+                    <tr class="p-1">
+                        <td class="p-2">
+                            <input type="checkbox" class="form-check-input" disabled id="agreementDocCheck"
+                            @if (Model.IsAgreementDoc)
+                            {
+                                @: checked
+                            } />
+                        </td>
+                        <td class="p-2 px-3">
+                            Independent Contractor Agreement
+                        </td>
+                        <td class="p-2">
+                            <input type="file" hidden id="uploadAgreement" accept="application/pdf" asp-for="agreementDoc" />
+                            <label for="uploadAgreement" class="btn btn-info shadow-none p-1">
+                                <div class="d-flex align-items-center shadow-none text-white">
+                                    <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
+                                </div>
+                            </label>
+                        </td>
                         @if (Model.IsAgreementDoc)
                         {
-                            @: checked
-                        } />
-                    </td>
-                    <td class="p-2 px-3">
-                        Independent Contractor Agreement
-                    </td>
-                    <td class="p-2">
-                        <input type="file" hidden id="uploadAgreement" />
-                        <label for="uploadAgreement" class="btn btn-info shadow-none p-1">
-                            <div class="d-flex align-items-center shadow-none text-white">
-                                <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
-                            </div>
-                        </label>
-                    </td>
-                    @if (Model.IsAgreementDoc)
-                    {
-                        var name = Model.providerId + "_agreement.pdf";
-                        <td class="p-2" id="agreementViewBtn">
-                            <a href="~/upload/@name" class="text-decoration-none">
+                            var name = Model.providerId + "_agreement.pdf";
+                            <td class="p-2" id="agreementViewBtn">
+                                <a href="~/upload/@name" class="text-decoration-none">
+                                    <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
+                                        <i class="bi bi-eye-fill"></i>
+                                        <span class="d-none d-md-block ps-2">View</span>
+                                    </button>
+                                </a>
+                            </td>
+                        }
+                        <td class="p-2 d-none" id="uploadedAgreementViewBtn">
+                            <a href="" class="text-decoration-none">
                                 <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
                                     <i class="bi bi-eye-fill"></i>
                                     <span class="d-none d-md-block ps-2">View</span>
                                 </button>
                             </a>
                         </td>
-                    }
-                    <td class="p-2 d-none" id="uploadedAgreementViewBtn">
-                        <a href="" class="text-decoration-none">
-                            <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
-                                <i class="bi bi-eye-fill"></i>
-                                <span class="d-none d-md-block ps-2">View</span>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="p-1">
-                    <td class="p-2">
-                        <input type="checkbox" class="form-check-input" disabled id="backgroundDocCheck"
+                    </tr>
+                    <tr class="p-1">
+                        <td class="p-2">
+                            <input type="checkbox" class="form-check-input" disabled id="backgroundDocCheck"
+                            @if (Model.IsBackgroundDoc)
+                            {
+                                @: checked
+                            } />
+                        </td>
+                        <td class="p-2 px-3">
+                            Background Check
+                        </td>
+                        <td class="p-2">
+                            <input type="file" hidden id="uploadBackground" accept="application/pdf" asp-for="backgroundDoc" />
+                            <label for="uploadBackground" class="btn btn-info shadow-none p-1">
+                                <div class="d-flex align-items-center shadow-none text-white">
+                                    <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
+                                </div>
+                            </label>
+                        </td>
                         @if (Model.IsBackgroundDoc)
                         {
-                            @: checked
-                        } />
-                    </td>
-                    <td class="p-2 px-3">
-                        Background Check
-                    </td>
-                    <td class="p-2">
-                        <input type="file" hidden id="uploadBackground" />
-                        <label for="uploadBackground" class="btn btn-info shadow-none p-1">
-                            <div class="d-flex align-items-center shadow-none text-white">
-                                <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
-                            </div>
-                        </label>
-                    </td>
-                    @if (Model.IsBackgroundDoc)
-                    {
-                        var name = Model.providerId + "_background.pdf";
-                        <td class="p-2" id="backgroundViewBtn">
-                            <a href="~/upload/@name" class="text-decoration-none">
+                            var name = Model.providerId + "_background.pdf";
+                            <td class="p-2" id="backgroundViewBtn">
+                                <a href="~/upload/@name" class="text-decoration-none">
+                                    <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
+                                        <i class="bi bi-eye-fill"></i>
+                                        <span class="d-none d-md-block ps-2">View</span>
+                                    </button>
+                                </a>
+                            </td>
+                        }
+                        <td class="p-2 d-none" id="uploadedBackgroundViewBtn">
+                            <a href="" class="text-decoration-none">
                                 <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
                                     <i class="bi bi-eye-fill"></i>
                                     <span class="d-none d-md-block ps-2">View</span>
                                 </button>
                             </a>
                         </td>
-                    }
-                    <td class="p-2 d-none" id="uploadedBackgroundViewBtn">
-                        <a href="" class="text-decoration-none">
-                            <button type="button" class="p-1 px-2 text-white bg-info rounded border-info d-flex align-items-center h-100">
-                                <i class="bi bi-eye-fill"></i>
-                                <span class="d-none d-md-block ps-2">View</span>
-                            </button>
-                        </a>
-                    </td>
-
-                </tr>
-                <tr class="p-1">
+                    </tr>
+                    @*                     <tr class="p-1">
                     <td class="p-2">
-                        <input type="checkbox" class="form-check-input" disabled
-                        @if (Model.IsCredentialDoc)
-                        {
-                            @: checked
-                        }
-                               readonly />
+                    <input type="checkbox" class="form-check-input" disabled
+                    @if (Model.IsCredentialDoc)
+                    {
+                    @: checked
+                    }
+                    readonly />
                     </td>
                     <td class="p-2 px-3">
-                        HIPAA Compliance
+                    HIPAA Compliance
                     </td>
                     <td class="p-2">
-                        <button type="button" data-url="/AdminArea/AdminProviderTab/UploadCredentialdoc" class="p-1 px-2 text-white bg-info fileuploadbtn rounded border-info d-flex align-items-center h-100">
-                            <i class="bi bi-cloud-arrow-up"></i>
-                            <span class="d-none d-lg-block ps-2">Upload</span>
-                        </button>
+                    <button type="button" class="p-1 px-2 text-white bg-info fileuploadbtn rounded border-info d-flex align-items-center h-100">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <span class="d-none d-lg-block ps-2">Upload</span>
+                    </button>
                     </td>
                     @if (Model.IsCredentialDoc)
                     {
-                        <td class="p-2">
-                            <button type="button" data-url="/AdminArea/AdminProviderTab/VeiwCredentialdoc" class="p-1 px-2 text-white bg-info fileviewbtn rounded border-info d-flex align-items-center h-100">
-                                <i class="bi  bi-eye-fill"></i>
-                                <span class="d-none d-lg-block ps-2">View</span>
-                            </button>
-                        </td>
-                    }
-                </tr>
-                <tr class="p-1">
                     <td class="p-2">
-                        <input type="checkbox" class="form-check-input" disabled id="nonDisclosureDocCheck"
+                    <button type="button" data-url="/AdminArea/AdminProviderTab/VeiwCredentialdoc" class="p-1 px-2 text-white bg-info fileviewbtn rounded border-info d-flex align-items-center h-100">
+                    <i class="bi  bi-eye-fill"></i>
+                    <span class="d-none d-lg-block ps-2">View</span>
+                    </button>
+                    </td>
+                    }
+                    </tr> *@
+                    <tr class="p-1">
+                        <td class="p-2">
+                            <input type="checkbox" class="form-check-input" disabled id="nonDisclosureDocCheck"
+                            @if (Model.IsNonDisclosureDoc)
+                            {
+                                @: checked
+                            }
+                                   readonly />
+                        </td>
+                        <td class="p-2 px-3">
+                            Non-Disclosure Agreement
+                        </td>
+                        <td class="p-2">
+                            <input type="file" hidden id="nonDisclosure" accept="application/pdf" asp-for="nonDisclosureDoc" />
+                            <label for="nonDisclosure" class="btn btn-info shadow-none p-1">
+                                <div class="d-flex align-items-center shadow-none text-white">
+                                    <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
+                                </div>
+                            </label>
+                        </td>
                         @if (Model.IsNonDisclosureDoc)
                         {
-                            @: checked
+                            var name = Model.providerId + "_nonDisclosure.pdf";
+                            <td class="p-2" id="nonDisclosureViewBtn">
+                                <a href="~/upload/@name" class="text-decoration-none">
+                                    <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
+                                        <i class="bi  bi-eye-fill"></i>
+                                        <span class="d-none d-lg-block ps-2">View</span>
+                                    </button>
+                                </a>
+                            </td>
                         }
-                               readonly />
-                    </td>
-                    <td class="p-2 px-3">
-                        Non-Disclosure Agreement
-                    </td>
-                    <td class="p-2">
-                        <input type="file" hidden id="nonDisclosure" />
-                        <label for="nonDisclosure" class="btn btn-info shadow-none p-1">
-                            <div class="d-flex align-items-center shadow-none text-white">
-                                <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
-                            </div>
-                        </label>
-                    </td>
-                    @if (Model.IsNonDisclosureDoc)
-                    {
-                        var name = Model.providerId + "_nonDisclosure.pdf";
-                        <td class="p-2" id="nonDisclosureViewBtn">
-                            <a href="~/upload/@name" class="text-decoration-none">
+                        <td class="p-2 d-none" id="uploadedNonDisclosureViewBtn">
+                            <a href="" class="text-decoration-none">
                                 <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
                                     <i class="bi  bi-eye-fill"></i>
                                     <span class="d-none d-lg-block ps-2">View</span>
                                 </button>
                             </a>
                         </td>
-                    }
-                    <td class="p-2 d-none" id="uploadedNonDisclosureViewBtn">
-                        <a href="" class="text-decoration-none">
-                            <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
-                                <i class="bi  bi-eye-fill"></i>
-                                <span class="d-none d-lg-block ps-2">View</span>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="p-1">
-                    <td class="p-2">
-                        <input type="checkbox" class="form-check-input" disabled id="licenseCheck"
+                    </tr>
+                    <tr class="p-1">
+                        <td class="p-2">
+                            <input type="checkbox" class="form-check-input" disabled id="licenseCheck"
+                            @if (Model.IsLicenseDoc)
+                            {
+                                @: checked
+                            }
+                                   readonly />
+                        </td>
+                        <td class="p-2 px-3">
+                            License Document
+                        </td>
+                        <td class="p-2">
+                            <input type="file" hidden id="license" accept="application/pdf" asp-for="licenseDoc" />
+                            <label for="license" class="btn btn-info shadow-none p-1">
+                                <div class="d-flex align-items-center shadow-none text-white">
+                                    <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
+                                </div>
+                            </label>
+                        </td>
                         @if (Model.IsLicenseDoc)
                         {
-                            @: checked
+                            var name = Model.providerId + "_license.pdf";
+                            <td class="p-2" id="licenseViewBtn">
+                                <a href="~/upload/@name">
+                                    <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
+                                        <i class="bi  bi-eye-fill"></i>
+                                        <span class="d-none d-lg-block ps-2">View</span>
+                                    </button>
+                                </a>
+                            </td>
                         }
-                               readonly />
-                    </td>
-                    <td class="p-2 px-3">
-                        License Document
-                    </td>
-                    <td class="p-2">
-                        <input type="file" hidden id="license" />
-                        <label for="license" class="btn btn-info shadow-none p-1">
-                            <div class="d-flex align-items-center shadow-none text-white">
-                                <i class="bi bi-cloud-arrow-up p-1"></i><div class="d-none d-md-block">Upload</div>
-                            </div>
-                        </label>
-                    </td>
-                    @if (Model.IsLicenseDoc)
-                    {
-                        var name = Model.providerId + "_license.pdf";
-                        <td class="p-2" id="licenseViewBtn">
-                            <a href="~/upload/@name">
+                        <td class="p-2 d-none" id="uploadedLicenseViewBtn">
+                            <a href="" class="text-decoration-none">
                                 <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
                                     <i class="bi  bi-eye-fill"></i>
                                     <span class="d-none d-lg-block ps-2">View</span>
                                 </button>
                             </a>
                         </td>
-                    }
-                    <td class="p-2 d-none" id="uploadedLicenseViewBtn">
-                        <a href="" class="text-decoration-none">
-                            <button type="button" class="p-1 px-2 text-white bg-info rounded fileviewbtn border-info d-flex align-items-center h-100">
-                                <i class="bi  bi-eye-fill"></i>
-                                <span class="d-none d-lg-block ps-2">View</span>
-                            </button>
-                        </a>
-                    </td>
-                </tr>
-            </table>
-
-
-        </div>
-        <input type="file" id="SelectFileToUpload" accept=".pdf" hidden />
+                    </tr>
+                </table>
+            </div>
+        </form>
+        <input type="file" id="SelectFileToUpload" hidden />
         <hr class="text-muted" style="border : 1px solid black" />
         <div class="d-flex justify-content-end mb-3">
 
             <div class="mx-1 d-flex">
-                <button type="button" class="btn btn-info shadow-none text-white viewNotes small px-3">
+                <button type="button" class="btn btn-info shadow-none text-white px-3" id="saveDoc">
                     Save
                 </button>
             </div>
             <div class="mx-1 d-flex">
-                <button type="button" class="btn btn-info shadow-none border-0 text-white bg-danger small px-3">
+                <button type="button" class="btn btn-info shadow-none border-0 text-white bg-danger small px-3 deleteAccountBtn">
                     Delete Account
                 </button>
             </div>
@@ -561,9 +549,6 @@
     </div>
 
 </div>
-
-
-
 
 <script>
     var flag = 0;
@@ -614,6 +599,28 @@
             $('#signError').html("*Please upload photo");
         }
     })
+
+
+    $('.deleteAccountBtn').on('click', function (e) {
+        e.preventDefault();
+
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                console.log("Yes Btn");
+            } else {
+                // User clicked the cancel button or closed the dialog
+                console.log('Cancelled!');
+            }
+        });
+    });
+
 
     function convertCanvasToImage() {
         const canvas = document.getElementById("sig-canvas");
@@ -667,7 +674,6 @@
                 mousePos = getMousePos(canvas, e);
             }, false);
 
-            // Add touch event support for mobile
             canvas.addEventListener("touchstart", function (e) {
 
             }, false);
@@ -721,7 +727,6 @@
                 }
             }
 
-            // Prevent scrolling when touching the canvas
             document.body.addEventListener("touchstart", function (e) {
                 if (e.target == canvas) {
                     e.preventDefault();
@@ -747,7 +752,6 @@
                 canvas.width = canvas.width;
             }
 
-            // Set up the UI
             var clearBtn = document.getElementById("sig-clearBtn");
             clearBtn.addEventListener("click", function (e) {
                 clearCanvas();
@@ -843,6 +847,7 @@
                         $('#submitBtn2').css('display', 'flex')
                         $('#saveBtn2').css('display', 'none')
                         $('#cancelBtn2').css('display', 'none')
+                        toastr.success("Data updated successfully")
                     },
                     error: function (xhr, status, error) {
                         // Handle error response
@@ -877,12 +882,10 @@
         })
 
         $('#saveBtn3').click(function (e) {
-            console.log($('#photoLabel').text())
-            console.log($('#signLabel').text())
-
             if ($('#photoLabel').text() == "No item selected" && $('#signLabel').text() == "No item selected") {
                 uploadFlag = 1;
             }
+
             if (uploadFlag == 1) {
                 e.preventDefault();
 
@@ -908,7 +911,6 @@
                         contentType: false,
 
                         success: function (response) {
-                            console.log(response)
                             $('#myForm3 .toEnable').removeClass("btn-info");
                             $('#myForm3 .toEnable div').removeClass("text-white");
                             $('.data3').each(function () {
@@ -919,6 +921,7 @@
                             $('#cancelBtn3').css('display', 'none')
                             $('#signError').html("");
                             $('#photoError').html("");
+                            toastr.success("Data updated successfully")
                         },
                         error: function (xhr, status, error) {
                             // Handle error response
@@ -931,6 +934,28 @@
             }
 
         });
+
+        $('#saveDoc').click(function (e) {
+            const formData = new FormData();
+            formData.append('agreementDoc', $('#uploadAgreement')[0].files[0]);
+            formData.append('backgroundDoc', $('#uploadBackground')[0].files[0]);
+            formData.append('nonDisclosureDoc', $('#nonDisclosure')[0].files[0]);
+            formData.append('licenseDoc', $('#license')[0].files[0]);
+            formData.append('providerId', $('#providerId').val());
+            $.ajax({
+                type: 'POST',
+                url: '/Provider/UploadDocuments',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    toastr.success("Document uploaded successfully.");
+                },
+                error: function (xhr, status, error) {
+                    console.log(error + "At edit provider page saveDoc btn.");
+                }
+            });
+        })
 
     })
 
@@ -990,7 +1015,6 @@
         };
         reader.readAsDataURL($('#license')[0].files[0]);
     })
-
 
 </script>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

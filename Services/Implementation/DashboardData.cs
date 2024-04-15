@@ -1,4 +1,5 @@
-﻿using Data.DataContext;
+﻿using Common.Helper;
+using Data.DataContext;
 using Data.Entity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -142,7 +143,7 @@ namespace Services.Implementation
             var requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
             var regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
             var regionList = await _context.Regions.ToListAsync();
-            
+
             var data = new CaseActionDetails
             {
                 //ConfirmationNumber = request.Confirmationnumber,
@@ -337,12 +338,36 @@ namespace Services.Implementation
         public async Task<AdminProfile> AdminProfileData(int adminId)
         {
             AdminProfile adminData = new AdminProfile();
-            adminData.admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == adminId);
-            List<Region> regionList = await _context.Regions.ToListAsync();
-            adminData.regionlist = regionList;
-            List<Adminregion> adminRegions = await _context.Adminregions.Where(a => a.Adminid == adminId).ToListAsync();
-            adminData.adminregionlist = adminRegions;
+
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == adminId);
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == admin.Aspnetuserid);
+            if (admin != null)
+            {
+                adminData.admin = admin;
+            }
+            if (aspnetuser != null)
+            {
+                adminData.userName = aspnetuser.Username;
+                string decryptedPassword = EncryptDecryptHelper.Decrypt(aspnetuser.Passwordhash!);
+                adminData.password = decryptedPassword;
+            }
+            adminData.regionlist = await _context.Regions.ToListAsync();
+            adminData.adminregionlist = await _context.Adminregions.Where(a => a.Adminid == adminId).ToListAsync();
+            adminData.rolesList = await _context.Roles.Where(a => a.Accounttype == 1).ToListAsync();
             return adminData;
+        }
+
+        public async Task UpdateAdminPassword(int adminId , string password)
+        {
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Adminid == adminId);
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == admin!.Aspnetuserid);
+            if(aspnetuser != null)
+            {
+                string encryptedPassword = EncryptDecryptHelper.Encrypt(password);
+                aspnetuser.Passwordhash = encryptedPassword;
+                _context.Update(aspnetuser);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task UpdateAdminInfo(int adminId, AdminInfo obj)
@@ -606,7 +631,7 @@ namespace Services.Implementation
 
             requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a => a.Request.Requesttype).ToListAsync();
 
-            requestclients = requestclients.Where( a =>
+            requestclients = requestclients.Where(a =>
                                 (obj.selectedStatus == 0 || a.Request.Status == obj.selectedStatus) &&
                                 (string.IsNullOrWhiteSpace(obj.searchedPatient) || a.Firstname.ToLower().Contains(obj.searchedPatient.ToLower()) || a.Lastname.ToLower().Contains(obj.searchedPatient.ToLower())) &&
                                 (obj.selectedType == 0 || a.Request.Requesttypeid == obj.selectedType) &&
@@ -629,7 +654,7 @@ namespace Services.Implementation
             userList = await _context.Users.ToListAsync();
 
             userList = userList.Where(a =>
-            ((string.IsNullOrWhiteSpace(obj.firstName)) || a.Firstname.ToLower().Contains(obj.firstName.ToLower()) ) &&
+            ((string.IsNullOrWhiteSpace(obj.firstName)) || a.Firstname.ToLower().Contains(obj.firstName.ToLower())) &&
             ((string.IsNullOrWhiteSpace(obj.lastName)) || a.Lastname.ToLower().Contains(obj.lastName.ToLower())) &&
             ((string.IsNullOrWhiteSpace(obj.mobile)) || a.Mobile.ToLower().Contains(obj.mobile.ToLower())) &&
             ((string.IsNullOrWhiteSpace(obj.email)) || a.Email.ToLower().Contains(obj.email.ToLower()))).ToList();
@@ -641,7 +666,7 @@ namespace Services.Implementation
         public async Task<ExplorePatientHistory> ExplorePatientHistory(int patientId)
         {
             ExplorePatientHistory dataObj = new ExplorePatientHistory();
-            dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Where(a=>a.Request.Userid == patientId).Include(a=>a.Request.Physician).ToListAsync();
+            dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Userid == patientId).Include(a => a.Request.Physician).ToListAsync();
             return dataObj;
         }
 

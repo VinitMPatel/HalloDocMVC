@@ -20,5 +20,6 @@ namespace Services.Contracts
         Task UpdateBillingInfo(EditProviderViewModel obj);
         Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
         Task UpdateProfile(EditProviderViewModel obj);
+        Task UploadNewDocument(EditProviderViewModel obj);
     }
 }

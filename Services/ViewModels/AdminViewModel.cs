@@ -16,8 +16,13 @@ namespace Services.ViewModels
 
         public List<Adminregion> adminregionlist { get; set; }
 
+        public string userName {  get; set; }
+
+        public string password { get; set; }
 
         public List<Region> regionlist { get; set; }
+
+        public List<Role> rolesList {  get; set; }
 
     }
 

@@ -110,6 +110,8 @@ namespace Services.ViewModels
 
         public IFormFile? nonDisclosureDoc { get; set; }
 
+        public IFormFile? licenseDoc {  get; set; }
+
         public string? photoName { get; set; }
 
         public string? signName { get; set; }

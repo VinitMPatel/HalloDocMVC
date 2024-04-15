@@ -322,23 +322,27 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> AdminProfile()
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
             AdminProfile adminData = await dashboardData.AdminProfileData(adminId);
             return View(adminData);
         }
 
-        public async Task<IActionResult> UpdateAdminInfo(AdminInfo obj)
+        public async Task AdminPasswordReset(string password)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            await dashboardData.UpdateAdminInfo(adminId, obj);
-            return RedirectToAction("AdminProfile");
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
+            await dashboardData.UpdateAdminPassword(adminId, password);
         }
 
-        public async Task<IActionResult> UpdateBillingInfo(BillingInfo obj)
+        public async Task UpdateAdminInfo(AdminInfo obj)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
+            await dashboardData.UpdateAdminInfo(adminId, obj);
+        }
+
+        public async Task UpdateBillingInfo(BillingInfo obj)
+        {
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
             await dashboardData.UpdateBillingInfo(adminId, obj);
-            return RedirectToAction("AdminProfile");
         }
         
 
@@ -363,7 +367,7 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public async Task AddNewRole(List<int> menus , short accountType, string roleName)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
+            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
             await dashboardData.AddNewRole(menus , accountType , roleName , adminId);
         }
 

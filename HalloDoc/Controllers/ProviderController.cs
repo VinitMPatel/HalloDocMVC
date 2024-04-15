@@ -39,7 +39,7 @@ namespace HalloDoc.Controllers
         public async Task<IActionResult> ToStopNotification(List<int> toStopNotification, List<int> toNotification)
         {
             await providerServices.ToStopNotification(toStopNotification, toNotification);
-            return RedirectToAction("Provider");
+            return RedirectToAction("ProviderTable");
         }
 
         public IActionResult EditProvider(int physicianId) { 
@@ -62,6 +62,11 @@ namespace HalloDoc.Controllers
         public async Task UpdateProfile(EditProviderViewModel obj)
         {
             await providerServices.UpdateProfile(obj);
+        }
+
+        public async Task UploadDocuments(EditProviderViewModel obj)
+        {
+            await providerServices.UploadNewDocument(obj);
         }
 
         public async Task<IActionResult> CreateProvider()

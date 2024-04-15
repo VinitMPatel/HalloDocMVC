@@ -63,6 +63,6 @@ namespace Services.Contracts
         Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj);
         Task<PatientHistory> GetPatientHistoryData(PatientHistory obj);
         Task<ExplorePatientHistory> ExplorePatientHistory(int userId);
-
+        Task UpdateAdminPassword(int adminId, string password);
     }
 }

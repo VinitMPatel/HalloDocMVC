@@ -20,24 +20,25 @@
 
             <div class="p-2 col-sm-6 col-12">
                 <div class="form-floating ">
-                    <input type="text" class="form-control" placeholder="User Name" name="contact" disabled asp-for="admin.Firstname">
+                    <input type="text" class="form-control" placeholder="User Name" name="contact" disabled asp-for="userName">
                     <label class="FloatingInput">User Name</label>
                 </div>
             </div>
 
             <div class="p-2 col-sm-6 col-12">
                 <div class="form-floating ">
-                    <input type="password" class="form-control" placeholder="Password">
+                    <input type="text" class="form-control" placeholder="Password" asp-for="password" id="adminPassword">
                     <label class="FloatingInput">Password</label>
+                    <i class="bi bi-eye-fill eyeIcn"></i>
                 </div>
             </div>
 
             <div class="col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
+                    <select class="form-select businesses" aria-label="Floating label select example" disabled>
                         <option value="" selected>Active</option>
                     </select>
-                    <label for="floatingSelect">
+                    <label class="FloatingInput">
                         Status
                     </label>
                 </div>
@@ -45,17 +46,19 @@
 
             <div class="col-sm-6 col-12 p-2">
                 <div class="form-floating">
-                    <select class="form-select businesses" aria-label="Floating label select example" id="floatingSelect" disabled>
-                        <option value="" selected>Master Admin</option>
+                    <select class="form-select businesses" aria-label="Floating label select example" disabled>
+                        <option value="" selected disabled>Select Role</option>
+                        @foreach(var item in Model.rolesList)
+                        {
+                            <option value="@item.Roleid">@item.Name</option>
+                        }
                     </select>
-                    <label for="floatingSelect">
-                        Role
-                    </label>
+                    <label class="FloatingInput">Role</label>
                 </div>
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
-                <button type="button" class="btn bg-tranparent border-info text-info">Reset Password</button>
+                <button type="button" class="btn bg-tranparent border-info text-info shadow-none" id="resetPasswordBtn">Reset Password</button>
             </div>
         </div>
 
@@ -202,6 +205,16 @@
         $('#cancelBtn1').css('display', 'none');
         $('#saveBtn1').css('display', 'none');
 
+        $('#resetPasswordBtn').click(function(){
+            $.ajax({
+                url : '/Admin/AdminPasswordReset',
+                data: {"password" : $('#adminPassword').val()},
+                success: function(){
+                    toastr.success("Password has reseted successfully.")
+                }
+            })
+        })
+
         $('#submitBtn1').on('click', function () {
             $('.data1').each(function () {
                 $(this).prop('disabled', false);
@@ -256,6 +269,7 @@
 
 
         $('#saveBtn1').on('click', function (e) {
+
             $('input[type="checkbox"]:checked').each(function () {
                 selectedregion.push($(this).val());
             });
@@ -284,6 +298,9 @@
                     data: adminInfo,
                     contentType: "application/json",
                     traditional: true,
+                    success : function(){
+                        toastr.success("Data updated successfully.")
+                    }
                 })
             }
             else {
@@ -314,7 +331,10 @@
                 $('#billingContactWarning').html("")
                 $.ajax({
                     url: '/Admin/UpdateBillingInfo',
-                    data: billingInfo
+                    data: billingInfo,
+                    success : function(){
+                        toastr.success("Data updates successfully.")
+                    }
                 })
             }
             else {
@@ -429,5 +449,19 @@
 
             }
         }
+    })
+
+    $('.eyeIcn').on('click',function(){
+        if ($('#adminPassword').attr('type') == "password"){
+            $('#adminPassword').prop('type', 'text');
+            $(this).addClass('bi-eye-slash-fill');
+            $(this).removeClass('bi-eye-fill');
+        }
+        else{
+            $('#adminPassword').prop('type', 'password');
+            $(this).addClass('bi-eye-fill');
+            $(this).removeClass('bi-eye-slash-fill');
+        }
+      
     })
 </script>

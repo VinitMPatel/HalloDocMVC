@@ -48,6 +48,52 @@ namespace Services.Implementation
             obj.physiciannotificationid = phynotificationid;
             return obj;
         }
+        public EditProviderViewModel EditProvider(int physicianId)
+        {
+            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
+            List<Region> regions = _context.Regions.ToList();
+            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
+            EditProviderViewModel editProviderViewModel = new EditProviderViewModel
+            {
+                firstName = physician.Firstname,
+                lastName = physician.Lastname,
+                email = physician.Email,
+                contactNumber = physician.Mobile,
+                medicalLecense = physician.Medicallicense,
+                NPINumber = physician.Npinumber,
+                syncEmail = physician.Syncemailaddress,
+                address1 = physician.Address1,
+                address2 = physician.Address2,
+                city = physician.City,
+                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid).Name,
+                zipcode = physician.Zip,
+                billingContact = physician.Altphone,
+                businessName = physician.Businessname,
+                businessSite = physician.Businesswebsite,
+                regionList = regions,
+                physicianRegionlist = physicianregions,
+                providerId = physicianId,
+                photoName = physician.Photo,
+                signName = physician.Signature
+            };
+            if (physician.Isagreementdoc != null && physician.Isagreementdoc[0] == true)
+            {
+                editProviderViewModel.IsAgreementDoc = true;
+            }
+            if (physician.Isnondisclosuredoc != null && physician.Isnondisclosuredoc[0] == true)
+            {
+                editProviderViewModel.IsNonDisclosureDoc = true;
+            }
+            if(physician.Isbackgrounddoc != null && physician.Isbackgrounddoc[0] == true)
+            {
+                editProviderViewModel.IsBackgroundDoc = true;
+            }
+            if(physician.Islicensedoc != null && physician.Islicensedoc[0] == true)
+            {
+                editProviderViewModel.IsLicenseDoc = true;
+            }
+            return editProviderViewModel;
+        }
 
         public async Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
         {
@@ -82,7 +128,6 @@ namespace Services.Implementation
                 await _context.SaveChangesAsync();
             }
         }
-
 
         public async Task UpdateBillingInfo(EditProviderViewModel obj)
         {
@@ -129,43 +174,39 @@ namespace Services.Implementation
             }
         }
 
-        public EditProviderViewModel EditProvider(int physicianId)
+        public async Task UploadNewDocument(EditProviderViewModel obj)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-            List<Region> regions = _context.Regions.ToList();
-            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
-            EditProviderViewModel editProviderViewModel = new EditProviderViewModel
+            int physicianId = obj.providerId;
+            Physician? insertedPhysician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
+            if (insertedPhysician != null)
             {
-                firstName = physician.Firstname,
-                lastName = physician.Lastname,
-                email = physician.Email,
-                contactNumber = physician.Mobile,
-                medicalLecense = physician.Medicallicense,
-                NPINumber = physician.Npinumber,
-                syncEmail = physician.Syncemailaddress,
-                address1 = physician.Address1,
-                address2 = physician.Address2,
-                city = physician.City,
-                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid).Name,
-                zipcode = physician.Zip,
-                billingContact = physician.Altphone,
-                businessName = physician.Businessname,
-                businessSite = physician.Businesswebsite,
-                regionList = regions,
-                physicianRegionlist = physicianregions,
-                providerId = physicianId,
-                photoName = physician.Photo,
-                signName = physician.Signature
-            };
-            if (physician.Isagreementdoc != null && physician.Isagreementdoc[0] == true)
-            {
-                editProviderViewModel.IsAgreementDoc = true;
+                if (obj.agreementDoc != null)
+                {
+                    string fileName = physicianId + "_agreement.pdf";
+                    UploadDocument(fileName, obj.agreementDoc);
+                    insertedPhysician.Isagreementdoc = new BitArray(new[] { true });
+                }
+                if (obj.backgroundDoc != null)
+                {
+                    string fileName = physicianId + "_background.pdf";
+                    UploadDocument(fileName, obj.backgroundDoc);
+                    insertedPhysician.Isbackgrounddoc = new BitArray(new[] { true });
+                }
+                if (obj.nonDisclosureDoc != null)
+                {
+                    string fileName = physicianId + "_nonDisclosure.pdf";
+                    UploadDocument(fileName, obj.nonDisclosureDoc);
+                    insertedPhysician.Isnondisclosuredoc = new BitArray(new[] { true });
+                }
+                if(obj.licenseDoc != null)
+                {
+                    string fileName = physicianId + "_license.pdf";
+                    UploadDocument(fileName, obj.licenseDoc);
+                    insertedPhysician.Islicensedoc = new BitArray(new[] { true });
+                }
+                _context.Update(insertedPhysician);
+                await _context.SaveChangesAsync();
             }
-            if (physician.Isnondisclosuredoc != null && physician.Isnondisclosuredoc[0] == true)
-            {
-                editProviderViewModel.IsNonDisclosureDoc = true;
-            }
-            return editProviderViewModel;
         }
 
         public async Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification)
@@ -195,7 +236,7 @@ namespace Services.Implementation
         {
             EditProviderViewModel obj = new EditProviderViewModel();
             obj.regionList = await _context.Regions.ToListAsync();
-            obj.rolesList = await _context.Roles.Where(a=>a.Accounttype == 2).ToListAsync();
+            obj.rolesList = await _context.Roles.Where(a => a.Accounttype == 2).ToListAsync();
             return obj;
         }
 
@@ -257,53 +298,53 @@ namespace Services.Implementation
                 Businessname = obj.businessName,
                 Businesswebsite = obj.businessSite,
                 Npinumber = obj.NPINumber,
-                Roleid = obj.role
+                Roleid = obj.role,
+                Islicensedoc = new BitArray(new[] { false })
             };
-            if(obj.photo != null)
+            if (obj.photo != null)
             {
                 physician.Photo = obj.photo.FileName;
                 UploadDocument(obj.photo.FileName, obj.photo);
+            }
+            if (obj.agreementDoc == null)
+            {
+                physician.Isagreementdoc = new BitArray(new[] { false });
+            }
+            if (obj.backgroundDoc == null)
+            {
+                physician.Isbackgrounddoc = new BitArray(new[] { false });
+            }
+            if (obj.nonDisclosureDoc == null)
+            {
+                physician.Isnondisclosuredoc = new BitArray(new[] { false });
             }
             await _context.AddAsync(physician);
             await _context.SaveChangesAsync();
 
             int physicianId = physician.Physicianid;
+            Physician? insertedPhysician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
+            if (insertedPhysician != null)
+            {
 
-            if(obj.agreementDoc != null)
-            {
-                string fileName = physicianId + "_agreement.pdf";
-                UploadDocument(fileName, obj.agreementDoc);
-                Physician? insertedPhysician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-                if (insertedPhysician != null)
+                if (obj.agreementDoc != null)
                 {
+                    string fileName = physicianId + "_agreement.pdf";
+                    UploadDocument(fileName, obj.agreementDoc);
                     insertedPhysician.Isagreementdoc = new BitArray(new[] { true });
-                    _context.Update(insertedPhysician);
-                    _context.SaveChanges();
                 }
-            }
-            if (obj.backgroundDoc != null)
-            {
-                string fileName = physicianId + "_background.pdf";
-                UploadDocument(fileName, obj.backgroundDoc);
-                Physician? insertedPhysician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-                if (insertedPhysician != null)
+                if (obj.backgroundDoc != null)
                 {
-                    insertedPhysician.Isagreementdoc = new BitArray(new[] { true });
-                    _context.Update(insertedPhysician);
-                    _context.SaveChanges();
+                    string fileName = physicianId + "_background.pdf";
+                    UploadDocument(fileName, obj.backgroundDoc);
+                    insertedPhysician.Isbackgrounddoc = new BitArray(new[] { true });
                 }
-            }
-            if (obj.nonDisclosureDoc != null)
-            {
-                string fileName = physicianId + "_nonDisclosure.pdf";
-                UploadDocument(fileName, obj.nonDisclosureDoc);
-                Physician? insertedPhysician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-                if (insertedPhysician != null)
+                if (obj.nonDisclosureDoc != null)
                 {
-                    insertedPhysician.Isagreementdoc = new BitArray(new[] { true });
-                    _context.Update(insertedPhysician);
-                    _context.SaveChanges();
+                    string fileName = physicianId + "_nonDisclosure.pdf";
+                    UploadDocument(fileName, obj.nonDisclosureDoc);
+                    insertedPhysician.Isnondisclosuredoc = new BitArray(new[] { true });
                 }
+                _context.Update(insertedPhysician);
             }
 
             Physiciannotification physiciannotification = new Physiciannotification();
@@ -311,9 +352,9 @@ namespace Services.Implementation
             physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
             await _context.AddAsync(physiciannotification);
 
-            if(selectedRegion.Count() > 0)
+            if (selectedRegion.Count() > 0)
             {
-                foreach(var item in selectedRegion)
+                foreach (var item in selectedRegion)
                 {
                     Physicianregion physicianregion = new Physicianregion();
                     physicianregion.Physicianid = physicianId;
@@ -321,10 +362,11 @@ namespace Services.Implementation
                     await _context.AddAsync(physicianregion);
                 }
             }
+
             await _context.SaveChangesAsync();
         }
 
-        public void UploadDocument(string fileName , IFormFile file)
+        public void UploadDocument(string fileName, IFormFile file)
         {
             string path = _env.WebRootPath + "/upload/" + fileName;
             FileStream stream = new FileStream(path, FileMode.Create);
