@@ -4,7 +4,7 @@
 @{
 }
 <Partial name="_Notification" />
-@model Data.Entity.Aspnetuser
+@model Services.ViewModels.LoginPerson
 <div class="container-fluid">
     <div class="row" style="overflow : hidden">
 
@@ -20,26 +20,29 @@
                 </div>
 
                 <div class="login d-flex justify-content-center flex-column mt-5 w-100">
-                    <div class="h3 mt-3 d-flex justify-content-center">login to your account</div>
 
-                    <form asp-action="AdminValidate" asp-controller="Admin">
-                    <div class="form-floating mb-3 mt-3">
-                        <input type="email" class="form-control" id="floatinginput" placeholder="name@example.com" asp-for="Email">
-                        <label for="floatinginput">email</label>
-                        <i class="bi bi-person-circle login-icon"></i>
-                            <span class="small text-danger">@TempData["Email"]</span>
-                    </div>
+                    <div class="h3 mt-3 d-flex justify-content-center">Login to your account</div>
 
-                    <div class="form-floating">
-                        <input type="password" class="form-control" id="see" placeholder="password" asp-for="Passwordhash">
-                        <label for="floatingpassword">password</label>
-                        <div class="login-icon" onclick="fun()">
-                            <i class="bi bi-eye-slash-fill" id="eye"></i>
+                    <form asp-action="AdminLogin" asp-controller="Admin" method="post">
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="email" class="form-control" id="floatinginput" placeholder="name@example.com" asp-for="email">
+                            <label for="floatinginput">email</label>
+                            <i class="bi bi-person-circle login-icon"></i>
+                            <span class="small text-danger" id="emailError">@TempData["Email"]</span>
+                            <span class="text-danger" asp-validation-for="email"></span>
                         </div>
-                        <span class="small text-danger">@TempData["Password"]</span>
-                    </div>
 
-                    <button type="submit" class="d-flex justify-content-center btn btn-primary fields mt-3 bg-info rounded-2 border border-0 w-100">log in</button><br>
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="see" placeholder="password" asp-for="password">
+                            <label for="floatingpassword">password</label>
+                            <div class="login-icon" onclick="fun()">
+                                <i class="bi bi-eye-slash-fill" id="eye"></i>
+                            </div>
+                            <span class="small text-danger" id="passwordError">@TempData["Password"]</span>
+                            <span class="text-danger" asp-validation-for="password"></span>
+                        </div>
+
+                        <button type="submit" class="d-flex justify-content-center btn btn-primary fields mt-3 bg-info rounded-2 border border-0 w-100">log in</button><br>
                     </form>
                     <div class="d-flex justify-content-center">
                         <a asp-controller="home" asp-action="resetpwd" class="link text-info text-decoration-none">forgot password?</a>
@@ -62,7 +65,7 @@
         </div>
     </div>
 </div>
-
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
     const path = document.getElementById("eye");
     const password = document.getElementById('see')
@@ -80,5 +83,12 @@
 
         }
     }
+    $('#floatinginput').on('focus', function () {
+        $('#emailError').html("")
+    })
+
+    $('#see').on('focus', function () {
+        $('#passwordError').html("")
+    })
 </script>
 

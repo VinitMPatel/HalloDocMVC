@@ -1,0 +1,378 @@
+﻿@model Services.ViewModels.ProviderDashboard
+
+<Partial name="_Notification" />
+@{
+    Layout = "_ProviderSide";
+}
+<!-- Button trigger modal -->
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Send mail to patient for submitting the request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body d-flex flex-column gap-4">
+
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="First Name" id="firstName">
+                    <label class="FloatingInput">First Name</label>
+                    <span id="firstNameError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Last Name" id="lastName">
+                    <label class="FloatingInput">Last Name</label>
+                    <span id="lastNameError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="number" class="form-control" placeholder="9867876587" id="contactNumber" maxlength="10">
+                    <label class="FloatingInput">Contact Number</label>
+                    <span id="contactError" class="text-danger"></span>
+                </div>
+                <div class="form-floating ">
+                    <input type="email" class="form-control " placeholder="nav@example.com" id="email">
+                    <label class="FloatingInput">Email</label>
+                    <span id="emailError" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="sendLinkSubmitBtn" type="submit" class="btn btn-info text-white confirm">Send</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div id="entireContent">
+    <nav>
+        <div class="nav nav-tabs row mt-3 mx-1 pb-2" id="status-tab" role="tablist">
+            <div class="allstatus p-1">
+                <button class="w-100 nav-link dashboardtab active position-relative p-0" id="status-new" data-bs-toggle="tab" data-bs-target="#s_new" type="button" role="tab" aria-controls="s_new" aria-selected="true">
+                    <div class="p-2 new rounded">
+                        <div class="d-flex">
+                            <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">NEW</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">
+                            @Model.requestclients.Where(a => a.Request.Status == 1).Count()
+                        </div>
+                    </div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus p-1">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-pending" data-bs-toggle="tab" data-bs-target="#s_pending" type="button" role="tab" aria-controls="s_pending" aria-selected="false">
+                    <div class="p-2 pending rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">PENDING</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">
+                            @Model.requestclients.Where(a => a.Request.Status == 2).Count()
+                        </div>
+                    </div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus p-1">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-active" data-bs-toggle="tab" data-bs-target="#s_active" type="button" role="tab" aria-controls="s_active" aria-selected="false">
+                    <div class="p-2 activecase rounded-2">
+                        <div class="d-flex">
+                            <div class="px-2 icons  float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">ACTIVE</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">
+                            @Model.requestclients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).Count()
+                        </div>
+                    </div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+            <div class="allstatus p-1">
+                <button class="nav-link dashboardtab position-relative w-100 p-0" id="status-conclude" data-bs-toggle="tab" data-bs-target="#s_conclude" type="button" role="tab" aria-controls="s_conclude" aria-selected="false">
+                    <div class="p-2 conclude rounded-2">
+                        <div class="d-flex">
+                            <div class="px-1  icons float-start small"><i class="bi bi-plus-circle-dotted"></i></div><div class="small fw-bold">CONCLUDE</div>
+                        </div>
+                        <div class="fw-bolder fs-4 p-2 text-start">
+                            @Model.requestclients.Where(a => a.Request.Status == 6).Count()
+                        </div>
+                    </div>
+                    <div class="bottomarrow"></div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex justify-content-between mt-5 mx-2 mx-sm-4">
+
+        <div>
+            <div class="h4">Patient <span class="text-info" id="status"></span></div>
+        </div>
+
+        <div class="d-flex flex-row gap-2">
+
+            <a class="text-decoration-none btn btn-info text-white  dash-button p-2 d-flex flex-row">
+                <i class="bi bi-send "></i>
+                <span class="d-none d-sm-flex ms-2">Send Link</span>
+            </a>
+
+            <a class="text-decoration-none btn btn-info text-white dash-button p-2 d-flex flex-row">
+                <i class="bi bi-file-text dash-button"></i>
+                <span class="ms-2 d-none d-sm-flex">Create Requests</span>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="border rounded-4 mx-3 mx-sm-4 mt-4">
+
+        <div class="d-md-flex justify-content-between py-3 mx-3 flex-wrap">
+
+            <div class="dropdown d-flex flex-wrap row">
+                <div class="col-12">
+                    <div class="d-flex rounded-2 border border-dark h-100">
+                        <span class="search-icon"></span>
+                        <input id="search" onkeyup="Search()" class="form-control form-control-sm border-0 shadow-none p-0" type="search" placeholder="Search Patients" aria-label="Search">
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex mt-2">
+
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="0" onclick="filter(0)">
+                    <label class="border-0 px-2 filter-label" for="requestbyAll">All</label>
+                </div>
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="1" onclick="filter(1)">
+                    <i class="bi bi-circle-fill  filter-color" style="color :#5fbc61"></i>
+                    <label class="btn p-1 border-0 d-block filter-label" for="1">Patient</label>
+                </div>
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="2" onclick="filter(2)">
+                    <i class="bi bi-circle-fill filter-color" style="color:  #ed9124;"></i>
+                    <label class="btn p-1 border-0 text-small filter-label" for="2">Family</label>
+                </div>
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="3" onclick="filter(3)">
+                    <i class="bi bi-circle-fill filter-color" style="color:#e36478;"></i>
+                    <label class="btn p-1 border-0 filter-label" for="3">Concierge</label>
+                </div>
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row me-2 me-sm-none" id="4" onclick="filter(4)">
+                    <i class="bi bi-circle-fill filter-color" style="color:  #0c7db7;"></i>
+                    <label class="btn p-1 border-0 filter-label" for="4">Business</label>
+                </div>
+                <div class="d-flex justify-content-center align-items-center px-0 px-sm-2 filter flex-column flex-sm-row" id="5" onclick="filter(5)">
+                    <i class="bi bi-circle-fill filter-color" style="color:  #943db8;"></i>
+                    <label class="btn p-1 border-0 filter-label" for="5">VIP</label>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="tab-content" id="status-tabContent">
+            @*  <div class="tab-pane fade show active" id="s_new" role="tabpanel" aria-labelledby="status-new">
+            </div>
+            <div class="tab-pane fade" id="s_pending" role="tabpanel" aria-labelledby="status-panding">
+            </div>
+            <div class="tab-pane fade" id="s_active" role="tabpanel" aria-labelledby="status-active">
+            </div>
+            <div class="tab-pane fade" id="s_conclude" role="tabpanel" aria-labelledby="status-conclude">
+            </div>
+            <div class="tab-pane fade" id="s_toclose" role="tabpanel" aria-labelledby="status-toclose">
+            </div>
+            <div class="tab-pane fade" id="s_unpaid" role="tabpanel" aria-labelledby="status-unpaid">
+            </div> *@
+            @* <partial name="_AssignCase" /> *@
+        </div>
+
+        <div class="d-flex justify-content-end m-3">
+            Select entity :
+            <select id="selectedEntity" class="mx-2">
+                <option value="3" selected>3</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+    .filter-label {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+
+    .filter-color {
+    }
+
+    .dash-button {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+</style>
+
+<script>
+    var param = {
+        requestedPage: 1,
+        requestType: 0,
+        requestStatus: 1,
+        searchKey: null,
+        totalEntity: 3
+    }
+
+    function filter(type) {
+
+        param.requestType = type;
+        param.requestedPage = 1;
+        console.log(param);
+        CommonAjax();
+        $('.filter').css('border', 'none');
+        document.getElementById("" + type).style.border = "1px solid black";
+        document.getElementById("" + type).classList.add('rounded-3');
+    }
+
+
+    function Search() {
+        param.searchKey = $('#search').val();
+        param.requestedPage = 1;
+        CommonAjax();
+    }
+
+    $('#selectedEntity').on('change', function () {
+        param.totalEntity = $(this).val();
+        param.requestedPage = 1;
+        CommonAjax();
+    })
+
+    $('#sendLinkSubmitBtn').on('click', function () {
+        if ($('#firstName').val() == "") {
+            $('#firstNameError').html("*Please Enter First Name")
+            $('#firstName').css('border', '1px solid red');
+        }
+        if ($('#lastName').val() == "") {
+            $('#lastNameError').html("*Please Enter Lase Name")
+            $('#lastName').css('border', '1px solid red');
+        }
+        if ($('#contactNumber').val() == "") {
+            $('#contactError').html("*Please Enter Contact Number")
+            $('#contactNumber').css('border', '1px solid red');
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
+
+            if (!regex.test($('#contactNumber').val())) {
+                $('#contactError').html("*Enter valid number");
+                $('#contactNumber').css('border', '1px solid red');
+
+            } else {
+                $('#contactError').html("");
+
+            }
+        }
+        if ($('#email').val() == "") {
+            $('#emailError').html("*Please Enter email")
+            $('#email').css('border', '1px solid red');
+        }
+        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == "") {
+            $.ajax({
+                url: '/Admin/SendMailForRequest',
+                data: { "firstName": $('#firstName').val(), "email": $('#email').val() }
+            })
+        }
+    })
+
+    $('.sendLinkBtn').click(function () {
+        $('#firstName').val("")
+        $('#lastName').val("")
+        $('#contactNumber').val("")
+        $('#email').val("")
+        $('#firstNameError').html("")
+        $('#firstName').css('border', '1px groove black');
+        $('#lastNameError').html("")
+        $('#lastName').css('border', '1px groove black');
+        $('#contactError').html("")
+        $('#contactNumber').css('border', '1px groove black');
+        $('#emailError').html("")
+        $('#email').css('border', '1px groove black');
+    })
+
+    $('#firstName').on('focus', function () {
+        $('#firstNameError').html("")
+        $('#firstName').css('border', '1px groove black');
+    })
+    $('#lastName').on('focus', function () {
+        $('#lastNameError').html("")
+        $('#lastName').css('border', '1px groove black');
+    })
+    $('#contactNumber').on('focus', function () {
+        $('#contactError').html("")
+        $('#contactNumber').css('border', '1px groove black');
+    })
+    $('#email').on('focus', function () {
+        $('#emailError').html("")
+        $('#email').css('border', '1px groove black');
+    })
+
+    $(document).ready(function () {
+
+        document.getElementById(0).style.border = "1px solid black";
+        document.getElementById(0).classList.add('rounded-3');
+        $.ajax({
+            url: '/ProviderSide/AllState',
+            data: param,
+            success: function (response) {
+                $('#status').html("(New)");
+                requestStatus = 1;
+                $('#status-tabContent').html(response);
+                // $('#exrequesttype').val(0);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+
+        $('.dashboardtab').on('click', function (e) {
+            e.preventDefault();
+            var target = $(this).data('bs-target');
+            var url;
+
+            switch (target) {
+                case '#s_new':
+                    param.requestStatus = 1;
+                    $('#status').html("(New)");
+                    break;
+                case '#s_pending':
+                    param.requestStatus = 2;
+                    $('#status').html("(Pending)");
+                    break;
+                case '#s_active':
+                    param.requestStatus = 4; // can be 5
+                    $('#status').html("(Active)");
+                    break;
+                case '#s_conclude':
+                    param.requestStatus = 6;
+                    $('#status').html("(Conclude)");
+                    break;
+                default:
+                    param.requestStatus = 12;
+                    $('#status').html("(New)");
+            }
+
+            param.requestType = 0;
+            $('#search').val("");
+            param.searchKey = "";
+            $('.filter').css('border', 'none');
+            document.getElementById(0).style.border = "1px solid black";
+            document.getElementById(0).classList.add('rounded-3');
+            $.ajax({
+                url: '/ProviderSide/AllState',
+                data: param,
+                success: function (response) {
+                    $('#status-tabContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

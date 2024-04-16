@@ -50,24 +50,24 @@ namespace Services.Implementation
         }
         public EditProviderViewModel EditProvider(int physicianId)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
+            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
             List<Region> regions = _context.Regions.ToList();
             List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
             EditProviderViewModel editProviderViewModel = new EditProviderViewModel
             {
-                firstName = physician.Firstname,
-                lastName = physician.Lastname,
+                firstName = physician!.Firstname,
+                lastName = physician.Lastname!,
                 email = physician.Email,
-                contactNumber = physician.Mobile,
-                medicalLecense = physician.Medicallicense,
-                NPINumber = physician.Npinumber,
-                syncEmail = physician.Syncemailaddress,
-                address1 = physician.Address1,
+                contactNumber = physician.Mobile!,
+                medicalLecense = physician.Medicallicense!,
+                NPINumber = physician.Npinumber!,
+                syncEmail = physician.Syncemailaddress!,
+                address1 = physician.Address1!,
                 address2 = physician.Address2,
-                city = physician.City,
-                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid).Name,
-                zipcode = physician.Zip,
-                billingContact = physician.Altphone,
+                city = physician.City!,
+                state = _context.Regions.FirstOrDefault(a => a.Regionid == physician.Regionid)!.Name,
+                zipcode = physician.Zip!,
+                billingContact = physician.Altphone!,
                 businessName = physician.Businessname,
                 businessSite = physician.Businesswebsite,
                 regionList = regions,
@@ -97,7 +97,7 @@ namespace Services.Implementation
 
         public async Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion)
         {
-            Physician physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
+            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == obj.providerId);
             if (physician != null)
             {
                 physician.Firstname = obj.firstName;
@@ -213,7 +213,7 @@ namespace Services.Implementation
         {
             foreach (var item in toStopNotifications)
             {
-                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
+                Physiciannotification? physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
                 if (physiciannotification != null)
                 {
                     physiciannotification.Isnotificationstopped = new BitArray(new[] { true });
@@ -222,7 +222,7 @@ namespace Services.Implementation
             }
             foreach (var item in toNotification)
             {
-                Physiciannotification physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
+                Physiciannotification? physiciannotification = _context.Physiciannotifications.FirstOrDefault(a => a.Pysicianid == item);
                 if (physiciannotification != null)
                 {
                     physiciannotification.Isnotificationstopped = new BitArray(new[] { false });
@@ -260,18 +260,18 @@ namespace Services.Implementation
             {
                 locations.Add(new ProviderLocationViewModel
                 {
-                    Photo = physiciansList.FirstOrDefault(x => x.Physicianid == physicianLocation.Physicianid).Photo,
+                    Photo = physiciansList.FirstOrDefault(x => x.Physicianid == physicianLocation.Physicianid)!.Photo,
                     Lat = physicianLocation.Latitude.ToString(),
                     Long = physicianLocation.Longitude.ToString(),
                     Physicianid = physicianLocation.Physicianid.ToString(),
-                    Name = physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid).Firstname + physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid).Lastname,
+                    Name = physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid)!.Firstname + physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid)!.Lastname,
                 });
             }
 
             return locations.ToJson();
         }
 
-        public async Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, int adminId)
+        public async Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, string aspNetUserId)
         {
 
             string encryptedPassword = EncryptDecryptHelper.Encrypt(obj.password);
@@ -288,6 +288,12 @@ namespace Services.Implementation
             await _context.AddAsync(aspnetuser);
             await _context.SaveChangesAsync();
 
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = aspnetuser.Id,
+                Roleid = "2"
+            };
+
             Physician physician = new Physician
             {
                 Aspnetuserid = aspnetuser.Id,
@@ -303,7 +309,7 @@ namespace Services.Implementation
                 Regionid = obj.physicianRegion,
                 Zip = obj.zipcode,
                 Altphone = obj.billingContact,
-                Createdby = adminId.ToString(),
+                Createdby = aspNetUserId,
                 Createddate = DateTime.Now,
                 Modifieddate = DateTime.Now,
                 Businessname = obj.businessName,

@@ -1,0 +1,97 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HalloDoc</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.0/sweetalert.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.16/dist/sweetalert2.all.min.js"></script>
+
+    <link rel="stylesheet" href="~/css/AdminDashboard.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-light border-bottom px-4">
+            <p>
+                <button class="btn d-md-none border border-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    <i class="bi bi-list"></i>
+                </button>
+                <img src="~/images/1HalloDoc.png" height="70px" width="140px" />
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasExampleLabel">Offcanvas</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div class="nav nav-tabs d-block d-flex flex-column gap-3" id="nav-tab" role="tablist">
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </p>
+
+            <div class="navdiv d-flex flex-row gap-2">
+
+                <span class="mt-2 welcome d-none d-sm-block">Welcome , @HttpContextAccessor.HttpContext.Session.GetString("UserName") </span>
+
+                <a asp-action="Logout" asp-controller="ProviderSide">
+                    <button style="background-color: transparent;" class="border-1 rounded text-info border-info p-2">
+                        <div><i class="bi bi-box-arrow-right d-sm-none"></i></div>
+                        <div class="logouttext"><span class="d-none d-sm-block">log out</span></div>
+                    </button>
+                </a>
+
+                <div>
+                    <button id="darkbtn" class="border border-0 rounded-2 p-1">
+                        <img src="~/images/moon_light.png" alt="picture" id="darkimg" height="35px" width="30px">
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="shadow px-4 my-2">
+            <div class=" h6 d-none d-md-flex gap-4" style="width:93%">
+                <a asp-action="ProviderDashboard" asp-controller="ProviderSide">Dashboard</a>
+                <a asp-action="ProviderInvoicing" asp-controller="ProviderSide">Dashboard</a>
+                <a asp-action="ProviderSchedule" asp-controller="ProviderSide">Dashboard</a>
+                <a asp-action="ProviderProfile" asp-controller="ProviderSide">Dashboard</a>
+            </div>
+        </div>
+
+        <div class="tab-content" id="nav-tabContent">
+        </div>
+    </header>
+    @RenderBody()
+    @*         <div class="bg-dark p-2 d-flex justify-content-end w-100 mt-5 position-absolute bottom-0">
+    <a href="#" class="text-decoration-none text-white mx-1">Terms Of Conditions</a>
+    <span class="mx-1 text-white">|</span>
+    <a href="#" class="text-decoration-none text-white mx-1">Privacy Policy</a>
+    </div> *@
+</body>
+
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="~/js/darkmode.js"></script>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</html>
+

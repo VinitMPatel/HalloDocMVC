@@ -11,7 +11,7 @@ namespace Services.Contracts
     public interface IProviderServices
     {
         Task<EditProviderViewModel> CreateProvider();
-        Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, int adminId);
+        Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, string aspNetUserId);
         Task DeleteAccount(int providerId);
         EditProviderViewModel EditProvider(int physicianId);
         Task<string> GetLocations();

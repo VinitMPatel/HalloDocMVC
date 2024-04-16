@@ -50,8 +50,6 @@ namespace HalloDoc.Controllers
         public async Task UpdatePhysicianInfo(EditProviderViewModel obj , List<int> selectedRegion)
         {
             await providerServices.UpdatePhysicianInfo(obj, selectedRegion);
-            //return RedirectToAction("EditProvider", new { physicianId = obj.providerId });
-            //return NoContent();
         }
         
         public async Task UpdateBillingInfo(EditProviderViewModel obj)
@@ -83,8 +81,8 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> SubmitCreateProvider(EditProviderViewModel obj , List<int> selectedRegion)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            await providerServices.CreateProviderAccount(obj, selectedRegion,adminId);
+            string? aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            await providerServices.CreateProviderAccount(obj, selectedRegion, aspNetUserId!);
             return RedirectToAction("Provider");
         }
 

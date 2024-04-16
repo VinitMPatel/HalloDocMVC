@@ -44,6 +44,9 @@ namespace Services.ViewModels
 
         public String adminNote { get; set; }
 
+
+        public string physicianNote {  get; set; }
+
         public ICollection<Requestwisefile> requestwisefile { get; set; }
 
         public List<IFormFile> Upload { get; set; }

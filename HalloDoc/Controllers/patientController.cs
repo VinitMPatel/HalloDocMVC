@@ -32,17 +32,21 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
-        public IActionResult patient_login(Aspnetuser aspnetuser)
+        public IActionResult patient_login(LoginPerson obj)
         {
             try
             {
-                var result = validation.Validate(aspnetuser);
+                var result = validation.Validate(obj);
                 TempData["Email"] = result.emailError;
                 TempData["Password"] = result.passwordError;
-                var check = _context.Aspnetusers.Where(u => u.Email == aspnetuser.Email).FirstOrDefault();
+                var check = _context.Aspnetusers.Where(u => u.Email == obj.email).FirstOrDefault();
                 var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                HttpContext.Session.SetString("UserName", userdata.Firstname);
-                if (result.Status == ResponseStautsEnum.Success)
+                if(userdata != null)
+                {
+                    HttpContext.Session.SetString("UserName", userdata.Firstname);
+
+                }
+                if (result.Status == ResponseStautsEnum.Success && userdata != null)
                 {
                     TempData["success"] = "Login successfully";
                     HttpContext.Session.SetInt32("UserId", userdata.Userid);

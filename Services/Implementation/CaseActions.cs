@@ -212,17 +212,42 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
         }
 
-        public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj)
+        public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj, string aspNetUserId, string role)
         {
-            Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
-            Requestnote requestnote = new Requestnote();
-            var existRequestNote = _context.Requestnotes.FirstOrDefault(a => a.Requestid == requestId);
-            requestnote.Requestid = requestId;
-            requestnote.Createddate = DateTime.Now;
-            requestnote.Adminnotes = notes;
-            requestnote.Createdby = "1";
-            await _context.Requestnotes.AddAsync(requestnote);
-            await _context.SaveChangesAsync();
+            Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            Requestnote? requestnote = await _context.Requestnotes.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if(requestnote == null)
+            {
+                Requestnote newRequestNote = new Requestnote();
+                newRequestNote.Requestid = requestId;
+                newRequestNote.Createddate = DateTime.Now;
+                if(role == "Admin")
+                {
+                    newRequestNote.Adminnotes = notes;
+                }
+                else
+                {
+                    newRequestNote.Physiciannotes = notes;
+                }
+                newRequestNote.Createdby = aspNetUserId;
+                await _context.Requestnotes.AddAsync(newRequestNote);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                if (role == "Admin")
+                {
+                    requestnote.Adminnotes = notes;
+                }
+                else
+                {
+                    requestnote.Physiciannotes = notes;
+                }
+                requestnote.Modifiedby = aspNetUserId;
+                requestnote.Modifieddate = DateTime.Now;
+                _context.Update(requestnote);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task SubmitOrder(Orders obj)

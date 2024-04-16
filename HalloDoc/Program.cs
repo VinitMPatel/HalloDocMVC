@@ -31,6 +31,7 @@ builder.Services.AddScoped<ICaseActions, CaseActions>();
 builder.Services.AddScoped<IJwtRepository, JwtRepository>();
 builder.Services.AddScoped<IAuthorization, Authorization>();
 builder.Services.AddScoped<IProviderServices, ProviderServices>();
+builder.Services.AddScoped<IProviderSideServices, ProviderSideServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

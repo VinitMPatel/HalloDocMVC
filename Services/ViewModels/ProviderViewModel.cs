@@ -124,10 +124,10 @@ namespace Services.ViewModels
 
     public class ProviderLocationViewModel
     {
-        public string Photo { get; set; }
-        public string Lat { get; set; }
-        public string Long { get; set; }
-        public string Physicianid { get; set; }
-        public string Name { get; set; }
+        public string? Photo { get; set; }
+        public string? Lat { get; set; }
+        public string? Long { get; set; }
+        public string? Physicianid { get; set; }
+        public string? Name { get; set; }
     }
 }

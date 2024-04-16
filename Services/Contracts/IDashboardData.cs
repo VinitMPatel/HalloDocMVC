@@ -24,15 +24,15 @@ namespace Services.Contracts
 
         byte[] DownloadExcle(AdminDashboard model);
 
-        Task<AdminProfile> AdminProfileData(int adminId);
+        Task<AdminProfile> AdminProfileData(string aspNetUserId);
 
-        Task UpdateAdminInfo(int adminId, AdminInfo obj);
+        Task UpdateAdminInfo(string aspNetUserId, AdminInfo obj);
 
-        Task UpdateBillingInfo(int adminId, BillingInfo obj);
+        Task UpdateBillingInfo(string aspNetUserId, BillingInfo obj);
 
         Task<RoleAccess> CreateAccessRole(int accountType , int roleid);
 
-        Task AddNewRole(List<int> menus, short accountType, string roleName, int adminId);
+        Task AddNewRole(List<int> menus, short accountType, string roleName, string aspNetUserId);
 
         RoleAccess AddedRoles();
 
@@ -66,21 +66,6 @@ namespace Services.Contracts
         Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj);
         Task UnblockPatient(int requestId);
         Task<CaseActionDetails> ViewNotes(int requestId);
-        Scheduling Scheduling();
-        List<Physician> GetPhysicians();
-        DayWiseScheduling Daywise(int regionid, DateTime currentDate, List<Physician> physician);
-        WeekWiseScheduling Weekwise(int regionid, DateTime currentDate, List<Physician> physician);
-        MonthWiseScheduling Monthwise(int regionid, DateTime currentDate, List<Physician> physician);
-        bool AddShift(Scheduling model, int admin, List<string> chk);
-        Scheduling viewshift(int shiftdetailid);
-        void ViewShiftreturn(int shiftdetailid, string adminname);
-        bool ViewShiftedit(Scheduling modal, string adminname);
-        Scheduling ProvidersOnCall(Scheduling modal);
-        Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
-        ShiftforReviewModal ShiftForReview();
-        ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
-        void ApproveSelected(int[] shiftchk, string adminname);
-        void DeleteSelected(int[] shiftchk, string adminname);
-        void DeleteShift(int shiftdetailid, string adminname);
+        Task UpdateAdminPassword(string aspNetUserId, string password);
     }
 }

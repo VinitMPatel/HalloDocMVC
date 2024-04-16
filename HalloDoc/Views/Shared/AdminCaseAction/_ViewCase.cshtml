@@ -8,7 +8,7 @@
 }
 @model Services.ViewModels.CaseActionDetails
 
-<div class="container mt-3">
+<div class="container mt-5">
 
     <div class="d-flex justify-content-between">
         <div>
@@ -35,11 +35,15 @@
                 @if (Context.Request.Headers.Referer.Equals("http://localhost:5086/Admin/AdminDashboard"))
                 {
 
-                    <a asp-action="AdminDashboard" class="text-decoration-none text-info">&lt; Back</a>
+                    <a asp-action="AdminDashboard" asp-controller="Admin" class="text-decoration-none text-info">&lt; Back</a>
+                }
+                else if (Context.Request.Headers.Referer.Equals("http://localhost:5086/ProviderSide/ProviderDashboard"))
+                {
+                    <a asp-action="ProviderDashboard" asp-controller="ProviderSide" class="text-decoration-none text-info">&lt; Back</a>
                 }
                 else
                 {
-                    <a asp-action="PatientRecords" class="text-decoration-none text-info">&lt; Back</a>
+                    <a asp-action="PatientRecords" asp-controller="Admin" class="text-decoration-none text-info">&lt; Back</a>
                 }
             </button>
         </div>

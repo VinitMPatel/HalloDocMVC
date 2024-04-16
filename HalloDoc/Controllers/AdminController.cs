@@ -52,7 +52,7 @@ namespace HalloDoc.Controllers
         [Authorization("1")]
         public async Task<IActionResult> AdminDashboard()
         {
-            if (HttpContext.Session.GetString("AdminName") != null)
+            if (HttpContext.Session.GetString("UserName") != null)
             {
                 AdminDashboard obj = await dashboardData.AllData();
                 return View(obj);
@@ -179,10 +179,12 @@ namespace HalloDoc.Controllers
         }
 
 
-        public async Task<IActionResult> SubmitNotes(int requestId, string notes, CaseActionDetails obj)
+        public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
-            await caseActions.SubmitNotes(requestId, notes, obj);
-            return RedirectToAction("AdminDashboard");
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            string role = HttpContext.Session.GetString("Role")!;
+            await caseActions.SubmitNotes(requestId, notes, obj , aspNetUserId , role);
+           
         }
 
 
@@ -222,7 +224,7 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> SubmitOrder(Orders obj)
         {
-            obj.createdby = HttpContext.Session.GetString("AdminName");
+            obj.createdby = HttpContext.Session.GetString("aspNetUserId");
             await caseActions.SubmitOrder(obj);
             return RedirectToAction("AdminDashboard");
         }
@@ -298,30 +300,28 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> AdminProfile()
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-            AdminProfile adminData = await dashboardData.AdminProfileData(adminId);
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            AdminProfile adminData = await dashboardData.AdminProfileData(aspNetUserId);
             return View(adminData);
         }
 
-        //public async Task AdminPasswordReset(string password)
-        //{
-        //    int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-        //    await dashboardData.UpdateAdminPassword(adminId, password);
-        //}
+        public async Task AdminPasswordReset(string password)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await dashboardData.UpdateAdminPassword(aspNetUserId, password);
+        }
 
         public async Task UpdateAdminInfo(AdminInfo obj)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-            await dashboardData.UpdateAdminInfo(adminId, obj);
+           string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await dashboardData.UpdateAdminInfo(aspNetUserId, obj);
         }
 
         public async Task UpdateBillingInfo(BillingInfo obj)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-            await dashboardData.UpdateBillingInfo(adminId, obj);
+           string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await dashboardData.UpdateBillingInfo(aspNetUserId, obj);
         }
-        
-
 
         public IActionResult RoleAccess()
         {
@@ -342,8 +342,8 @@ namespace HalloDoc.Controllers
         [HttpPost]
         public async Task AddNewRole(List<int> menus , short accountType, string roleName)
         {
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId")!;
-            await dashboardData.AddNewRole(menus , accountType , roleName , adminId);
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await dashboardData.AddNewRole(menus , accountType , roleName , aspNetUserId);
         }
 
         public IActionResult EditRole(int roleId)
@@ -352,45 +352,49 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_EditRole", obj);
         }
 
-        public IActionResult AdminValidate(Aspnetuser obj)
+        [HttpPost]
+        public IActionResult AdminLogin(LoginPerson obj)
         {
             try
             {
-                var result = validation.AdminValidate(obj);
+                (PatientLogin result , LoggedInPersonViewModel loggedInPerson) = validation.AdminValidate(obj);
+
                 TempData["Email"] = result.emailError;
                 TempData["Password"] = result.passwordError;
-                var check = _context.Aspnetusers.Where(u => u.Email == obj.Email).FirstOrDefault();
-                var admindata = _context.Admins.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                var userRole = _context.Aspnetuserroles.FirstOrDefault(u => u.Userid == check.Id);
-                LoggedInPersonViewModel loggedInPerson = new LoggedInPersonViewModel();
-                loggedInPerson.role = userRole.Roleid;
-                loggedInPerson.aspuserid = check.Id;
-                loggedInPerson.username = check.Username;
 
-                Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
                 if (result.Status == ResponseStautsEnum.Success)
                 {
-                    if(admindata != null)
+                    Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
+                    if(loggedInPerson.role == "1")
                     {
-                    HttpContext.Session.SetString("AdminName", admindata.Firstname);
-                    HttpContext.Session.SetInt32("AdminId", admindata.Adminid);
-                    TempData["success"] = "Login successfully";
+                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
+                        HttpContext.Session.SetString("Role", "Admin");
+                        TempData["success"] = "Login successfully";
+                        return RedirectToAction("AdminDashboard", "Admin");
                     }
-                    return RedirectToAction("AdminDashboard", "Admin");
+                    if(loggedInPerson.role == "2")
+                    {
+                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
+                        HttpContext.Session.SetString("Role", "Physician");
+                        TempData["success"] = "Login successfully";
+                        return RedirectToAction("ProviderDashboard", "ProviderSide");
+                    }
                 }
                 TempData["error"] = "Incorrect Email or password";
-                return RedirectToAction("AdminLogin", "Admin");
+                return View();
             }
             catch (Exception ex)
             {
-                return RedirectToAction("AdminLogin", "Admin");
+                return View();
             }
         }
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Remove("AdminId");
-            HttpContext.Session.Remove("AdminName");
+            HttpContext.Session.Remove("aspNetUserId");
+            HttpContext.Session.Remove("UserName");
             Response.Cookies.Delete("jwt");
             return RedirectToAction("AdminLogin", "Admin");
         }
@@ -450,7 +454,7 @@ namespace HalloDoc.Controllers
                 filenames.Add(file);
             }
 
-            Sendemail("agrawalvishesh9271@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
+            Sendemail("vinit2273@gmail.com", "Your Attachments", "Please Find Your Attachments Here", filenames);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
 
         }
@@ -564,113 +568,6 @@ namespace HalloDoc.Controllers
             return RedirectToAction("BlockHistoryData", new { requestedPage = 1 , totalEntity = 3});
         }
 
-        public IActionResult Scheduling()
-        {
-            return View(dashboardData.Scheduling());
-        }
 
-        public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
-        {
-            var currentDate = DateTime.Parse(date);
-            List<Physician> physician = _context.Physicians.ToList();
-
-            switch (PartialName)
-            {
-                case "_DayWise":
-                    return PartialView("Provider/_DayWise", dashboardData.Daywise(regionid, currentDate, physician));
-
-                case "_WeekWise":
-                    return PartialView("Provider/_WeekWise", dashboardData.Weekwise(regionid, currentDate, physician));
-
-                case "_MonthWise":
-                    return PartialView("Provider/_MonthWise", dashboardData.Monthwise(regionid, currentDate, physician));
-
-                default:
-                    return PartialView("Provider/_DayWise");
-            }
-        }
-        public IActionResult AddShift(Scheduling model)
-        {
-            if (model.starttime > model.endtime)
-            {
-                TempData["error"] = "Starttime Must be Less than Endtime";
-                return RedirectToAction("Scheduling");
-            }
-            int adminId = (int)HttpContext.Session.GetInt32("AdminId");
-            var chk = Request.Form["repeatdays"].ToList();
-            bool f = dashboardData.AddShift(model, adminId, chk);
-            if (f == false)
-            {
-                TempData["error"] = "Shift is already assigned in this time";
-            }
-            return RedirectToAction("Scheduling");
-        }
-
-
-        public Scheduling viewshift(int shiftdetailid)
-        {
-            return dashboardData.viewshift(shiftdetailid);
-        }
-        public void ViewShiftreturn(int shiftdetailid)
-        {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            dashboardData.ViewShiftreturn(shiftdetailid, adminname);
-        }
-        public bool ViewShiftedit(Scheduling modal)
-        {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            return dashboardData.ViewShiftedit(modal, adminname);
-        }
-        public void DeleteShift(int shiftdetailid)
-        {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            dashboardData.DeleteShift(shiftdetailid, adminname);
-        }
-        public IActionResult ProvidersOnCall(Scheduling modal)
-        {
-            return View(dashboardData.ProvidersOnCall(modal));
-        }
-        [HttpPost]
-        public IActionResult ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
-        {
-            return PartialView("AdminLayout/_ProviderOnCallData", dashboardData.ProvidersOnCallbyRegion(regionid, oncall, offcall));
-        }
-
-        public IActionResult ShiftForReview()
-        {
-            return View(dashboardData.ShiftForReview());
-        }
-        public IActionResult ShiftReviewTable(int currentPage, int regionid)
-        {
-            return PartialView("AdminLayout/_ShiftForReviewTable", dashboardData.ShiftReviewTable(currentPage, regionid));
-        }
-        public IActionResult ApproveSelected(int[] shiftchk)
-        {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            if (shiftchk.Length == 0)
-            {
-                TempData["error"] = "Please select atleast 1 shift";
-            }
-            else
-            {
-                dashboardData.ApproveSelected(shiftchk, adminname);
-                TempData["success"] = "Shifts Approved Successfuly";
-            }
-            return RedirectToAction("ShiftForReview");
-        }
-        public IActionResult DeleteSelected(int[] shiftchk)
-        {
-            string adminname = HttpContext.Session.GetString("Adminname");
-            if (shiftchk.Length == 0)
-            {
-                TempData["error"] = "Please select atleast 1 shift";
-            }
-            else
-            {
-                dashboardData.DeleteSelected(shiftchk, adminname);
-                TempData["success"] = "Shifts Deleted Successfuly";
-            }
-            return RedirectToAction("ShiftForReview");
-        }
     }
 }

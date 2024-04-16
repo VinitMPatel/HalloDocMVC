@@ -4,6 +4,7 @@
 @{
 }
 @model Services.ViewModels.CaseActionDetails
+<partial name="_Notification" />
 <div class="container mt-3" id="home-tab-pane">
 
     <div class="d-flex justify-content-between">
@@ -14,7 +15,14 @@
         </div>
         <div>
             <button class=" border border-info rounded-2 p-2 bg-transparent">
-                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+                @if (Context.Request.Headers.Referer.Equals("http://localhost:5086/Admin/AdminDashboard"))
+                {
+                    <a asp-action="AdminDashboard" asp-controller="Admin" class="text-decoration-none text-info">&lt; Back</a>
+                }
+                else
+                {
+                    <a asp-action="ProviderDashboard" asp-controller="ProviderSide" class="text-decoration-none text-info">&lt; Back</a>
+                }
             </button>
         </div>
     </div>
@@ -82,7 +90,7 @@
                         @foreach (var m in Model.requestwisefile)
                         {
                             <tr>
-                                <td><input type="checkbox" class="all" name="checkdoc" value="@m.Requestwisefileid"/></td>
+                                <td><input type="checkbox" class="all" name="checkdoc" value="@m.Requestwisefileid" /></td>
                                 <td>@m.Filename</td>
                                 <td>@m.Createddate</td>
                                 <td>
@@ -91,7 +99,7 @@
                                             <i class="bi bi-cloud-arrow-down"></i>
                                         </span>
                                     </a>
-                                    <span class="p-1 text-info border rounded-2 border-info SingleDelete" name="@m.Requestwisefileid" >
+                                    <span class="p-1 text-info border rounded-2 border-info SingleDelete" name="@m.Requestwisefileid">
                                         <i class="bi bi-trash3"></i>
                                     </span>
                                 </td>
@@ -103,118 +111,92 @@
         </div>
     </div>
 </div>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
 
     $('#actual-btn').change(function (e) {
         $('#file-choosen').html($(this)[0].files[0].name)
     })
 
-        $(document).ready(function () {
-            $('#alldoc').click(function () {
-                $('.all').prop('checked', this.checked);
-            });
-
-            $('.all').click(function () {
-                $('#alldoc').prop('checked', $('.all:checked').length === $('.all').length);
-            });
+    $(document).ready(function () {
+        $('#alldoc').click(function () {
+            $('.all').prop('checked', this.checked);
         });
 
-        function downloadSelectedFiles() {
+        $('.all').click(function () {
+            $('#alldoc').prop('checked', $('.all:checked').length === $('.all').length);
+        });
+    });
 
-            var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
-            var fileUrls = [];
-            // Iterate through selected checkboxes and extract file URLs
-            selectedFiles.forEach(function (checkbox) {
-                var row = checkbox.closest('tr');
-                var fileUrl = row.querySelector('a').getAttribute('href');
-                fileUrls.push(fileUrl);
-            });
+    function downloadSelectedFiles() {
 
-            // Download each file
-            fileUrls.forEach(function (url) {
-                // Create an anchor element to trigger the download
-                var link = document.createElement('a');
-                link.href = url;
-                link.download = '';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-        }
+        var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
+        var fileUrls = [];
+        // Iterate through selected checkboxes and extract file URLs
+        selectedFiles.forEach(function (checkbox) {
+            var row = checkbox.closest('tr');
+            var fileUrl = row.querySelector('a').getAttribute('href');
+            fileUrls.push(fileUrl);
+        });
 
-        $('.uploadbtn').on('click', function () {
-            var myfile = $('#actual-btn')[0].files;
-            var formData = new FormData();
-            var reqid = $('#docid').attr('name');
-            console.log(myfile);
-            if (myfile.length > 0) {
+        // Download each file
+        fileUrls.forEach(function (url) {
+            // Create an anchor element to trigger the download
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = '';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+    }
+
+    $('.uploadbtn').on('click', function () {
+        var myfile = $('#actual-btn')[0].files;
+        var formData = new FormData();
+        var reqid = $('#docid').attr('name');
+        if (myfile.length > 0) {
             for (var i = 0; i < myfile.length; i++) {
-                    formData.append('myfile', myfile[i]);
-                }
+                formData.append('myfile', myfile[i]);
             }
-            formData.append('reqid', reqid);
-           
-            $.ajax({
-                url: '/Admin/UploadDocument',
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    $('#home-tab-pane').html(response);
-                },
-            });
+        }
+        formData.append('reqid', reqid);
+
+        $.ajax({
+            url: '/Admin/UploadDocument',
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                $('#home-tab-pane').html(response);
+            },
         });
-        $('.SingleDelete').on('click', function () {
-            var reqfileid = $(this).attr('name');
-            
-            $.ajax({
-                url: '/Admin/SingleDelete',
-                data: { 'reqfileid': reqfileid , 'reqid' : @Model.requestId},
-                success: function (response) {
-                    $('#home-tab-pane').html(response);
-                },
-            });
+    });
+
+    $('.SingleDelete').on('click', function () {
+        var reqfileid = $(this).attr('name');
+
+        $.ajax({
+            url: '/Admin/SingleDelete',
+            data: { 'reqfileid': reqfileid, 'reqid': @Model.requestId},
+            success: function (response) {
+                $('#home-tab-pane').html(response);
+            },
         });
-        $('#DeleteAll').on('click', function () {
-            var formData = new FormData();
+    });
 
-            $('input[type="checkbox"]:checked').each(function () {
-                formData.append('reqwiseid', $(this).val());
-
-            });
-            var reqid = $('#docid').attr('name');
-            formData.append('reqid', reqid);
-
-
-            $.ajax({
-                url: '/Admin/DeleteAll',
-                type: "POST",
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function (response) {
-                    $('#home-tab-pane').html(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-
-    $('#sendMail').on('click', function () {
+    $('#DeleteAll').on('click', function () {
         var formData = new FormData();
 
         $('input[type="checkbox"]:checked').each(function () {
             formData.append('reqwiseid', $(this).val());
+
         });
         var reqid = $('#docid').attr('name');
         formData.append('reqid', reqid);
-
-
         $.ajax({
-            url: '/Admin/sendMail',
+            url: '/Admin/DeleteAll',
             type: "POST",
             data: formData,
             contentType: false,
@@ -227,4 +209,35 @@
             }
         });
     });
-    </script>
+
+    $('#sendMail').on('click', function () {
+        var formData = new FormData();
+        var flag = 0;
+        $('input[type="checkbox"]:checked').each(function () {
+            formData.append('reqwiseid', $(this).val());
+            flag = 1;
+        });
+        var reqid = $('#docid').attr('name');
+        formData.append('reqid', reqid);
+        console.log(formData);
+        if(flag==1){
+            $.ajax({
+                url: '/Admin/sendMail',
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                    toastr.success("Email sent successfully.");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+        else{
+            toastr.error("Please select document first");
+        }
+    });
+</script>

@@ -1,0 +1,71 @@
+﻿
+@model Services.ViewModels.ProviderCaseAction
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Transfer Request</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                This request will be transferred to admin.
+                <input type="text" asp-for=requestId hidden/>
+                <div class="form-floating mt-4">
+                    <textarea class="form-control transferNote" placeholder="Leave a comment here" id="floatingTextarea" style="height:140px"></textarea>
+                    <label for="floatingTextarea">Description</label>
+                </div>
+                <span id="error" class="text-danger"></span>
+            </div>
+
+            <div class="modal-footer">
+                <button id="submitBtn" type="submit" class="btn btn-info text-white confirm">Submit</button>
+                <button type="button" class="btn btn-outline-info ms-1" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.transferNote').on('focus',function(){
+        $(this).css('border', '2px groove #e6eefa');
+        $('#error').html("");
+    })
+    $('.confirm').on('click', function (e) {
+
+        if ($('.transferNote').val() == ""){
+            $('.transferNote').css('border', '1px solid red')
+           $('#error').html("*Please enter description");
+        }
+        else{
+            console.log("Ajax ")
+        }
+
+        // if (physicianId == null || physicianId == "") {
+        //     $('.physician').css('border', '1px solid red');
+        //     $('#warning').html('*Please select physician');
+        //     //$('#exampleModal2').modal('show');
+        // }
+        // else {
+        //     var assignNote = $('.assignNotes').val();
+        //     $.ajax({
+        //         url: '/Admin/SubmitAssign',
+        //         data: { "requestId": @Model.requestId, "physicianId": physicianId, "assignNote": assignNote },
+        //         success: function (response) {
+        //             // $('#status-tabContent').html(response);
+        //             // $("body").removeAttr("style");
+        //             // $(".modal-backdrop").remove();
+        //             //$('#exampleModal1').modal('hide');
+        //             console.log(response);
+        //             $("#exampleModal1 .btn-close").click()
+
+        //             toastr.success("Case assigned successfully");
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error(error);
+        //         }
+        //     });
+        // }
+    });
+</script>

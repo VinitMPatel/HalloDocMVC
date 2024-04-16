@@ -15,14 +15,11 @@ namespace HalloDoc.Controllers
         private readonly IFamilyRequest familyRequest;
         private readonly IConciergeRequest conciergeRequest;
         private readonly IBusinessRequest businessRequest;
-        private readonly HalloDocDbContext _context;
-
-        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest , HalloDocDbContext context)
+        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest)
         {
             this.familyRequest = familyRequest;
             this.conciergeRequest = conciergeRequest;
             this.businessRequest = businessRequest;
-            _context = context;
         }
 
         public IActionResult family_friend_request()

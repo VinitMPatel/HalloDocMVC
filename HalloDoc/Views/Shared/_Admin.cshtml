@@ -132,7 +132,7 @@
             </p>
 
             <div class="navdiv d-flex flex-row gap-2">
-                <span class="mt-2 welcome d-none d-sm-block">welcome , @HttpContextAccessor.HttpContext.Session.GetString("AdminName") </span>
+                <span class="mt-2 welcome d-none d-sm-block">welcome , @HttpContextAccessor.HttpContext.Session.GetString("UserName") </span>
 
                 <a asp-action="Logout" asp-controller="Admin">
                     <button style="background-color: transparent;" class="border-1 rounded text-info border-info p-2">
@@ -176,7 +176,7 @@
                     <a asp-action="AdminProfile" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
 
                 }
-                @if (Context.Request.Path.Equals("/Provider/Provider") || Context.Request.Path.Equals("/Admin/Schedulling") || Context.Request.Path.Equals("/Provider/Invoicing") || Context.Request.Path.Equals("/Provider/CreateProvider"))
+                @if (Context.Request.Path.Equals("/Provider/Provider") || Context.Request.Path.Equals("/Admin/Scheduling") || Context.Request.Path.Equals("/Provider/Invoicing") || Context.Request.Path.Equals("/Provider/CreateProvider"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Provider</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">

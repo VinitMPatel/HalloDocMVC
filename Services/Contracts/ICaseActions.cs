@@ -22,7 +22,7 @@ namespace Services.Contracts
 
         Task SubmitClearCase(int requestId);
 
-        Task SubmitNotes(int requestId, string notes, CaseActionDetails obj);
+        Task SubmitNotes(int requestId, string notes, CaseActionDetails obj , string aspNetUserId , string role);
 
         Task SubmitOrder(Orders obj);
 

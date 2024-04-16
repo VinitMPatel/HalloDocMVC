@@ -1,0 +1,363 @@
+﻿@model Services.ViewModels.ProviderDashboard;
+@{
+    Layout = "";
+}
+<div class="table-responsive border-top">
+    <table class="table d-md-table d-none table-secondary">
+        <thead class="bg-body-secondary">
+            <tr>
+                <th>Name</th>
+                <th> </th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var obj in Model.requestclients)
+            {
+                var color = "mediumpurple";
+                var type = "";
+                @if (obj.Request.Requesttypeid == 1)
+                {
+                    color = "rgb(117,201,115)";
+                    type = "Patient";
+                }
+                else if (obj.Request.Requesttypeid == 2)
+                {
+                    color = "rgb(219,161,36)";
+                    type = "Family";
+                }
+                else if (obj.Request.Requesttypeid == 3)
+                {
+                    color = "#e36478;";
+                    type = "Concierge";
+                }
+                else if (obj.Request.Requesttypeid == 4)
+                {
+                    color = "rgb(0,172,230)";
+                    type = "Business";
+                }
+                <tr style="--bs-table-bg : @color; border-bottom : 2px solid grey">
+                    <td class="text-white">@obj.Firstname @obj.Lastname</td>
+                    <td class="text-white"><i class="bi bi-envelope"></i></td>
+                    <td class="text-white">
+                        @if (type == "Patient")
+                        {
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            <div>(Patinet)</div>
+                        }
+                        else
+                        {
+                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            <div>(Patinet)</div>
+                            <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                            <div>(@type)</div>
+                        }
+                    </td>
+                    <td class="text-white">@obj.Address</td>
+                   
+                    <td>
+                        <div class="border border-light rounded-2 text-center">
+                            <div class="btn-group">
+                                <button type="button" class="bg-transparent border border-0 text-white p-1 w-100" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
+                                    Action
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li class="acceptBtn" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Accept</a></li>
+                                    <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
+                                    <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+
+    <div class="accordion accordion-flush d-md-none d-block" id="accordionFlushExample">
+
+        <div class="accordion-item">
+            @foreach (var item in Model.requestclients)
+            {
+                var color = "mediumpurple";
+                var type = "";
+                @if (item.Request.Requesttypeid == 1)
+                {
+                    color = "rgb(117,201,115)";
+                    type = "Patient";
+                }
+                else if (item.Request.Requesttypeid == 2)
+                {
+                    color = "rgb(219,161,36)";
+                    type = "Family";
+                }
+                else if (item.Request.Requesttypeid == 3)
+                {
+                    color = "rgb(230, 0 , 115)";
+                    type = "Concierge";
+                }
+                else if (item.Request.Requesttypeid == 4)
+                {
+                    color = "rgb(0,172,230)";
+                    type = "Business";
+                }
+                <h2 class="accordion-header" id="flush-headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseone-@item.Requestid" aria-expanded="false" aria-controls="flush-collapseOne" style="background-color:#e7f1ff; color:black">
+
+                        <div class="col d-flex flex-column">
+                            <span class="">@item.Firstname, @item.Lastname</span>
+                            <span class=" mt-4">@item.Street @item.City @item.State</span>
+                        </div>
+
+                        <div class="col d-flex flex-column text-end mt-2 p-0">
+                            <div>
+                                <div>
+                                    <span>@type</span>
+                                    <i class="bi bi-circle-fill" style="color :@color"></i>
+                                </div>
+                                <div class=" btn rounded-pill text-info border-info float-end p-1 my-3" style="width:150px">
+                                    Map Location
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </button>
+                    <hr class="m-0">
+                </h2>
+
+                <div id="flush-collapseone-@item.Requestid" class="accordion-collapse collapse p-2" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample" style="background-color:#e7f1ff; color:black; border-bottom : 2px solid black;">
+                    <div class="d-flex justify-content-end">
+                        <div class="rounded-pill me-3 viewCaseBtn p-1 viewCase" id="@item.Requestid" style="cursor : pointer">
+                            View Case
+                        </div>
+                    </div>
+
+                    <div class="accordion-body d-flex flex-column gap-1 p-0">
+                        <div><i class="bi bi-calendar2-minus me-2 icn"></i>Date of birth: @item.Strmonth @item.Intdate, @item.Intyear</div>
+                        <div><i class="bi bi-envelope me-2 icn"></i>Email: @item.Email</div>
+                        <div><i class="bi bi-telephone me-2 icn"></i>Patient: @item.Phonenumber</div>
+                    </div>
+
+                    <div class="row my-2 mx-0">
+                        <div class="col-6 p-2 acceptBtn" onclick="AssignCase(@item.Request.Requestid)">
+                            <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Accept</a>
+                        </div>
+                        
+                        <div class="col-6 viewNotes p-2" id="@item.Request.Requestid">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                        </div>
+                        
+                        <div class="col-6 p-2">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if(Model.totalPages > Model.totalEntity)
+    {
+    <div class="d-flex justify-content-center gap-2 my-3 filter-label">
+        @if (Model.totalPages > 0)
+        {
+            var previous = Model.currentpage - 1;
+            var next = Model.currentpage + 1;
+            if (previous <= 0)
+            {
+                previous = 1;
+            }
+            if (next > Model.totalPages)
+            {
+                next = Model.totalPages;
+            }
+            if (Model.currentpage != 1)
+            {
+                <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                    Previous
+                </button>
+            }
+            @if (Model.totalPages > 5)
+            {
+                @if (Model.currentpage > Model.totalPages - 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                }
+                else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
+                {
+                    <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
+                        1
+                    </button>
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+                else
+                {
+                    @for (var i = 1; i <= 4; i++)
+                    {
+                        <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
+                            @i
+                        </button>
+                    }
+                    <button class="0 btn btn-outline-info" id="page-0">
+                        ...
+                    </button>
+                    <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                        @Model.totalPages
+                    </button>
+                }
+            }
+            else
+            {
+                @for (int page = 0; page < Model.totalPages; page++)
+                {
+                    var temp = page + 1;
+
+                    <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
+                        @temp
+                    </button>
+                }
+            }
+            if (Model.currentpage != Model.totalPages)
+            {
+                <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                    Next
+                </button>
+            }
+        }
+        else
+        {
+            <div class="h3 text-danger">No Record found</div>
+        }
+    </div>
+    }
+
+
+
+</div>
+<div id="caseView">
+</div>
+<style>
+    .filter-label {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+
+    .filter-color {
+    }
+
+    .dash-button {
+        font-size: clamp(10px, 3vw, 14px)
+    }
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+
+    function ChangePage(Page) {
+        param.requestedPage = Page;
+        CommonAjax();
+    }
+
+    function CommonAjax() {
+        console.log("status is : " + param.requestStatus);
+        console.log("requesttype is : " + param.requestType);
+        console.log("page is : " + param.requestedPage);
+        console.log("Search is : " + param.searchKey);
+        console.log("Entity is : " + param.totalEntity);
+        $.ajax({
+            url: '/ProviderSide/AllState',
+            data: param,
+            success: function (response) {
+
+                $('#status-tabContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+
+        var temp = document.getElementById('page-' + @Model.currentpage);
+        if (temp != null) {
+            temp.style.backgroundColor = "#5dafb2";
+            temp.style.color = "white"
+        }
+
+        $('.acceptBtn').on('click', function () {
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/ProviderSide/AcceptCase',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    toastr.success("Case accepted.")
+                    window.location.reload()
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        })
+
+        $('.viewCase').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/ProviderSide/ViewCase',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#entireContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewNotes').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/ProviderSide/ViewNotes',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#entireContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

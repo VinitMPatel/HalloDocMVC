@@ -1,4 +1,4 @@
-﻿@model Data.Entity.Aspnetuser;
+﻿@model Services.ViewModels.LoginPerson
 
 @*  @{
     viewdata["title"] = "home page";
@@ -34,19 +34,19 @@
             <form asp-action="patient_login" asp-controller="Patient">
                 <div class="inputs">
                     <div class="form-floating mb-3 fields mt-5">
-                        <input type="email" class="form-control" asp-for="Email" id="floatinginput" placeholder="name@example.com">
+                        <input type="email" class="form-control" asp-for="email" id="floatinginput" placeholder="name@example.com">
                         <label for="floatinginput">email</label>
                         <i class="bi bi-person-circle login-icon"></i>
-                        <span class="small text-danger">@TempData["Email"]</span>
+                        <span asp-validation-for="email" class="text-danger"></span>
                     </div>
 
                     <div class="form-floating fields">
-                        <input type="password" class="form-control" asp-for="Passwordhash" id="see" placeholder="password">
+                        <input type="password" class="form-control" asp-for="password" id="see" placeholder="password">
                         <label for="floatingpassword">password</label>
                         <div class="login-icon" onclick="fun()">
                             <i class="bi bi-eye-slash-fill" id="eye"></i>
                         </div>
-                        <span class="small text-danger">@TempData["Password"]</span>
+                        <span asp-validation-for="password" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -87,4 +87,3 @@
         }
     }
 </script>
-
