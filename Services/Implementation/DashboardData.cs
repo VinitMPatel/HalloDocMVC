@@ -136,32 +136,38 @@ namespace Services.Implementation
                 dataobj.requestclients = reqc;
                 return dataobj;
             }
-        }
+        }   
 
         public async Task<CaseActionDetails> ViewCaseData(int requestId)
         {
+            if(requestId == 0)
+            {
+                return new CaseActionDetails();
+            }
             var request = await _context.Requests.FirstOrDefaultAsync(m => m.Requestid == requestId);
             var requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
             var regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
             var regionList = await _context.Regions.ToListAsync();
 
-            var data = new CaseActionDetails
+            if (requestclient != null && request != null && regiondata != null)
             {
-                //ConfirmationNumber = request.Confirmationnumber,
-                requestId = requestId,
-                PatientNotes = requestclient.Notes,
-                FirstName = requestclient.Firstname,
-                LastName = requestclient.Lastname,
-                Email = requestclient.Email,
-                DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate)),
-                PhoneNumber = requestclient.Phonenumber,
-                Region = regiondata.Name,
-                regionList = regionList,
-                Address = requestclient.Address,
-                requestType = request.Requesttypeid,
-                ConfirmationNumber = request.Confirmationnumber
-            };
-            return data;
+                CaseActionDetails obj = new CaseActionDetails();
+                obj.requestId = requestId;
+                obj.PatientNotes = requestclient.Notes;
+                obj.FirstName = requestclient.Firstname;
+                obj.LastName = requestclient.Lastname;
+                obj.Email = requestclient.Email;
+                obj.DOB = new DateTime(Convert.ToInt32(requestclient.Intyear), DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, Convert.ToInt32(requestclient.Intdate));
+                obj.PhoneNumber = requestclient.Phonenumber;
+                obj.Region = regiondata.Name;
+                obj.regionList = regionList;
+                obj.Address = requestclient.Address;
+                obj.requestType = request.Requesttypeid;
+                obj.ConfirmationNumber = request.Confirmationnumber;
+
+                return obj;
+            }
+            return new CaseActionDetails();
         }
 
         public async Task<CaseActionDetails> ViewNotes(int requestId)
@@ -357,7 +363,7 @@ namespace Services.Implementation
         public async Task<AdminProfile> AdminProfileData(string aspNetUserId)
         {
             Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == aspNetUserId);
-            
+
             AdminProfile adminData = new AdminProfile();
 
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
@@ -737,7 +743,7 @@ namespace Services.Implementation
         }
 
 
-        
+
 
     }
 }

@@ -312,7 +312,7 @@
 
     function Agreement(requestId) {
         $.ajax({
-            url: "/Admin/Agreement/",
+            url: "/ProviderSide/Agreement/",
             data: { "requestId": requestId },
             type: "POST",
             dataType: "html",
@@ -374,7 +374,7 @@
             var requestId = $(this).attr('id');
             console.log(requestId);
             $.ajax({
-                url: '/Admin/ViewNotes',
+                url: '/ProviderSide/ViewNotes',
                 data: { "requestId": requestId },
                 success: function (response) {
                     $('#entireContent').html(response);
@@ -390,7 +390,7 @@
             var requestId = $(this).attr('id');
             console.log(requestId);
             $.ajax({
-                url: '/Admin/ViewUploads',
+                url: '/ProviderSide/ViewUploads',
                 data: { "requestId": requestId },
                 success: function (response) {
                     $('#entireContent').html(response);

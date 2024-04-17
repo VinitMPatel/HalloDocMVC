@@ -66,6 +66,8 @@ public partial class Request
 
     public virtual ICollection<Emaillog> Emaillogs { get; set; } = new List<Emaillog>();
 
+    public virtual ICollection<Encounter> Encounters { get; set; } = new List<Encounter>();
+
     public virtual ICollection<Orderdetail> Orderdetails { get; set; } = new List<Orderdetail>();
 
     public virtual Physician? Physician { get; set; }

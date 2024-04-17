@@ -4,7 +4,7 @@ namespace Services.Contracts
 {
     public interface ICaseActions
     {
-        AgreementDetails Agreement(int requestId);
+        Task<AgreementDetails> Agreement(int requestId);
 
         Task<CaseActions> AssignCase(int requestId);
 

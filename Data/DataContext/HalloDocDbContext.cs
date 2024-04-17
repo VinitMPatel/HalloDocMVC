@@ -36,6 +36,8 @@ public partial class HalloDocDbContext : DbContext
 
     public virtual DbSet<Emaillog> Emaillogs { get; set; }
 
+    public virtual DbSet<Encounter> Encounters { get; set; }
+
     public virtual DbSet<Healthprofessional> Healthprofessionals { get; set; }
 
     public virtual DbSet<Healthprofessionaltype> Healthprofessionaltypes { get; set; }
@@ -461,6 +463,52 @@ public partial class HalloDocDbContext : DbContext
             entity.HasOne(d => d.Request).WithMany(p => p.Emaillogs)
                 .HasForeignKey(d => d.Requestid)
                 .HasConstraintName("fk_emaillog1");
+        });
+
+        modelBuilder.Entity<Encounter>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("encounter_pkey");
+
+            entity.ToTable("encounter");
+
+            entity.Property(e => e.Abd)
+                .HasMaxLength(200)
+                .HasColumnName("ABD");
+            entity.Property(e => e.Allergies).HasMaxLength(200);
+            entity.Property(e => e.BpD).HasColumnName("BP(D)");
+            entity.Property(e => e.BpS).HasColumnName("BP(S)");
+            entity.Property(e => e.Chest).HasMaxLength(200);
+            entity.Property(e => e.Cv)
+                .HasMaxLength(200)
+                .HasColumnName("CV");
+            entity.Property(e => e.Date).HasColumnType("timestamp without time zone");
+            entity.Property(e => e.Diagnosis).HasMaxLength(200);
+            entity.Property(e => e.Extr).HasMaxLength(200);
+            entity.Property(e => e.FollowUp).HasMaxLength(200);
+            entity.Property(e => e.Heent)
+                .HasMaxLength(200)
+                .HasColumnName("HEENT");
+            entity.Property(e => e.HistoryIllness).HasMaxLength(200);
+            entity.Property(e => e.Hr).HasColumnName("HR");
+            entity.Property(e => e.IsFinalized)
+                .HasDefaultValueSql("'0'::\"bit\"")
+                .HasColumnType("bit(1)")
+                .HasColumnName("isFinalized");
+            entity.Property(e => e.MedicalHistory).HasMaxLength(200);
+            entity.Property(e => e.MedicationDispensed).HasMaxLength(200);
+            entity.Property(e => e.Medications).HasMaxLength(200);
+            entity.Property(e => e.Neuro).HasMaxLength(200);
+            entity.Property(e => e.Other).HasMaxLength(200);
+            entity.Property(e => e.Pain).HasMaxLength(200);
+            entity.Property(e => e.Procedures).HasMaxLength(200);
+            entity.Property(e => e.Rr).HasColumnName("RR");
+            entity.Property(e => e.Skin).HasMaxLength(200);
+            entity.Property(e => e.TreatmentPlan).HasMaxLength(200);
+
+            entity.HasOne(d => d.Request).WithMany(p => p.Encounters)
+                .HasForeignKey(d => d.RequestId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fk_encounter_request");
         });
 
         modelBuilder.Entity<Healthprofessional>(entity =>

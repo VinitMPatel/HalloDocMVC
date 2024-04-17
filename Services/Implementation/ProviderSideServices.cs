@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using Data.DataContext;
@@ -71,7 +75,7 @@ namespace Services.Implementation
                         Requestid = requestId,
                         Status = 2,
                         //Physicianid = requestData.Physicianid,
-                        Transtophysicianid = requestData.Physicianid,
+                        Transtophysicianid = requestData!.Physicianid,
                         Createddate = DateTime.Now,
 
                     };
@@ -84,9 +88,162 @@ namespace Services.Implementation
                     transaction.Rollback();
                 }
             }
-
-
         }
-       
+
+        public async Task SubmitTransferReqquest(int requestId , string note)
+        {
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+
+                    Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+                    if (request != null)
+                    {
+                        request.Status = 1;
+                        request.Modifieddate = DateTime.Now;
+                        request.Physicianid = null;
+                        Requeststatuslog requestStatusLog = new Requeststatuslog
+                        {
+                            Requestid = requestId,
+                            Status = 1,
+                            Physicianid = request.Physicianid,
+                            Notes = note,
+                            Createddate = DateTime.Now,
+                            Transtoadmin = new System.Collections.BitArray(new[] { true })
+                        };
+                        _context.Update(request);
+                        await _context.AddAsync(requestStatusLog);
+                    }
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
+        }
+
+        public async Task<EncounterFormViewModel> EncounterForm(int requestId)
+        {
+            if(requestId == 0)
+            {
+                return new EncounterFormViewModel();
+            }
+            EncounterFormViewModel model = new EncounterFormViewModel();
+            Requestclient? requestclient = await _context.Requestclients.Include(u => u.Request).FirstOrDefaultAsync(u => u.Requestid == requestId);
+
+            if (requestclient != null)
+            {
+                model.Firstname = requestclient.Firstname;
+                model.Lastname = requestclient.Lastname!;
+                if (requestclient?.Intyear != null && requestclient.Strmonth != null && requestclient.Intdate != null)
+                {
+                    model.DOB = 
+                        new DateTime(Convert.ToInt32(requestclient.Intyear),
+                               DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
+                               Convert.ToInt32(requestclient.Intdate));
+                }
+                model.Dateofservice = requestclient!.Request.Accepteddate;
+                model.Mobile = requestclient.Phonenumber!;
+                model.Email = requestclient.Email!;
+                model.RequestId = requestId;
+                model.Location = requestclient.Address!;
+            }
+            Encounter? encounter = _context.Encounters.FirstOrDefault(u => u.RequestId == requestId);
+            if (encounter != null)
+            {
+                model.Dateofservice = encounter.Date;
+                model.HistoryOfIllness = encounter.HistoryIllness!;
+                model.MedicalHistory = encounter.MedicalHistory!;
+                model.Medication = encounter.Medications!;
+                model.Allergies = encounter.Allergies!;
+                model.Temp = encounter.Temp;
+                model.HR = encounter.Hr;
+                model.RR = encounter.Rr;
+                model.BPs = encounter.BpS;
+                model.BPd = encounter.BpD;
+                model.O2 = encounter.O2;
+                model.Pain = encounter.Pain!;
+                model.Heent = encounter.Heent!;
+                model.CV = encounter.Cv!;
+                model.Chest = encounter.Chest!;
+                model.ABD = encounter.Abd!;
+                model.Extr = encounter.Extr!;
+                model.Skin = encounter.Skin! ;
+                model.Neuro = encounter.Neuro!;
+                model.Other = encounter.Other!;
+                model.Diagnosis = encounter.Diagnosis!;
+                model.TreatmentPlan = encounter.TreatmentPlan!;
+                model.MedicationsDispended = encounter.MedicationDispensed!;
+                model.Procedure = encounter.Procedures!;
+                model.Followup = encounter.FollowUp!;
+            }
+            return model;
+        }
+
+        public async Task SubmitEncounterForm(EncounterFormViewModel model)
+        {
+            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(u => u.Requestid == model.RequestId);
+            if (requestclient != null)
+            {
+                requestclient.Firstname = model.Firstname;
+                requestclient.Location = model.Location;
+                requestclient.Intdate = model.DOB.Day;
+                requestclient.Strmonth = model.DOB.ToString("MMM");
+                requestclient.Intyear = model.DOB.Year;
+                requestclient.Email = model.Email;
+                
+                _context.Update(requestclient);
+            }
+            await _context.SaveChangesAsync();
+
+            var check = false;
+
+            var encounter = await _context.Encounters.FirstOrDefaultAsync(u => u.RequestId == model.RequestId);
+            if (encounter == null)
+            {
+                encounter = new Encounter();
+                check = true;
+            }
+            encounter.RequestId = model.RequestId;
+            encounter.Date = model.Dateofservice;
+            encounter.HistoryIllness = model.HistoryOfIllness;
+            encounter.MedicalHistory = model.MedicalHistory;
+            encounter.Medications = model.Medication;
+            encounter.Allergies = model.Allergies;
+            encounter.Temp = model.Temp;
+            encounter.Hr = model.HR;
+            encounter.Rr = model.RR;
+            encounter.BpS = model.BPs;
+            encounter.BpD = model.BPd;
+            encounter.O2 = model.O2;
+            encounter.Pain = model.Pain;
+            encounter.Heent = model.Heent;
+            encounter.Cv = model.CV;
+            encounter.Chest = model.Chest;
+            encounter.Abd = model.ABD;
+            encounter.Extr = model.Extr;
+            encounter.Skin = model.Skin;
+            encounter.Neuro = model.Neuro;
+            encounter.Other = model.Other;
+            encounter.Diagnosis = model.Diagnosis;
+            encounter.TreatmentPlan = model.TreatmentPlan;
+            encounter.MedicationDispensed = model.MedicationsDispended;
+            encounter.Procedures = model.Procedure;
+            encounter.FollowUp = model.Followup;
+            encounter.IsFinalized = new BitArray(new[] { false });
+            if (check == true)
+            {
+                await _context.Encounters.AddAsync(encounter);
+            }
+            else
+            {
+                _context.Encounters.Update(encounter);
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

@@ -1,11 +1,10 @@
 ﻿@{
     ViewData["Title"] = "ViewCase";
 }
-
-
 @{
     Layout = "";
 }
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model Services.ViewModels.CaseActionDetails
 
 <div class="container mt-5">
@@ -123,9 +122,16 @@
             </div>
 
             <div class="d-flex justify-content-end mt-4">
-                <div class="bg-info p-2 rounded border-0 px-3 text-white" onclick="AssignCase(@Model.requestId)" style="cursor : pointer"> Assign</div>
-                <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" style="cursor : pointer">Submit</div>
-                <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer" onclick="CancelCase(@Model.requestId)">Cancel</div>
+                @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                {
+                    <div class="bg-info p-2 rounded border-0 px-3 text-white" onclick="AssignCase(@Model.requestId)" style="cursor : pointer"> Assign</div>
+                    <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" style="cursor : pointer">View notes</div>
+                    <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer" onclick="CancelCase(@Model.requestId)">Cancel</div>
+                }
+                else
+                {
+                    <button class="btn btn-info text-white shadow-none viewNotes" type="button" id="@Model.requestId">View Notes</button>
+                }
             </div>
         </form>
     </div>
@@ -133,7 +139,25 @@
 <div id="caseView">
 
 </div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <script>
+
+    $('.viewNotes').on('click', function (e) {
+        e.preventDefault();
+        var requestId = $(this).attr('id');
+        console.log(requestId);
+        $.ajax({
+            url: '/ProviderSide/ViewNotes',
+            data: { "requestId": requestId },
+            success: function (response) {
+                $('#entireContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
 
     function AssignCase(requestId) {
         $.ajax({

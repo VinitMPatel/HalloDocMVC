@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 namespace Services.Implementation
 {
     [Authorization("Admin")]
+
     public class Authorization : Attribute, IAuthorization, IAuthorizationFilter
     {
         private readonly string _role;
@@ -20,6 +22,8 @@ namespace Services.Implementation
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
+            if (context.ActionDescriptor.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any())
+                return;
 
             var jwtservice = context.HttpContext.RequestServices.GetService<IJwtRepository>();
             if (jwtservice == null)

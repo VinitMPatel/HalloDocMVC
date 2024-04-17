@@ -1,9 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-@model Services.ViewModels.CaseActionDetails
+﻿@model Services.ViewModels.CaseActionDetails
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 <partial name="_Notification" />
 <div class="container mt-3" id="home-tab-pane">
 
@@ -40,12 +36,21 @@
                     <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
                         <div class="px-3 table-responsive">
                             <input type="file" id="actual-btn" asp-for="Upload" multiple hidden />
-                            <input type="text" id="docid" name="@Model.requestId" hidden />
+                            <input type="text" id="requestId" value="@Model.requestId" hidden />
                             <label role="button" for="actual-btn" id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
                         </div>
-                        <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
-                            <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
-                        </button>
+                        @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                        {
+                            <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info" name="/Admin/UploadDocument">
+                                <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info" name="/ProviderSide/UploadDocument">
+                                <label role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                            </button>
+                        }
                     </div>
                 </div>
             </div>
@@ -56,20 +61,32 @@
                 <div>
                     <button class=" border border-info rounded-2 p-2 bg-transparent">
                         <a class="text-decoration-none text-info d-flex flex-row" onclick="downloadSelectedFiles()">
-                            <i class="bi bi-cloud-arrow-down me-sm-2"></i>
-                            <span class="d-none d-sm-block">Download all</span>
+                            <i class="bi bi-cloud-arrow-down me-md-2"></i>
+                            <span class="d-none d-md-block">Download all</span>
                         </a>
                     </button>
-                    <button class=" border border-info rounded-2 p-2 bg-transparent" id="DeleteAll">
-                        <a class="text-decoration-none text-info d-flex flex-row">
-                            <i class="bi bi-trash3 me-sm-2"></i>
-                            <span class="d-none d-sm-block">Delete all</span>
-                        </a>
-                    </button>
+                    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                    {
+                        <button class=" border border-info rounded-2 p-2 bg-transparent" id="DeleteAll" name="/Admin/DeleteAll">
+                            <a class="text-decoration-none text-info d-flex flex-row">
+                                <i class="bi bi-trash3 me-md-2"></i>
+                                <span class="d-none d-md-block">Delete all</span>
+                            </a>
+                        </button>
+                    }
+                    else
+                    {
+                        <button class=" border border-info rounded-2 p-2 bg-transparent" id="DeleteAll" name="/ProviderSide/DeleteAll">
+                            <a class="text-decoration-none text-info d-flex flex-row">
+                                <i class="bi bi-trash3 me-md-2"></i>
+                                <span class="d-none d-md-block">Delete all</span>
+                            </a>
+                        </button>
+                    }
                     <button class=" border border-info rounded-2 p-2 bg-transparent text-info" id="sendMail">
                         <a class="text-decoration-none text-info d-flex flex-row">
-                            <i class="bi bi-envelope me-sm-2"></i>
-                            <span class="d-none d-sm-block">Send Mail</span>
+                            <i class="bi bi-envelope me-md-2"></i>
+                            <span class="d-none d-md-block">Send Mail</span>
                         </a>
                     </button>
                 </div>
@@ -94,14 +111,29 @@
                                 <td>@m.Filename</td>
                                 <td>@m.Createddate</td>
                                 <td>
-                                    <a role="button" class="text-decoration-none me-2" href="~/upload/@m.Filename" download>
-                                        <span class="p-1 text-info border rounded-2 border-info">
-                                            <i class="bi bi-cloud-arrow-down"></i>
+                                    <div class="d-flex flex-column flex-sm-row gap-2">
+                                        <spna>
+                                        <a role="button" class="text-decoration-none w-100 h-100" href="~/upload/@m.Filename" download>
+                                            <span class="p-1 text-info border rounded-2 border-info">
+                                                <i class="bi bi-cloud-arrow-down"></i>
+                                            </span>
+                                        </a>
+
+                                        </spna>
+                                    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                                    {
+                                        <span class="p-1 text-info border rounded-2 border-info SingleDelete" data-id="@m.Requestwisefileid" name="/Admin/SingleDelete">
+                                            <i class="bi bi-trash3"></i>
                                         </span>
-                                    </a>
-                                    <span class="p-1 text-info border rounded-2 border-info SingleDelete" name="@m.Requestwisefileid">
-                                        <i class="bi bi-trash3"></i>
-                                    </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="p-1 text-info border rounded-2 border-info SingleDelete" data-id="@m.Requestwisefileid" name="/ProviderSide/SingleDelete">
+                                            <i class="bi bi-trash3"></i>
+                                        </span>
+                                    }
+
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -129,11 +161,13 @@
     });
 
     function downloadSelectedFiles() {
-
+     
         var selectedFiles = document.querySelectorAll('input[name="checkdoc"]:checked');
         var fileUrls = [];
+        var flag = 0;
         // Iterate through selected checkboxes and extract file URLs
         selectedFiles.forEach(function (checkbox) {
+            flag = 1;
             var row = checkbox.closest('tr');
             var fileUrl = row.querySelector('a').getAttribute('href');
             fileUrls.push(fileUrl);
@@ -149,21 +183,25 @@
             link.click();
             document.body.removeChild(link);
         });
+        if(flag==0){
+            toastr.error("Please select document first");
+        }
     }
 
     $('.uploadbtn').on('click', function () {
+        var url = $(this).attr('name');
         var myfile = $('#actual-btn')[0].files;
         var formData = new FormData();
-        var reqid = $('#docid').attr('name');
+        var reqid = $('#requestId').val();
         if (myfile.length > 0) {
             for (var i = 0; i < myfile.length; i++) {
                 formData.append('myfile', myfile[i]);
             }
         }
         formData.append('reqid', reqid);
-
+        console.log(reqid)
         $.ajax({
-            url: '/Admin/UploadDocument',
+            url: url,
             type: "POST",
             data: formData,
             contentType: false,
@@ -175,11 +213,13 @@
     });
 
     $('.SingleDelete').on('click', function () {
-        var reqfileid = $(this).attr('name');
-
+        var reqfileid = $(this).attr('data-id');
+        var reqid = $('#requestId').val();
+        var url = $(this).attr('name')
+        console.log(url)
         $.ajax({
-            url: '/Admin/SingleDelete',
-            data: { 'reqfileid': reqfileid, 'reqid': @Model.requestId},
+            url: url,
+            data: { 'reqfileid': reqfileid, 'reqid': reqid },
             success: function (response) {
                 $('#home-tab-pane').html(response);
             },
@@ -187,27 +227,34 @@
     });
 
     $('#DeleteAll').on('click', function () {
+        var url = $(this).attr('name');
         var formData = new FormData();
-
+        var flag = 0;
+        console.log(url)
         $('input[type="checkbox"]:checked').each(function () {
             formData.append('reqwiseid', $(this).val());
-
+            flag = 1;
         });
-        var reqid = $('#docid').attr('name');
+        var reqid = $('#requestId').val();
         formData.append('reqid', reqid);
-        $.ajax({
-            url: '/Admin/DeleteAll',
-            type: "POST",
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                $('#home-tab-pane').html(response);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-        });
+        if (flag == 1) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $('#home-tab-pane').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+        else {
+            toastr.error("Please select document first");
+        }
     });
 
     $('#sendMail').on('click', function () {
@@ -217,10 +264,10 @@
             formData.append('reqwiseid', $(this).val());
             flag = 1;
         });
-        var reqid = $('#docid').attr('name');
+        var reqid = $('#requestId').val();
         formData.append('reqid', reqid);
         console.log(formData);
-        if(flag==1){
+        if (flag == 1) {
             $.ajax({
                 url: '/Admin/sendMail',
                 type: "POST",
@@ -236,7 +283,7 @@
                 }
             });
         }
-        else{
+        else {
             toastr.error("Please select document first");
         }
     });

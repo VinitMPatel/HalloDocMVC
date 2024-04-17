@@ -37,7 +37,11 @@
                         {
                             @foreach (var item in Model.requeststatuslogs)
                             {
-                                <span>@item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt")</span>
+                                if(item.Notes != null)
+                                {
+                                    <span>@item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt") . </span>
+                                    <br />
+                                }
                             }
                         }
                     </small>
@@ -102,14 +106,14 @@
                     console.error(error);
                 }
             });
-    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
-    {
+            @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+            {
                 @:$('#adminNote').html(notes);
-    }
-    else
-    {
-        @:$('#physicianNote').html(notes);
-    }
+            }
+            else
+            {
+                @:$('#physicianNote').html(notes);
+            }
     });
     });
 </script>

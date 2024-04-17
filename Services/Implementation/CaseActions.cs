@@ -67,16 +67,15 @@ namespace Services.Implementation
             return obj;
         }
 
-        public AgreementDetails Agreement(int requestId)
+        public async Task<AgreementDetails> Agreement(int requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            Data.Entity.Request requestData = _context.Requests.Include(a=>a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
+            Data.Entity.Request? requestData = await _context.Requests.Include(a=>a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
             if (requestData != null)
             {
                 obj.mobile = requestData.Requestclients.ElementAt(0).Phonenumber;
                 obj.email = requestData.Requestclients.ElementAt(0).Email;
                 obj.type = requestData.Requesttypeid;
-               
             }
             return obj;
         }

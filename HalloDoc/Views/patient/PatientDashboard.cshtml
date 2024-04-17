@@ -8,8 +8,6 @@
 </button> *@
 <Partial name="_Notification" />
 
-
-
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -104,6 +102,7 @@
                                                 break;
                                         }
                                         <td onclick="temp()">
+
                                             <a asp-action="ViewDocument" asp-route-id=@m.Requestid>
                                                 <button class=" border border-info rounded-2 bg-transparent text-info">
                                                     <span>@m.Requestwisefiles.Count()</span>

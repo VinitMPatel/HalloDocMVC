@@ -15,11 +15,12 @@ using System.Web.Helpers;
 using System.Security.Policy;
 using Org.BouncyCastle.Asn1.Ocsp;
 using NPOI.SS.Formula.Functions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HalloDoc.Controllers
 {
 
-
+    [Authorization("1")]
     public class AdminController : Controller
     {
         private readonly IDashboardData dashboardData;
@@ -39,6 +40,7 @@ namespace HalloDoc.Controllers
             _env = env;
         }
 
+        [AllowAnonymous]
         public IActionResult AdminLogin()
         {
             return View();
@@ -49,7 +51,7 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        [Authorization("1")]
+    
         public async Task<IActionResult> AdminDashboard()
         {
             if (HttpContext.Session.GetString("UserName") != null)
@@ -63,7 +65,7 @@ namespace HalloDoc.Controllers
             }
         }
 
-        [Authorization("1")]
+      
         public async Task<IActionResult> AllState(AdminDashboard obj)
         {
             AdminDashboard data =  await dashboardData.AllStateData(obj);
@@ -120,7 +122,8 @@ namespace HalloDoc.Controllers
             return File(record, contentType, filename);
         }
 
-
+        
+       
         public async Task<IActionResult> ViewCase(int requestId)
         {
             CaseActionDetails obj = await dashboardData.ViewCaseData(requestId);
@@ -149,7 +152,6 @@ namespace HalloDoc.Controllers
         public async Task SubmitAssign(int requestId, int physicianId, string assignNote)
         {   
             await caseActions.SubmitAssign(requestId, physicianId, assignNote);
-            //return RedirectToAction("AdminDashboard");
         }
 
 
@@ -271,9 +273,9 @@ namespace HalloDoc.Controllers
         }
 
 
-        public IActionResult Agreement(int requestId)
+        public async Task<IActionResult> Agreement(int requestId)
         {
-            AgreementDetails obj = caseActions.Agreement(requestId);
+            AgreementDetails obj = await caseActions.Agreement(requestId);
             obj.requestId = requestId;
             return PartialView("AdminCaseAction/_Agreement", obj);
         }
@@ -353,6 +355,7 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult AdminLogin(LoginPerson obj)
         {
             try
