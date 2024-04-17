@@ -147,6 +147,13 @@ namespace HalloDoc.Controllers
             TempData["success"] = "Case transferred successfully";
         }
 
+        public async Task<IActionResult> Orders(int requestId)
+        {
+            Orders obj = new Orders();
+            obj.requestId = requestId;
+            return PartialView("AdminCaseAction/_Orders", obj);
+        }
+
         public async Task<IActionResult> EncounterForm(int requestId)
         {
             EncounterFormViewModel obj = new EncounterFormViewModel();

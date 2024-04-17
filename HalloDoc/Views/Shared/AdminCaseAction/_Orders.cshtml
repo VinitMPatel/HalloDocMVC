@@ -6,6 +6,7 @@
 @{
     Layout = "";
 }
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model Services.ViewModels.Orders
 
 <div class="container mt-3">
@@ -82,9 +83,18 @@
 </div>
 <script>
     $(document).ready(function () {
+    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+    {
+        @: var url = "/Admin/GetProfessions"
+    }
+    else
+    {
+            @: var url = "/ProviderSide/GetProfessions"
+    }
         var professions = $('.professions');
+        console.log(url)
         $.ajax({
-            url: '/Admin/GetProfessions',
+            url: url,
             success: function (response) {
                 professions.empty();
                 professions.append($('<option>', {
