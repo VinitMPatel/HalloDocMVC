@@ -15,84 +15,119 @@
         <div class="fw-bolder">Send Order</div>
         <div>
             <button class=" border border-info rounded-2 p-2 bg-transparent">
-                <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+                @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                {
+                    <a class="text-decoration-none text-info" asp-action="AdminDashboard">&lt; Back</a>
+                }
+                else
+                {
+                    <a class="text-decoration-none text-info" asp-action="ProviderDashboard">&lt; Back</a>
+                }
             </button>
         </div>
     </div>
 
-        <form asp-action="SubmitOrder" asp-controller="Admin">
-    <div class="border rounded-3 p-3 mt-4 bg-transparent row" id="main-content">
-        <div class="form-floating col-sm-6 col-12 mt-3">
-            <select class="form-select p-2 professions"  aria-label="Floating label select example" asp-for="professionid">
-                <option value="" selected disabled>Select Profession</option>
-            </select>
-        </div>
+    @*  <form asp-action="SubmitOrder" asp-controller="Admin"> *@
+    <form id="myForm">
+        <div class="border rounded-3 p-3 mt-4 bg-transparent row" id="main-content">
+            <div class="form-floating col-sm-6 col-12 mt-3">
 
-        <div class="form-floating  col-sm-6 col-12 mt-3">
-            <input type="number" asp-for="requestId" hidden />
-            <select class="form-select p-2 businesses"  aria-label="Floating label select example" asp-for="vendorid">
-                <option value="" selected disabled>Select Business</option>
-            </select>
-        </div>
-               
-        <div class="p-2 col-sm-6 col-12 mt-3">
-            <div class="form-floating ">
-                <input type="text" class="form-control" placeholder="Business Contact" name="contact" asp-for="Contact">
-                <label class="FloatingInput">Business Contact</label>
+                @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                {
+                    <select class="form-select p-2 professions" aria-label="Floating label select example" asp-for="professionid" name="/Admin/GetBusinesses">
+                        <option value="" selected disabled>Select Profession</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-select p-2 professions" aria-label="Floating label select example" asp-for="professionid" name="/ProviderSide/GetBusinesses">
+                        <option value="" selected disabled>Select Profession</option>
+                    </select>
+                }
+
+            </div>
+
+            <div class="form-floating  col-sm-6 col-12 mt-3">
+                <input type="number" asp-for="requestId" hidden id="requestId" />
+
+                @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                {
+                    <select class="form-select p-2 businesses" aria-label="Floating label select example" asp-for="vendorid" name="/Admin/GetBusinessesDetails">
+                        <option value="" selected disabled>Select Business</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-select p-2 businesses" aria-label="Floating label select example" asp-for="vendorid" name="/ProviderSide/GetBusinessesDetails">
+                        <option value="" selected disabled>Select Business</option>
+                    </select>
+                }
+                <span asp-validation-for="vendorid" class="text-danger"></span>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 mt-3">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Business Contact" name="contact" asp-for="Contact" id="contact">
+                    <label class="FloatingInput">Business Contact</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12 mt-3">
+                <div class="form-floating ">
+                    <input type="email" class="form-control" placeholder="Business Contact" name="email" asp-for="Email" id="email">
+                    <label class="FloatingInput">Email</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-sm-6 col-12">
+                <div class="form-floating ">
+                    <input type="text" class="form-control" placeholder="Fax Number" name="fax" asp-for="Fax" id="fax">
+                    <label class="FloatingInput" for="Name">Fax Number</label>
+                </div>
+            </div>
+
+            <div class="p-2 col-12 mb-3">
+                <div class="form-floating">
+                    <textarea class="form-control" id="prescription"
+                              placeholder="Patient Notes"
+                              style="height: 100px" asp-for="prescription"></textarea>
+                    <label for="floatingTextarea2">Prescription</label>
+                </div>
+                <span asp-validation-for="prescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating col-sm-6 col-12">
+                <select class="form-select p-2" id="refil" aria-label="Floating label select example" asp-for="refil">
+                    <option value="" selected disabled>Not Required</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="ms-3 bg-info p-2 rounded border-0 px-3 text-white submit" style="cursor : pointer">Submit</button>
+                <div class="ms-3 p-2 rounded border border-info px-3 text-info cancelBtn" style="cursor : pointer" type="reset">Cancel</div>
             </div>
         </div>
-
-        <div class="p-2 col-sm-6 col-12 mt-3">
-            <div class="form-floating ">
-                <input type="email" class="form-control" placeholder="Business Contact" name="email" asp-for="Email">
-                <label class="FloatingInput">Email</label>
-            </div>
-        </div>
-
-        <div class="p-2 col-sm-6 col-12">
-            <div class="form-floating ">
-                <input type="text" class="form-control" placeholder="Fax Number" name="fax" asp-for="Fax">
-                <label class="FloatingInput" for="Name">Fax Number</label>
-            </div>
-        </div>
-
-         <div class="p-2 col-12 mb-3">
-              <div class="form-floating">
-                   <textarea class="form-control" id="floatingTextarea2"
-                                  placeholder="Patient Notes"
-                                  style="height: 100px" asp-for="prescription"></textarea>
-                   <label for="floatingTextarea2">Patient Notes</label>
-              </div>
-         </div>
-
-        <div class="form-floating col-sm-6 col-12">
-            <select class="form-select p-2" id="floatingSelect" aria-label="Floating label select example" asp-for="refil">
-                <option value="" selected disabled>Not Required</option>
-                    <option value="1" >1</option>
-                    <option value="2" >2</option>
-                    <option value="3" >3</option>
-            </select>
-        </div>
-
-        <div class="d-flex justify-content-end mt-4">
-             <button type="submit" class="ms-3 bg-info p-2 rounded border-0 px-3 text-white submit" style="cursor : pointer">Submit</button>
-                <div class="ms-3 p-2 rounded border border-info px-3 text-info" style="cursor : pointer">Cancel</div>
-        </div>
-    </div>
-        </form>
+    </form>
 </div>
 <script>
     $(document).ready(function () {
     @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
     {
         @: var url = "/Admin/GetProfessions"
+        @: var formUrl = "/Admin/SubmitOrder"
+        @: var successUrl = "/Admin/AdminDashboard"
     }
     else
     {
-            @: var url = "/ProviderSide/GetProfessions"
+        @: var url = "/ProviderSide/GetProfessions"
+        @: var formUrl = "/ProviderSide/SubmitOrder"
+        @: var successUrl = "/ProviderSide/ProviderDashboard"
     }
-        var professions = $('.professions');
-        console.log(url)
+
+            var professions = $('.professions');
         $.ajax({
             url: url,
             success: function (response) {
@@ -113,12 +148,13 @@
                 console.error(error);
             }
         });
-        
+
         $('.professions').on('change', function () {
             var businesses = $('.businesses');
             var professionId = $(this).val();
+            var url = $(this).attr('name');
             $.ajax({
-                url: '/Admin/GetBusinesses',
+                url: url,
                 data: { "professionId": professionId },
                 success: function (response) {
                     $('input[name="email"]').val("");
@@ -144,16 +180,15 @@
         });
 
         $('.businesses').on('change', function () {
-            console.log("Fun working")
+            var url = $(this).attr('name');
             var email = $('input[name="email"]').val("");
             var contact = $('input[name="contact"]').val("");
             var fax = $('input[name="fax"]').val("");
             var businessid = $(this).val();
             $.ajax({
-                url: '/Admin/GetBusinessesDetails',
+                url: url,
                 data: { "businessid": businessid },
                 success: function (response) {
-                   console.log(response);
                     email.val(response.email);
                     contact.val(response.businesscontact)
                     fax.val(response.faxnumber)
@@ -163,5 +198,52 @@
                 }
             });
         });
+
+
+        $('#myForm').submit(function (e) {
+
+            const formData = new FormData();
+            formData.append('vendorid', $('.businesses').val());
+            formData.append('requestId', $('#requestId').val());
+            formData.append('Fax', $('#fax').val());
+            formData.append('Contact', $('#contact').val());
+            formData.append('Email', $('#email').val());
+            formData.append('prescription', $('#prescription').val());
+            formData.append('refil', $('#refil').val());
+            
+            $('form span').css('display', 'flex');
+            e.preventDefault();
+            console.log(formUrl)
+            if ($('#myForm').valid()) {
+                debugger
+                $.ajax({
+                    url: formUrl,
+                    type: 'post',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        console.log(response)
+                        var link = document.createElement('a');
+                        link.href = successUrl;
+                        link.click();
+                        toastr.success("Order sent successfully.")
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+            }
+        });
+
+        $('.cancelBtn').click(function () {
+            $('form span').css('display', 'none');
+            $('form select').removeClass('input-validation-error')
+            $('form textarea').removeClass('input-validation-error')
+        })
+
+
     });
 </script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>

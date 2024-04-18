@@ -224,11 +224,12 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_Orders", obj);
         }
 
-        public async Task<IActionResult> SubmitOrder(Orders obj)
+        [HttpPost]
+        public async Task SubmitOrder(Orders obj)
         {
             obj.createdby = HttpContext.Session.GetString("aspNetUserId");
             await caseActions.SubmitOrder(obj);
-            return RedirectToAction("AdminDashboard");
+            TempData["success"] = "*Order Sent successfully.";
         }
 
         public async Task<List<Healthprofessionaltype>> GetProfessions()
@@ -353,6 +354,12 @@ namespace HalloDoc.Controllers
             RoleAccess obj = dashboardData.EditRole(roleId);
             return PartialView("AdminCaseAction/_EditRole", obj);
         }
+
+        //public async Task<IActionResult> UserAccess()
+        //{
+
+        //}
+
 
         [HttpPost]
         [AllowAnonymous]
@@ -571,6 +578,115 @@ namespace HalloDoc.Controllers
             return RedirectToAction("BlockHistoryData", new { requestedPage = 1 , totalEntity = 3});
         }
 
+
+        public IActionResult Scheduling()
+        {
+            return View(dashboardData.Scheduling());
+        }
+
+        public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
+        {
+            var currentDate = DateTime.Parse(date);
+            List<Physician> physician = _context.Physicians.ToList();
+
+            switch (PartialName)
+            {
+                case "_DayWise":
+                    return PartialView("Provider/_DayWise", dashboardData.Daywise(regionid, currentDate, physician));
+
+                case "_WeekWise":
+                    return PartialView("Provider/_WeekWise", dashboardData.Weekwise(regionid, currentDate, physician));
+
+                case "_MonthWise":
+                    return PartialView("Provider/_MonthWise", dashboardData.Monthwise(regionid, currentDate, physician));
+
+                default:
+                    return PartialView("Provider/_DayWise");
+            }
+        }
+        public IActionResult AddShift(Scheduling model)
+        {
+            if (model.starttime > model.endtime)
+            {
+                TempData["error"] = "Starttime Must be Less than Endtime";
+                return RedirectToAction("Scheduling");
+            }
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            var chk = Request.Form["repeatdays"].ToList();
+            bool f = dashboardData.AddShift(model, aspNetUserId, chk);
+            if (f == false)
+            {
+                TempData["error"] = "Shift is already assigned in this time";
+            }
+            return RedirectToAction("Scheduling");
+        }
+
+
+        public Scheduling viewshift(int shiftdetailid)
+        {
+            return dashboardData.viewshift(shiftdetailid);
+        }
+        public void ViewShiftreturn(int shiftdetailid)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            dashboardData.ViewShiftreturn(shiftdetailid, aspNetUserId);
+        }
+        public bool ViewShiftedit(Scheduling modal)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            return dashboardData.ViewShiftedit(modal, aspNetUserId);
+        }
+        public void DeleteShift(int shiftdetailid)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            dashboardData.DeleteShift(shiftdetailid, aspNetUserId);
+        }
+        public IActionResult ProvidersOnCall(Scheduling modal)
+        {
+            return View(dashboardData.ProvidersOnCall(modal));
+        }
+        [HttpPost]
+        public IActionResult ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
+        {
+            return PartialView("AdminLayout/_ProviderOnCallData", dashboardData.ProvidersOnCallbyRegion(regionid, oncall, offcall));
+        }
+
+        public IActionResult ShiftForReview()
+        {
+            return View(dashboardData.ShiftForReview());
+        }
+        public IActionResult ShiftReviewTable(int currentPage, int regionid)
+        {
+            return PartialView("AdminLayout/_ShiftForReviewTable", dashboardData.ShiftReviewTable(currentPage, regionid));
+        }
+        public IActionResult ApproveSelected(int[] shiftchk)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                dashboardData.ApproveSelected(shiftchk, aspNetUserId);
+                TempData["success"] = "Shifts Approved Successfuly";
+            }
+            return RedirectToAction("ShiftForReview");
+        }
+        public IActionResult DeleteSelected(int[] shiftchk)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            if (shiftchk.Length == 0)
+            {
+                TempData["error"] = "Please select atleast 1 shift";
+            }
+            else
+            {
+                dashboardData.DeleteSelected(shiftchk, aspNetUserId);
+                TempData["success"] = "Shifts Deleted Successfuly";
+            }
+            return RedirectToAction("ShiftForReview");
+        }
 
     }
 }

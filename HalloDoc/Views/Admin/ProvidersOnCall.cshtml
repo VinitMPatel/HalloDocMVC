@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Providers On Call";
+    Layout = "_Admin";
+}
+@model Services.ViewModels.Scheduling
+<partial name="_Notification" />
+
+
+<div class="container-fluid mt-3 mt-lg-5 dashboard shadow p-3 rounded">
+    <div class="d-flex justify-content-between">
+        <h5 class="mt-1 fw-bold">MDs On Call</h5>
+        <div class="backbtn">
+            <a asp-controller="Admin" asp-action="Scheduling">
+                <button type="button" class="btn btn-outline-info text-center boxshadowbtn">&lt; Back</button>
+            </a>
+        </div>
+    </div>
+    <div class="mt-2 d-flex flex-wrap justify-content-between">
+        <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
+            <option value="0">All Region</option>
+            @foreach (var obj in Model.regions)
+            {
+                <option value="@obj.Regionid">@obj.Name</option>
+            }
+        </select>
+        <div class="btns d-flex">
+            <a asp-action="Scheduling" asp-controller="Admin" type="button" class="btn btn-info text-white me-1 p-2 boxshadowbtn">Calender View</a>
+            <a asp-action="ShiftForReview" asp-controller="Admin" type="button" class="btn btn-info text-white p-2 boxshadowbtn">Shifts For Review</a>
+        </div>
+    </div>
+    <div class=" mt-4 provideroncalldata shadow">
+        <partial name="AdminCaseAction/_ProviderOnCallData" />
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    
+    $(document).ready(function () {
+        var oncall = [];
+        var offcall = [];
+        $.each($('input[name = "oncall"]'), function (index, ele) {
+            oncall.push($(this).val());
+        });
+        $.each($('input[name = "offduty"]'), function (index, ele) {
+            offcall.push($(this).val());
+        })
+
+        $('.region').on('change', function (e) {
+            var regionid = $('.region').val();
+            $.ajax({
+                url: "/Admin/ProvidersOnCallbyRegion",
+                type: 'POST',
+                data: { regionid: regionid, oncall: oncall, offcall: offcall },
+                success: function (response) {
+                    $('.provideroncalldata').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>

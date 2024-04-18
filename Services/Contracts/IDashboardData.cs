@@ -61,11 +61,49 @@ namespace Services.Contracts
         Task<RecordsViewModel> SearchRecordsService();
 
         Task<SearchRecordsData> GetSearchRecordData(SearchRecordsData obj);
+
         Task<PatientHistory> GetPatientHistoryData(PatientHistory obj);
+
         Task<ExplorePatientHistory> ExplorePatientHistory(int userId);
+
         Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj);
+
         Task UnblockPatient(int requestId);
+
         Task<CaseActionDetails> ViewNotes(int requestId);
+
         Task UpdateAdminPassword(string aspNetUserId, string password);
+
+        Scheduling Scheduling();
+
+        List<Physician> GetPhysicians();
+
+        DayWiseScheduling Daywise(int regionid, DateTime currentDate, List<Physician> physician);
+
+        WeekWiseScheduling Weekwise(int regionid, DateTime currentDate, List<Physician> physician);
+
+        MonthWiseScheduling Monthwise(int regionid, DateTime currentDate, List<Physician> physician);
+
+        bool AddShift(Scheduling model, string aspNetUserId, List<string> chk);
+
+        Scheduling viewshift(int shiftdetailid);
+
+        void ViewShiftreturn(int shiftdetailid, string aspNetUserId);
+
+        bool ViewShiftedit(Scheduling modal, string aspNetUserId);
+
+        Scheduling ProvidersOnCall(Scheduling modal);
+
+        Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
+
+        ShiftforReviewModal ShiftForReview();
+
+        ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
+
+        void ApproveSelected(int[] shiftchk, string aspNetUserId);
+
+        void DeleteSelected(int[] shiftchk, string aspNetUserId);
+
+        void DeleteShift(int shiftdetailid, string aspNetUserId);
     }
 }

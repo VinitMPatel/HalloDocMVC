@@ -37,7 +37,7 @@
                         {
                             @foreach (var item in Model.requeststatuslogs)
                             {
-                                if(item.Notes != null)
+                                if (item.Notes != null)
                                 {
                                     <span>@item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt") . </span>
                                     <br />
@@ -82,7 +82,15 @@
                     <input type="text" asp-for="requestId" id="reqId" hidden />
                 </div>
                 <div class="d-flex justify-content-end mt-3 mb-2">
-                    <button class="btn btn-info text-white rounded-2 confirm">Save Changes</button>
+                    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+                    {
+                        <button class="btn btn-info text-white rounded-2 confirm" name="/Admin/SubmitNotes">Save Changes</button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-info text-white rounded-2 confirm" name="/ProviderSide/SubmitNotes">Save Changes</button>
+
+                    }
                 </div>
             </div>
         </div>
@@ -96,8 +104,9 @@
             // var caseId = $('.reason').val();
             var notes = $('.notes').val();
             var requestId = $('#reqId').val();
+            var url = $(this).attr('name');
             $.ajax({
-                url: '/Admin/SubmitNotes',
+                url: url,
                 data: { "requestId": requestId, "notes": notes },
                 success: function (response) {
                     $('#status-tabContent').html(response);
@@ -106,14 +115,14 @@
                     console.error(error);
                 }
             });
-            @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
-            {
-                @:$('#adminNote').html(notes);
-            }
-            else
-            {
-                @:$('#physicianNote').html(notes);
-            }
-    });
+    @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+    {
+        @:$('#adminNote').html(notes);
+    }
+    else
+    {
+        @:$('#physicianNote').html(notes);
+    }
+        });
     });
 </script>

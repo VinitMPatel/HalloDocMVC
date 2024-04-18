@@ -1,4 +1,5 @@
 ﻿using Data.Entity;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,17 @@ namespace Services.ViewModels
     public class ProviderCaseAction
     {
         public int requestId { get; set; }
+    }
+
+    public class ConcludeCare
+    {
+        public int requestId { get; set; }
+
+        public string patientName { get; set; }
+
+        public List<Requestwisefile> requestwisefiles { get; set; }
+
+        public List<IFormFile> uploadedFiles { get; set; }
+
     }
 }

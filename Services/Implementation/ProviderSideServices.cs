@@ -7,8 +7,11 @@ using System.Net;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Enum;
 using Data.DataContext;
 using Data.Entity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
@@ -19,10 +22,12 @@ namespace Services.Implementation
     public class ProviderSideServices : IProviderSideServices
     {
         private readonly HalloDocDbContext _context;
+        private readonly IHostingEnvironment _env;
 
-        public ProviderSideServices(HalloDocDbContext context)
+        public ProviderSideServices(HalloDocDbContext context, IHostingEnvironment env)
         {
             _context = context;
+            _env = env;
         }
 
 
@@ -41,13 +46,20 @@ namespace Services.Implementation
 
             List<Requestclient> requestclients = new List<Requestclient>();
 
-            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Physician.Aspnetuserid == obj.aspNetUserId).ToListAsync();
+            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Encounters).Where(a => a.Request.Physician.Aspnetuserid == obj.aspNetUserId).ToListAsync();
+
+            if (obj.requeststatus == 4)
+            {
+                requestclients = requestclients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToList();
+            }
+            else{
+                requestclients = requestclients.Where(a => a.Request.Status == obj.requeststatus).ToList();
+            }
 
             requestclients = requestclients.Where(a =>
-                                 (obj.requeststatus == 0 || a.Request.Status == obj.requeststatus) &&
                                  (string.IsNullOrWhiteSpace(obj.searchKey) || a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())) &&
                                  (obj.requestType == 0 || a.Request.Requesttypeid == obj.requestType)).ToList();
-
+            
 
             dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
             dataObj.currentpage = obj.requestedPage;
@@ -125,6 +137,69 @@ namespace Services.Implementation
             }
         }
 
+        public async Task Consult(int requestId)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if (request != null)
+            {
+                request.Status = 6;
+                request.Modifieddate = DateTime.Now;
+                _context.Update(request);
+                Requeststatuslog requestStatusLog = new Requeststatuslog()
+                {
+                    Requestid = requestId,
+                    Status = 6,
+                    Createddate = DateTime.Now,
+                };
+                _context.Requeststatuslogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+        public async Task HouseCall(int requestId)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if (request != null)
+            {
+                request.Status = 5;
+                request.Modifieddate = DateTime.Now;
+                _context.Update(request);
+
+                Requeststatuslog requestStatusLog = new Requeststatuslog()
+                {
+                    Requestid = requestId,
+                    Status = 5,
+                    Createddate = DateTime.Now,
+                };
+
+                _context.Requeststatuslogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+        public async Task HouseCalling(int requestId)
+        {
+            Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            
+            if (request != null)
+            {
+                request.Status = 6;
+                request.Modifieddate = DateTime.Now;
+                _context.Update(request);
+
+                Requeststatuslog requestStatusLog = new Requeststatuslog()
+                {
+                    Requestid = requestId,
+                    Status = 6,
+                    Createddate = DateTime.Now,
+                };
+                _context.Requeststatuslogs.Add(requestStatusLog);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<EncounterFormViewModel> EncounterForm(int requestId)
         {
             if(requestId == 0)
@@ -179,6 +254,14 @@ namespace Services.Implementation
                 model.MedicationsDispended = encounter.MedicationDispensed!;
                 model.Procedure = encounter.Procedures!;
                 model.Followup = encounter.FollowUp!;
+                if (encounter.IsFinalized[0] == true)
+                {
+                    model.isFinaled = true;
+                }
+                else
+                {
+                    model.isFinaled = false;
+                }
             }
             return model;
         }
@@ -243,6 +326,62 @@ namespace Services.Implementation
                 _context.Encounters.Update(encounter);
             }
             await _context.SaveChangesAsync();
+        }
+
+        public async Task FinalizeEncounter(int requestId)
+        {
+            Encounter? encounter = await _context.Encounters.FirstOrDefaultAsync(a => a.RequestId == requestId);
+
+            if (encounter != null)
+            {
+                encounter.IsFinalized = new BitArray(new[] { true });
+                _context.Encounters.Update(encounter);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ConcludeCare> ConcludeCareView(int requestId)
+        {
+            if(requestId == 0)
+            {
+                return new ConcludeCare();
+            }
+            ConcludeCare obj = new ConcludeCare();
+            obj.requestId = requestId;
+            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a=>a.Requestid == requestId);
+            if(requestclient != null)
+            {
+                obj.patientName = requestclient.Firstname + " " + requestclient.Lastname;
+            }
+
+            List<Requestwisefile> filesList = await _context.Requestwisefiles.Where(a => a.Requestid == requestId && a.Isdeleted == new BitArray(new[] {false})).ToListAsync();
+            if(filesList.Count > 0)
+            {
+                obj.requestwisefiles = filesList;
+            }
+
+            return obj;
+        }
+
+        public async Task uploadFiles(List<IFormFile> formFiles, int requestId)
+        {
+            foreach (var item in formFiles)
+            {
+                string path = _env.WebRootPath + "/upload/" + item.FileName;
+                FileStream stream = new FileStream(path, FileMode.Create);
+
+                item.CopyTo(stream);
+                Requestwisefile requestwisefile = new Requestwisefile
+                {
+                    Requestid = requestId,
+                    Filename = item.FileName,
+                    Createddate = DateTime.Now,
+                    Isdeleted = new BitArray(new[] { false })
+                };
+
+                await _context.AddAsync(requestwisefile);
+                await _context.SaveChangesAsync();
+            }
         }
 
     }

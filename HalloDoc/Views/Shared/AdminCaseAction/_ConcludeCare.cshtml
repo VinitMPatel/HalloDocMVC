@@ -1,0 +1,117 @@
+﻿@{
+    ViewData["Title"] = "ViewCase";
+}
+@{
+    Layout = "";
+}
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Services.ViewModels.ConcludeCare
+
+<div class="container mt-5" id="entireContent">
+    
+    <div class="d-flex justify-content-between">
+
+        <div class="h3">
+            Conclude Care
+        </div>
+        <button class=" border border-info rounded-2 p-2 bg-transparent">
+            <a asp-action="ProviderDashboard" asp-controller="ProviderSide" class="text-decoration-none text-info">&lt; Back</a>
+        </button>
+    </div>
+
+    <div class="border rounded-3 mt-4 bg-transparent" id="main-content">
+
+        <div class="fs-6 m-3">patient name</div>
+        <div class="text-info fw-bolder h4 m-3">@Model.patientName</div>
+
+        <div class="d-flex justify-content-between m-3">
+
+            <div class="h4">Encounter Forms</div>
+
+            <div>
+
+                <form asp-action="UploadFiles" asp-controller="ProviderSide" method="post" enctype="multipart/form-data" id="myForm">
+
+                    <input type="text" id="requestId" asp-for="requestId" hidden/>
+                    <input type="file" multiple hidden id="uploadFile" asp-for="uploadedFiles"/>
+                    <label role="button" class="btn btn-outline-info d-flex flex-row p-2 gap-2" for="uploadFile" id="uploadBtn">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                        <div class="d-none d-sm-block">Upload</div>
+                    </label>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        <div class="table-responsive mt-2 d-sm-block d-none">
+            <table class="table">
+                <thead>
+                    <tr class="table-secondary">
+                        <th scope="col" style="width:55%">Documents</th>
+                        <th class="text-center" scope="col" style="width:15%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.requestwisefiles.Count() > 0)
+                    {
+                        @foreach (var item in Model.requestwisefiles)
+                        {
+                            <tr>
+                                <td>@item.Filename</td>
+                                <td class="text-center">
+                                    <a href="~/upload/@item.Filename" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="d-sm-none d-block ps-3">
+            <hr />
+            @if (Model.requestwisefiles.Count() > 0)
+            {
+                @foreach (var item in Model.requestwisefiles)
+                {
+                    <div>
+                        <span>@item</span>
+                    </div>
+                    <div class="my-3">
+                        <a href="~/upload/@item" target="_blank" id="viewagreement" class="btn bg-info text-white h5 mb-0 view">View</a>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $('#uploadFile').on('change', function () {
+       
+        var myfiles = $('#uploadFile')[0].files;
+        var formData = new FormData();
+        var reqid = $('#requestId').val();
+
+        if (myfiles.length > 0) {
+            for (var i = 0; i < myfiles.length; i++) {
+                formData.append('files', myfiles[i]);
+            }
+        }
+
+        formData.append('requestId', reqid);
+
+        console.log(reqid)
+        $.ajax({
+            url: '/ProviderSide/UploadFiles',
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                console.log(response)
+                $('#entireContent').html(response);
+            },
+        });
+    })
+</script>

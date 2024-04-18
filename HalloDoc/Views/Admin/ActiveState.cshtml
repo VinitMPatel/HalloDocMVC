@@ -316,28 +316,28 @@
         });
     }
     $(document).ready(function () {
+
         var temp = document.getElementById('page-' + @Model.currentpage);
         if (temp != null) {
             temp.style.backgroundColor = "#5dafb2";
             temp.style.color = "white"
         }
-    });
-                // $(document).ready(function () {
-                //     $('.orders').on('click', function (e) {
-                //         e.preventDefault();
-                //         var requestId = $(this).attr('id');
-                //         console.log(requestId);
-                //         $.ajax({
-                //             url: '/Admin/Orders',
-                //             data: { "requestId": requestId },
-                //             success: function (response) {
-                //                 $('#viewCaseContent').html(response);
-                //             },
-                //             error: function (xhr, status, error) {
-                //                 console.error(error);
-                //             }
-                //         });
-                //     });
 
-                // });
+        $('.viewNotes').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            console.log(requestId);
+            $.ajax({
+                url: '/Admin/ViewNotes',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+
 </script>

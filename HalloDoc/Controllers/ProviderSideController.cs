@@ -90,6 +90,13 @@ namespace HalloDoc.Controllers
             CaseActionDetails obj = await dashboardData.ViewNotes(requestId);
             return PartialView("AdminCaseAction/_ViewNotes", obj);
         }
+        public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            string role = HttpContext.Session.GetString("Role")!;
+            await caseActions.SubmitNotes(requestId, notes, obj, aspNetUserId, role);
+        }
+
 
         public async Task<IActionResult> Agreement(int requestId)
         {
@@ -154,6 +161,53 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_Orders", obj);
         }
 
+        public async Task<List<Healthprofessionaltype>> GetProfessions()
+        {
+            return await dashboardData.GetProfessions();
+        }
+
+        public async Task<List<Healthprofessional>> GetBusinesses(int professionId)
+        {
+            return await dashboardData.GetBusinesses(professionId);
+        }
+
+        public async Task<Healthprofessional> GetBusinessesDetails(int businessid)
+        {
+            return await dashboardData.GetBusinessesDetails(businessid);
+        }
+
+        [HttpPost]
+        public async Task SubmitOrder(Orders obj)
+        {
+            obj.createdby = HttpContext.Session.GetString("aspNetUserId")!;
+            await caseActions.SubmitOrder(obj);
+            TempData["success"] = "*Order Sent successfully.";
+        }
+
+        public async Task<IActionResult> SubmitEncounterStatus()
+        {
+            var radio = Request.Form["flexRadioDefault"].ToList();
+            var requestId = Request.Form["requestId"].ToList();
+            if (radio.ElementAt(0) == "HouseCall")
+            {
+                await providerSideServices.HouseCall(int.Parse(requestId.ElementAt(0)!));
+                TempData["success"] = "*Data is saved";
+                return RedirectToAction("ProviderDashboard");
+            }
+            else if (radio.ElementAt(0) == "Consult")
+            {
+                await providerSideServices.Consult(int.Parse(requestId.ElementAt(0)!));
+                TempData["success"] = "*Data is saved";
+                return RedirectToAction("ProviderDashboard");
+            }
+            return NoContent();
+        }
+
+        public async Task HouseCallClick(int requestId)
+        {
+            await providerSideServices.HouseCalling(requestId);
+        }
+
         public async Task<IActionResult> EncounterForm(int requestId)
         {
             EncounterFormViewModel obj = new EncounterFormViewModel();
@@ -162,12 +216,29 @@ namespace HalloDoc.Controllers
             return View(obj);
         }
 
-
         public async Task<IActionResult> SubmitEncounterForm(EncounterFormViewModel obj)
         {
             await providerSideServices.SubmitEncounterForm(obj);
-            TempData["success"] = "Data saved successfully.";
-            return RedirectToAction("ProviderDashboard");
+            return NoContent() ;
+        }
+
+        public async Task FinalizeEncounter(int requestId)
+        {
+            await providerSideServices.FinalizeEncounter(requestId);
+            TempData["success"] = "*Form finalized successfully.";
+        }
+
+        public async Task<IActionResult> ConcludeCare(int requestId)
+        {
+            ConcludeCare obj = await providerSideServices.ConcludeCareView(requestId);
+            return PartialView("AdminCaseAction/_ConcludeCare", obj);
+        }
+
+        public async Task<IActionResult> UploadFiles(List<IFormFile> files, int requestId)
+        {
+            await providerSideServices.uploadFiles(files, requestId);
+            return RedirectToAction("ConcludeCare",new { requestId = requestId });
+            
         }
     }
 }

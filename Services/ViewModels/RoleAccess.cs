@@ -21,4 +21,26 @@ namespace Services.ViewModels
 
         public List<Menu>? selectedMenu { get; set; }
     }
+
+
+    public class UserAccessData
+    {
+        public List<UserAccess> userAccessList { get; set;}
+    }
+
+
+    public class UserAccess
+    {
+        public string Firstname { get; set; }
+
+        public string Lastname { get; set; }
+
+        public int accountType { get; set; }
+
+        public string Phone { get; set; }
+
+        public short Status { get; set; }
+
+        public int openRequest { get; set; }
+    }
 }

@@ -81,7 +81,7 @@
                                 <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu4" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Provider</a>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu4" style="cursor:pointer;">
                                     <li><a asp-action="Provider" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
-                                    <li><a asp-action="Schedulling" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                                    <li><a asp-action="Scheduling" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
                                     <li><a asp-action="Invoicing" asp-controller="Provider" class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                                 </ul>
                             }
@@ -203,13 +203,21 @@
                 {
                     <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Partners</a>
                 }
-                @if (Context.Request.Path.Equals("/Admin/RoleAccess"))
+                @if (Context.Request.Path.Equals("/Admin/RoleAccess") || Context.Request.Path.Equals("/Admin/UserAccess"))
                 {
-                    <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px">Access</a>
+                    <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Access</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="cursor:pointer;">
+                        <li><a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
+                        <li><a asp-action="UserAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                    </ul>
                 }
                 else
                 {
-                    <a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Access</a>
+                    <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Access</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="cursor:pointer;">
+                        <li><a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
+                        <li><a asp-action="UserAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                    </ul>
                 }
                 @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockHistory"))
                 {

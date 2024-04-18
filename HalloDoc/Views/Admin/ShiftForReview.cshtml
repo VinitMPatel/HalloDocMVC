@@ -1,0 +1,67 @@
+﻿﻿@{
+    ViewData["Title"] = "Shift for review";
+    Layout = "_Admin";
+}
+@model Services.ViewModels.ShiftforReviewModal
+<partial name="_Notification" />
+
+
+
+<div class="container-fluid mt-3 mt-lg-5 dashboard shadow p-3 rounded">
+    <div class="d-flex justify-content-between">
+        <h5 class="mt-1 fw-bold">MDs On Call</h5>
+        <div class="backbtn">
+            <a asp-controller="Admin" asp-action="Scheduling">
+                <button type="button" class="btn btn-outline-info text-center boxshadowbtn">&lt;Back</button>
+            </a>
+        </div>
+    </div>
+    <form asp-action="ApproveSelected" asp-controller="Admin">
+        <div class="mt-2 d-flex flex-wrap justify-content-between bg-white lightmode p-3 rounded">
+            <select id="suggestions" class="region mb-2 boxshadowbtn" style="padding-left:5px">
+                <option value="0">All Region</option>
+                @foreach (var obj in Model.regions)
+                {
+                    <option value="@obj.Regionid">@obj.Name</option>
+                }
+            </select>
+            <div class="btns d-flex">
+                <button type="submit" class="btn btn-success text-white me-1 cuurrentmonthshift boxshadowbtn">View Current Month Shifts</button>
+                <button type="submit" class="btn btn-success text-white me-1 boxshadowbtn">Approved Selected</button>
+                <button asp-controller="Admin" asp-action="DeleteSelected" type="submit" class="btn btn-danger text-white boxshadowbtn">Delete Selected</button>
+            </div>
+        </div>
+        <div class="shifttable mt-4">
+            <partial name="AdminCaseAction/_ShiftForReviewTable" />
+        </div>
+    </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  
+    $(document).ready(function () {
+        $('.region').on('change', function () {
+            $('#MdsRegion').val($('.region').val());
+            regionid = $(this).val();
+            $.ajax({
+                url: '/Admin/ShiftReviewTable',
+                data: { 'regionid': regionid, 'currentpage': 1 },
+                success: function (data) {
+                    $(".shifttable").html(data);
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        });
+        $('.cuurrentmonthshift').on('click', function () {
+            localStorage.setItem('curmonshift', '1');
+            $.ajax({
+                success: function (data) {
+                    window.location.href = "/Admin/Scheduling";
+                },
+            });
+        });
+    });
+</script>

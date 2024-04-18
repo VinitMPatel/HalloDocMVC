@@ -313,7 +313,8 @@ namespace Services.Implementation
         public async Task SendingAgreement(int requestId, string url)
         {
             Data.Entity.Request requestData = await _context.Requests.Include(a => a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
-            string email = requestData.Requestclients.ElementAt(0).Email;
+            //string email = requestData.Requestclients.ElementAt(0).Email;
+            string email = "vinit2273@gmail.com";
             try
             {
                 var mail = "tatva.dotnet.vinitpatel@outlook.com";

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,21 +59,27 @@ namespace Services.ViewModels
     {
         public int requestId { get; set; }
 
-        public int reqid { get; set; }
+        
 
+        [Required(ErrorMessage = "*Select Vendor")]
         public int vendorid { get; set; }
 
-        public string Contact { get; set; }
+       
+        public string? Contact { get; set; }
 
-        public string Email { get; set; }
+        
+        public string? Email { get; set; }
 
-        public string Fax { get; set; }
+        
+        public string? Fax { get; set; }
 
+        [Required(ErrorMessage = "*Enter Prescription")]
         public string prescription { get; set; }
 
-        public int refil { get; set; }
+        public int? refil { get; set; }
 
-        public int professionid { get; set; }
+   
+        public int? professionid { get; set; }
 
         public string createdby { get; set; }
 

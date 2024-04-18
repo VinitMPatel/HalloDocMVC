@@ -2,6 +2,60 @@
 @{
     Layout = "";
 }
+
+
+@* Encounter status modal *@
+<div class="modal fade" id="encounterModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Select Type Of Care</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="SubmitEncounterStatus">
+                <div class="modal-body">
+                    <input type="text" name="requestId" />
+                    <div class="d-flex justify-content-center mt-3">
+
+                        <input type="radio" class="btn-check" name="flexRadioDefault" id="option1" autocomplete="off" value="HouseCall">
+                        <label class="btn btn-info me-3 text-white" for="option1">HouseCall</label>
+
+                        <input type="radio" class="btn-check btn btn-outline-info" name="flexRadioDefault" id="option2" autocomplete="off" value="Consult">
+                        <label class="btn btn-outline-info" for="option2">Consult</label>
+
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white">Save</button>
+                    <button type="button" class="btn ms-3 p-2 rounded btn-outline-info bg-transparent text-info px-3" data-bs-dismiss="modal">Cancel</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h1 class="modal-title fs-5" id="exampleModal1Label">Encounter Form</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" name="requestId" />
+                <div class="mt-1">Encounter form is finalized successfully.</div>
+                <div class="d-flex justify-content-center align-items-center mt-3">
+                    <button class="btn btn-info">Download</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 <div class="table-responsive border-top">
     <table class="table d-md-table d-none table-secondary">
         <thead class="bg-body-secondary">
@@ -57,7 +111,13 @@
                         }
                     </td>
                     <td class="text-white">@obj.Address</td>
-                    <td>Status</td>
+                    <td>
+                        @if (obj.Request.Status == 5)
+                        {
+                            <button class="btn btn-info text-white p-2 shadow-none houseCallBtn" id="@obj.Request.Requestid">House Call</button>
+                        }
+
+                    </td>
                     <td>
                         <div class="border border-light rounded-2 text-center">
                             <div class="btn-group">
@@ -65,13 +125,30 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    
+
                                     <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
                                     <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
                                     <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Uploads</a></li>
                                     <li class="Orders" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Orders</a></li>
-                                    <li class="encounterForm" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a></li>
-
+                                    @if (obj.Request.Encounters.Count() > 0)
+                                    {
+                                        @if (obj.Request.Encounters.ElementAt(0).IsFinalized[0] == false)
+                                        {
+                                            <li class="encounterForm" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a></li>
+                                        }
+                                        else if (obj.Request.Encounters.ElementAt(0).IsFinalized[0] == true)
+                                        {
+                                            <li id="@obj.Request.Requestid" style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="passRequestId(@obj.Request.Requestid)">
+                                                <a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a>
+                                            </li>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <li id="@obj.Request.Requestid" style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="passRequestId(@obj.Request.Requestid)">
+                                            <a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a>
+                                        </li>
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -324,6 +401,10 @@
         });
     }
 
+    function passRequestId(requestId) {
+        $('input[name="requestId"]').val(requestId)
+    }
+
     $(document).ready(function () {
 
         var temp = document.getElementById('page-' + @Model.currentpage);
@@ -395,21 +476,6 @@
             });
         })
 
-        function Orders(requestId) {
-            console.log("Working");
-            $.ajax({
-                url: "/Admin/Orders/",
-                data: { "requestId": requestId },
-                type: "POST",
-                dataType: "html",
-                success: function (response) {
-                    $('#viewCaseContent').html(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
 
         $('.Orders').on('click', function () {
             var requestId = $(this).attr('id');
@@ -426,5 +492,35 @@
                 }
             });
         })
+
+
+        $('.houseCallBtn').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            swal.fire({
+                title: "Case will be moved to conclude state",
+                //type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "lightblue",
+                confirmButtonText: "Yes",
+                //closeOnConfirm: false
+            }).then(function (result) {
+                if (result.value) {
+                    $.ajax({
+                        url: "/ProviderSide/HouseCallClick",
+                        data: { "requestId": requestId },
+                        success: function (response) {
+                            window.location.reload()
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                } else {
+                    // User clicked the cancel button or closed the dialog
+                    console.log('Cancelled!');
+                }
+            });
+        });
     });
 </script>
