@@ -10,5 +10,6 @@ namespace Services.Contracts
         Task Insert(PatientInfo r);
         Task uploadFile(List<IFormFile> upload, int id);
         Task NewAccount(LoginPerson model);
+        Task<Aspnetuser> CheckEmail(string Email);
     }
 }

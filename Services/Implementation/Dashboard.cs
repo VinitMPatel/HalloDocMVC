@@ -27,19 +27,20 @@ namespace Services.Implementation
             _env = env;
         }
 
-        public async Task<patient_dashboard> PatientDashboard(int id)
+        public async Task<patient_dashboard> PatientDashboard(string aspNetUserId)
         {
             patient_dashboard dash = new patient_dashboard();
-            var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Userid == id);
+            var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
 
             dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), 
                 DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, 
                 Convert.ToInt32(userdata.Intdate));
 
-            var req = await _context.Requests.Where(m => m.Userid == id).ToListAsync();
+            var req = await _context.Requests.Where(m => m.Userid == userdata.Userid).ToListAsync();
             dash.user = userdata;
             dash.request = req;
-            List<Requestwisefile> files = await (from m in _context.Requestwisefiles select m).ToListAsync();
+            List<Requestwisefile> files = await _context.Requestwisefiles.ToListAsync();
+                //(from m in _context.Requestwisefiles select m).ToListAsync();
             dash.requestwisefile = files;
             return dash;
         }
@@ -69,12 +70,13 @@ namespace Services.Implementation
             return userdata.Firstname;
         }
 
-        public async Task<patient_dashboard> ViewDocuments(int userId , int reqId)
+        public async Task<patient_dashboard> ViewDocuments(string aspNetUserId , int reqId)
         {
                 patient_dashboard dash = new patient_dashboard();
-                var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Userid == userId);
+                var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
                 dash.user = userdata;
-                List<Requestwisefile> files = await (from m in _context.Requestwisefiles where m.Requestid == reqId select m).ToListAsync();
+                List<Requestwisefile> files = await _context.Requestwisefiles.Where(a=>a.Requestid == reqId).ToListAsync();
+
                 dash.requestwisefile = files;
                 dash.reqId = reqId;
                 return dash;

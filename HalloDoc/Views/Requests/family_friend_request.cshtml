@@ -17,8 +17,8 @@
     </div>
 
     <div class="container border rounded-2 p-3 pr_main bg-white mt-3" id="main-content">
-        <form id="myForm">
-            @*  <form asp-action="FamilyInsert" asp-controller="Requests" method="post" enctype="multipart/form-data" id="myForm"> *@
+       
+             <form asp-action="FamilyInsert" asp-controller="Requests" method="post" enctype="multipart/form-data" id="myForm">
             <div class="relative-info row mt-3">
 
                 <div class="h4">Family/friend Information</div>
@@ -186,7 +186,7 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
-    swal("Information",
+    new swal("Information",
         "When Submitting the request, you must provide the correct contact information for the patient or responsibly party.Failure to provide the correct email and phone number will delay the service or be declined.",
         "warning", {
         closeOnClickOutside: true,
@@ -228,45 +228,6 @@
                 }
             })
         }
-        // var email = $('#email_concierge').val();
-        // var regexemail = /^\w+@@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-        // if (email == "") {
-        //     $('#email_conciergespan').html("Please Enter Email")
-        // }
-        // else if (!regexemail.test(email)) {
-        //     $('#email_conciergespan').html("Please Enter Valid Email")
-        // }
-        // else {
-        //     $.ajax({
-        //         url: '/CreateFamilyFriend/EmailValidate',
-        //         data: { email },
-        //         async: false,
-        //         success: function (response) {
-        //             console.log(response)
-        //             if (response) {
-        //                 document.getElementById('submit_concierge').type = "submit";
-        //                 $('#submit_concierge').click();
-        //             } else {
-        //                 $.ajax({
-        //                     url: '/CreateFamilyFriend/CreateUserSendMail',
-        //                     data: { email: email },
-        //                     async: false,
-        //                     success: function (data) {
-        //                         Swal.fire({
-        //                             icon: "success",
-        //                             title: "User Not Exist",
-        //                             text: "Create User Account Page Link Sent on Patient email, First Create account and then try to submit this form"
-        //                         });
-        //                     }
-        //                 });
-
-        //             }
-        //         },
-        //         error: function (error) {
-        //             console.error(error);
-        //         }
-        //     })
-        // }
 
     });
 </script>

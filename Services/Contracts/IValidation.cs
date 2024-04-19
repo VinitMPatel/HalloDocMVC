@@ -7,6 +7,6 @@ namespace Services.Contracts
     {
         (PatientLogin, LoggedInPersonViewModel) AdminValidate(LoginPerson user);
 
-        PatientLogin Validate(LoginPerson user);
+        (PatientLogin, LoggedInPersonViewModel) Validate(LoginPerson user);
     }
 }

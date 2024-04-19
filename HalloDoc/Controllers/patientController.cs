@@ -21,8 +21,9 @@ namespace HalloDoc.Controllers
         private readonly IDashboard dashboard;
         private readonly IEmailSender emailSender;
         private readonly ICaseActions caseActions;
+        private readonly IJwtRepository _jwtRepository;
 
-        public patientController(HalloDocDbContext context , IPatientRequest patientRequest, IValidation validation, IDashboard dashboard, IEmailSender emailSender, ICaseActions caseActions)
+        public patientController(HalloDocDbContext context , IPatientRequest patientRequest, IValidation validation, IDashboard dashboard, IEmailSender emailSender, ICaseActions caseActions, IJwtRepository jwtRepository)
         {
             _context = context;
             this.patientRequest = patientRequest;
@@ -30,6 +31,7 @@ namespace HalloDoc.Controllers
             this.dashboard = dashboard;
             this.emailSender = emailSender;
             this.caseActions = caseActions;
+            _jwtRepository = jwtRepository;
         }
 
         [HttpPost]
@@ -37,22 +39,20 @@ namespace HalloDoc.Controllers
         {
             try
             {
-                var result = validation.Validate(obj);
+                (PatientLogin result, LoggedInPersonViewModel loggedInPerson) = validation.Validate(obj);
+
                 TempData["Email"] = result.emailError;
                 TempData["Password"] = result.passwordError;
-                var check = _context.Aspnetusers.Where(u => u.Email == obj.email).FirstOrDefault();
-                var userdata = _context.Users.Where(u => u.Aspnetuserid == check.Id).FirstOrDefault();
-                if(userdata != null)
-                {
-                    HttpContext.Session.SetString("UserName", userdata.Firstname);
 
-                }
-                if (result.Status == ResponseStautsEnum.Success && userdata != null)
+                if (result.Status == ResponseStautsEnum.Success)
                 {
+                    Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
+                    HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                    HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
                     TempData["success"] = "Login successfully";
-                    HttpContext.Session.SetInt32("UserId", userdata.Userid);
                     return RedirectToAction("PatientDashboard", "patient");
                 }
+
                 TempData["error"] = "Incorrect Email or password";
                 return RedirectToAction("patient_login", "Home");
             }
@@ -64,10 +64,10 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> PatientDashboard()
         {
-            if (HttpContext.Session.GetString("UserId") != null)
+            if (HttpContext.Session.GetString("UserName") != null)
             {
-                int id = (int)HttpContext.Session.GetInt32("UserId");
-                return View(await dashboard.PatientDashboard(id));
+                string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+                return View(await dashboard.PatientDashboard(aspNetUserId));
             }
             else
             {
@@ -109,10 +109,10 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> ViewDocument(int id)
         {
-            if (HttpContext.Session.GetString("UserId") != null)
+            if (HttpContext.Session.GetString("UserName") != null)
             {
-                var userId = (int)HttpContext.Session.GetInt32("UserId");
-                return View(await dashboard.ViewDocuments(userId , id));
+                string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+                return View(await dashboard.ViewDocuments(aspNetUserId, id));
             }
             else
             {
@@ -153,7 +153,7 @@ namespace HalloDoc.Controllers
         {
             patientRequest.NewAccount(model);
 
-            return RedirectToAction("family_friend_request", "requests");
+            return RedirectToAction("patient_login", "Home");
         }
 
         public async Task AgreeAgreement(int requestId)
@@ -166,9 +166,9 @@ namespace HalloDoc.Controllers
              await caseActions.CancelAgreement(requestId);
         }
 
-        public bool EmailValidate(FamilyFriendRequest f)
+        public async Task<bool> EmailValidate(string Email)
         {
-            var aspnetuser = _context.Aspnetusers.FirstOrDefault(x => x.Email == f.Email);
+            Aspnetuser aspnetuser = await patientRequest.CheckEmail(Email);
 
             if (aspnetuser != null)
             {

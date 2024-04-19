@@ -163,5 +163,18 @@ namespace Services.Implementation
             await _context.SaveChangesAsync();
 
         }
+
+        public async Task<Aspnetuser> CheckEmail(string Email)
+        {
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(x => x.Email == Email);
+            if (aspnetuser == null)
+            {
+                return null;
+            }
+            else
+            {
+                return aspnetuser;
+            }
+        }
     }
 }
