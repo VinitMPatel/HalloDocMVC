@@ -48,11 +48,12 @@ namespace Services.Implementation
             obj.physiciannotificationid = phynotificationid;
             return obj;
         }
-        public EditProviderViewModel EditProvider(int physicianId)
+
+        public async Task<EditProviderViewModel> EditProvider(string aspnetUserId)
         {
-            Physician? physician = _context.Physicians.FirstOrDefault(a => a.Physicianid == physicianId);
-            List<Region> regions = _context.Regions.ToList();
-            List<Physicianregion> physicianregions = _context.Physicianregions.Where(a => a.Physicianid == physicianId).ToList();
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Aspnetuserid == aspnetUserId);
+            List<Region> regions = await _context.Regions.ToListAsync();
+            List<Physicianregion> physicianregions = await _context.Physicianregions.Where(a => a.Physicianid == physician.Physicianid).ToListAsync();
             EditProviderViewModel editProviderViewModel = new EditProviderViewModel
             {
                 firstName = physician!.Firstname,
@@ -72,7 +73,7 @@ namespace Services.Implementation
                 businessSite = physician.Businesswebsite,
                 regionList = regions,
                 physicianRegionlist = physicianregions,
-                providerId = physicianId,
+                providerId = physician.Physicianid,
                 photoName = physician.Photo,
                 signName = physician.Signature
             };

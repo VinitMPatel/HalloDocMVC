@@ -70,10 +70,36 @@
 
         <div class="shadow px-4 my-2">
             <div class=" h6 d-none d-md-flex gap-4" style="width:93%">
-                <a asp-action="ProviderDashboard" asp-controller="ProviderSide">Dashboard</a>
-                <a asp-action="ProviderInvoicing" asp-controller="ProviderSide">Dashboard</a>
-                <a asp-action="EncounterForm" asp-controller="ProviderSide">Encounter</a>
-                <a asp-action="ProviderProfile" asp-controller="ProviderSide">Dashboard</a>
+
+
+                @if (Context.Request.Path.Equals("/ProviderSide/ProviderDashboard"))
+                {
+                    <a  class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">Dashboard</a>
+                }
+                else
+                {
+                    <a asp-action="ProviderDashboard" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
+                }
+
+                <a class="text-decoration-none px-2 text-decoration-none" style="color:black;">Invoicing</a>
+
+                @if (Context.Request.Path.Equals("/ProviderSide/ProviderSchedule"))
+                {
+                    <a class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">My schedule</a>
+                }
+                else
+                {
+                    <a asp-action="ProviderSchedule" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">My schedule</a>
+                }
+
+                @if (Context.Request.Path.Equals("/ProviderSide/ProviderProfile"))
+                {
+                    <a class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">My Profile</a>
+                }
+                else
+                {
+                    <a asp-action="ProviderProfile" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
+                }
             </div>
         </div>
 

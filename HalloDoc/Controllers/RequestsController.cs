@@ -7,6 +7,7 @@ using Services.Contracts;
 using System.Net.Mail;
 using System.Net;
 using Services.ViewModels;
+using Common.Helper;
 
 namespace HalloDoc.Controllers
 {
@@ -44,8 +45,8 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                string resetPasswordUrl = GenerateResetPasswordUrl();
-                SendEmail(r.PatientEmail, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
+                //string resetPasswordUrl = GenerateResetPasswordUrl();
+                //SendEmail(r.PatientEmail, "Create Your Account", $"Hello, create your account by using this link : {resetPasswordUrl}");
                 return RedirectToAction("patient_login", "Home");
             }
         }
@@ -62,10 +63,10 @@ namespace HalloDoc.Controllers
             return RedirectToAction("patient_login", "Home");
         }
 
-        private string GenerateResetPasswordUrl()
+        private string GenerateUrl(string email)
         {
             string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-            string resetPasswordPath = Url.Action("CreateAccount", "Home");
+            string resetPasswordPath = Url.Action("CreateAccount", "Home" , new { email = email});
             return baseUrl + resetPasswordPath;
         }
 
@@ -81,6 +82,13 @@ namespace HalloDoc.Controllers
             };
 
             return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
+        }
+
+        public void CreateNewAccountLink(string email)
+        {
+            string encryptEmail = EncryptDecryptHelper.Encrypt(email);
+            string Url = GenerateUrl(encryptEmail);
+            SendEmail(email, "Create Your Account", $"Hello, create your account by using this link : {Url}");
         }
     }
 }

@@ -8,6 +8,7 @@ using Services.Implementation;
 using Common.Enum;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using System.Runtime.CompilerServices;
+using NPOI.SS.Formula.Functions;
 
 namespace HalloDoc.Controllers
 {
@@ -148,7 +149,7 @@ namespace HalloDoc.Controllers
             
         }
 
-        public IActionResult NewAccount(Aspnetuser model)
+        public IActionResult NewAccount(LoginPerson model)
         {
             patientRequest.NewAccount(model);
 
@@ -163,6 +164,20 @@ namespace HalloDoc.Controllers
         public async Task CancelAgreement(int requestId)
         {
              await caseActions.CancelAgreement(requestId);
+        }
+
+        public bool EmailValidate(FamilyFriendRequest f)
+        {
+            var aspnetuser = _context.Aspnetusers.FirstOrDefault(x => x.Email == f.Email);
+
+            if (aspnetuser != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

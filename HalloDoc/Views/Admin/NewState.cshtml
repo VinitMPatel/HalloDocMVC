@@ -400,6 +400,7 @@
         }
 
         $('.viewCase').on('click', function (e) {
+            localStorage.setItem("state" , "New")
             e.preventDefault();
             var requestId = $(this).attr('id');
             console.log(requestId);

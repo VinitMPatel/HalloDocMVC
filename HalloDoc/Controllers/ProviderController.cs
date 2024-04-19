@@ -42,8 +42,8 @@ namespace HalloDoc.Controllers
             return RedirectToAction("ProviderTable");
         }
 
-        public IActionResult EditProvider(int physicianId) { 
-            EditProviderViewModel obj = providerServices.EditProvider(physicianId);
+        public async Task<IActionResult> EditProvider(string aspNetUserId) { 
+            EditProviderViewModel obj = await providerServices.EditProvider(aspNetUserId);
             return View(obj);
         }
         
@@ -91,5 +91,7 @@ namespace HalloDoc.Controllers
             string LocationData = await providerServices.GetLocations();
             return LocationData;
         }
+
+        
     }
 }

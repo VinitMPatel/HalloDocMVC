@@ -1,0 +1,141 @@
+﻿@{
+    Layout = "";
+}
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model Services.ViewModels.PatientInfo;
+
+<div class="container mt-3">
+
+    <div class="d-flex justify-content-between mt-4">
+        <div>
+            <h3 class="none">Submit Information</h3>
+        </div>
+        <div>
+            @if(HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
+            {
+                <a class="text-decoration-none" asp-controller="Admin" asp-action="AdminDashboard">
+                    <button class="text-decoration-none text-info border border-info rounded-2 p-2 bg-transparent h-100">&lt; Back</button>
+                </a>
+            }
+            else
+            {
+                <a class="text-decoration-none" asp-controller="ProviderSide" asp-action="ProviderDashboard">
+                    <button class="text-decoration-none text-info border border-info rounded-2 p-2 bg-transparent h-100">&lt; Back</button>
+                </a>
+            }
+              
+        </div>
+    </div>
+
+    <div class="border rounded-3 p-3 mt-4 pr_main bg-white" id="main-content">
+
+        <form asp-action="Insert" asp-controller="Patient" method="post" enctype="multipart/form-data">
+
+            <div class="patient-info row">
+
+                <div class="h4">Patient information</div>
+
+                <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                    <div class="form-floating ">
+                        <input type="text" asp-for="FirstName" class="form-control shadow-none bg-transparent" placeholder="First Name">
+                        <label class="FloatingInput" for="Name">First Name</label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-floating mt-2 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="LastName" class="form-control" id="floatingPassword" placeholder="Last Name">
+                    <label for="floatingPassword" style="left: 5px;">Last Name</label>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12" required>
+                    <input id="phone" asp-for="PhoneNumber" class="form-control" type="text" maxlength="10" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="email" asp-for="Email" class="form-control" id="patientEmail"  placeholder="name@example.com">
+                    @* onblur="checkEmailExists()" *@
+                    <label for="floatingInput" style="left: 5px;">Email</label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                  @*   <span id="emailError" class="small text-danger">*Please enter existing Patient's email</span> *@
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="date" asp-for="DOB" class="form-control" id="floatingPassword" placeholder="Date of birth" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                    <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
+                    <span asp-validation-for="DOB" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="location-info row mt-5">
+
+                <div class="h4"> Location</div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="Street" class="form-control" id="floatingInput" placeholder="Street">
+                    <label for="floatingInput" style="left: 5px;">Street</label>
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="City" class="form-control" id="floatingInput" placeholder="City">
+                    <label for="floatingInput" style="left: 5px;">City</label>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="State">
+                    <label for="floatingInput" style="left: 5px;">State</label>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="ZipCode" class="form-control" id="floatingInput" placeholder="Zip Code">
+                    <label for="floatingInput" style="left: 5px;">Zip Code</label>
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
+                    <input type="text" asp-for="Room" class="form-control" id="floatingInput" placeholder="Room">
+                    <label for="floatingInput" style="left: 5px;">Room # / Suite(Optional)</label>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
+    // function checkEmailExists() {
+
+    //     var email = document.getElementById("patientEmail").value;
+      
+    //     fetch('/ProviderSide/CheckCreateRequest/checkmail/' + email)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             var spanError = document.getElementById('emailError');
+    //             console.log(data.exists)
+    //             console.log(spanError)
+    //             if (data.exists) {
+    //                 spanError.style.display = 'none'
+    //             }
+    //             else {
+    //                 spanError.style.display = 'block'
+    //             }
+    //         })
+    //         .catch(error => console.error('Error:', error));
+    // }
+
+</script>

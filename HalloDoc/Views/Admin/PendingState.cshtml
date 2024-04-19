@@ -395,6 +395,7 @@
         });
 
         $('.viewCase').on('click', function (e) {
+            localStorage.setItem("state" , "Pending")
             e.preventDefault();
             var requestId = $(this).attr('id');
             console.log(requestId);

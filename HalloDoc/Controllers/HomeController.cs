@@ -1,16 +1,12 @@
-﻿
-using Common.Enum;
+﻿using Common.Helper;
 using Data.DataContext;
 using Data.Entity;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Services.Contracts;
-using System.Diagnostics;
-using System.Net.Mail;
-using System.Net;
 using Services.ViewModels;
-using Common.Helper;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 
 namespace HalloDoc.Controllers
 {
@@ -70,9 +66,12 @@ namespace HalloDoc.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult CreateAccount()
+        public IActionResult CreateAccount(string email)
         {
-            return View();
+            LoginPerson model = new LoginPerson();
+            string decryptEmail = EncryptDecryptHelper.Decrypt(email);
+            model.email = decryptEmail;
+            return View(model);
         }
         
         public IActionResult PatientResetPasswordEmail(Aspnetuser user)
@@ -83,7 +82,6 @@ namespace HalloDoc.Controllers
 
             return RedirectToAction("patient_login", "Home");
         }
-
         
         private string GenerateResetPasswordUrl(string userId)
         {

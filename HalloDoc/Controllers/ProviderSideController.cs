@@ -4,6 +4,7 @@ using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.Implementation;
 using Services.ViewModels;
 using System.Collections;
 using Authorization = Services.Implementation.Authorization;
@@ -17,15 +18,14 @@ namespace HalloDoc.Controllers
         private readonly IProviderSideServices providerSideServices;
         private readonly IDashboardData dashboardData;
         private readonly ICaseActions caseActions;
-        private readonly HalloDocDbContext _context;
+        private readonly IProviderServices providerServices;
 
-
-        public ProviderSideController(IProviderSideServices providerSideServices, IDashboardData dashboardData, ICaseActions caseActions, HalloDocDbContext context)
+        public ProviderSideController(IProviderSideServices providerSideServices, IDashboardData dashboardData, ICaseActions caseActions , IProviderServices providerServices)
         {
             this.providerSideServices = providerSideServices;
             this.dashboardData = dashboardData;
             this.caseActions = caseActions;
-            context = _context;
+            this.providerServices = providerServices;
         }
 
         public async Task<IActionResult> AllState(ProviderDashboard obj)
@@ -240,5 +240,31 @@ namespace HalloDoc.Controllers
             return RedirectToAction("ConcludeCare",new { requestId = requestId });
             
         }
+
+        public async Task<IActionResult> ProviderProfile()
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            EditProviderViewModel obj = await providerServices.EditProvider(aspNetUserId);
+            return View(obj);
+        }
+
+        public IActionResult CreateRequest()
+        {
+            return PartialView("AdminCaseAction/_CreateRequest");
+        }
+
+        public async Task<IActionResult> ProviderSchedule()
+        {
+            return View(await providerSideServices.Scheduling());
+        }
+
+        public async Task<IActionResult> LoadSchedulingPartial(string date)
+        {
+            var currentDate = DateTime.Parse(date);
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            return PartialView("Provider/_MonthWise", await providerSideServices.Monthwise(currentDate, aspNetUserId));
+        }
+
+        
     }
 }

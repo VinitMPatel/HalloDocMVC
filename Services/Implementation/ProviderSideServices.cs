@@ -384,5 +384,22 @@ namespace Services.Implementation
             }
         }
 
+        public async Task<Scheduling> Scheduling()
+        {
+            Scheduling modal = new Scheduling();
+            modal.regions = await _context.Regions.ToListAsync();
+            return modal;
+        }
+
+        public async Task<MonthWiseScheduling> Monthwise(DateTime currentDate , string aspNetUserId)
+        {
+            MonthWiseScheduling obj = new MonthWiseScheduling
+            {
+                date = currentDate,
+                shiftdetails = await _context.Shiftdetails.Include(a => a.Shift).ThenInclude(a => a.Physician).Where(a => a.Shift.Physician.Aspnetuserid == aspNetUserId).ToListAsync()
+            };
+            return obj;
+        }
+
     }
 }

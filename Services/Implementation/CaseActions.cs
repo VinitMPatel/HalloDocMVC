@@ -70,7 +70,7 @@ namespace Services.Implementation
         public async Task<AgreementDetails> Agreement(int requestId)
         {
             AgreementDetails obj = new AgreementDetails();
-            Data.Entity.Request? requestData = await _context.Requests.Include(a=>a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
+            Data.Entity.Request? requestData = await _context.Requests.Include(a => a.Requestclients).FirstOrDefaultAsync(a => a.Requestid == requestId);
             if (requestData != null)
             {
                 obj.mobile = requestData.Requestclients.ElementAt(0).Phonenumber;
@@ -106,6 +106,7 @@ namespace Services.Implementation
                 try
                 {
                     Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
+
                     if (requestData != null)
                     {
                         requestData.Modifieddate = DateTime.Now;
@@ -119,6 +120,7 @@ namespace Services.Implementation
                         Status = 7,
                         Createddate = DateTime.Now,
                     };
+
                     await _context.AddAsync(requeststatuslog);
                     await _context.SaveChangesAsync();
                     transaction.Commit();
@@ -167,60 +169,82 @@ namespace Services.Implementation
 
         public async Task SubmitCancel(int requestId, int caseId, string cancelNote)
         {
-            Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
-            if(requestData != null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                requestData.Modifieddate = DateTime.Now;
-                requestData.Casetag = _context.Casetags.FirstOrDefault(a => a.Casetagid == caseId).Name;
-                requestData.Status = 3;
-                _context.Requests.Update(requestData);
-            }
+                try
+                {
+                    Data.Entity.Request? requestData = _context.Requests.Where(a => a.Requestid == requestId).FirstOrDefault();
+                    if (requestData != null)
+                    {
+                        requestData.Modifieddate = DateTime.Now;
+                        requestData.Casetag = _context.Casetags.FirstOrDefault(a => a.Casetagid == caseId).Name;
+                        requestData.Status = 3;
+                        _context.Requests.Update(requestData);
+                    }
 
-            Requeststatuslog requeststatuslog = new Requeststatuslog
-            {
-                Requestid = requestId,
-                Status = 3,
-                Notes = cancelNote,
-                Createddate = DateTime.Now
-            };
-            await _context.AddAsync(requeststatuslog);
-            await _context.SaveChangesAsync();
+                    Requeststatuslog requeststatuslog = new Requeststatuslog
+                    {
+                        Requestid = requestId,
+                        Status = 3,
+                        Notes = cancelNote,
+                        Createddate = DateTime.Now
+                    };
+                    await _context.AddAsync(requeststatuslog);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
 
         public async Task SubmitBlock(int requestId, string blockNote)
         {
-            Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
-            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a => a.Requestid == requestId);
-            if( requestData != null )
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                requestData.Modifieddate = DateTime.Now;
-                requestData.Status = 11;
-                _context.Requests.Update(requestData);
-            }
+                try
+                {
+                    Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+                    Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a => a.Requestid == requestId);
+                    if (requestData != null)
+                    {
+                        requestData.Modifieddate = DateTime.Now;
+                        requestData.Status = 11;
+                        _context.Requests.Update(requestData);
+                    }
 
-            Blockrequest blockrequest = new Blockrequest
-            {
-                Requestid = requestId,
-                Phonenumber = requestclient!.Phonenumber!,
-                Email = requestclient.Email!,
-                Reason = blockNote,
-                Isactive = new System.Collections.BitArray(new[] {false}),
-                Createddate = DateTime.Now,
-            };
-            await _context.AddAsync(blockrequest);
-            await _context.SaveChangesAsync();
+                    Blockrequest blockrequest = new Blockrequest
+                    {
+                        Requestid = requestId,
+                        Phonenumber = requestclient!.Phonenumber!,
+                        Email = requestclient.Email!,
+                        Reason = blockNote,
+                        Isactive = new System.Collections.BitArray(new[] { false }),
+                        Createddate = DateTime.Now,
+                    };
+                    await _context.AddAsync(blockrequest);
+                    await _context.SaveChangesAsync();
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            }
         }
 
         public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj, string aspNetUserId, string role)
         {
             Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
             Requestnote? requestnote = await _context.Requestnotes.FirstOrDefaultAsync(a => a.Requestid == requestId);
-            if(requestnote == null)
+            if (requestnote == null)
             {
                 Requestnote newRequestNote = new Requestnote();
                 newRequestNote.Requestid = requestId;
                 newRequestNote.Createddate = DateTime.Now;
-                if(role == "Admin")
+                if (role == "Admin")
                 {
                     newRequestNote.Adminnotes = notes;
                 }
@@ -270,7 +294,7 @@ namespace Services.Implementation
         public async Task SubmitTransfer(int requestId, int physicianId, string transferNote)
         {
             Data.Entity.Request? requestData = _context.Requests.FirstOrDefault(a => a.Requestid == requestId);
-            if(requestData != null)
+            if (requestData != null)
             {
                 requestData.Modifieddate = DateTime.Now;
                 requestData.Physicianid = physicianId;
@@ -347,7 +371,7 @@ namespace Services.Implementation
         {
             var requestData = await _context.Requestclients.Include(a => a.Request).FirstOrDefaultAsync(a => a.Requestid == requestId);
             CloseCase obj = new CloseCase();
-            if(requestData != null)
+            if (requestData != null)
             {
                 obj.firstName = requestData.Firstname;
                 obj.lastName = requestData.Lastname!;
@@ -364,7 +388,7 @@ namespace Services.Implementation
         public async Task CloseCaseChanges(string email, int requestId, string phone)
         {
             var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
-            if(requestData != null)
+            if (requestData != null)
             {
                 requestData.Email = email;
                 requestData.Phonenumber = phone;

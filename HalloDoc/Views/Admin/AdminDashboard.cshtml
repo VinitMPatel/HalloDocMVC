@@ -254,20 +254,26 @@
 </style>
 
 <script>
-    // var requestedPage = 1;
-    // var requestType;
-    // var requestStatus;
-    // var searchKey;
-    // var regionId;
-
     var param = {
         requestedPage: 1,
         requestType: 0,
         requestStatus: 1,
         searchKey: null,
         regionId: 0,
-        totalEntity: 3
+        totalEntity: 3,
     }
+
+    
+    var state = localStorage.getItem("state");
+    debugger
+    if (state == "New") {
+        param.requestStatus = 1
+    }
+    else if (state == "Pending") {
+        param.requestStatus = 2
+    }
+    console.log(state)
+  
 
     console.log(param)
     function filter(type) {
@@ -287,6 +293,7 @@
         param.regionId = $('#selectedRegion').val();
         CommonAjax();
     }
+
     function Search() {
         param.searchKey = $('#search').val();
         param.requestedPage = 1;
@@ -369,9 +376,10 @@
     })
 
     $(document).ready(function () {
-
+        
         document.getElementById(0).style.border = "1px solid black";
         document.getElementById(0).classList.add('rounded-3');
+        console.log(param.requestStatus)
         $.ajax({
             url: '/Admin/AllState',
             data: param,

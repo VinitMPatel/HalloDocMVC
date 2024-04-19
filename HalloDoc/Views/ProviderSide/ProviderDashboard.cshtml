@@ -113,12 +113,12 @@
 
         <div class="d-flex flex-row gap-2">
 
-            <a class="text-decoration-none btn btn-info text-white  dash-button p-2 d-flex flex-row">
+            <a class="text-decoration-none btn btn-info text-white  dash-button p-2 d-flex flex-row" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 <i class="bi bi-send "></i>
                 <span class="d-none d-sm-flex ms-2">Send Link</span>
             </a>
 
-            <a class="text-decoration-none btn btn-info text-white dash-button p-2 d-flex flex-row">
+            <a class="text-decoration-none btn btn-info text-white dash-button p-2 d-flex flex-row createRequestBtn">
                 <i class="bi bi-file-text dash-button"></i>
                 <span class="ms-2 d-none d-sm-flex">Create Requests</span>
             </a>
@@ -223,7 +223,6 @@
 
         param.requestType = type;
         param.requestedPage = 1;
-        console.log(param);
         CommonAjax();
         $('.filter').css('border', 'none');
         document.getElementById("" + type).style.border = "1px solid black";
@@ -243,19 +242,36 @@
         CommonAjax();
     })
 
+    $('.createRequestBtn').click(function () {
+        $.ajax({
+            url : '/ProviderSide/CreateRequest',
+            success: function (response) {
+                $('#entireContent').html(response)
+            },
+            error : function(xhr , status , error){
+                console.log(error)
+            }
+
+        })
+    })
+
     $('#sendLinkSubmitBtn').on('click', function () {
+
         if ($('#firstName').val() == "") {
             $('#firstNameError').html("*Please Enter First Name")
             $('#firstName').css('border', '1px solid red');
         }
+
         if ($('#lastName').val() == "") {
             $('#lastNameError').html("*Please Enter Lase Name")
             $('#lastName').css('border', '1px solid red');
         }
+
         if ($('#contactNumber').val() == "") {
             $('#contactError').html("*Please Enter Contact Number")
             $('#contactNumber').css('border', '1px solid red');
         }
+
         else {
             var regex = /^[1-9][0-9]{9}$/
 
@@ -268,6 +284,7 @@
 
             }
         }
+
         if ($('#email').val() == "") {
             $('#emailError').html("*Please Enter email")
             $('#email').css('border', '1px solid red');
@@ -286,30 +303,30 @@
         $('#contactNumber').val("")
         $('#email').val("")
         $('#firstNameError').html("")
-        $('#firstName').css('border', '1px groove black');
+        $('#firstName').css('border', '1px groove #dee2e6');
         $('#lastNameError').html("")
-        $('#lastName').css('border', '1px groove black');
+        $('#lastName').css('border', '1px groove #dee2e6');
         $('#contactError').html("")
-        $('#contactNumber').css('border', '1px groove black');
+        $('#contactNumber').css('border', '1px groove #dee2e6');
         $('#emailError').html("")
-        $('#email').css('border', '1px groove black');
+        $('#email').css('border', '1px groove #dee2e6');
     })
 
     $('#firstName').on('focus', function () {
         $('#firstNameError').html("")
-        $('#firstName').css('border', '1px groove black');
+        $('#firstName').css('border', '1px groove #dee2e6');
     })
     $('#lastName').on('focus', function () {
         $('#lastNameError').html("")
-        $('#lastName').css('border', '1px groove black');
+        $('#lastName').css('border', '1px groove #dee2e6');
     })
     $('#contactNumber').on('focus', function () {
         $('#contactError').html("")
-        $('#contactNumber').css('border', '1px groove black');
+        $('#contactNumber').css('border', '1px groove #dee2e6');
     })
     $('#email').on('focus', function () {
         $('#emailError').html("")
-        $('#email').css('border', '1px groove black');
+        $('#email').css('border', '1px groove #dee2e6');
     })
 
     $(document).ready(function () {

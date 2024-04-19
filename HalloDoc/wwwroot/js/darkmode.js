@@ -2,6 +2,7 @@ const moonBtn = document.getElementById("darkbtn");
 const img = document.getElementById("darkimg");
 const content = document.getElementById("main-content");
 var flag;
+
 if (moonBtn != null) {
     moonBtn.addEventListener('click', dark)
 }
@@ -13,14 +14,18 @@ function dark(){
             content.classList.remove("bg-white");
             content.classList.add("bg-dark");
         }
-        catch(err){}
-        img.src = "/images/dark_moon.png";
+        catch (err) { }
+        if (img != null) {
+            img.src = "/images/dark_moon.png";
+        }
         document.cookie = "flag = " + flag;
         flag=1;
     }
     else{
-        document.querySelector('body').setAttribute('data-bs-theme' , 'light');
-        img.src = "/images/moon_light.png";
+        document.querySelector('body').setAttribute('data-bs-theme', 'light');
+        if (img != null) {
+            img.src = "/images/moon_light.png";
+        }
         try{
             content.classList.remove("bg-dark");
             content.classList.add("bg-white");

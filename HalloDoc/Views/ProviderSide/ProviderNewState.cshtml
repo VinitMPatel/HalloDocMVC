@@ -285,11 +285,6 @@
     }
 
     function CommonAjax() {
-        console.log("status is : " + param.requestStatus);
-        console.log("requesttype is : " + param.requestType);
-        console.log("page is : " + param.requestedPage);
-        console.log("Search is : " + param.searchKey);
-        console.log("Entity is : " + param.totalEntity);
         $.ajax({
             url: '/ProviderSide/AllState',
             data: param,

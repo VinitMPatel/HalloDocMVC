@@ -31,7 +31,7 @@ namespace Services.Implementation
             if (aspnetuser != null)
             {
                 var user = _context.Users.FirstOrDefault(u => u.Email == r.PatientEmail);
-                string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
+                string? region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid)!.Abbreviation;
                 var requestcount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToList();
                 if (user == null)
                 {
@@ -65,7 +65,7 @@ namespace Services.Implementation
                     _context.Users.Add(newUser);
                     _context.SaveChanges();
 
-                    string newRegion = _context.Regions.FirstOrDefault(a => a.Regionid == newUser.Regionid).Abbreviation;
+                    string? newRegion = _context.Regions.FirstOrDefault(a => a.Regionid == newUser.Regionid)!.Abbreviation;
                     var newRequestCount = _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == newUser.Userid).ToList();
 
                     Data.Entity.Request request = new Data.Entity.Request();

@@ -151,12 +151,12 @@ namespace Services.Implementation
             }
         }
 
-        public async Task NewAccount(Aspnetuser model)
+        public async Task NewAccount(LoginPerson model)
         {
             Aspnetuser aspnetuser1 = new Aspnetuser();
             aspnetuser1.Id = Guid.NewGuid().ToString();
-            aspnetuser1.Passwordhash = model.Passwordhash;
-            aspnetuser1.Email = model.Email;
+            aspnetuser1.Passwordhash = model.password;
+            aspnetuser1.Email = model.email;
             aspnetuser1.Username = "Temp";
 
             await _context.Aspnetusers.AddAsync(aspnetuser1);

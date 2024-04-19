@@ -49,7 +49,7 @@
                     }
                     <td class="text-center">
                         <button type="button" class="btn btn-outline-info shadow-none ContactModal"  value="@obj.Physicianid" data-bs-toggle="modal" data-bs-target="#exampleModal">Contact</button>
-                        <button type="button" class="btn btn-outline-info shadow-none editBtn" value="@obj.Physicianid">Edit</button>
+                        <button type="button" class="btn btn-outline-info shadow-none editBtn" value="@obj.Aspnetuserid">Edit</button>
                     </td>
                 </tr>
             }
@@ -179,7 +179,7 @@
     $('.editBtn').on('click',function(){
         $.ajax({
             url: "/Provider/EditProvider",
-            data: { "physicianId": $(this).val() },
+            data: { "aspNetUserId": $(this).val() },
             success: function (response) {
                 $('.container').html(response);
             },

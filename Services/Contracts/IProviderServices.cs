@@ -11,16 +11,27 @@ namespace Services.Contracts
     public interface IProviderServices
     {
         Task<EditProviderViewModel> CreateProvider();
+
         Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, string aspNetUserId);
+
         Task DeleteAccount(int providerId);
-        EditProviderViewModel EditProvider(int physicianId);
+
+        Task<EditProviderViewModel> EditProvider(string aspNetUserId);
+
         Task<string> GetLocations();
+
         Task<List<Region>> GetRegions();
+
         Task<ProviderViewModel> ProviderData(int regionId);
+
         Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification);
+
         Task UpdateBillingInfo(EditProviderViewModel obj);
+
         Task UpdatePhysicianInfo(EditProviderViewModel obj, List<int> selectedRegion);
+
         Task UpdateProfile(EditProviderViewModel obj);
+
         Task UploadNewDocument(EditProviderViewModel obj);
     }
 }
