@@ -4,6 +4,6 @@ namespace Services.Contracts
 {
     public interface IBusinessRequest
     {
-        void BusinessInsert(BusinessRequestData r);
+        Task BusinessInsert(BusinessRequestData r);
     }
 }

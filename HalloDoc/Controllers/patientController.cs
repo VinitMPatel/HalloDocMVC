@@ -9,6 +9,7 @@ using Common.Enum;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
 using System.Runtime.CompilerServices;
 using NPOI.SS.Formula.Functions;
+using Common.Helper;
 
 namespace HalloDoc.Controllers
 {
@@ -35,7 +36,7 @@ namespace HalloDoc.Controllers
         }
 
         [HttpPost]
-        public IActionResult patient_login(LoginPerson obj)
+        public IActionResult PatientLogin(LoginPerson obj)
         {
             try
             {
@@ -54,11 +55,11 @@ namespace HalloDoc.Controllers
                 }
 
                 TempData["error"] = "Incorrect Email or password";
-                return RedirectToAction("patient_login", "Home");
+                return RedirectToAction("PatientLogin", "Home");
             }
             catch (Exception ex)
             {
-                return RedirectToAction("patient_login", "Home");
+                return RedirectToAction("PatientLogin", "Home");
             }
         }
 
@@ -75,36 +76,45 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public async Task<IActionResult> editing(patient_dashboard r)
+        public async Task<IActionResult> editing(patient_dashboard obj)
         {
-            int id = (int)HttpContext.Session.GetInt32("UserId");            
-            String temp =  await dashboard.editing(r, id);
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            string temp =  await dashboard.EditProfile(obj, aspNetUserId);
             HttpContext.Session.SetString("UserName", temp);
+            TempData["success"] = "Data updated successfully.";
             return RedirectToAction("patientdashboard", "patient");
         }
 
         public IActionResult NewRequest()
         {
             var radio = Request.Form["flexRadioDefault"].ToList();
-            if (radio.ElementAt(0) == "Me")
+     
+            if(radio.Count() > 0)
             {
-                return RedirectToAction("RequestForSelf");
-            }
-            else if (radio.ElementAt(0) == "else")
-            {
-                return RedirectToAction("RequestForElse");
+                if (radio.ElementAt(0) == "Me")
+                {
+                    return RedirectToAction("RequestForSelf");
+                }
+                else if (radio.ElementAt(0) == "else")
+                {
+                    return RedirectToAction("RequestForElse");
+                }
             }
             return NoContent();
         }
 
-        public IActionResult RequestForSelf()
+        public async Task<IActionResult> RequestForSelf()
         {
-            return View();
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            PatientInfo model = await dashboard.RequestForSelfData(aspNetUserId);
+            return View(model);
         }
 
-        public IActionResult RequestForElse()
+        public async Task<IActionResult> RequestForElse()
         {
-            return View();
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            FamilyFriendRequest model = await dashboard.RequestForElseData(aspNetUserId);
+            return View(model);
         }
 
         public async Task<IActionResult> ViewDocument(int id)
@@ -122,38 +132,44 @@ namespace HalloDoc.Controllers
 
         public IActionResult Logout() {     
             HttpContext.Session.Remove("UserId");
-            return RedirectToAction("patient_login","Home");
+            return RedirectToAction("PatientLogin","Home");
         }
 
         [HttpPost]
         public async Task<IActionResult> Insert(PatientInfo r)
         {
             await patientRequest.Insert(r);
-            return RedirectToAction("patient_login", "Home");
+            TempData["success"] = "Request Created successfully.";
+            return RedirectToAction("PatientLogin", "Home");
         }
 
         [Route("/Patient/patient_request/checkmail/{email}")]
         [HttpGet]
-        public IActionResult CheckEmail(string email)
+        public async Task<bool> CheckEmail(string email)
         {
-            var emailExists = _context.Aspnetusers.Any(u => u.Email == email);
-            return Json(new { exists = emailExists });
+            User user = await patientRequest.CheckEmail(email);
+
+            if (user != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         [HttpPost]
         public IActionResult SubmitDocument(patient_dashboard obj)
         {
-            
             dashboard.UplodingDocument(obj,obj.reqId);
             return RedirectToAction("ViewDocument", new { id = obj.reqId });
-            
         }
 
-        public IActionResult NewAccount(LoginPerson model)
+        public async Task<IActionResult> NewAccount(LoginPerson model)
         {
-            patientRequest.NewAccount(model);
-
-            return RedirectToAction("patient_login", "Home");
+            await patientRequest.NewAccount(model);
+            return RedirectToAction("PatientLogin", "Home");
         }
 
         public async Task AgreeAgreement(int requestId)
@@ -164,20 +180,6 @@ namespace HalloDoc.Controllers
         public async Task CancelAgreement(int requestId)
         {
              await caseActions.CancelAgreement(requestId);
-        }
-
-        public async Task<bool> EmailValidate(string Email)
-        {
-            Aspnetuser aspnetuser = await patientRequest.CheckEmail(Email);
-
-            if (aspnetuser != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

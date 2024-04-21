@@ -1,7 +1,7 @@
 ﻿@model Services.ViewModels.patient_dashboard
 
 
-@Html.Partial("_patient")
+<partial name="_patient" />
 @*
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Launch static backdrop modal
@@ -20,11 +20,11 @@
                     <div class="h6">Here, I want to create new request for...</div>
                     <div class="d-flex justify-content-center mt-3">
 
-                        <input type="radio" class="btn-check" name="flexRadioDefault" id="option1" autocomplete="off" checked value="Me">
+                        <input type="radio" class="btn-check" name="flexRadioDefault" id="option1" autocomplete="off" value="Me">
                         <label class="btn btn-info me-3 text-white" for="option1">Me</label>
 
-                        <input type="radio" class="btn-check" name="options" id="option2" autocomplete="off" value="else">
-                        <label class="btn text-info" for="option2">Some One Else</label>
+                        <input type="radio" class="btn-check" name="flexRadioDefault" id="option2" autocomplete="off" value="else">
+                        <label class="btn text-info border-info" for="option2">Some One Else</label>
 
                     </div>
                 </div>
@@ -141,19 +141,21 @@
 
                         <div class="p-2 col-xl-6 col-lg-6 col-md-6 col-sm-6">
                             <div class="form-floating ">
-                                <input type="text" asp-for="user.Firstname" class="form-control data" placeholder="First Name" disabled>
+                                <input type="text" asp-for="user.Firstname" class="form-control data" placeholder="First Name" id="firstName" disabled>
                                 <label class="FloatingInput" for="Name">First Name</label>
+                                <span id="firstNameWarning" class="text-danger"></span>
                             </div>
                         </div>
 
                         <div class="form-floating mt-2 col-xl-6 col-sm-6 col-12">
-                            <input type="text" asp-for="user.Lastname" class="form-control data" id="floatingPassword" placeholder="Last Name" disabled>
-                            <label for="floatingPassword" style="left: 5px;">Last Name</label>
+                            <input type="text" asp-for="user.Lastname" class="form-control data" placeholder="Last Name" id="lastName" disabled>
+                            <label style="left: 5px;">Last Name</label>
+                            <span id="lastNameWarning" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="date" asp-for="@Model.DOB" class="form-control data" id="floatingPassword" placeholder="Password" disabled>
-                            <label for="floatingPassword" style="left: 5px;">Date of Birth</label>
+                            <input type="date" asp-for="@Model.DOB" class="form-control data" placeholder="DOB" disabled>
+                            <label style="left: 5px;">Date of Birth</label>
                         </div>
                     </div>
 
@@ -161,23 +163,15 @@
 
                         <div class="h4">contact information</div>
 
-                        <div class="form-floating mt-3 col-xl-2 col-sm-2 col-4">
-                            <select class="form-control">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
+                        <div class="form-floating mt-3 col-sm-6 col-12">
+                            <input id="phone" class="form-control  data" type="text" asp-for="user.Mobile" disabled />
+                            <span id="contactWarning" class="text-danger"></span>
                         </div>
 
-                        <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
-                            @*  <input id="phone" class="form-control  data" type="tel" name="phone" asp-for="user.Mobile" disabled/> *@
-                            <input type="text" asp-for="user.Mobile" class="form-control data" id="floatingInput" placeholder="phone" disabled>
-                            <label for="floatingInput" style="left: 5px;">Contact</label>
-                        </div>
-
-                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="email" asp-for="user.Email" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
-                            <label for="floatingInput" style="left: 5px;">Email</label>
+                        <div class="form-floating mt-3 col-sm-6 col-12">
+                            <input type="email" asp-for="user.Email" class="form-control data" placeholder="Email" id="email" disabled>
+                            <label style="left: 5px;">Email</label>
+                            <span id="emailWarning" class="text-danger"></span>
                         </div>
 
 
@@ -188,37 +182,31 @@
                         <div class="h4">Patient Location</div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="text" asp-for="user.Street" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
-                            <label for="floatingInput" style="left: 5px;">Street</label>
+                            <input type="text" asp-for="user.Street" class="form-control data" placeholder="State" disabled>
+                            <label style="left: 5px;">Street</label>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="text" asp-for="user.City" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
-                            <label for="floatingInput" style="left: 5px;">City</label>
+                            <input type="text" asp-for="user.City" class="form-control data" placeholder="City" disabled>
+                            <label style="left: 5px;">City</label>
                         </div>
 
                         <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="text" asp-for="user.State" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
-                            <label for="floatingInput" style="left: 5px;">State</label>
+                            <input type="text" asp-for="user.State" class="form-control data" placeholder="State" disabled>
+                            <label style="left: 5px;">State</label>
                         </div>
 
-                        <div class="form-floating mt-3 col-xl-3 col-sm-3 col-7">
-                            <input type="text" asp-for="user.Zip" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
-                            <label for="floatingInput" style="left: 5px;">Zip Code</label>
+                        <div class="form-floating mt-3 col-sm-6 col-12">
+                            <input type="text" asp-for="user.Zip" class="form-control data" placeholder="Zip" disabled>
+                            <label style="left: 5px;">Zip Code</label>
                         </div>
 
-                        <div class="form-floating mt-3 col-xl-2 col-sm-2 col-2">
-                            <div class=" rounded border border-info text-info form-control">
-                                <i class="bi bi-geo-alt"></i>Map
-                            </div>
-                        </div>
+
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                        <div class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()">Edit</div>
-                        <button type="submit" class="bg-info p-2 rounded border-0 px-3 text-white me-2" id="submitBtn">Submit</button>
-                        @* <div  class="bg-info p-2 rounded border-0 px-3 text-white" id="CancelBtn" onclick="again()">Cancel</div> *@
-                        @* <input type="submit" class="bg-info p-2 rounded border-0 px-3 text-white" /> *@
+                        <button class="bg-info p-2 rounded border-0 px-3 text-white" id="editBtn" onclick="allow()" type="button">Edit</button>
+                        <button type="button" class="bg-info p-2 rounded border-0 px-3 text-white me-2" id="submitBtn">Submit</button>
                     </div>
 
                 </form>
@@ -227,29 +215,86 @@
 
     </div>
 </div>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <script>
 
+    const phoneInputField = document.querySelector("#phone");
+    const phoneInput = window.intlTelInput(phoneInputField, {
+        utilsScript:
+            "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+    });
+
     var submitBtn = document.getElementById('submitBtn');
-    //var cancelBtn = document.getElementById('CancelBtn');
     var editBtn = document.getElementById('editBtn');
     var dataFields = document.getElementsByClassName('data');
     submitBtn.style.display = 'none';
-    //cancelBtn.style.display = 'none';
+
     function allow() {
         for (let i = 0; i < dataFields.length; i++) {
             dataFields[i].removeAttribute('disabled')
             editBtn.style.display = "none";
         }
         submitBtn.style.display = 'block';
-        //cancelBtn.style.display = 'block';
     }
-        // function again() {
-        //     submitBtn.style.display = 'none';
-        //     cancelBtn.style.display = 'none';
-        //     editBtn.style.display = "block";
-        //     for (let i = 0; i < dataFields.length; i++) {
-        //         dataFields[i].setAttribute('disabled')
-        //     }
-        // }
+
+    $('#submitBtn').on('click', function () {
+        if ($('#firstNameWarning').text() == "" && $('#lastNameWarning').text() == "" && $('#emailWarning').text() == "" && $('#confirmEmailWarning').text() == "" && $('#contactWarning').text() == "") {
+            $('#submitBtn').prop("type", "submit");
+            $('#lastNameWarning').html("")
+            $('#firstNameWarning').html("")
+            $('#emailWarning').html("")
+            $('#contactWarning').html("")
+            $('#submitBtn').click();
+        }
+        else {
+            toastr.warning("*Please fill out data correctly");
+        }
+    })
+
+    $('#firstName').on('input', function () {
+        if ($('#firstName').val() == "") {
+            $('#firstNameWarning').html("*Please enter First name")
+        }
+        else {
+            $('#firstNameWarning').html("")
+        }
+    })
+
+    $('#lastName').on('input', function () {
+        if ($('#lastName').val() == "") {
+            $('#lastNameWarning').html("*Please enter Last name")
+        }
+        else {
+            $('#lastNameWarning').html("")
+        }
+    })
+
+    $('#email').on('input', function () {
+        if ($('#email').val() == "") {
+            $('#emailWarning').html("*Please enter email")
+        }
+        else {
+            $('#emailWarning').html("")
+        }
+    })
+
+    $('#phone').on('input', function () {
+        if ($('#phone').val() == "") {
+            $('#contactWarning').html("*Please enter contact detail")
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
+
+            if (!regex.test($('#phone').val())) {
+                $('#contactWarning').html("*Enter valid number");
+
+            } else {
+                $('#contactWarning').html("");
+
+            }
+        }
+    })
+
 </script>
 

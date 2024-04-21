@@ -6,8 +6,8 @@ namespace Services.Contracts
 {
     public interface IFamilyRequest
     {
-        bool FamilyInsert(FamilyFriendRequest r);
+        Task FamilyInsert(FamilyFriendRequest r);
 
-        void uploadFile(List<IFormFile> upload, int id);
+        Task uploadFile(List<IFormFile> upload, int id);
     }
 }

@@ -3,8 +3,10 @@ using Data.DataContext;
 using Data.Entity;
 using HalloDoc.Models;
 using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
 using Services.ViewModels;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 using System.Net.Mail;
 
@@ -14,12 +16,13 @@ namespace HalloDoc.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HalloDocDbContext _context;
-       
+        private readonly IDashboard dashboard;
 
-        public HomeController(ILogger<HomeController> logger, HalloDocDbContext context)
+        public HomeController(ILogger<HomeController> logger, HalloDocDbContext context, IDashboard dashboard)
         {
             _logger = logger;
             _context = context;
+            this.dashboard = dashboard;
         }
 
         public IActionResult index()
@@ -32,22 +35,22 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult patient_request()
+        public IActionResult PatientRequest()
         {
             return View();
         }
 
-        public IActionResult patient_request_screen()
+        public IActionResult PatientRequestScreen()
         {
             return View();
         }
 
-        public IActionResult resetpwd()
+        public IActionResult ResetPasswordPage()
         {
             return View();
         }
 
-        public IActionResult patient_login()
+        public IActionResult PatientLogin()
         {
             return View();
         }
@@ -66,21 +69,16 @@ namespace HalloDoc.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult CreateAccount(string email)
-        {
-            LoginPerson model = new LoginPerson();
-            string decryptEmail = EncryptDecryptHelper.Decrypt(email);
-            model.email = decryptEmail;
-            return View(model);
-        }
-        
-        public IActionResult PatientResetPasswordEmail(Aspnetuser user)
-        {
-            string Id = _context.Aspnetusers.Where(x => x.Email == user.Email).Select(x => x.Id).FirstOrDefault();
-            string resetPasswordUrl = GenerateResetPasswordUrl(Id);
-            SendEmail(user.Email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
 
-            return RedirectToAction("patient_login", "Home");
+        
+        public async Task<IActionResult> PatientResetPasswordEmail(LoginPerson model)
+        {
+            (string aspNetUserId , string email) = await dashboard.FindUser(model);
+            string encryptedId = EncryptDecryptHelper.Encrypt(aspNetUserId);
+            string resetPasswordUrl = GenerateResetPasswordUrl(encryptedId);
+            await SendEmail(email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
+            TempData["success"] = "Email Sent successfully.";
+            return RedirectToAction("PatientLogin", "Home");
         }
         
         private string GenerateResetPasswordUrl(string userId)
@@ -91,7 +89,7 @@ namespace HalloDoc.Controllers
         }
 
         
-        private Task SendEmail(string email, string subject, string message)
+        private  Task SendEmail(string email, string subject, string message)
         {
             var mail = "tatva.dotnet.vinitpatel@outlook.com";
             var password = "016@ldce";
@@ -108,20 +106,20 @@ namespace HalloDoc.Controllers
         // Handle the reset password URL in the same controller or in a separate one
 
 
-        public IActionResult SetPassword(string id)
+        public async Task<IActionResult> SetPassword(string id)
         {
-            var aspuser = _context.Aspnetusers.FirstOrDefault(x => x.Id == id);
-            return View(aspuser);
+            string decryptedId = EncryptDecryptHelper.Decrypt(id);
+            LoginPerson model = new LoginPerson();
+            model.aspNetUserId = decryptedId;
+            return View(model); 
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetPassword(Aspnetuser aspnetuser)
+        public async Task<IActionResult> UpdatePassword(LoginPerson model)
         {
-            var aspuser = _context.Aspnetusers.FirstOrDefault(x => x.Id == aspnetuser.Id);
-            aspuser.Passwordhash = aspnetuser.Passwordhash;
-            _context.Aspnetusers.Update(aspuser);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("patient_login");
+            await dashboard.UpdatePassword(model);
+            TempData["success"] = "Password updated successfully.";
+            return RedirectToAction("PatientLogin");
         }
     }
 }

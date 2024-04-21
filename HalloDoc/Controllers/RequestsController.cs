@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Net;
 using Services.ViewModels;
 using Common.Helper;
+using Services.Implementation;
 
 namespace HalloDoc.Controllers
 {
@@ -16,57 +17,75 @@ namespace HalloDoc.Controllers
         private readonly IFamilyRequest familyRequest;
         private readonly IConciergeRequest conciergeRequest;
         private readonly IBusinessRequest businessRequest;
-        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest)
+        private readonly IPatientRequest patientRequest;
+        public RequestsController(IFamilyRequest familyRequest , IConciergeRequest conciergeRequest, IBusinessRequest businessRequest, IPatientRequest patientRequest)
         {
             this.familyRequest = familyRequest;
             this.conciergeRequest = conciergeRequest;
             this.businessRequest = businessRequest;
+            this.patientRequest = patientRequest;
         }
 
-        public IActionResult family_friend_request()
+        public IActionResult FamilyFriendRequest()
         {
             return View();
         }
 
-        public IActionResult concierge_request()
+        public IActionResult ConciergeRequest()
         {
             return View();
         }
-        public IActionResult business_request()
+        public IActionResult BusinessRequest()
         {
             return View();
         }
 
-        public IActionResult FamilyInsert(FamilyFriendRequest r)
+        public async Task<IActionResult> FamilyInsert(FamilyFriendRequest r)
         {
-            bool temp = familyRequest.FamilyInsert(r);
-            if(temp) {
-                return RedirectToAction("patient_login", "Home");
+            await familyRequest.FamilyInsert(r);
+            TempData["success"] = "Request created successfully.";
+            return RedirectToAction("PatientLogin", "Home");
+        }
+
+        public async Task<IActionResult> ConciergeInsert(ConciergeRequestData r)
+        {
+            await conciergeRequest.CnciergeInsert(r);
+            TempData["success"] = "Request created successfully.";
+            return RedirectToAction("PatientLogin", "Home");
+        }
+
+        public async Task<IActionResult> BusinessInsert(BusinessRequestData r)
+        {
+            await businessRequest.BusinessInsert(r);
+            TempData["success"] = "Request created successfully.";
+            return RedirectToAction("PatientLogin", "Home");
+        }
+
+        public async Task<bool> EmailValidate(string Email)
+        {
+            User user = await patientRequest.CheckEmail(Email);
+
+            if (user != null)
+            {
+                return true;
             }
             else
             {
-                //string resetPasswordUrl = GenerateResetPasswordUrl();
-                //SendEmail(r.PatientEmail, "Create Your Account", $"Hello, create your account by using this link : {resetPasswordUrl}");
-                return RedirectToAction("patient_login", "Home");
+                return false;
             }
         }
 
-        public IActionResult ConciergeInsert(ConciergeRequestData r)
+        public void CreateNewAccountLink(string email)
         {
-            conciergeRequest.CnciergeInsert(r);
-            return RedirectToAction("patient_login", "Home");
-        }
-
-        public IActionResult BusinessInsert(BusinessRequestData r)
-        {
-            businessRequest.BusinessInsert(r);
-            return RedirectToAction("patient_login", "Home");
+            string encryptEmail = EncryptDecryptHelper.Encrypt(email);
+            string Url = GenerateUrl(encryptEmail);
+            SendEmail(email, "Create Your Account", $"Hello, create your account by using this link : {Url}");
         }
 
         private string GenerateUrl(string email)
         {
             string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-            string resetPasswordPath = Url.Action("CreateAccount", "Home" , new { email = email});
+            string resetPasswordPath = Url.Action("CreateAccount", "Requests" , new { email = email});
             return baseUrl + resetPasswordPath;
         }
 
@@ -84,11 +103,12 @@ namespace HalloDoc.Controllers
             return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
 
-        public void CreateNewAccountLink(string email)
+        public IActionResult CreateAccount(string email)
         {
-            string encryptEmail = EncryptDecryptHelper.Encrypt(email);
-            string Url = GenerateUrl(encryptEmail);
-            SendEmail(email, "Create Your Account", $"Hello, create your account by using this link : {Url}");
+            LoginPerson model = new LoginPerson();
+            string decryptEmail = EncryptDecryptHelper.Decrypt(email);
+            model.email = decryptEmail;
+            return View(model);
         }
     }
 }

@@ -8,8 +8,12 @@ namespace Services.Contracts
     {
         //IActionResult CheckEmail(string email);
         Task Insert(PatientInfo r);
+
         Task uploadFile(List<IFormFile> upload, int id);
+
         Task NewAccount(LoginPerson model);
-        Task<Aspnetuser> CheckEmail(string Email);
+
+        Task<User> CheckEmail(string Email);
+
     }
 }

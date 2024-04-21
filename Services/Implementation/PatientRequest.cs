@@ -74,9 +74,16 @@ namespace Services.Implementation
                         };
                         user = newUser;
                         await _context.Users.AddAsync(user);
+
+                        Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                        {
+                            Userid = aspnetuser1.Id,
+                            Roleid = "3"
+                        };
+                        await _context.Aspnetuserroles.AddAsync(aspnetuserrole);
                     }
                     string region = _context.Regions.FirstOrDefault(a => a.Regionid == user.Regionid).Abbreviation;
-                    var requestcount = await _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToListAsync();
+                    List<Request> requestcount = await _context.Requests.Where(a => a.Createddate.Date == DateTime.Now.Date && a.Createddate.Month == DateTime.Now.Month && a.Createddate.Year == DateTime.Now.Year && a.Userid == user.Userid).ToListAsync();
                     Request request = new Request
                     {
                         Requesttypeid = 1,
@@ -153,27 +160,49 @@ namespace Services.Implementation
 
         public async Task NewAccount(LoginPerson model)
         {
-            Aspnetuser aspnetuser1 = new Aspnetuser();
-            aspnetuser1.Id = Guid.NewGuid().ToString();
-            aspnetuser1.Passwordhash = model.password;
-            aspnetuser1.Email = model.email;
-            aspnetuser1.Username = "Temp";
+            Aspnetuser aspnetuser = new Aspnetuser();
+            aspnetuser.Id = Guid.NewGuid().ToString();
+            string encryptedPassword = EncryptDecryptHelper.Encrypt(model.password);
+            aspnetuser.Passwordhash = encryptedPassword;
+            aspnetuser.Email = model.email;
+            aspnetuser.Username = "NewUser";
 
-            await _context.Aspnetusers.AddAsync(aspnetuser1);
+            await _context.Aspnetusers.AddAsync(aspnetuser);
             await _context.SaveChangesAsync();
 
+            User user = new User
+            {
+                Aspnetuserid = aspnetuser.Id,
+                Firstname = "NewUser",
+                Email = model.email,
+                Createdby = aspnetuser.Id,
+                Createddate = DateTime.Now,
+                Regionid = 1,
+                Isdeleted = new BitArray(new[] { false }),
+                Isrequestwithemail = new BitArray(new[] { true }),
+                
+            };
+            await _context.Users.AddAsync(user);
+
+            Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+            {
+                Userid = aspnetuser.Id,
+                Roleid = "3"
+            };
+            await _context.Aspnetuserroles.AddAsync(aspnetuserrole);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<Aspnetuser> CheckEmail(string Email)
+        public async Task<User> CheckEmail(string Email)
         {
-            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(x => x.Email == Email);
-            if (aspnetuser == null)
+            User? user = await _context.Users.FirstOrDefaultAsync(x => x.Email == Email);
+            if (user == null)
             {
                 return null;
             }
             else
             {
-                return aspnetuser;
+                return user;
             }
         }
     }

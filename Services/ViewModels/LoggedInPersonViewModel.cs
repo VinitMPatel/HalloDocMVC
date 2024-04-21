@@ -25,5 +25,7 @@ namespace Services.ViewModels
 
         [Required(ErrorMessage = "*Enter Password")]
         public string password { get; set; }
+
+        public string aspNetUserId { get; set; }
     }
 }

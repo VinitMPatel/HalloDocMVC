@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 using Common.Enum;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
+using Common.Helper;
 
 namespace Services.Implementation
 {
@@ -21,7 +24,7 @@ namespace Services.Implementation
     {
         private readonly HalloDocDbContext _context;
         private readonly IHostingEnvironment _env;
-        public Dashboard(HalloDocDbContext context , IHostingEnvironment env)
+        public Dashboard(HalloDocDbContext context, IHostingEnvironment env)
         {
             _context = context;
             _env = env;
@@ -32,24 +35,28 @@ namespace Services.Implementation
             patient_dashboard dash = new patient_dashboard();
             var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
 
-            dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear), 
-                DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month, 
-                Convert.ToInt32(userdata.Intdate));
+            if (userdata.Intyear != null && userdata.Strmonth != null && userdata.Intdate != null)
+            {
+                dash.DOB = new DateTime(Convert.ToInt32(userdata.Intyear),
+                    DateTime.ParseExact(userdata.Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
+                    Convert.ToInt32(userdata.Intdate));
+            }
 
             var req = await _context.Requests.Where(m => m.Userid == userdata.Userid).ToListAsync();
             dash.user = userdata;
             dash.request = req;
             List<Requestwisefile> files = await _context.Requestwisefiles.ToListAsync();
-                //(from m in _context.Requestwisefiles select m).ToListAsync();
+
             dash.requestwisefile = files;
             return dash;
         }
 
-        public async Task<String> editing(patient_dashboard r , int id)
+        public async Task<string> EditProfile(patient_dashboard r, string aspNetUserId)
         {
+
             //int id = (int)HttpContext.Session.GetInt32("UserId");
-            var userdata = await _context.Users.FirstOrDefaultAsync(m => m.Userid == id);
-            if(userdata != null)
+            var userdata = await _context.Users.FirstOrDefaultAsync(m => m.Aspnetuserid == aspNetUserId);
+            if (userdata != null)
             {
                 userdata.Firstname = r.user.Firstname;
                 userdata.Lastname = r.user.Lastname;
@@ -70,23 +77,23 @@ namespace Services.Implementation
             return userdata.Firstname;
         }
 
-        public async Task<patient_dashboard> ViewDocuments(string aspNetUserId , int reqId)
+        public async Task<patient_dashboard> ViewDocuments(string aspNetUserId, int reqId)
         {
-                patient_dashboard dash = new patient_dashboard();
-                var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
-                dash.user = userdata;
-                List<Requestwisefile> files = await _context.Requestwisefiles.Where(a=>a.Requestid == reqId).ToListAsync();
+            patient_dashboard dash = new patient_dashboard();
+            var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
+            dash.user = userdata;
+            List<Requestwisefile> files = await _context.Requestwisefiles.Where(a => a.Requestid == reqId).ToListAsync();
 
-                dash.requestwisefile = files;
-                dash.reqId = reqId;
-                return dash;
+            dash.requestwisefile = files;
+            dash.reqId = reqId;
+            return dash;
         }
 
-        public void UplodingDocument(patient_dashboard obj,int reqId)
+        public void UplodingDocument(patient_dashboard obj, int reqId)
         {
-            if(obj.Upload != null)
+            if (obj.Upload != null)
             {
-                uploadFile(obj.Upload,reqId);
+                uploadFile(obj.Upload, reqId);
             }
         }
 
@@ -108,6 +115,73 @@ namespace Services.Implementation
                 _context.Add(requestwisefile);
                 _context.SaveChanges();
             }
+        }
+
+        public async Task<PatientInfo> RequestForSelfData(string aspNetUserId)
+        {
+            if (aspNetUserId == null)
+            {
+                return new PatientInfo();
+            }
+            PatientInfo model = new PatientInfo();
+            User? user = await _context.Users.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            if (user != null)
+            {
+                model.FirstName = user.Firstname;
+                model.LastName = user.Lastname;
+                model.Email = user.Email;
+                if (user.Intyear != null && user.Strmonth != null && user.Intdate != null)
+                {
+                    model.DOB = new DateOnly(Convert.ToInt32(user.Intyear),
+                        DateTime.ParseExact(user.Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
+                        Convert.ToInt32(user.Intdate));
+                }
+                model.PhoneNumber = user.Mobile;
+            }
+            return model;
+        }
+
+        public async Task<FamilyFriendRequest> RequestForElseData(string aspNetUserId)
+        {
+            if (aspNetUserId == null)
+            {
+                return new FamilyFriendRequest();
+            }
+            FamilyFriendRequest familyFriendRequest = new FamilyFriendRequest();
+            User? user = await _context.Users.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            if (user != null)
+            {
+                familyFriendRequest.FirstName = user.Firstname;
+                familyFriendRequest.LastName = user.Lastname;
+                familyFriendRequest.Email = user.Email;
+                familyFriendRequest.Mnumber = user.Mobile;
+            }
+            return familyFriendRequest;
+        }
+
+        public async Task<(string, string)> FindUser(LoginPerson model)
+        {
+            if (model == null)
+            {
+                return ("", "");
+            }
+
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == model.email);
+            return (aspnetuser!.Id, aspnetuser.Email)!;
+
+        }
+
+        public async Task UpdatePassword(LoginPerson model)
+        {
+            if(model == null)
+            {
+                return;
+            }
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == model.aspNetUserId);
+            string encryptedPassword = EncryptDecryptHelper.Encrypt(model.password);
+            aspnetuser.Passwordhash = encryptedPassword;
+            _context.Update(aspnetuser);
+            await _context.SaveChangesAsync();
         }
     }
 }
