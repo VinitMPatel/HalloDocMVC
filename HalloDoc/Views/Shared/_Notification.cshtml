@@ -27,3 +27,16 @@
         toastr.options.timeOut = 1000;
     </script>
 }
+
+
+@if (TempData["warning"] != null)
+{
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
+
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript">
+        toastr.error("@TempData["warning"]")
+        toastr.options.timeOut = 1000;
+    </script>
+}

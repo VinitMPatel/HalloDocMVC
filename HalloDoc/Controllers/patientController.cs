@@ -44,18 +44,25 @@ namespace HalloDoc.Controllers
 
                 TempData["Email"] = result.emailError;
                 TempData["Password"] = result.passwordError;
-
-                if (result.Status == ResponseStautsEnum.Success)
+                if(loggedInPerson.role == "3")
                 {
-                    Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
-                    HttpContext.Session.SetString("UserName", loggedInPerson.username);
-                    HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
-                    TempData["success"] = "Login successfully";
-                    return RedirectToAction("PatientDashboard", "patient");
-                }
+                    if (result.Status == ResponseStautsEnum.Success)
+                    {
+                        Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
+                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
+                        TempData["success"] = "Login successfully";
+                        return RedirectToAction("PatientDashboard", "patient");
+                    }
 
-                TempData["error"] = "Incorrect Email or password";
-                return RedirectToAction("PatientLogin", "Home");
+                    TempData["error"] = "Incorrect Email or password";
+                    return RedirectToAction("PatientLogin", "Home");
+                }
+                else
+                {
+                    TempData["warning"] = "*Please use Patirent Email.";
+                    return RedirectToAction("PatientLogin", "Home");
+                }
             }
             catch (Exception ex)
             {

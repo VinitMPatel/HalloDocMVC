@@ -236,17 +236,38 @@
                             <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                         </div>
 
-                        <div class="col-6 p-2">
-                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
-                        </div>
+                        @if (@item.Request.Encounters.Count() > 0)
+                        {
+                            @if (item.Request.Encounters.ElementAt(0).IsFinalized[0] == false)
+                            {
+                                <div class="col-6 p-2 encounterForm" id="@item.Request.Requestid">
+                                    <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                                </div>
+                            }
+                            else if (@item.Request.Encounters.ElementAt(0).IsFinalized[0] == true)
+                            {
+                                <div class="col-6 p-2" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="passRequestId(@item.Request.Requestid)" id="@item.Request.Requestid">
+                                    <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-6 p-2" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="passRequestId(@item.Request.Requestid)" id="@item.Request.Requestid">
+                                <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
+                            </div>
+                        }
 
                         <div class="col-6 p-2">
                             <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background: #e3a800;">Orders</a>
                         </div>
 
-                        <div class="col-6 p-2">
-                            <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background: #2cd3fb;">House Call</a>
-                        </div>
+                        @if (item.Request.Status == 5)
+                        {
+                            <div class="col-6 p-2 houseCallBtn " id="@item.Request.Requestid">
+                                <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background: #2cd3fb;">House Call</a>
+                            </div>
+                        }
 
                         <div class="col-6 p-2">
                             <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>

@@ -53,7 +53,7 @@
                             <span class="new_request">Create new request</span>
                         </button>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive d-none d-md-block">
                         <table class="table mt-4">
                             <thead class="thead-light">
                                 <tr class="bg-secondary">
@@ -100,6 +100,9 @@
                                             case 10:
                                                 <td>Clear</td>
                                                 break;
+                                            default:
+                                                <td>NA</td>
+                                                break;
                                         }
                                         <td onclick="temp()">
 
@@ -116,6 +119,88 @@
                                 }
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="accordion d-md-none d-block mt-3" id="accordionExample">
+                        <div class="accordion-item">
+                            @foreach (var obj in Model.request)
+                            {
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseone-@obj.Requestid" aria-expanded="true" aria-controls="collapseone-@obj.Requestid">
+                                        <i class="fa-regular fa-clock me-1 text-info"></i>Created Date : @obj.Createddate
+                                    </button>
+                                </h2>
+                                <div id="collapseone-@obj.Requestid" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+                                        <div class="mb-1">
+                                            <i class="fa-solid fa-user-tie me-1 text-info icn"></i> Provider
+                                        </div>
+                                        <div>
+                                            <i class="fa-solid fa-check me-1 text-info icn"></i>CurrentStatus :
+                                            @switch (obj.Status)
+                                            {
+                                                case 1:
+                                                    <td>Unassigned</td>
+                                                    break;
+                                                case 2:
+                                                    <td>Accepted</td>
+                                                    break;
+                                                case 3:
+                                                    <td>Cancelled</td>
+                                                    break;
+                                                case 4:
+                                                    <td>MDEnRoute</td>
+                                                    break;
+                                                case 5:
+                                                    <td>MDONSite</td>
+                                                    break;
+                                                case 6:
+                                                    <td>Conclude</td>
+                                                    break;
+                                                case 7:
+                                                    <td>Cancelled By Patient</td>
+                                                    break;
+                                                case 8:
+                                                    <td>Closed</td>
+                                                    break;
+                                                case 9:
+                                                    <td>Unpaid</td>
+                                                    break;
+                                                case 10:
+                                                    <td>Clear</td>
+                                                    break;
+                                                default:
+                                                    <td>NA</td>
+                                                    break;
+                                            }
+                                        </div>
+                                        <br>
+                                        @if (obj.Requestwisefiles.Count() != 0)
+                                        {
+                                            <a asp-controller="Dashboard" asp-action="ViewDocument">
+                                                <button class="d-flex btn btn-outline-info rounded align-item-center p-1 px-2 docbutton w-100 justify-content-center">
+                                                    <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                                        <div class="plusdocument" style="display:none"><i class="bi bi-plus-lg"></i></div>
+                                                    </a>
+                                                    <div class="nonedocument">
+                                                        <a style="text-decoration : none" asp-controller="Dashboard" asp-action="ViewDocument" asp-route-id="@obj.Requestid">
+                                                            <span>(@obj.Requestwisefiles.Count()) Documnets</span>
+                                                        </a>
+                                                    </div>
+                                                </button>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span>No Document</span>
+                                        }
+                                    </div>
+                                </div>
+                                <hr class="m-2" />
+                            }
+                           
+                        </div>
+                        
                     </div>
                 </div>
             </div>
