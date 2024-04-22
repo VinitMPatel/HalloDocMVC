@@ -2,6 +2,7 @@
 using Data.DataContext;
 using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using Services.Implementation;
@@ -72,10 +73,11 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminLogin", "Admin");
         }
 
-        public async Task AcceptCase(int requestId)
+        public async Task<IActionResult> AcceptCase(int requestId)
         {
             await providerSideServices.AcceptCase(requestId);
             TempData["success"] = "Case accepted.";
+            return RedirectToAction("ProviderDashboard");
         }
 
 

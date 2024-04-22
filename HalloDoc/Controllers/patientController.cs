@@ -79,11 +79,11 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                return RedirectToAction("Index","Home");
+                return RedirectToAction("PatientLogin","Home");
             }
         }
 
-        public async Task<IActionResult> editing(patient_dashboard obj)
+        public async Task<IActionResult> Editing(patient_dashboard obj)
         {
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
             string temp =  await dashboard.EditProfile(obj, aspNetUserId);

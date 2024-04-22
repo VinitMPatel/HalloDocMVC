@@ -144,10 +144,10 @@ namespace Services.Implementation
             {
                 return new CaseActionDetails();
             }
-            var request = await _context.Requests.FirstOrDefaultAsync(m => m.Requestid == requestId);
-            var requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
-            var regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
-            var regionList = await _context.Regions.ToListAsync();
+            Data.Entity.Request? request = await _context.Requests.Include(m => m.Physician).FirstOrDefaultAsync(m => m.Requestid == requestId);
+            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(m => m.Requestid == requestId);
+            Region? regiondata = await _context.Regions.FirstOrDefaultAsync(m => m.Regionid == requestclient.Regionid);
+            List<Region>? regionList = await _context.Regions.ToListAsync();
 
             if (requestclient != null && request != null && regiondata != null)
             {
@@ -164,7 +164,11 @@ namespace Services.Implementation
                 obj.Address = requestclient.Address;
                 obj.requestType = request.Requesttypeid;
                 obj.ConfirmationNumber = request.Confirmationnumber;
-
+                if(request.Physician != null)
+                {
+                    obj.physician = request.Physician.Firstname;
+                }
+                obj.status = request.Status;
                 return obj;
             }
             return new CaseActionDetails();
@@ -247,6 +251,7 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
 
                 };
+                stream.Close();
                 await _context.AddAsync(requestwisefile);
                 await _context.SaveChangesAsync();
             }

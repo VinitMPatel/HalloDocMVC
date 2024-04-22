@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Collections;
 
 namespace Services.Implementation
 {
@@ -369,7 +370,13 @@ namespace Services.Implementation
 
         public async Task<CloseCase> CloseCase(int requestId)
         {
+            if(requestId == 0 || requestId == null)
+            {
+                return new CloseCase();
+            }
             var requestData = await _context.Requestclients.Include(a => a.Request).FirstOrDefaultAsync(a => a.Requestid == requestId);
+            List<Requestwisefile> files = await (from m in _context.Requestwisefiles where m.Requestid == requestId && m.Isdeleted != new BitArray(new[] { true }) select m).ToListAsync();
+
             CloseCase obj = new CloseCase();
             if (requestData != null)
             {
@@ -381,6 +388,7 @@ namespace Services.Implementation
                     Convert.ToInt32(requestData.Intdate));
                 obj.mobileNumber = requestData.Phonenumber!;
                 obj.requestId = requestId;
+                obj.requestwisefiles = files;
             }
             return obj;
         }

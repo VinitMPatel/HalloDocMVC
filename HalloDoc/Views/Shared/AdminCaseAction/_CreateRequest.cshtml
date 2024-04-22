@@ -84,11 +84,13 @@
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" asp-for="City" class="form-control" id="floatingInput" placeholder="City">
                     <label for="floatingInput" style="left: 5px;">City</label>
+                    <span asp-validation-for="City" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
                     <input type="text" asp-for="State" class="form-control" id="floatingInput" placeholder="State">
                     <label for="floatingInput" style="left: 5px;">State</label>
+                    <span asp-validation-for="State" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
@@ -104,12 +106,35 @@
 
             </div>
 
+            <div class="document row mt-5">
+
+                <div class="h4">(Optional) Upload photo or Document</div>
+
+                <div class="row d-flex mt-3">
+                    <div class="py-2 col-12 ">
+                        <div class="form-group rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                            <div class="px-3 table-responsive">
+                                <input type="file" id="upload" asp-for="Upload" multiple hidden />
+                                <label id="file-choosen" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                            </div>
+                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                                <label for="upload" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4">
+                    <button class="bg-info p-2 rounded border-0 px-3 text-white" type="submit" id="submitBtn">Submit</button>
+                    <button class="ms-3 p-2 rounded border-info bg-white text-info px-3" type="reset" id="cancelBtn">Cancel</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-
+<script src="~/js/site.js"></script>
 <script>
 
     const phoneInputField = document.querySelector("#phone");
@@ -117,25 +142,5 @@
         utilsScript:
             "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
     });
-
-    // function checkEmailExists() {
-
-    //     var email = document.getElementById("patientEmail").value;
-      
-    //     fetch('/ProviderSide/CheckCreateRequest/checkmail/' + email)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             var spanError = document.getElementById('emailError');
-    //             console.log(data.exists)
-    //             console.log(spanError)
-    //             if (data.exists) {
-    //                 spanError.style.display = 'none'
-    //             }
-    //             else {
-    //                 spanError.style.display = 'block'
-    //             }
-    //         })
-    //         .catch(error => console.error('Error:', error));
-    // }
 
 </script>

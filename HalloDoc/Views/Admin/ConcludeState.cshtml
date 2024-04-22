@@ -75,11 +75,12 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
-                                    <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
                                     <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
-                                    <li onclick="BlockCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Block Patient</a></li>
+                                    <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-earmark-pdf me-2"></i>View Uploads</a></li>
+                                    <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
+                                    <li class="orders" id="@obj.Request.Requestid" style="cursor : pointer" onclick="Orders(@obj.Request.Requestid)"><a class="dropdown-item"><i class="bi bi-file-earmark-medical me-2"></i>Orders</a></li>
+                                    <li style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-text me-2"></i>Encounter</a></li>
+
                                 </ul>
                             </div>
                         </div>
@@ -149,35 +150,46 @@
                     </div>
 
                     <div class="accordion-body d-flex flex-column gap-1">
-                        <div><i class="bi bi-calendar2-minus me-2 icn"></i>Date of birth: @item.Strmonth @item.Intdate, @item.Intyear</div>
-                        <div><i class="bi bi-envelope me-2 icn"></i>Email: @item.Request.Email</div>
-                        <div><i class="bi bi-telephone me-2 icn"></i>Patient: @item.Request.Phonenumber</div>
-                        <div><i class="bi bi-person me-2 icn"></i>Requestor: @item.Request.Firstname, @item.Request.Lastname</div>
+                        <div><i class="bi bi-calendar2-minus me-2 icn"></i> <spna class="text-secondary"> Date of birth: </spna>  @item.Strmonth @item.Intdate, @item.Intyear</div>
+                        <div><i class="bi bi-envelope me-2 icn"></i> <spna class="text-secondary"> Email: </spna>  @item.Request.Email</div>
+                        <div><i class="bi bi-telephone me-2 icn"></i> <spna class="text-secondary"> Patient: </spna>  @item.Request.Phonenumber</div>
+                        <div>
+                            <i class="bi bi-person me-2 icn "></i><span class="text-secondary">Physician : </span>Dr. @item.Request.Physician.Firstname
+                        </div>
                     </div>
 
                     <div class="row mx-3">
-                        <div class="col-6" onclick="AssignCase(@item.Request.Requestid)">
-                            <a class="btn w-100  text-white rounded-pill p-1 btn-sm" style="background:#c40eff;">Assign Case</a>
+
+                        <div class="col-6 viewNotes" id="@item.Request.Requestid">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm bg-success">View Notes</a>
                         </div>
-                        <div class="col-6" onclick="CancelCase(@item.Request.Requestid)">
-                            <a class="btn w-100 bg-danger text-white rounded-pill p-1 btn-sm">Cancel Case</a>
+
+                        <div class="col-6 viewUpload" id="@item.Request.Requestid">
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Uploads</a>
                         </div>
+
                         <div class="col-6 mt-2">
-                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">View Notes</a>
+                            <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Encounter</a>
                         </div>
-                        <div class="col-6 mt-2" onclick="BlockCase(@item.Request.Requestid)">
-                            <a class="btn w-100  bg-danger text-white rounded-pill p-1 btn-sm">Block Patient</a>
+
+                        <div class="col-6 mt-2" onclick="Orders(@item.Request.Requestid)">
+                            <a class="btn w-100 bg-warning text-white rounded-pill p-1 btn-sm">Orders</a>
                         </div>
+
                         <div class="col-6 mt-2">
                             <a class="btn w-100 bg-success text-white rounded-pill p-1 btn-sm">Email</a>
                         </div>
                     </div>
                 </div>
+                <hr class="my-1" />
             }
         </div>
     </div>
 </div>
-<div class="d-flex justify-content-center gap-2">
+
+<div id="caseView">
+</div>
+<div class="d-flex justify-content-center gap-2 my-3 filter-label">
     @if (Model.totalPages > 0)
     {
         var previous = Model.currentpage - 1;
@@ -190,44 +202,47 @@
         {
             next = Model.totalPages;
         }
-        <button class="@previous" id="page-0" onclick="ChangePage(@previous)">
-            Previous
-        </button>
+        if (Model.currentpage != 1)
+        {
+            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                Previous
+            </button>
+        }
         @if (Model.totalPages > 5)
         {
             @if (Model.currentpage > Model.totalPages - 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
                 @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
             }
             else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
             {
-                <button class="1" id="page-1" onclick="ChangePage(1)">
+                <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
                     1
                 </button>
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
                 @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -235,14 +250,14 @@
             {
                 @for (var i = 1; i <= 4; i++)
                 {
-                    <button class="@i" id="page-@i" onclick="ChangePage(@i)">
+                    <button class="@i btn btn-outline-info" id="page-@i" onclick="ChangePage(@i)">
                         @i
                     </button>
                 }
-                <button class="0" id="page-0" style="width:25px">
+                <button class="0 btn btn-outline-info" id="page-0">
                     ...
                 </button>
-                <button class="@Model.totalPages" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
+                <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
                     @Model.totalPages
                 </button>
             }
@@ -253,17 +268,116 @@
             {
                 var temp = page + 1;
 
-                <button class="@temp" id="page-@temp" onclick="ChangePage(@temp)">
+                <button class="@temp btn btn-outline-info" id="page-@temp" onclick="ChangePage(@temp)">
                     @temp
                 </button>
             }
         }
-        <button class="@next" id="page-@next" onclick="ChangePage(@next)">
-            Next
-        </button>
+        if (Model.currentpage != Model.totalPages)
+        {
+            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                Next
+            </button>
+
+        }
     }
     else
     {
         <div class="h3 text-danger">No Record found</div>
     }
 </div>
+<script>
+
+    function ChangePage(Page) {
+        param.requestedPage = Page;
+        CommonAjax();
+    }
+
+    function CommonAjax() {
+
+        $.ajax({
+            url: '/Admin/AllState',
+            data: param,
+            success: function (response) {
+                $('#status-tabContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+    function Orders(requestId) {
+        console.log("Working");
+        $.ajax({
+            url: "/Admin/Orders/",
+            data: { "requestId": requestId },
+            type: "POST",
+            dataType: "html",
+            success: function (response) {
+                $('#viewCaseContent').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
+
+
+
+    $(document).ready(function () {
+
+        var temp = document.getElementById('page-' + @Model.currentpage);
+        if (temp != null) {
+            temp.style.backgroundColor = "#5dafb2";
+            temp.style.color = "white"
+        }
+
+        $('.viewNotes').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            $.ajax({
+                url: '/Admin/ViewNotes',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewCase').on('click', function (e) {
+            localStorage.setItem("state", "Pending")
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            $.ajax({
+                url: '/Admin/ViewCase',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+        $('.viewUpload').on('click', function (e) {
+            e.preventDefault();
+            var requestId = $(this).attr('id');
+            $.ajax({
+                url: '/Admin/ViewUploads',
+                data: { "requestId": requestId },
+                success: function (response) {
+                    $('#viewCaseContent').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+
+    });
+</script>

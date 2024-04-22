@@ -51,7 +51,11 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-    
+        public IActionResult CreateRequest()
+        {
+            return PartialView("AdminCaseAction/_CreateRequest");
+        }
+
         public async Task<IActionResult> AdminDashboard()
         {
             if (HttpContext.Session.GetString("UserName") != null)
@@ -149,9 +153,10 @@ namespace HalloDoc.Controllers
             Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
-        public async Task SubmitAssign(int requestId, int physicianId, string assignNote)
+        public async Task<IActionResult> SubmitAssign(int requestId, int physicianId, string assignNote)
         {   
             await caseActions.SubmitAssign(requestId, physicianId, assignNote);
+            return RedirectToAction("AdminDashboard");
         }
 
 
@@ -514,6 +519,11 @@ namespace HalloDoc.Controllers
             var mail = "tatva.dotnet.vinitpatel@outlook.com";
             var password = "016@ldce";
 
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            string createRequestPath = Url.Action("PatientRequestScreen", "Home");
+            string mainURL = baseUrl + createRequestPath;
+
+
             var client = new SmtpClient("smtp.office365.com", 587)
             {
                 EnableSsl = true,
@@ -523,9 +533,9 @@ namespace HalloDoc.Controllers
             var mailMessage = new MailMessage
             {
                 From = new MailAddress(mail),
-                Subject = "Agreement",
-                Body = "You can view agreement by using this link : " + firstName,
-                IsBodyHtml = true // Set to true if your message contains HTML
+                Subject = "Create request",
+                Body = " Hello "+ firstName + " , You can submit request using this link : " + mainURL,
+                IsBodyHtml = true
             };
 
             mailMessage.To.Add(email);

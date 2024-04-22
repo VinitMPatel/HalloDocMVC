@@ -199,7 +199,6 @@
             }
         }
         formData.append('reqid', reqid);
-        console.log(reqid)
         $.ajax({
             url: url,
             type: "POST",
@@ -212,17 +211,29 @@
         });
     });
 
-    $('.SingleDelete').on('click', function () {
+    $('.SingleDelete').on('click', function (e) {
+        e.preventDefault();
         var reqfileid = $(this).attr('data-id');
         var reqid = $('#requestId').val();
         var url = $(this).attr('name')
-        console.log(url)
-        $.ajax({
-            url: url,
-            data: { 'reqfileid': reqfileid, 'reqid': reqid },
-            success: function (response) {
-                $('#home-tab-pane').html(response);
-            },
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                console.log("Yes Btn");
+                $.ajax({
+                    url: url,
+                    data: { 'reqfileid': reqfileid, 'reqid': reqid },
+                    success: function (response) {
+                        $('#home-tab-pane').html(response);
+                    },
+                });
+            }
         });
     });
 
@@ -230,7 +241,6 @@
         var url = $(this).attr('name');
         var formData = new FormData();
         var flag = 0;
-        console.log(url)
         $('input[type="checkbox"]:checked').each(function () {
             formData.append('reqwiseid', $(this).val());
             flag = 1;
@@ -266,7 +276,6 @@
         });
         var reqid = $('#requestId').val();
         formData.append('reqid', reqid);
-        console.log(formData);
         if (flag == 1) {
             $.ajax({
                 url: '/Admin/sendMail',

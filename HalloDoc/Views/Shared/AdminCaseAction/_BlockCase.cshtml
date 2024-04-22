@@ -43,8 +43,10 @@
                 url: '/Admin/SubmitBlock',
                 data: { "requestId": @Model.requestId, "blockNote": blockNote },
                 success: function (response) {
-                    $('#status-tabContent').html(response);
-                    window.location.reload();
+                        $('#status-new').html($(response).find('#status-new').html());
+                        toastr.success("Patient blocked successfully.");
+                        $('.btn-close').click();
+                        CommonAjax();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

@@ -30,7 +30,7 @@
                     <span id="lastNameError" class="text-danger"></span>
                 </div>
                 <div class="form-floating ">
-                    <input type="number" class="form-control" placeholder="9867876587" id="contactNumber" maxlength="10">
+                    <input type="text" class="form-control" placeholder="9867876587" id="contactNumber" maxlength="10">
                     <label class="FloatingInput">Contact Number</label>
                     <span id="contactError" class="text-danger"></span>
                 </div>
@@ -137,7 +137,7 @@
                 </a>
             </button>
 
-            <a class="text-decoration-none btn btn-info text-white dash-button p-2" type="button">
+            <a class="text-decoration-none btn btn-info text-white dash-button p-2" type="button" id="createRequestBtn">
                 <i class="bi bi-file-text dash-button"></i>
                 <span class="dash-btn ms-2">Create Requests</span>
             </a>
@@ -146,7 +146,6 @@
                 <i class="bi bi-arrow-up-short dash-button"></i>
                 <span class="dash-btn ms-2">Export</span>
             </button>
-
 
             <a class="text-decoration-none btn btn-info text-white mt-sm-0 dash-button p-2" type="button" id="exportAllBtn">
                 <i class="bi bi-arrow-bar-up dash-button"></i>
@@ -263,25 +262,9 @@
         totalEntity: 3,
     }
 
-    
-    var state = localStorage.getItem("state");
-    debugger
-    if (state == "New") {
-        param.requestStatus = 1
-    }
-    else if (state == "Pending") {
-        param.requestStatus = 2
-    }
-    console.log(state)
-  
-
-    console.log(param)
     function filter(type) {
-
         param.requestType = type;
         param.requestedPage = 1;
-
-        console.log(param);
         CommonAjax();
         $('.filter').css('border', 'none');
         document.getElementById("" + type).style.border = "1px solid black";
@@ -306,56 +289,17 @@
         CommonAjax();
     })
 
-    $('#sendLinkSubmitBtn').on('click', function () {
-        if ($('#firstName').val() == "") {
-            $('#firstNameError').html("*Please Enter First Name")
-            $('#firstName').css('border', '1px solid red');
-        }
-        if ($('#lastName').val() == "") {
-            $('#lastNameError').html("*Please Enter Lase Name")
-            $('#lastName').css('border', '1px solid red');
-        }
-        if ($('#contactNumber').val() == "") {
-            $('#contactError').html("*Please Enter Contact Number")
-            $('#contactNumber').css('border', '1px solid red');
-        }
-        else {
-            var regex = /^[1-9][0-9]{9}$/
-
-            if (!regex.test($('#contactNumber').val())) {
-                $('#contactError').html("*Enter valid number");
-                $('#contactNumber').css('border', '1px solid red');
-
-            } else {
-                $('#contactError').html("");
-
+    $('#createRequestBtn').click(function () {
+        $.ajax({
+            url: '/Admin/CreateRequest',
+            success: function (response) {
+                $('#viewCaseContent').html(response)
+            },
+            error: function (xhr, status, error) {
+                console.log(error)
             }
-        }
-        if ($('#email').val() == "") {
-            $('#emailError').html("*Please Enter email")
-            $('#email').css('border', '1px solid red');
-        }
-        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == "") {
-            $.ajax({
-                url: '/Admin/SendMailForRequest',
-                data: { "firstName": $('#firstName').val(), "email": $('#email').val() }
-            })
-        }
-    })
 
-    $('.sendLinkBtn').click(function () {
-        $('#firstName').val("")
-        $('#lastName').val("")
-        $('#contactNumber').val("")
-        $('#email').val("")
-        $('#firstNameError').html("")
-        $('#firstName').css('border', '1px groove black');
-        $('#lastNameError').html("")
-        $('#lastName').css('border', '1px groove black');
-        $('#contactError').html("")
-        $('#contactNumber').css('border', '1px groove black');
-        $('#emailError').html("")
-        $('#email').css('border', '1px groove black');
+        })
     })
 
     $('#firstName').on('focus', function () {
@@ -375,11 +319,70 @@
         $('#email').css('border', '1px groove black');
     })
 
+    $('#sendLinkSubmitBtn').on('click', function () {
+        if ($('#firstName').val() == "") {
+            $('#firstNameError').html("*Please Enter First Name")
+            $('#firstName').css('border', '1px solid red');
+        }
+        if ($('#lastName').val() == "") {
+            $('#lastNameError').html("*Please Enter Lase Name")
+            $('#lastName').css('border', '1px solid red');
+        }
+
+        if ($('#contactNumber').val() == "") {
+            $('#contactError').html("*Please Enter Contact Number")
+            $('#contactNumber').css('border', '1px solid red');
+        }
+        else {
+            var regex = /^[1-9][0-9]{9}$/
+
+            if (!regex.test($('#contactNumber').val())) {
+                $('#contactError').html("*Enter valid number");
+                $('#contactNumber').css('border', '1px solid red');
+
+            } else {
+                $('#contactError').html("");
+
+            }
+        }
+
+        if ($('#email').val() == "") {
+            $('#emailError').html("*Please Enter email")
+            $('#email').css('border', '1px solid red');
+        }
+        if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == "") {
+
+            $.ajax({
+                url: '/Admin/SendMailForRequest',
+                data: { "firstName": $('#firstName').val(), "email": $('#email').val() },
+                success: function () {
+                    toastr.success("Email Sent Successfully.")
+                    $('.btn-close').click();
+                }
+            })
+        }
+    })
+
+    $('.sendLinkBtn').click(function () {
+        $('#firstName').val("")
+        $('#lastName').val("")
+        $('#contactNumber').val("")
+        $('#email').val("")
+        $('#firstNameError').html("")
+        $('#firstName').css('border', '1px groove black');
+        $('#lastNameError').html("")
+        $('#lastName').css('border', '1px groove black');
+        $('#contactError').html("")
+        $('#contactNumber').css('border', '1px groove black');
+        $('#emailError').html("")
+        $('#email').css('border', '1px groove black');
+    })
+
+
     $(document).ready(function () {
-        
+
         document.getElementById(0).style.border = "1px solid black";
         document.getElementById(0).classList.add('rounded-3');
-        console.log(param.requestStatus)
         $.ajax({
             url: '/Admin/AllState',
             data: param,
@@ -414,7 +417,7 @@
             link.click();
             document.body.removeChild(link);
         })
-        
+
 
         $('.dashboardtab').on('click', function (e) {
             e.preventDefault();

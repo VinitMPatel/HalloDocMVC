@@ -69,7 +69,7 @@
                     <td class="text-white">
                         @foreach (var item in obj.Request.Requeststatuslogs)
                         {
-                            if (obj.Notes != null)
+                            if (item.Notes != null)
                             {
                                 <div class="mb-2">
                                     @item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt")
@@ -88,11 +88,11 @@
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
-                                    <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Uploads</a></li>
+                                    <li class="viewUpload" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-earmark-pdf me-2"></i>View Uploads</a></li>
                                     <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
                                     <li onclick="TransferCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Transfer</a></li>
                                     <li onclick="ClearCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Clear case</a></li>
-                                    <li onclick="Agreement(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-ban me-2"></i>Send Agreement</a></li>
+                                    <li onclick="Agreement(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-earmark-text me-2"></i>Send Agreement</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -196,7 +196,7 @@
             }
         </div>
     </div>
-    <div class="d-flex justify-content-center gap-2">
+    <div class="d-flex justify-content-center gap-2 mb-3 filter-label">
         @if (Model.totalPages > 0)
         {
             var previous = Model.currentpage - 1;
@@ -209,9 +209,12 @@
             {
                 next = Model.totalPages;
             }
-            <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
-                Previous
-            </button>
+            if (Model.currentpage != 1)
+            {
+                <button class="@previous btn btn-outline-info" id="page-0" onclick="ChangePage(@previous)">
+                    Previous
+                </button>
+            }
             @if (Model.totalPages > 5)
             {
                 @if (Model.currentpage > Model.totalPages - 3)
@@ -219,7 +222,7 @@
                     <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
                         1
                     </button>
-                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     @for (var i = Model.totalPages - 3; i <= Model.totalPages; i++)
@@ -231,10 +234,10 @@
                 }
                 else if (Model.currentpage < Model.totalPages - 2 && Model.currentpage > 3)
                 {
-                    <button class="1 btn btn-outline-info" id="page-1" onclick="ChangePage(1)">
+                    <button class="1 btn btn-outline-info" id="page-1 " onclick="ChangePage(1)">
                         1
                     </button>
-                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     @for (var i = Model.currentpage - 1; i <= Model.currentpage + 1; i++)
@@ -243,7 +246,7 @@
                             @i
                         </button>
                     }
-                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
@@ -258,7 +261,7 @@
                             @i
                         </button>
                     }
-                    <button class="0 btn btn-outline-info" id="page-0" style="width:25px">
+                    <button class="0 btn btn-outline-info" id="page-0">
                         ...
                     </button>
                     <button class="@Model.totalPages btn btn-outline-info" id="page-@Model.totalPages" onclick="ChangePage(@Model.totalPages)">
@@ -277,9 +280,13 @@
                     </button>
                 }
             }
-            <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
-                Next
-            </button>
+            if (Model.currentpage != Model.totalPages)
+            {
+                <button class="@next btn btn-outline-info" id="page-@next" onclick="ChangePage(@next)">
+                    Next
+                </button>
+
+            }
         }
         else
         {
@@ -298,15 +305,11 @@
     }
 
     function CommonAjax() {
-        console.log("status is : " + param.requestStatus);
-        console.log("requesttype is : " + param.requestType);
-        console.log("page is : " + param.requestedPage);
-        console.log("Search is : " + param.searchKey);
+
         $.ajax({
             url: '/Admin/AllState',
             data: param,
             success: function (response) {
-
                 $('#status-tabContent').html(response);
             },
             error: function (xhr, status, error) {
@@ -372,16 +375,15 @@
 
     $(document).ready(function () {
 
-            var temp = document.getElementById('page-' + @Model.currentpage);
-            if (temp != null) {
+        var temp = document.getElementById('page-' + @Model.currentpage);
+        if (temp != null) {
             temp.style.backgroundColor = "#5dafb2";
-                temp.style.color = "white"
-            }
-        
+            temp.style.color = "white"
+        }
+
         $('.viewNotes').on('click', function (e) {
             e.preventDefault();
             var requestId = $(this).attr('id');
-            console.log(requestId);
             $.ajax({
                 url: '/Admin/ViewNotes',
                 data: { "requestId": requestId },
@@ -395,10 +397,9 @@
         });
 
         $('.viewCase').on('click', function (e) {
-            localStorage.setItem("state" , "Pending")
+            localStorage.setItem("state", "Pending")
             e.preventDefault();
             var requestId = $(this).attr('id');
-            console.log(requestId);
             $.ajax({
                 url: '/Admin/ViewCase',
                 data: { "requestId": requestId },
@@ -414,7 +415,6 @@
         $('.viewUpload').on('click', function (e) {
             e.preventDefault();
             var requestId = $(this).attr('id');
-            console.log(requestId);
             $.ajax({
                 url: '/Admin/ViewUploads',
                 data: { "requestId": requestId },

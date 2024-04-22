@@ -45,21 +45,30 @@
                 }
                 <tr style="--bs-table-bg : @color; border-bottom : 2px solid grey">
                     <td class="text-white">@obj.Firstname @obj.Lastname</td>
-                    <td class="text-white"><i class="bi bi-envelope"></i></td>
+                    <td class="text-white">
+                        <a href="mailto:@obj.Email" class="text-decoration-none text-white">  <i class="bi bi-envelope"></i></a>
+                    </td>
                     <td class="text-white">@obj.Strmonth @obj.Intdate, @obj.Intyear</td>
                     <td class="text-white"> @type , @obj.Request.Firstname</td>
                     <td class="text-white">@obj.Request.Createddate</td>
                     <td class="text-white">
                         @if (type == "Patient")
                         {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            <a href="tel:@obj.Phonenumber" class="text-decoration-none text-white">
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            </a>
+                           
                             <div>(Patinet)</div>
                         }
                         else
                         {
-                            <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            <a href="tel:@obj.Phonenumber" class="text-decoration-none text-white">
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Phonenumber</div>
+                            </a>
                             <div>(Patinet)</div>
-                            <div class="border border-light rounded-2 p-1 text-center mt-2"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                            <a href="tel:@obj.Request.Phonenumber" class="text-decoration-none text-white">
+                                <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-telephone mx-1"></i>@obj.Request.Phonenumber</div>
+                            </a>
                             <div>(@type)</div>
                         }
                     </td>
@@ -89,7 +98,16 @@
                                     Action
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
+
+                                    @if(obj.Request.Physicianid == null)
+                                    {
+                                        <li onclick="AssignCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li onclick="AlreadyAssigend()" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-card-checklist me-2"></i>Assign Case</a></li>
+                                    }
+
                                     <li onclick="CancelCase(@obj.Request.Requestid)" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-x-circle me-2"></i>Cancel case</a></li>
                                     <li class="viewCase" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-journal-bookmark-fill me-2"></i>View Case</a></li>
                                     <li class="viewNotes" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>View Notes</a></li>
@@ -99,7 +117,6 @@
                         </div>
                     </td>
                 </tr>
-
             }
         </tbody>
     </table>
@@ -391,6 +408,10 @@
             }
         });
     };
+
+    function AlreadyAssigend(){
+        toastr.warning("Case is already assigned");
+    }
 
     $(document).ready(function () {
         var temp = document.getElementById('page-' + @Model.currentpage);

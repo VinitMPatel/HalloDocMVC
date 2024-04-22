@@ -322,8 +322,10 @@
                         url: '/ProviderSide/AcceptCase',
                         data: { "requestId": requestId },
                         success: function (response) {
+                            $('#status-new').html($(response).find('#status-new').html());
+                            $('#status-pending').html($(response).find('#status-pending').html());
                             toastr.success("Case accepted.")
-                            window.location.reload()
+                            CommonAjax()
                         },
                         error: function (xhr, status, error) {
                             console.error(error);

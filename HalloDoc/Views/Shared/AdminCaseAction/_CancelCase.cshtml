@@ -63,7 +63,12 @@
                         // $('#status-tabContent').html(response);
                         // $("body").removeAttr("style");
                         // $(".modal-backdrop").remove();
-                        window.location.reload();
+                        //window.location.reload();
+                        $('#status-new').html($(response).find('#status-new').html());
+                        $('#status-toclose').html($(response).find('#status-toclose').html());
+                        toastr.success("Case canceled successfully.");
+                        $('.btn-close').click();
+                        CommonAjax();
                     },
                     error: function (xhr, status, error) {
                         console.error(error);

@@ -9,12 +9,14 @@ if (moonBtn != null) {
 
 function dark(){
     if(flag==0){
-        document.querySelector('body').setAttribute('data-bs-theme' , 'dark');
+        document.querySelector('body').setAttribute('data-bs-theme', 'dark');
+
         try{
             content.classList.remove("bg-white");
             content.classList.add("bg-dark");
         }
         catch (err) { }
+
         if (img != null) {
             img.src = "/images/dark_moon.png";
         }

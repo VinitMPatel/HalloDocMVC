@@ -37,14 +37,7 @@ namespace Services.ViewModels
 
         public int requestType { get; set; }
 
-        public String adminName { get; set; }
-
-        public String physicianName { get; set; }
-
-        public DateTime assignTime { get; set; }
-
         public String adminNote { get; set; }
-
 
         public string physicianNote {  get; set; }
 
@@ -53,6 +46,10 @@ namespace Services.ViewModels
         public List<IFormFile> Upload { get; set; }
 
         public List<Requeststatuslog> requeststatuslogs { get; set; }
+
+        public string physician {  get; set; }
+
+        public int status {  get; set; }
     }
 
     public class Orders

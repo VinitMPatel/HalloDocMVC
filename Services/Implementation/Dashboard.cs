@@ -32,6 +32,10 @@ namespace Services.Implementation
 
         public async Task<patient_dashboard> PatientDashboard(string aspNetUserId)
         {
+            if(aspNetUserId == "")
+            {
+                return new patient_dashboard();
+            }
             patient_dashboard dash = new patient_dashboard();
             var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
 
@@ -112,6 +116,7 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
 
                 };
+                stream.Close();
                 _context.Add(requestwisefile);
                 _context.SaveChanges();
             }

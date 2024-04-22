@@ -108,10 +108,9 @@
                     // $("body").removeAttr("style");
                     // $(".modal-backdrop").remove();
                     //$('#exampleModal1').modal('hide');
-                    console.log(response);
                     $("#exampleModal1 .btn-close").click()
-          
                     toastr.success("Case assigned successfully");
+                    CommonAjax();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

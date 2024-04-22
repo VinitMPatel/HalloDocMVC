@@ -124,13 +124,19 @@
             <div class="d-flex justify-content-end mt-4">
                 @if (HttpContextAccessor.HttpContext!.Session.GetString("Role") == "Admin")
                 {
-                    <div class="bg-info p-2 rounded border-0 px-3 text-white" onclick="AssignCase(@Model.requestId)" style="cursor : pointer"> Assign</div>
-                    <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white" style="cursor : pointer">View notes</div>
-                    <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer" onclick="CancelCase(@Model.requestId)">Cancel</div>
+                    @if(Model.physician == null && Model.status == 1)
+                    {
+                        <div class="bg-info p-2 rounded border-0 px-3 text-white" onclick="AssignCase(@Model.requestId)" style="cursor : pointer"> Assign</div>
+                    }
+                    <div class="ms-3 bg-info p-2 rounded border-0 px-3 text-white viewNotes" id="@Model.requestId" style="cursor : pointer" name="/Admin/ViewNotes">View notes</div>
+                    @if (Model.physician == null && Model.status == 1)
+                    {
+                        <div class="ms-3 p-2 rounded btn-danger text-white px-3" style="cursor : pointer" onclick="CancelCase(@Model.requestId)">Cancel</div>
+                    }
                 }
                 else
                 {
-                    <button class="btn btn-info text-white shadow-none viewNotes" type="button" id="@Model.requestId">View Notes</button>
+                    <button class="btn btn-info text-white shadow-none viewNotes" type="button" id="@Model.requestId" name="/ProviderSide/ViewNotes">View Notes</button>
                 }
             </div>
         </form>
@@ -145,13 +151,14 @@
 
     $('.viewNotes').on('click', function (e) {
         e.preventDefault();
+        var url = $(this).attr('name');
         var requestId = $(this).attr('id');
         console.log(requestId);
         $.ajax({
-            url: '/ProviderSide/ViewNotes',
+            url: url,
             data: { "requestId": requestId },
             success: function (response) {
-                $('#entireContent').html(response);
+                $('#viewCaseContent').html(response);
             },
             error: function (xhr, status, error) {
                 console.error(error);

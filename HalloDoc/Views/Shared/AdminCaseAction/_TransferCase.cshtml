@@ -99,9 +99,9 @@
                 url: '/Admin/SubmitTransfer',
                 data: { "requestId": @Model.requestId, "physicianId": physicianId, "transferNote": transferNote },
                 success: function (response) {
+                    toastr.success("Case transfered successfully");
                     $("#exampleModal1 .btn-close").click()
-                    toastr.success("Transfered successfully");
-                    // $("#status-pending").click()
+                    CommonAjax();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
