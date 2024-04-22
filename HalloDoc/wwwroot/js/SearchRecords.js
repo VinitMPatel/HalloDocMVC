@@ -6,7 +6,9 @@
     searchedEmail: "",
     searchedPhone: "",
     requestedPage: 1,
-    totalEntity: 3
+    totalEntity: 3,
+    fromDate,
+    toDate,
 }
 
 $('#searchBtn').on('click', function () {
@@ -18,6 +20,9 @@ $('#searchBtn').on('click', function () {
     requestedData.searchedEmail = $('#searchedEmail').val();
     requestedData.searchedPhone = $('#searchedPhone').val();
     requestedData.requestedPage = 1;
+    requestedData.fromDate = $('#fromDate').val();
+    requestedData.toDate = $('#toDate').val();
+    console.log(requestedData.fromDate)
     $.ajax({
         url: '/Admin/SearchRecordTable',
         data: requestedData,
@@ -44,6 +49,8 @@ $('#clearBtn').on('click', function () {
     requestedData.searchedPhone = "";
     requestedData.requestedPage = 1;
     requestedData.totalEntity = 3;
+    requestedData.fromDate = "",
+        requestedData.toDate = "",
     $.ajax({
         url: '/Admin/SearchRecordTable',
         data: requestedData,
@@ -62,12 +69,14 @@ $('#clearBtn').on('click', function () {
 })
 
 function ChangePage(Page) {
+    debugger
     requestedData.requestedPage = Page;
     var temp = document.getElementById('page-' + Page);
     if (temp != null) {
         temp.style.backgroundColor = "#5dafb2";
         temp.style.color = "white"
     }
+    debugger
     $.ajax({
         url: '/Admin/SearchRecordTable',
         data: requestedData,
@@ -105,6 +114,16 @@ $('#selectedEntity').on('change', function () {
     });
 })
 
+$('#exportBtn').on('click', function () {
+    debugger;
+    var link = document.createElement('a');
+    link.href = '/Admin/ExportSearchRecordData?selectedStatus=' + requestedData.selectedStatus + "&selectedType=" + requestedData.selectedType + "&searchedPatient=" + requestedData.searchedPatient + "&searchedProvider=" + requestedData.searchedProvider + "&searchedPhone=" + requestedData.searchedPhone + "&searchedEmail=" + requestedData.searchedEmail;
+    //link.href = '/Admin/ExportData?obj=' + param;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
 
 var PatientHistoryData = {
     firstName : "",

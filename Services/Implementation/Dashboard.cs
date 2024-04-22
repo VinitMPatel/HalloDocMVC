@@ -172,6 +172,7 @@ namespace Services.Implementation
             }
 
             Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == model.email);
+            
             return (aspnetuser!.Id, aspnetuser.Email)!;
 
         }

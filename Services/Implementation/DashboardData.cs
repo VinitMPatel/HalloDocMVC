@@ -23,6 +23,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Services.Implementation
 {
@@ -136,11 +137,11 @@ namespace Services.Implementation
                 dataobj.requestclients = reqc;
                 return dataobj;
             }
-        }   
+        }
 
         public async Task<CaseActionDetails> ViewCaseData(int requestId)
         {
-            if(requestId == 0)
+            if (requestId == 0)
             {
                 return new CaseActionDetails();
             }
@@ -164,7 +165,7 @@ namespace Services.Implementation
                 obj.Address = requestclient.Address;
                 obj.requestType = request.Requesttypeid;
                 obj.ConfirmationNumber = request.Confirmationnumber;
-                if(request.Physician != null)
+                if (request.Physician != null)
                 {
                     obj.physician = request.Physician.Firstname;
                 }
@@ -550,10 +551,6 @@ namespace Services.Implementation
         //}
 
 
-
-
-
-
         public async Task<PartnerViewModel> PartnerData(int professionType, string searchKey)
         {
             PartnerViewModel obj = new PartnerViewModel();
@@ -689,9 +686,23 @@ namespace Services.Implementation
                                 (string.IsNullOrWhiteSpace(obj.searchedEmail) || a.Email.ToLower().Contains(obj.searchedEmail.ToLower())) &&
                                 (string.IsNullOrWhiteSpace(obj.searchedPhone) || a.Phonenumber.Contains(obj.searchedPhone))).ToList();
 
-            dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
-            dataObj.currentpage = obj.requestedPage;
-            requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
+            if(obj.toDate.Year != 1 && obj.toDate.Month != 1 && obj.toDate.Day != 1)
+            {
+                requestclients = requestclients.Where(u => u.Request.Accepteddate != null).ToList();
+                requestclients = requestclients.Where(u => u.Request.Accepteddate!.Value.Date <= obj.toDate!).ToList();
+            }
+            if (obj.fromDate.Year != 1 && obj.fromDate.Month != 1 && obj.fromDate.Day != 1)
+            {
+                requestclients = requestclients.Where(u => u.Request.Accepteddate != null).ToList();
+                requestclients = requestclients.Where(u => u.Request.Accepteddate! >= obj.fromDate!).ToList();
+            }
+
+            if (obj.requestedPage != 0)
+            {
+                dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
+                dataObj.currentpage = obj.requestedPage;
+                requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
+            }
 
             dataObj.requestclients = requestclients;
             return dataObj;
@@ -1211,6 +1222,150 @@ namespace Services.Implementation
                 shiftregion.Isdeleted = new BitArray(new[] { true });
                 _context.Shiftdetailregions.Update(shiftregion);
                 _context.SaveChanges();
+            }
+        }
+
+        public byte[] DownloadSearchRecordExcle(SearchRecordsData model)
+        {
+            using (var workbook = new XSSFWorkbook())
+            {
+                ISheet sheet = workbook.CreateSheet("FilteredRecord");
+                IRow headerRow = sheet.CreateRow(0);
+                headerRow.CreateCell(0).SetCellValue("Sr No.");
+                headerRow.CreateCell(1).SetCellValue("Patient Name");
+                headerRow.CreateCell(2).SetCellValue("Requestor");
+                headerRow.CreateCell(3).SetCellValue("Date Of Service");
+                headerRow.CreateCell(4).SetCellValue("Close Case Date");
+                headerRow.CreateCell(5).SetCellValue("Email");
+                headerRow.CreateCell(6).SetCellValue("Phone Number");
+                headerRow.CreateCell(7).SetCellValue("Address");
+                headerRow.CreateCell(8).SetCellValue("Zip");
+                headerRow.CreateCell(9).SetCellValue("Request Status");
+                headerRow.CreateCell(10).SetCellValue("Physician");
+                headerRow.CreateCell(11).SetCellValue("Physician Note");
+                headerRow.CreateCell(12).SetCellValue("Cancelled By Provider Note");
+                headerRow.CreateCell(13).SetCellValue("Admin Note");
+                headerRow.CreateCell(14).SetCellValue("Patient Note");
+
+                for (int i = 0; i < model.requestclients.Count; i++)
+                {
+                    var reqclient = model.requestclients.ElementAt(i);
+                    var status = "";
+                    if (reqclient.Request.Status == 1)
+                    {
+                        status = "Unassigned";
+                    }
+                    else if (reqclient.Request.Status == 2)
+                    {
+                        status = "Accepted";
+                    }
+                    else if (reqclient.Request.Status == 3)
+                    {
+                        status = "cancelled";
+                    }
+                    else if (reqclient.Request.Status == 4)
+                    {
+                        status = "MDEnroute";
+                    }
+                    else if (reqclient.Request.Status == 5)
+                    {
+                        status = "MDOnSite";
+                    }
+                    else if (reqclient.Request.Status == 6)
+                    {
+                        status = "Conclude";
+                    }
+                    else if (reqclient.Request.Status == 7)
+                    {
+                        status = "Cancelled By Patient";
+                    }
+                    else if (reqclient.Request.Status == 8)
+                    {
+                        status = "Closed";
+                    }
+                    else if (reqclient.Request.Status == 9)
+                    {
+                        status = "Unpaid";
+                    }
+                    else if (reqclient.Request.Status == 10)
+                    {
+                        status = "Clear";
+                    }
+
+                    IRow row = sheet.CreateRow(i + 1);
+                    row.CreateCell(0).SetCellValue(i + 1);
+                    row.CreateCell(1).SetCellValue(reqclient.Firstname);
+                    row.CreateCell(2).SetCellValue(reqclient.Request.Firstname);
+                    if(reqclient.Request.Accepteddate != null)
+                    {
+                        row.CreateCell(3).SetCellValue(reqclient.Request.Accepteddate.Value.ToString("MMM dd yyyy"));
+                    }
+                    else
+                    {
+                        row.CreateCell(3).SetCellValue("-");
+                    }
+                    if (reqclient.Request.Status == 3 || reqclient.Request.Status == 7 || reqclient.Request.Status == 8)
+                    {
+                        row.CreateCell(4).SetCellValue(reqclient.Request.Requeststatuslogs.LastOrDefault(u => u.Requestid == reqclient.Request.Requestid)!.Createddate.ToString("MMM dd yyyy"));
+                    }
+                    else
+                    {
+                        row.CreateCell(4).SetCellValue("-");
+                    }
+
+                    row.CreateCell(5).SetCellValue(reqclient.Email);
+                    row.CreateCell(6).SetCellValue(reqclient.Phonenumber);
+                    row.CreateCell(7).SetCellValue(reqclient.Address);
+                    row.CreateCell(8).SetCellValue(reqclient.Zipcode);
+                    row.CreateCell(9).SetCellValue(status);
+                    if(reqclient.Request.Physician != null)
+                    {
+                        row.CreateCell(10).SetCellValue(reqclient.Request.Physician.Firstname);
+                    }
+                    else
+                    {
+                        row.CreateCell(10).SetCellValue("-");
+                    }
+                    if(reqclient.Request.Requestnotes.Count() > 0 && reqclient.Request.Requestnotes.ElementAt(0).Physiciannotes != null)
+                    {
+                        row.CreateCell(11).SetCellValue(reqclient.Request.Requestnotes.ElementAt(i).Physiciannotes);
+                    }
+                    else
+                    {
+                        row.CreateCell(11).SetCellValue("-");
+                    }
+                    if (reqclient.Request.Status == 3 || reqclient.Request.Status == 7 || reqclient.Request.Status == 8)
+                    {
+                        row.CreateCell(12).SetCellValue(reqclient.Request.Requeststatuslogs.LastOrDefault(u => u.Requestid == reqclient.Request.Requestid)!.Notes);
+                    }
+                    else
+                    {
+                        row.CreateCell(12).SetCellValue("-");
+                    }
+                    if (reqclient.Request.Requestnotes.Count() > 0)
+                    {
+                        row.CreateCell(13).SetCellValue(reqclient.Request.Requestnotes.ElementAt(0).Adminnotes);
+                    }
+                    else
+                    {
+                        row.CreateCell(13).SetCellValue("-");
+                    }
+                    if (reqclient.Notes != null)
+                    {
+                        row.CreateCell(14).SetCellValue(@reqclient.Notes);
+                    }
+                    else
+                    {
+                        row.CreateCell(14).SetCellValue("-");
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.Write(stream);
+                    var content = stream.ToArray();
+                    return content;
+                }
             }
         }
 

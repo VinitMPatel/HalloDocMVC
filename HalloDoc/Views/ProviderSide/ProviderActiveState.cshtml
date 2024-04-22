@@ -14,7 +14,7 @@
             </div>
             <form asp-action="SubmitEncounterStatus">
                 <div class="modal-body">
-                    <input type="text" name="requestId" />
+                    <input type="text" name="requestId" hidden/>
                     <div class="d-flex justify-content-center mt-3">
 
                         <input type="radio" class="btn-check" name="flexRadioDefault" id="option1" autocomplete="off" value="HouseCall">
@@ -531,7 +531,11 @@
                         url: "/ProviderSide/HouseCallClick",
                         data: { "requestId": requestId },
                         success: function (response) {
-                            window.location.reload()
+                            $('#status-active').html($(response).find('#status-active').html());
+                            $('#status-conclude').html($(response).find('#status-conclude').html());
+                            toastr.success("Data saved successfully.");
+                            $('.btn-close').click();
+                            CommonAjax();
                         },
                         error: function (xhr, status, error) {
                             console.error(error);

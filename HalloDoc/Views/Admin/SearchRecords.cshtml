@@ -9,7 +9,7 @@
         <div class="h4">
             Search Records
         </div>
-        <button class="btn btn-info d-flex flex-row gap-2">
+        <button class="btn btn-info d-flex flex-row gap-2" id="exportBtn">
             <i class="bi bi-box-arrow-up-right"></i>
             <span class="d-none d-sm-block">Export Data To Excel</span>
         </button>
@@ -55,14 +55,14 @@
 
                 <div class="p-2 col-md-3 col-sm-6 col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control" placeholder="From Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" placeholder="From Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")" id="fromDate">
                         <label class="FloatingInput">From Date of Service</label>
                     </div>
                 </div>
 
                 <div class="p-2 col-md-3 col-sm-6 col-12">
                     <div class="form-floating">
-                        <input type="date" class="form-control" placeholder="To Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" placeholder="To Date of Service" max="@DateTime.Now.ToString("yyyy-MM-dd")" id="toDate">
                         <label class="FloatingInput">To Date of Service</label>
                     </div>
                 </div>

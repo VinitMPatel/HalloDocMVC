@@ -105,5 +105,6 @@ namespace Services.Contracts
         void DeleteSelected(int[] shiftchk, string aspNetUserId);
 
         void DeleteShift(int shiftdetailid, string aspNetUserId);
+        byte[] DownloadSearchRecordExcle(SearchRecordsData model);
     }
 }

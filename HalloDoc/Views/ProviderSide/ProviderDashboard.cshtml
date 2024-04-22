@@ -291,8 +291,12 @@
         }
         if ($('#firstNameError').text() == "" && $('#lastNameError').text() == "" && $('#contactError').text() == "" && $('#emailError').text() == "") {
             $.ajax({
-                url: '/Admin/SendMailForRequest',
-                data: { "firstName": $('#firstName').val(), "email": $('#email').val() }
+                url: '/ProviderSide/SendMailForRequest',
+                data: { "firstName": $('#firstName').val(), "email": $('#email').val() },
+                success: function () {
+                    toastr.success("Email Sent Successfully.")
+                    $('.btn-close').click();
+                }
             })
         }
     })

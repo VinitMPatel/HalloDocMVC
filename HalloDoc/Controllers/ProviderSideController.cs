@@ -8,6 +8,8 @@ using Services.Contracts;
 using Services.Implementation;
 using Services.ViewModels;
 using System.Collections;
+using System.Net.Mail;
+using System.Net;
 using Authorization = Services.Implementation.Authorization;
 
 namespace HalloDoc.Controllers
@@ -150,10 +152,10 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_TransferRequest", providerCaseAction);
         }
 
-        public async Task SubmitTransferRequest(int requestId, string note)
+        public async Task<IActionResult> SubmitTransferRequest(int requestId, string note)
         {
             await providerSideServices.SubmitTransferReqquest(requestId, note);
-            TempData["success"] = "Case transferred successfully";
+            return RedirectToAction("ProviderDashboard");
         }
 
         public async Task<IActionResult> Orders(int requestId)
@@ -205,9 +207,10 @@ namespace HalloDoc.Controllers
             return NoContent();
         }
 
-        public async Task HouseCallClick(int requestId)
+        public async Task<IActionResult> HouseCallClick(int requestId)
         {
             await providerSideServices.HouseCalling(requestId);
+            return RedirectToAction("ProviderDashboard");
         }
 
         public async Task<IActionResult> EncounterForm(int requestId)
@@ -267,6 +270,32 @@ namespace HalloDoc.Controllers
             return PartialView("Provider/_MonthWise", await providerSideServices.Monthwise(currentDate, aspNetUserId));
         }
 
-        
+        public void SendMailForRequest(string firstName, string email)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            string createRequestPath = Url.Action("PatientRequestScreen", "Home");
+            string mainURL = baseUrl + createRequestPath;
+
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(mail),
+                Subject = "Create request",
+                Body = " Hello " + firstName + " , You can submit request using this link : " + mainURL,
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(email);
+            client.SendMailAsync(mailMessage);
+        }
     }
 }

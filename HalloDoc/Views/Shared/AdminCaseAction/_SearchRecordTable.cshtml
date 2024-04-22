@@ -28,7 +28,14 @@
                     <tr>
                         <td>@item.Firstname, @item.Lastname</td>
                         <td>@item.Request.Requesttype.Name</td>
-                        <td>Date Of Service</td>
+                        @if(item.Request.Accepteddate != null)
+                        {
+                            <td>@item.Request.Accepteddate.Value.ToString("MMM dd yyyy")</td>
+                        }
+                        else
+                        {
+                            <td> - </td>
+                        }
                         <td>@item.Request.Requeststatuslogs.FirstOrDefault(a=> a.Status == 6)?.Createddate.ToString("MMM dd yyyy")</td>
                         <td>@item.Email</td>
                         <td>@item.Phonenumber</td>
@@ -147,9 +154,6 @@
             
         }
     }
-    else
-    {
-        <div class="h3 text-danger">No Record found</div>
-    }
+
 </div>
 

@@ -45,8 +45,10 @@
                 url: '/ProviderSide/SubmitTransferRequest',
                 data: { "requestId": requestId  , "note" : note},
                 success: function (response) {
-                    $("#exampleModal1 .btn-close").click()
-                    window.location.reload()
+                    $('#status-pending').html($(response).find('#status-pending').html());
+                    toastr.success("Case transfered successfully.");
+                    $('.btn-close').click();
+                    CommonAjax();
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

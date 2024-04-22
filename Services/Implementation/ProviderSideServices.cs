@@ -30,8 +30,6 @@ namespace Services.Implementation
             _env = env;
         }
 
-
-
         public async Task<ProviderDashboard> AllData(string aspNetUserId)
         {
             List<Requestclient> reqc = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Where(a => a.Request.Physician!.Aspnetuserid == aspNetUserId).ToListAsync();
@@ -60,12 +58,12 @@ namespace Services.Implementation
                                  (string.IsNullOrWhiteSpace(obj.searchKey) || a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())) &&
                                  (obj.requestType == 0 || a.Request.Requesttypeid == obj.requestType)).ToList();
             
-
             dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
             dataObj.currentpage = obj.requestedPage;
             requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
             dataObj.totalEntity = obj.totalEntity;
             dataObj.requestclients = requestclients;
+
             return dataObj;
         }
 
@@ -80,6 +78,7 @@ namespace Services.Implementation
                     {
                         requestData.Status = 2;
                         requestData.Modifieddate = DateTime.Now;
+                        requestData.Accepteddate = DateTime.Now;
                         _context.Update(requestData);
                     }
                     Requeststatuslog requeststatuslog = new Requeststatuslog

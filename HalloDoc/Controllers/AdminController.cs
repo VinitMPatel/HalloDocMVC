@@ -126,8 +126,17 @@ namespace HalloDoc.Controllers
             return File(record, contentType, filename);
         }
 
-        
-       
+        public async Task<IActionResult> ExportSearchRecordData(SearchRecordsData obj)
+        {
+            obj.requestedPage = 0;
+            SearchRecordsData data = await dashboardData.GetSearchRecordData(obj);
+            var record = dashboardData.DownloadSearchRecordExcle(data);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{strDate}.xlsx";
+            return File(record, contentType, filename);
+        }
+
         public async Task<IActionResult> ViewCase(int requestId)
         {
             CaseActionDetails obj = await dashboardData.ViewCaseData(requestId);
