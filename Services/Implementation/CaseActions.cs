@@ -395,7 +395,7 @@ namespace Services.Implementation
 
         public async Task CloseCaseChanges(string email, int requestId, string phone)
         {
-            var requestData = _context.Requests.Include(a => a.Requestclients).FirstOrDefault(a => a.Requestid == requestId);
+            var requestData = await _context.Requestclients.FirstOrDefaultAsync(a => a.Requestid == requestId);
             if (requestData != null)
             {
                 requestData.Email = email;
@@ -403,6 +403,27 @@ namespace Services.Implementation
                 _context.Update(requestData);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task CloseRequest(int requestId)
+        {
+            Data.Entity.Request? requestData = await _context.Requests.FirstOrDefaultAsync(u => u.Requestid == requestId);
+            if(requestData != null)
+            {
+                requestData.Status = 9;
+                requestData.Modifieddate = DateTime.Now;
+                _context.Update(requestData);
+                await _context.SaveChangesAsync();
+            }
+            
+            Requeststatuslog requeststatuslog = new Requeststatuslog
+            {
+                Requestid = requestId,
+                Status = 9,
+                Createddate = DateTime.Now,
+            };
+            await _context.Requeststatuslogs.AddAsync(requeststatuslog);
+            await _context.SaveChangesAsync();
         }
 
     }

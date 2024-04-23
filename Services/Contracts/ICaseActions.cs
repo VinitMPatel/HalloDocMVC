@@ -37,5 +37,6 @@ namespace Services.Contracts
         Task CloseCaseChanges(string email, int requestId, string phone);
 
         Task CancelAgreement(int requestId);
+        Task CloseRequest(int requestId);
     }
 }

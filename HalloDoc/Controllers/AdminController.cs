@@ -28,16 +28,18 @@ namespace HalloDoc.Controllers
         private readonly ICaseActions caseActions;
         private readonly HalloDocDbContext _context;
         private readonly IJwtRepository _jwtRepository;
+        private readonly IProviderServices providerServices;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
-        public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
+        public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
         {
-            this.dashboardData = dashboardData;
             _context = context;
-            this.caseActions = caseActions;
-            this.validation = validation;
             _jwtRepository = jwtRepository;
             _env = env;
+            this.dashboardData = dashboardData;
+            this.caseActions = caseActions;
+            this.validation = validation;
+            this.providerServices = providerServices;
         }
 
         [AllowAnonymous]
@@ -57,11 +59,29 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public async Task<bool> EmailValidate(string Email)
+        [AllowAnonymous]
+        public async Task<IActionResult> AdminSetPassword(string id)
         {
-            Admin admin = await dashboardData.CheckEmail(Email);
+            string decryptedId = EncryptDecryptHelper.Decrypt(id);
+            LoginPerson model = new LoginPerson();
+            model.aspNetUserId = decryptedId;
+            return View(model);
+        }
 
-            if (admin != null)
+        [AllowAnonymous]
+        public async Task<IActionResult> UpdatePassword(LoginPerson model)
+        {
+            await dashboardData.UpdatePassword(model);
+            TempData["success"] = "Password updated successfully.";
+            return RedirectToAction("AdminLogin");
+        }
+
+        [AllowAnonymous]
+        public async Task<bool> AdminEmailValidate(string Email)
+        {
+            bool flag = await dashboardData.CheckEmail(Email);
+
+            if (flag)
             {
                 return true;
             }
@@ -69,6 +89,40 @@ namespace HalloDoc.Controllers
             {
                 return false;
             }
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> AdminResetPasswordEmail(LoginPerson model)
+        {
+            (string aspNetUserId, string email) = await dashboardData.FindUser(model);
+            string encryptedId = EncryptDecryptHelper.Encrypt(aspNetUserId);
+            string resetPasswordUrl = GenerateResetPasswordUrl(encryptedId);
+            await SendEmail(email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
+            TempData["success"] = "Email Sent successfully.";
+            return RedirectToAction("PatientLogin", "Home");
+        }
+
+        [AllowAnonymous]
+        private string GenerateResetPasswordUrl(string userId)
+        {
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            string resetPasswordPath = Url.Action("AdminSetPassword", "Admin", new { id = userId });
+            return baseUrl + resetPasswordPath;
+        }
+
+        [AllowAnonymous]
+        private Task SendEmail(string email, string subject, string message)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
 
         public IActionResult CreateRequest()
@@ -178,7 +232,6 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> AssignCase(int requestId)
         {
-            
             Services.ViewModels.CaseActions obj = await caseActions.AssignCase(requestId);
             return PartialView("AdminCaseAction/_AssignCase", obj);
         }
@@ -187,7 +240,6 @@ namespace HalloDoc.Controllers
             await caseActions.SubmitAssign(requestId, physicianId, assignNote);
             return RedirectToAction("AdminDashboard");
         }
-
 
 
         public async Task<IActionResult> CancelCase(int requestId)
@@ -335,6 +387,12 @@ namespace HalloDoc.Controllers
             return RedirectToAction("CloseCase", new {requestId = requestId});
         }
 
+        public async Task CloseRequest(int requestId)
+        {
+            await caseActions.CloseRequest(requestId);
+            TempData["success"] = "Case close successfully";
+        }
+
         public async Task<IActionResult> AdminProfile()
         {
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
@@ -389,11 +447,33 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_EditRole", obj);
         }
 
+        public async Task<IActionResult> SaveUpdatedRole(int roleid , List<int> selectedRole)
+        {
+            await dashboardData.SaveRoleChanges(roleid, selectedRole);
+            TempData["success"] = "Role Edited successfully.";
+            return RedirectToAction("RoleAccess");
+        }
+
+
         //public async Task<IActionResult> UserAccess()
         //{
 
         //}
 
+        public async Task<IActionResult> AdminCreateAccount()
+        {
+            CreateAdminModel obj = new CreateAdminModel();
+            obj.regionList = await providerServices.GetRegions();
+            obj.rolesList = await dashboardData.GetAdminRoles();
+            return View(obj);
+        }
+
+        public async Task<IActionResult> SubmitCreateAdmin(CreateAdminModel obj, List<int> selectedRegion)
+        {
+            await dashboardData.CreateAdmin(obj, selectedRegion);
+            TempData["success"] = "Admin Created successfully.";
+            return RedirectToAction("AdminLogin");
+        }
 
         [HttpPost]
         [AllowAnonymous]
@@ -494,7 +574,7 @@ namespace HalloDoc.Controllers
             List<string> filenames = new List<string>();
             foreach (var item in reqwiseid)
             {
-                var file = _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == item).Filename;
+                var file = dashboardData.GetFilesNames(item);
                 filenames.Add(file);
             }
 
@@ -579,8 +659,22 @@ namespace HalloDoc.Controllers
 
         public async Task<IActionResult> SearchRecordTable(SearchRecordsData obj)
         {
+            if(obj.requestedPage == 0)
+            {
+                obj.requestedPage = 1;
+            }
+            if(obj.totalEntity == 0)
+            {
+                obj.totalEntity = 3;
+            }
             SearchRecordsData newObj = await dashboardData.GetSearchRecordData(obj);
             return PartialView("AdminCaseAction/_SearchRecordTable", newObj);
+        }
+
+        public async Task<IActionResult> DeleteRequest(int requestId)
+        {
+            await dashboardData.DeleteRequest(requestId);
+            return RedirectToAction("SearchRecordTable");
         }
 
         public IActionResult PatientRecords()
@@ -623,10 +717,10 @@ namespace HalloDoc.Controllers
             return View(dashboardData.Scheduling());
         }
 
-        public IActionResult LoadSchedulingPartial(string PartialName, string date, int regionid)
+        public async Task<IActionResult> LoadSchedulingPartial(string PartialName, string date, int regionid)
         {
             var currentDate = DateTime.Parse(date);
-            List<Physician> physician = _context.Physicians.ToList();
+            List<Physician> physician =  await dashboardData.PhysicianList(0);
 
             switch (PartialName)
             {
@@ -643,7 +737,7 @@ namespace HalloDoc.Controllers
                     return PartialView("Provider/_DayWise");
             }
         }
-        public IActionResult AddShift(Scheduling model)
+        public async Task<IActionResult> AddShift(Scheduling model)
         {
             if (model.starttime > model.endtime)
             {
@@ -652,7 +746,7 @@ namespace HalloDoc.Controllers
             }
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
             var chk = Request.Form["repeatdays"].ToList();
-            bool f = dashboardData.AddShift(model, aspNetUserId, chk);
+            bool f = await dashboardData.AddShift(model, aspNetUserId, chk);
             if (f == false)
             {
                 TempData["error"] = "Shift is already assigned in this time";
@@ -661,44 +755,51 @@ namespace HalloDoc.Controllers
         }
 
 
-        public Scheduling viewshift(int shiftdetailid)
+        public async Task<Scheduling> viewshift(int shiftdetailid)
         {
-            return dashboardData.viewshift(shiftdetailid);
-        }
-        public void ViewShiftreturn(int shiftdetailid)
-        {
-            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
-            dashboardData.ViewShiftreturn(shiftdetailid, aspNetUserId);
-        }
-        public bool ViewShiftedit(Scheduling modal)
-        {
-            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
-            return dashboardData.ViewShiftedit(modal, aspNetUserId);
-        }
-        public void DeleteShift(int shiftdetailid)
-        {
-            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
-            dashboardData.DeleteShift(shiftdetailid, aspNetUserId);
-        }
-        public IActionResult ProvidersOnCall(Scheduling modal)
-        {
-            return View(dashboardData.ProvidersOnCall(modal));
-        }
-        [HttpPost]
-        public IActionResult ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
-        {
-            return PartialView("AdminLayout/_ProviderOnCallData", dashboardData.ProvidersOnCallbyRegion(regionid, oncall, offcall));
+            return await dashboardData.viewshift(shiftdetailid);
         }
 
-        public IActionResult ShiftForReview()
+        public async Task ViewShiftreturn(int shiftdetailid)
         {
-            return View(dashboardData.ShiftForReview());
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            await dashboardData.ViewShiftreturn(shiftdetailid, aspNetUserId);
         }
-        public IActionResult ShiftReviewTable(int currentPage, int regionid)
+        public async Task<bool> ViewShiftedit(Scheduling modal)
         {
-            return PartialView("AdminLayout/_ShiftForReviewTable", dashboardData.ShiftReviewTable(currentPage, regionid));
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            return await dashboardData.ViewShiftedit(modal, aspNetUserId);
         }
-        public IActionResult ApproveSelected(int[] shiftchk)
+
+        public async Task DeleteShift(int shiftdetailid)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            await dashboardData.DeleteShift(shiftdetailid, aspNetUserId);
+        }
+
+        public async Task<IActionResult> ProvidersOnCall(Scheduling modal)
+        {
+            return View(await dashboardData.ProvidersOnCall(modal));
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
+        {
+            return PartialView("AdminLayout/_ProviderOnCallData", await dashboardData.ProvidersOnCallbyRegion(regionid, oncall, offcall));
+        }
+
+        public async Task<IActionResult> ShiftForReview()
+        {
+            return View(await dashboardData.ShiftForReview());
+        }
+
+        public async Task<IActionResult> ShiftReviewTable(int currentPage, int regionid)
+        {
+            return PartialView("AdminLayout/_ShiftForReviewTable", await dashboardData.ShiftReviewTable(currentPage, regionid));
+        }
+
+        public async Task<IActionResult> ApproveSelected(int[] shiftchk)
         {
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
             if (shiftchk.Length == 0)
@@ -707,12 +808,13 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                dashboardData.ApproveSelected(shiftchk, aspNetUserId);
+                await dashboardData.ApproveSelected(shiftchk, aspNetUserId);
                 TempData["success"] = "Shifts Approved Successfuly";
             }
             return RedirectToAction("ShiftForReview");
         }
-        public IActionResult DeleteSelected(int[] shiftchk)
+
+        public async Task<IActionResult> DeleteSelected(int[] shiftchk)
         {
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
             if (shiftchk.Length == 0)
@@ -721,7 +823,7 @@ namespace HalloDoc.Controllers
             }
             else
             {
-                dashboardData.DeleteSelected(shiftchk, aspNetUserId);
+                await dashboardData.DeleteSelected(shiftchk, aspNetUserId);
                 TempData["success"] = "Shifts Deleted Successfuly";
             }
             return RedirectToAction("ShiftForReview");

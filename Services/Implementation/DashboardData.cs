@@ -23,6 +23,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using static iTextSharp.text.pdf.AcroFields;
 using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Services.Implementation
@@ -139,16 +140,17 @@ namespace Services.Implementation
             }
         }
 
-        public async Task<Admin> CheckEmail(string Email)
+        public async Task<bool> CheckEmail(string Email)
         {
             Admin? admin = await _context.Admins.FirstOrDefaultAsync(x => x.Email == Email);
-            if (admin == null)
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(x => x.Email == Email);
+            if (admin == null && physician == null)
             {
-                return null;
+                return false;
             }
             else
             {
-                return admin;
+                return true;
             }
         }
 
@@ -208,6 +210,10 @@ namespace Services.Implementation
 
         public async Task<List<Physician>> PhysicianList(int regionid)
         {
+            if(regionid == 0)
+            {
+                return await _context.Physicians.ToListAsync();
+            }
             List<Physician> physicianList = await _context.Physicians.Where(a => a.Regionid == regionid).ToListAsync();
             return physicianList;
         }
@@ -553,6 +559,33 @@ namespace Services.Implementation
             return roleAccess;
         }
 
+
+        public async Task SaveRoleChanges(int roleid, List<int> selectedRole)
+        {
+            if(roleid != 0)
+            {
+                List<Rolemenu> rolemenus = await _context.Rolemenus.Where(a => a.Roleid == roleid).ToListAsync();
+                foreach(var item in rolemenus)
+                {
+                    _context.Rolemenus.Remove(item);
+                }
+                
+                if(selectedRole.Count() > 0)
+                {
+                    foreach (var item in selectedRole)
+                    {
+                        Rolemenu rolemenu = new Rolemenu
+                        {
+                            Roleid = roleid,
+                            Menuid = item
+                        };
+                        await _context.AddAsync(rolemenu);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+            }
+        }
         //public async Task<UserAccessData> GetUserAccessData()
         //{
         //    List<Admin>? adminList = await _context.Admins.ToListAsync();
@@ -598,6 +631,10 @@ namespace Services.Implementation
             return obj;
         }
 
+        public string GetFilesNames(int reqwiseid)
+        {
+            return _context.Requestwisefiles.FirstOrDefault(x => x.Requestwisefileid == reqwiseid)!.Filename;
+        }
         public async Task AddNewBusiness(BusinessData obj)
         {
             if (obj != null)
@@ -689,7 +726,7 @@ namespace Services.Implementation
             SearchRecordsData dataObj = new SearchRecordsData();
             List<Requestclient> requestclients = new List<Requestclient>();
 
-            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a => a.Request.Requesttype).ToListAsync();
+            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Physician).Include(a => a.Request.Requestnotes).Include(a => a.Request.Requeststatuslogs).Include(a => a.Request.Requesttype).Where(a=>a.Request.Isdeleted == new BitArray(new[] {false})).ToListAsync();
 
             requestclients = requestclients.Where(a =>
                                 (obj.selectedStatus == 0 || a.Request.Status == obj.selectedStatus) &&
@@ -699,7 +736,7 @@ namespace Services.Implementation
                                 (string.IsNullOrWhiteSpace(obj.searchedEmail) || a.Email.ToLower().Contains(obj.searchedEmail.ToLower())) &&
                                 (string.IsNullOrWhiteSpace(obj.searchedPhone) || a.Phonenumber.Contains(obj.searchedPhone))).ToList();
 
-            if(obj.toDate.Year != 1 && obj.toDate.Month != 1 && obj.toDate.Day != 1)
+            if (obj.toDate.Year != 1 && obj.toDate.Month != 1 && obj.toDate.Day != 1)
             {
                 requestclients = requestclients.Where(u => u.Request.Accepteddate != null).ToList();
                 requestclients = requestclients.Where(u => u.Request.Accepteddate!.Value.Date <= obj.toDate!).ToList();
@@ -719,6 +756,17 @@ namespace Services.Implementation
 
             dataObj.requestclients = requestclients;
             return dataObj;
+        }
+
+        public async Task DeleteRequest(int requestId)
+        {
+            Data.Entity.Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if(request != null)
+            {
+                request.Isdeleted = new BitArray(new[] { true });
+                _context.Update(request);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<PatientHistory> GetPatientHistoryData(PatientHistory obj)
@@ -752,6 +800,84 @@ namespace Services.Implementation
         public async Task<List<Physicianlocation>> GetPhysicianLocation()
         {
             return await _context.Physicianlocations.ToListAsync();
+        }
+
+        public async Task<List<Role>> GetAdminRoles()
+        {
+            return await _context.Roles.Where(a => a.Accounttype == 1).ToListAsync();
+        }
+
+        public async Task CreateAdmin(CreateAdminModel obj, List<int> selectedRegion)
+        {
+            using(var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    if (obj != null)
+                    {
+                        string encryptPassword = EncryptDecryptHelper.Encrypt(obj.password);
+                        Aspnetuser aspnetuser = new Aspnetuser
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Username = obj.firstName + obj.lastName,
+                            Passwordhash = encryptPassword,
+                            Email = obj.email,
+                            Phonenumber = obj.contactNumber,
+                            Createddate = DateTime.Now,
+                            Modifieddate = DateTime.Now
+                        };
+                        await _context.Aspnetusers.AddAsync(aspnetuser);
+                        await _context.SaveChangesAsync();
+
+                        Admin admin = new Admin
+                        {
+                            Aspnetuserid = aspnetuser.Id,
+                            Firstname = obj.firstName,
+                            Lastname = obj.lastName,
+                            Email = obj.email,
+                            Mobile = obj.contactNumber,
+                            Address1 = obj.address1,
+                            Address2 = obj.address2,
+                            Regionid = obj.adminRegion,
+                            Zip = obj.zipcode,
+                            Altphone = obj.billingContact,
+                            Createdby = aspnetuser.Id,
+                            Createddate = DateTime.Now,
+                            Modifieddate = DateTime.Now,
+                            Isdeleted = new BitArray(new[] { false }),
+                            Roleid = obj.role,
+                            City = obj.city
+                        };
+                        await _context.Admins.AddAsync(admin);
+                        await _context.SaveChangesAsync();
+
+                        if (selectedRegion.Count() > 0)
+                        {
+                            foreach (var item in selectedRegion)
+                            {
+                                Adminregion adminregion = new Adminregion();
+                                adminregion.Adminid = admin.Adminid;
+                                adminregion.Regionid = item;
+                                await _context.AddAsync(adminregion);
+                            }
+                        }
+
+                        Aspnetuserrole aspnetuserrole = new Aspnetuserrole
+                        {
+                            Userid = aspnetuser.Id,
+                            Roleid = "1"
+                        };
+                        await _context.Aspnetuserroles.AddAsync(aspnetuserrole);
+                        await _context.SaveChangesAsync();
+
+                    }
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                }
+            }
         }
 
         public async Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj)
@@ -841,16 +967,16 @@ namespace Services.Implementation
         }
 
 
-        public bool AddShift(Scheduling model, string aspNetUserId, List<string> chk)
+        public async Task<bool> AddShift(Scheduling model, string aspNetUserId, List<string> chk)
         {
-            Admin? admin = _context.Admins.FirstOrDefault(a => a.Aspnetuserid == aspNetUserId);
-            Aspnetuser? aspnetuser = _context.Aspnetusers.FirstOrDefault(a => a.Id == aspNetUserId);
-            var shiftid = _context.Shifts.Where(u => u.Physicianid == model.physicianid).Select(u => u.Shiftid).ToList();
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == aspNetUserId);
+            var shiftid = await _context.Shifts.Where(u => u.Physicianid == model.physicianid).Select(u => u.Shiftid).ToListAsync();
             if (shiftid.Count() > 0)
             {
                 foreach (var obj in shiftid)
                 {
-                    var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate && u.Isdeleted == new BitArray(new[] { false })).ToList();
+                    var shiftdetailchk = await _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == model.shiftdate && u.Isdeleted == new BitArray(new[] { false })).ToListAsync();
                     if (shiftdetailchk.Count() > 0)
                     {
                         foreach (var item in shiftdetailchk)
@@ -887,9 +1013,11 @@ namespace Services.Implementation
             {
                 shift.Isrepeat = new BitArray(new[] { false });
             }
-            _context.Shifts.Add(shift);
-            _context.SaveChanges();
+            await _context.Shifts.AddAsync(shift);
+            await _context.SaveChangesAsync();
+
             DateTime curdate = model.shiftdate;
+
             Shiftdetail shiftdetail = new Shiftdetail();
             shiftdetail.Shiftid = shift.Shiftid;
             shiftdetail.Shiftdate = curdate;
@@ -897,16 +1025,18 @@ namespace Services.Implementation
             shiftdetail.Starttime = model.starttime;
             shiftdetail.Endtime = model.endtime;
             shiftdetail.Isdeleted = new BitArray(new[] { false });
-            _context.Shiftdetails.Add(shiftdetail);
-            _context.SaveChanges();
+            await _context.Shiftdetails.AddAsync(shiftdetail);
+            await _context.SaveChangesAsync();
+
             Shiftdetailregion shiftregion = new Shiftdetailregion
             {
                 Shiftdetailid = shiftdetail.Shiftdetailid,
                 Regionid = model.regionid,
                 Isdeleted = new BitArray(new[] { false })
             };
-            _context.Shiftdetailregions.Add(shiftregion);
-            _context.SaveChanges();
+            await _context.Shiftdetailregions.AddAsync(shiftregion);
+            await _context.SaveChangesAsync();
+            
             var dayofweek = model.shiftdate.DayOfWeek.ToString();
             int valueforweek;
             if (dayofweek == "Sunday")
@@ -966,7 +1096,7 @@ namespace Services.Implementation
                         {
                             foreach (var obj in shiftid)
                             {
-                                var shiftdetailchk = _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == newcurdate && u.Isdeleted == new BitArray(new[] { false })).ToList();
+                                var shiftdetailchk = await _context.Shiftdetails.Where(u => u.Shiftid == obj && u.Shiftdate == newcurdate && u.Isdeleted == new BitArray(new[] { false })).ToListAsync();
                                 if (shiftdetailchk.Count() > 0)
                                 {
                                     foreach (var item in shiftdetailchk)
@@ -993,16 +1123,17 @@ namespace Services.Implementation
                             Endtime = model.endtime,
                             Isdeleted = new BitArray(new[] { false })
                         };
-                        _context.Shiftdetails.Add(shiftdetailnew);
-                        _context.SaveChanges();
+                        await _context.Shiftdetails.AddAsync(shiftdetailnew);
+                        await _context.SaveChangesAsync();
+
                         Shiftdetailregion shiftregionnew = new Shiftdetailregion
                         {
                             Shiftdetailid = shiftdetailnew.Shiftdetailid,
                             Regionid = model.regionid,
                             Isdeleted = new BitArray(new[] { false })
                         };
-                        _context.Shiftdetailregions.Add(shiftregionnew);
-                        _context.SaveChanges();
+                        await _context.Shiftdetailregions.AddAsync(shiftregionnew);
+                        await _context.SaveChangesAsync();
                         newcurdate = newcurdate.AddDays(7);
                     }
                 }
@@ -1010,10 +1141,10 @@ namespace Services.Implementation
             return true;
         }
 
-        public Scheduling viewshift(int shiftdetailid)
+        public async Task<Scheduling> viewshift(int shiftdetailid)
         {
             Scheduling modal = new Scheduling();
-            Shiftdetail shiftdetail = _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            Shiftdetail shiftdetail = await _context.Shiftdetails.Include(u => u.Shift).ThenInclude(u => u.Physician).FirstOrDefaultAsync(u => u.Shiftdetailid == shiftdetailid);
             modal.regionid = (int)shiftdetail.Regionid;
             modal.physicianname = shiftdetail.Shift.Physician.Firstname + " " + shiftdetail.Shift.Physician.Lastname;
             modal.modaldate = shiftdetail.Shiftdate.ToString("yyyy-MM-dd");
@@ -1023,9 +1154,9 @@ namespace Services.Implementation
             return modal;
         }
 
-        public void ViewShiftreturn(int shiftdetailid, string aspNetUserId)
+        public async Task ViewShiftreturn(int shiftdetailid, string aspNetUserId)
         {
-            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            var shiftdetail = await _context.Shiftdetails.FirstOrDefaultAsync(u => u.Shiftdetailid == shiftdetailid);
             if (shiftdetail.Status == 0)
             {
                 shiftdetail.Status = 1;
@@ -1036,13 +1167,14 @@ namespace Services.Implementation
             }
             shiftdetail.Modifieddate = DateTime.Now;
             shiftdetail.Modifiedby = aspNetUserId;
+
             _context.Shiftdetails.Update(shiftdetail);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public bool ViewShiftedit(Scheduling modal, string aspNetUserId)
+        public async Task<bool> ViewShiftedit(Scheduling modal, string aspNetUserId)
         {
-            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == modal.shiftdetailid);
-            var checkshift = _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail.Shiftdate).ToList();
+            var shiftdetail = await _context.Shiftdetails.FirstOrDefaultAsync(u => u.Shiftdetailid == modal.shiftdetailid);
+            var checkshift = await _context.Shiftdetails.Where(u => u.Shiftdate == shiftdetail.Shiftdate).ToListAsync();
             if (checkshift.Count() > 0)
             {
                 foreach (var obj in checkshift)
@@ -1053,76 +1185,78 @@ namespace Services.Implementation
                     }
                 }
             }
+
             shiftdetail.Shiftdate = modal.shiftdate;
             shiftdetail.Starttime = modal.starttime;
             shiftdetail.Endtime = modal.endtime;
             shiftdetail.Modifieddate = DateTime.Now;
             shiftdetail.Modifiedby = aspNetUserId;
             _context.Shiftdetails.Update(shiftdetail);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return true;
         }
 
-        public void DeleteShift(int shiftdetailid, string aspNetUserId)
+        public async Task DeleteShift(int shiftdetailid, string aspNetUserId)
         {
-            var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            var shiftdetail = await _context.Shiftdetails.FirstOrDefaultAsync(u => u.Shiftdetailid == shiftdetailid);
             shiftdetail.Isdeleted = new BitArray(new[] { true });
             shiftdetail.Modifieddate = DateTime.Now;
             shiftdetail.Modifiedby = aspNetUserId;
             _context.Shiftdetails.Update(shiftdetail);
-            _context.SaveChanges();
-            var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == shiftdetailid);
+            await _context.SaveChangesAsync();
+
+            var shiftregion = await _context.Shiftdetailregions.FirstOrDefaultAsync(u => u.Shiftdetailid == shiftdetailid);
             shiftregion.Isdeleted = new BitArray(new[] { true });
             _context.Shiftdetailregions.Update(shiftregion);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Scheduling ProvidersOnCall(Scheduling modal)
+        public async Task<Scheduling> ProvidersOnCall(Scheduling modal)
         {
             var currentDate = DateTime.Parse(modal.curdate.ToString());
-            modal.regions = _context.Regions.ToList();
+            modal.regions = await _context.Regions.ToListAsync();
             HashSet<int> phyid = new HashSet<int>();
-            HashSet<int> offdutyphyid = _context.Physicians.Select(u => u.Physicianid).ToHashSet();
+            HashSet<int> offdutyphyid =  _context.Physicians.Select(u => u.Physicianid).ToHashSet();
             List<Physician> phyoncall = new List<Physician>();
             List<Physician> phyoffduty = new List<Physician>();
             if (modal.wisetype == "_DayWise")
             {
                 if (modal.regionid == 0)
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
                 else
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate == currentDate && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
             }
             else if (modal.wisetype == "_WeekWise")
             {
                 if (modal.regionid == 0)
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
                 else
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate >= currentDate && u.Shiftdate <= currentDate.AddDays(6) && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
             }
             else
             {
                 if (modal.regionid == 0)
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
                 else
                 {
-                    phyid = _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
+                    phyid =  _context.Shiftdetails.Include(u => u.Shift).Where(u => u.Shiftdate.Month == currentDate.Month && u.Shiftdate.Year == currentDate.Year && u.Regionid == modal.regionid && u.Isdeleted == new BitArray(new[] { false })).Select(u => u.Shift.Physicianid).ToHashSet();
                 }
             }
 
             offdutyphyid.ExceptWith(phyid);
             foreach (var obj in phyid)
             {
-                var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                var physician = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj);
                 if (physician != null)
                 {
                     phyoncall.Add(physician);
@@ -1130,7 +1264,7 @@ namespace Services.Implementation
             }
             foreach (var obj in offdutyphyid)
             {
-                var physician = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                var physician = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj);
                 if (physician != null)
                 {
                     phyoffduty.Add(physician);
@@ -1141,7 +1275,7 @@ namespace Services.Implementation
             return modal;
         }
 
-        public Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
+        public async Task<Scheduling> ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall)
         {
             Scheduling modal = new Scheduling();
             var listoncall = new List<Physician>();
@@ -1151,11 +1285,11 @@ namespace Services.Implementation
                 var phy = new Physician();
                 if (regionid == 0)
                 {
-                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                    phy = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj);
                 }
                 else
                 {
-                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj && u.Regionid == regionid);
+                    phy = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj && u.Regionid == regionid);
                 }
                 if (phy != null)
                 {
@@ -1167,11 +1301,11 @@ namespace Services.Implementation
                 var phy = new Physician();
                 if (regionid == 0)
                 {
-                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj);
+                    phy = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj);
                 }
                 else
                 {
-                    phy = _context.Physicians.FirstOrDefault(u => u.Physicianid == obj && u.Regionid == regionid);
+                    phy = await _context.Physicians.FirstOrDefaultAsync(u => u.Physicianid == obj && u.Regionid == regionid);
                 }
                 if (phy != null)
                 {
@@ -1183,21 +1317,21 @@ namespace Services.Implementation
             return modal;
         }
 
-        public ShiftforReviewModal ShiftForReview()
+        public async Task<ShiftforReviewModal> ShiftForReview()
         {
             ShiftforReviewModal modal = new ShiftforReviewModal();
-            modal.regions = _context.Regions.ToList();
-            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.regions = await _context.Regions.ToListAsync();
+            modal.shiftdetail = await _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToListAsync();
             modal.totalpages = (int)Math.Ceiling(modal.shiftdetail.Count() / 10.00);
             modal.shiftdetail = modal.shiftdetail.Skip((1 - 1) * 10).Take(10).ToList();
             modal.currentpage = 1;
             return modal;
         }
-        public ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid)
+        public async Task<ShiftforReviewModal> ShiftReviewTable(int currentPage, int regionid)
         {
             ShiftforReviewModal modal = new ShiftforReviewModal();
-            modal.regions = _context.Regions.ToList();
-            modal.shiftdetail = _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToList();
+            modal.regions = await _context.Regions.ToListAsync();
+            modal.shiftdetail = await _context.Shiftdetails.Include(u => u.Shiftdetailregions).ThenInclude(u => u.Region).Include(u => u.Shift).ThenInclude(u => u.Physician).Where(u => u.Status == 0 && u.Isdeleted == new BitArray(new[] { false })).ToListAsync();
             if (regionid != 0)
             {
                 modal.shiftdetail = modal.shiftdetail.Where(u => u.Regionid == regionid && u.Status == 0).ToList();
@@ -1209,32 +1343,33 @@ namespace Services.Implementation
             return modal;
         }
 
-        public void ApproveSelected(int[] shiftchk, string aspNetUserId)
+        public async Task ApproveSelected(int[] shiftchk, string aspNetUserId)
         {
             foreach (var obj in shiftchk)
             {
-                var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
+                var shiftdetail = await _context.Shiftdetails.FirstOrDefaultAsync(u => u.Shiftdetailid == obj);
                 shiftdetail.Status = 1;
                 shiftdetail.Modifieddate = DateTime.Now;
                 shiftdetail.Modifiedby = aspNetUserId;
                 _context.Shiftdetails.Update(shiftdetail);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-        public void DeleteSelected(int[] shiftchk, string aspNetUserId)
+        public async Task DeleteSelected(int[] shiftchk, string aspNetUserId)
         {
             foreach (var obj in shiftchk)
             {
-                var shiftdetail = _context.Shiftdetails.FirstOrDefault(u => u.Shiftdetailid == obj);
+                var shiftdetail = await _context.Shiftdetails.FirstOrDefaultAsync(u => u.Shiftdetailid == obj);
                 shiftdetail.Isdeleted = new BitArray(new[] { true });
                 shiftdetail.Modifieddate = DateTime.Now;
                 shiftdetail.Modifiedby = aspNetUserId;
                 _context.Shiftdetails.Update(shiftdetail);
-                _context.SaveChanges();
-                var shiftregion = _context.Shiftdetailregions.FirstOrDefault(u => u.Shiftdetailid == obj);
+                await _context.SaveChangesAsync();
+                
+                var shiftregion = await _context.Shiftdetailregions.FirstOrDefaultAsync(u => u.Shiftdetailid == obj);
                 shiftregion.Isdeleted = new BitArray(new[] { true });
                 _context.Shiftdetailregions.Update(shiftregion);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -1309,7 +1444,7 @@ namespace Services.Implementation
                     row.CreateCell(0).SetCellValue(i + 1);
                     row.CreateCell(1).SetCellValue(reqclient.Firstname);
                     row.CreateCell(2).SetCellValue(reqclient.Request.Firstname);
-                    if(reqclient.Request.Accepteddate != null)
+                    if (reqclient.Request.Accepteddate != null)
                     {
                         row.CreateCell(3).SetCellValue(reqclient.Request.Accepteddate.Value.ToString("MMM dd yyyy"));
                     }
@@ -1331,7 +1466,7 @@ namespace Services.Implementation
                     row.CreateCell(7).SetCellValue(reqclient.Address);
                     row.CreateCell(8).SetCellValue(reqclient.Zipcode);
                     row.CreateCell(9).SetCellValue(status);
-                    if(reqclient.Request.Physician != null)
+                    if (reqclient.Request.Physician != null)
                     {
                         row.CreateCell(10).SetCellValue(reqclient.Request.Physician.Firstname);
                     }
@@ -1339,9 +1474,9 @@ namespace Services.Implementation
                     {
                         row.CreateCell(10).SetCellValue("-");
                     }
-                    if(reqclient.Request.Requestnotes.Count() > 0 && reqclient.Request.Requestnotes.ElementAt(0).Physiciannotes != null)
+                    if (reqclient.Request.Requestnotes.Count() > 0 && reqclient.Request.Requestnotes.ElementAt(0).Physiciannotes != null)
                     {
-                        row.CreateCell(11).SetCellValue(reqclient.Request.Requestnotes.ElementAt(i).Physiciannotes);
+                        row.CreateCell(11).SetCellValue(reqclient.Request.Requestnotes.ElementAt(0).Physiciannotes);
                     }
                     else
                     {
@@ -1380,6 +1515,32 @@ namespace Services.Implementation
                     return content;
                 }
             }
+        }
+
+        public async Task<(string, string)> FindUser(LoginPerson model)
+        {
+            if (model == null)
+            {
+                return ("", "");
+            }
+
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(u => u.Email == model.email);
+
+            return (aspnetuser!.Id, aspnetuser.Email)!;
+
+        }
+
+        public async Task UpdatePassword(LoginPerson model)
+        {
+            if (model == null)
+            {
+                return;
+            }
+            Aspnetuser? aspnetuser = await _context.Aspnetusers.FirstOrDefaultAsync(a => a.Id == model.aspNetUserId);
+            string encryptedPassword = EncryptDecryptHelper.Encrypt(model.password);
+            aspnetuser.Passwordhash = encryptedPassword;
+            _context.Update(aspnetuser);
+            await _context.SaveChangesAsync();
         }
 
     }

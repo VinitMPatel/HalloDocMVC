@@ -3,7 +3,7 @@
     @foreach (var item in Model.menuList!)
     {
         <div>
-            <input type="checkbox" value="@item.Menuid" onchange="validation()" 
+            <input type="checkbox" value="@item.Menuid" onchange="validation()" name="selectedRole"
             @if(Model.selectedMenu != null)
             {
                 @foreach(var obj in Model.selectedMenu)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Services.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,13 @@ namespace Services.Contracts
 
         Task<ProviderDashboard> AllStateData(ProviderDashboard obj);
 
+        Task ConcludeCareCase(int requestId , string note);
+
         Task<ConcludeCare> ConcludeCareView(int requestId);
 
         Task Consult(int requestId);
+
+        Task<IActionResult> DownloadEncounter(int requestId);
 
         Task<EncounterFormViewModel> EncounterForm(int requestId);
 
@@ -27,7 +32,9 @@ namespace Services.Contracts
         Task HouseCall(int requestId);
 
         Task HouseCalling(int requestId);
+
         Task<MonthWiseScheduling> Monthwise(DateTime currentDate, string aspNetUserId);
+
         Task<Scheduling> Scheduling();
 
         Task SubmitEncounterForm(EncounterFormViewModel model);

@@ -64,7 +64,17 @@
                         }
                     </td>
                     <td class="text-white">@obj.Address</td>
-                    <td class="text-white">@obj.Notes</td>
+                    <td class="text-white">
+                        @foreach (var item in obj.Request.Requeststatuslogs)
+                        {
+                            if (item.Notes != null)
+                            {
+                                <div class="mb-2">
+                                    @item.Notes on @item.Createddate.ToString("MM/dd/yyyy")  at  @item.Createddate.ToString("h:mm tt")
+                                </div>
+                            }
+                        }
+                    </td>
                     <td class="text-white">
                         <div class="border border-light rounded-2 p-1 text-center"><i class="bi bi-person-fill me-2"></i>Provider</div>
                     </td>

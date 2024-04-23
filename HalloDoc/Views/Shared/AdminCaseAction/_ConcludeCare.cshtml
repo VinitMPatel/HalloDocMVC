@@ -84,6 +84,20 @@
                 }
             }
         </div>
+
+        <div class="ms-2">Provider note</div>
+        <div class="p-2 col-12">
+            <div class="form-floating">
+                <textarea class="form-control note" placeholder="Leave a comment here" style="height: 80px"></textarea>
+                <label>Providers note</label>
+            </div>
+            <span id="noteWarning" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-end mx-3 my-3">
+            <button class="btn btn-info shadow-none" id="submitBtn">Conclude Care</button>
+        </div>
+
     </div>
 </div>
 <script>
@@ -113,5 +127,28 @@
                 $('#entireContent').html(response);
             },
         });
+    })
+
+    $('#submitBtn').on('click', function () {
+        if ($('.note').val() == "") {
+            $('.note').css('border', '1px solid red');
+            $('#noteWarning').html("Please enter note");
+        }
+        else{
+            var requestId = $('#requestId').val();
+            var note = $('.note').val();
+            $.ajax({
+                url: '/ProviderSide/ConcludeCareCase',
+                data: {"requestId" : requestId , "note" : note},
+                success : function(){
+                    window.location.reload();
+                }
+            })
+        }
+    })
+
+    $('.note').on('focus', function () {
+        $(this).css('border', '2px groove #e6eefa');
+        $('#noteWarning').html('');
     })
 </script>

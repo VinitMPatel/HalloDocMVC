@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using Common.Enum;
 using Data.DataContext;
 using Data.Entity;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -50,14 +52,15 @@ namespace Services.Implementation
             {
                 requestclients = requestclients.Where(a => a.Request.Status == 4 || a.Request.Status == 5).ToList();
             }
-            else{
+            else
+            {
                 requestclients = requestclients.Where(a => a.Request.Status == obj.requeststatus).ToList();
             }
 
             requestclients = requestclients.Where(a =>
                                  (string.IsNullOrWhiteSpace(obj.searchKey) || a.Firstname.ToLower().Contains(obj.searchKey.ToLower()) || a.Lastname.ToLower().Contains(obj.searchKey.ToLower())) &&
                                  (obj.requestType == 0 || a.Request.Requesttypeid == obj.requestType)).ToList();
-            
+
             dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
             dataObj.currentpage = obj.requestedPage;
             requestclients = requestclients.Skip((obj.requestedPage - 1) * obj.totalEntity).Take(obj.totalEntity).ToList();
@@ -101,7 +104,7 @@ namespace Services.Implementation
             }
         }
 
-        public async Task SubmitTransferReqquest(int requestId , string note)
+        public async Task SubmitTransferReqquest(int requestId, string note)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
@@ -181,7 +184,7 @@ namespace Services.Implementation
         public async Task HouseCalling(int requestId)
         {
             Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
-            
+
             if (request != null)
             {
                 request.Status = 6;
@@ -201,7 +204,7 @@ namespace Services.Implementation
 
         public async Task<EncounterFormViewModel> EncounterForm(int requestId)
         {
-            if(requestId == 0)
+            if (requestId == 0)
             {
                 return new EncounterFormViewModel();
             }
@@ -214,7 +217,7 @@ namespace Services.Implementation
                 model.Lastname = requestclient.Lastname!;
                 if (requestclient?.Intyear != null && requestclient.Strmonth != null && requestclient.Intdate != null)
                 {
-                    model.DOB = 
+                    model.DOB =
                         new DateTime(Convert.ToInt32(requestclient.Intyear),
                                DateTime.ParseExact(requestclient.Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
                                Convert.ToInt32(requestclient.Intdate));
@@ -245,7 +248,7 @@ namespace Services.Implementation
                 model.Chest = encounter.Chest!;
                 model.ABD = encounter.Abd!;
                 model.Extr = encounter.Extr!;
-                model.Skin = encounter.Skin! ;
+                model.Skin = encounter.Skin!;
                 model.Neuro = encounter.Neuro!;
                 model.Other = encounter.Other!;
                 model.Diagnosis = encounter.Diagnosis!;
@@ -276,7 +279,7 @@ namespace Services.Implementation
                 requestclient.Strmonth = model.DOB.ToString("MMM");
                 requestclient.Intyear = model.DOB.Year;
                 requestclient.Email = model.Email;
-                
+
                 _context.Update(requestclient);
             }
             await _context.SaveChangesAsync();
@@ -341,20 +344,20 @@ namespace Services.Implementation
 
         public async Task<ConcludeCare> ConcludeCareView(int requestId)
         {
-            if(requestId == 0)
+            if (requestId == 0)
             {
                 return new ConcludeCare();
             }
             ConcludeCare obj = new ConcludeCare();
             obj.requestId = requestId;
-            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a=>a.Requestid == requestId);
-            if(requestclient != null)
+            Requestclient? requestclient = await _context.Requestclients.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if (requestclient != null)
             {
                 obj.patientName = requestclient.Firstname + " " + requestclient.Lastname;
             }
 
-            List<Requestwisefile> filesList = await _context.Requestwisefiles.Where(a => a.Requestid == requestId && a.Isdeleted == new BitArray(new[] {false})).ToListAsync();
-            if(filesList.Count > 0)
+            List<Requestwisefile> filesList = await _context.Requestwisefiles.Where(a => a.Requestid == requestId && a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
+            if (filesList.Count > 0)
             {
                 obj.requestwisefiles = filesList;
             }
@@ -390,7 +393,7 @@ namespace Services.Implementation
             return modal;
         }
 
-        public async Task<MonthWiseScheduling> Monthwise(DateTime currentDate , string aspNetUserId)
+        public async Task<MonthWiseScheduling> Monthwise(DateTime currentDate, string aspNetUserId)
         {
             MonthWiseScheduling obj = new MonthWiseScheduling
             {
@@ -400,5 +403,136 @@ namespace Services.Implementation
             return obj;
         }
 
+        public async Task ConcludeCareCase(int requestId, string note)
+        {
+            using (var transcation = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    Request? requestData = await _context.Requests.FirstOrDefaultAsync(u => u.Requestid == requestId);
+                    if (requestData != null)
+                    {
+                        requestData.Status = 8;
+                        requestData.Modifieddate = DateTime.Now;
+                        requestData.Completedbyphysician = new BitArray(new[] { true });
+
+                        _context.Update(requestData);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog
+                    {
+                        Requestid = requestId,
+                        Status = 8,
+                        Notes = note,
+                        Createddate = DateTime.Now,
+                    };
+                    await _context.Requeststatuslogs.AddAsync(requeststatuslog);
+                    await _context.SaveChangesAsync();
+                    transcation.Commit();
+                }
+                catch
+                {
+                    transcation.Rollback();
+                }
+            }
+        }
+
+        public async Task<IActionResult> DownloadEncounter(int requestId)
+        {
+            Requestclient? requestData = await _context.Requestclients.Include(u => u.Request).FirstOrDefaultAsync(U => U.Requestid == requestId);
+            Encounter? encounter = await _context.Encounters.FirstOrDefaultAsync(x => x.RequestId == requestId);
+            EncounterFormViewModel model = new EncounterFormViewModel();
+            if (requestData != null)
+            {
+                model.RequestId = requestId;
+                model.Firstname = requestData.Firstname;
+                model.Lastname = requestData.Lastname;
+            }
+
+            model.DOB = new DateTime(Convert.ToInt32(requestData.Intyear),
+                    DateTime.ParseExact(requestData.Strmonth, "MMM", CultureInfo.InvariantCulture).Month,
+                    Convert.ToInt32(requestData.Intdate));
+
+            model.Mobile = requestData.Phonenumber;
+            model.Email = requestData.Email;
+            model.Location = requestData.Address;
+
+            if (encounter != null)
+            {
+                model.HistoryOfIllness = encounter.HistoryIllness;
+                model.MedicalHistory = encounter.MedicalHistory;
+                model.Medication = encounter.Medications;
+                model.Allergies = encounter.Allergies;
+                model.Temp = encounter.Temp;
+                model.HR = encounter.Hr;
+                model.RR = encounter.Rr;
+                model.BPs = encounter.BpS;
+                model.BPd = encounter.BpD;
+                model.O2 = encounter.O2;
+                model.Pain = encounter.Pain;
+                model.Heent = encounter.Heent;
+                model.CV = encounter.Cv;
+                model.Chest = encounter.Chest;
+                model.ABD = encounter.Abd;
+                model.Extr = encounter.Extr;
+                model.Skin = encounter.Skin;
+                model.Neuro = encounter.Neuro;
+                model.Other = encounter.Other;
+                model.Diagnosis = encounter.Diagnosis;
+                model.TreatmentPlan = encounter.TreatmentPlan;
+                model.MedicationsDispended = encounter.MedicationDispensed;
+                model.Procedure = encounter.Procedures;
+                model.Followup = encounter.FollowUp;
+                model.isFinaled = encounter.IsFinalized![0];
+            }
+            var pdf = new iTextSharp.text.Document();
+            using (var memoryStream = new MemoryStream())
+            {
+                var writer = PdfWriter.GetInstance(pdf, memoryStream);
+                pdf.Open();
+
+                // Add content to the PDF here. For example:
+                pdf.Add(new Paragraph($"First Name: {model.Firstname}"));
+                pdf.Add(new Paragraph($"Last Name: {model.Lastname}"));
+                pdf.Add(new Paragraph($"DOB: {model.DOB}"));
+                pdf.Add(new Paragraph($"Mobile: {model.Mobile}"));
+                pdf.Add(new Paragraph($"Email: {model.Email}"));
+                pdf.Add(new Paragraph($"Location: {model.Location}"));
+                pdf.Add(new Paragraph($"History Of Illness: {model.HistoryOfIllness}"));
+                pdf.Add(new Paragraph($"Medical History: {model.MedicalHistory}"));
+                pdf.Add(new Paragraph($"Medication: {model.Medication}"));
+                pdf.Add(new Paragraph($"Allergies: {model.Allergies}"));
+                pdf.Add(new Paragraph($"Temp: {model.Temp}"));
+                pdf.Add(new Paragraph($"HR: {model.HR}"));
+                pdf.Add(new Paragraph($"RR: {model.RR}"));
+                pdf.Add(new Paragraph($"BPs: {model.BPs}"));
+                pdf.Add(new Paragraph($"BPd: {model.BPd}"));
+                pdf.Add(new Paragraph($"O2: {model.O2}"));
+                pdf.Add(new Paragraph($"Pain: {model.Pain}"));
+                pdf.Add(new Paragraph($"Heent: {model.Heent}"));
+                pdf.Add(new Paragraph($"CV: {model.CV}"));
+                pdf.Add(new Paragraph($"Chest: {model.Chest}"));
+                pdf.Add(new Paragraph($"ABD: {model.ABD}"));
+                pdf.Add(new Paragraph($"Extr: {model.Extr}"));
+                pdf.Add(new Paragraph($"Skin: {model.Skin}"));
+                pdf.Add(new Paragraph($"Neuro: {model.Neuro}"));
+                pdf.Add(new Paragraph($"Other: {model.Other}"));
+                pdf.Add(new Paragraph($"Diagnosis: {model.Diagnosis}"));
+                pdf.Add(new Paragraph($"Treatment Plan: {model.TreatmentPlan}"));
+                pdf.Add(new Paragraph($"Medications Dispended: {model.MedicationsDispended}"));
+                pdf.Add(new Paragraph($"Procedure: {model.Procedure}"));
+                pdf.Add(new Paragraph($"Followup: {model.Followup}"));
+                pdf.Add(new Paragraph($"Is Finaled: {model.isFinaled}"));
+
+                pdf.Close();
+                writer.Close();
+
+                var bytes = memoryStream.ToArray();
+                var result = new FileContentResult(bytes, "application/pdf");
+                result.FileDownloadName = "Encounter_" + model.RequestId + ".pdf";
+                return result;
+            }
+        }
     }
 }

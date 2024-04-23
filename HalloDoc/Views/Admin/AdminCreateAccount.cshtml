@@ -1,0 +1,187 @@
+﻿@{
+    Layout = "_Admin";
+}
+@model Services.ViewModels.CreateAdminModel
+<div class="container mt-3">
+    <div class="d-flex justify-content-between">
+        <div class="fw-bolder h4">Create Admin Account</div>
+        <div>
+            <button class=" border border-info rounded-2 p-2 bg-transparent">
+                <a class="text-decoration-none text-info" asp-action="AdminDashboard" asp-controller="Admin">&lt; Back</a>
+            </button>
+        </div>
+    </div>
+
+    <form asp-action="SubmitCreateAdmin" asp-controller="Admin">
+        <div class="shadow p-3 mt-3">
+
+            <div class="accountInfo row">
+
+                <div class="h4">Account Information</div>
+
+                <div class="p-2 col-sm-4 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="User Name" asp-for="userName">
+                        <label class="FloatingInput">User Name</label>
+                    </div>
+                    <span asp-validation-for="userName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-4 col-12">
+                    <div class="form-floating ">
+                        <input type="password" class="form-control" placeholder="Password" asp-for="password" id="adminPassword">
+                        <label class="FloatingInput">Password</label>
+                        <i class="bi bi-eye-slash-fill eyeIcn"></i>
+                    </div>
+                    <span asp-validation-for="password" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-4 col-12 p-2">
+                    <div class="form-floating">
+                        <select class="form-select businesses" asp-for="role">
+                            <option value="" selected disabled>Select Role</option>
+                            @foreach (var item in Model.rolesList)
+                            {
+                                <option value="@item.Roleid">@item.Name</option>
+                            }
+                        </select>
+                        <label for="floatingSelect" class="FloatingInput">
+                            Role
+                        </label>
+                        <span class="text-danger" asp-validation-for="role"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="administrationInfo row mt-5">
+
+                <div class="h4">Administration Information</div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="First Name" asp-for="firstName">
+                        <label class="FloatingInput">First Name</label>
+                    </div>
+                    <span asp-validation-for="firstName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data1" placeholder="Last Name" asp-for="lastName">
+                        <label class="FloatingInput">Last Name</label>
+                    </div>
+                    <span asp-validation-for="lastName" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control data1" placeholder="name@example.com" asp-for=email>
+                        <label class="FloatingInput">Email</label>
+                        <span asp-validation-for="email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control data1" placeholder="name@example.com" asp-for=confirmEmail>
+                        <label class="FloatingInput">Confirm Email</label>
+                        <span asp-validation-for="confirmEmail" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="p-2 col-xl-6 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input class="form-control data1" type="text" maxlength="10" placeholder="contact" asp-for=contactNumber />
+                        <label class="floatingInput">Contact</label>
+                        <span asp-validation-for="contactNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-sm-6 mt-3">
+                    @foreach (var item in Model.regionList)
+                    {
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input" type="checkbox" name="selectedRegion" value="@item.Regionid">
+                            <label class="form-check-label" for="inlineCheckbox1">@item.Name</label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="billingInfo mt-5 row">
+
+                <div class="h4">Mailing and Billing Information</div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address1" asp-for=address1>
+                        <label class="FloatingInput">Address1</label>
+                    </div>
+                    <span asp-validation-for="address1" class="text-danger"></span>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Address2" asp-for=address2>
+                        <label class="FloatingInput">Address2</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-12 ">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="city" asp-for=city>
+                        <label class="FloatingInput">City</label>
+                    </div>
+                    <span asp-validation-for="city" class="text-danger"></span>
+                </div>
+
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+
+                        <select class="form-select regionData" id="floatingSelect" aria-label="Floating label select example" asp-for="adminRegion">
+                            <option value="" selected disabled>Select Region</option>
+                            @foreach (var obj in Model.regionList)
+                            {
+                                <option value="@obj.Regionid">@obj.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-12 p-2">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control data2" placeholder="Zip Code" asp-for=zipcode>
+                        <label class="FloatingInput">Zip Code</label>
+                    </div>
+                    <span asp-validation-for="zipcode" class="text-danger"></span>
+                </div>
+
+                <div class="col-xl-6 col-sm-6 col-12 p-2">
+                    <div class="form-floating">
+                        <input class="form-control data2" type="text" maxlength="10" placeholder="contact" asp-for=billingContact />
+                        <label class="floatingInput">Contact</label>
+                    </div>
+                    <span asp-validation-for="billingContact" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-success">Create Account</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    $('.eyeIcn').on('click', function () {
+        if ($('#adminPassword').attr('type') == "password") {
+            $('#adminPassword').prop('type', 'text');
+            $(this).addClass('bi-eye-fill');
+            $(this).removeClass('bi-eye-slash-fill');
+        }
+        else {
+            $('#adminPassword').prop('type', 'password');
+            $(this).addClass('bi-eye-slash-fill');
+            $(this).removeClass('bi-eye-fill');
+        }
+    })
+</script>

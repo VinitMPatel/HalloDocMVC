@@ -203,12 +203,12 @@
                 {
                     <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Partners</a>
                 }
-                @if (Context.Request.Path.Equals("/Admin/RoleAccess") || Context.Request.Path.Equals("/Admin/UserAccess"))
+                @if (Context.Request.Path.Equals("/Admin/RoleAccess") || Context.Request.Path.Equals("/Admin/AdminCreateAccount"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Access</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="cursor:pointer;">
                         <li><a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
-                        <li><a asp-action="UserAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                        <li><a asp-action="AdminCreateAccount" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Register Admin</a></li>
                     </ul>
                 }
                 else
@@ -216,7 +216,7 @@
                     <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Access</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="cursor:pointer;">
                         <li><a asp-action="RoleAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Access</a></li>
-                        <li><a asp-action="UserAccess" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">User Access</a></li>
+                        <li><a asp-action="AdminCreateAccount" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Register Admin</a></li>
                     </ul>
                 }
                 @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockHistory"))

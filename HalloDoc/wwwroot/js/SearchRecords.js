@@ -69,14 +69,14 @@ $('#clearBtn').on('click', function () {
 })
 
 function ChangePage(Page) {
-    debugger
+    
     requestedData.requestedPage = Page;
     var temp = document.getElementById('page-' + Page);
     if (temp != null) {
         temp.style.backgroundColor = "#5dafb2";
         temp.style.color = "white"
     }
-    debugger
+  
     $.ajax({
         url: '/Admin/SearchRecordTable',
         data: requestedData,

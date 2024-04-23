@@ -11,10 +11,10 @@
     <div class="shadow mt-3 p-4">
 
         <div class="fw-bolder h5">Details</div>
-        <form>
+        <form asp-action="SaveUpdatedRole" asp-controller="Admin">
 
             <div class="row">
-                <input type="text" id="roleId" value="@Model.roleId" hidden/>
+                <input type="text" id="roleId" value="@Model.roleId" hidden name="roleid"/>
                 <div class="p-2 col-sm-6 col-12">
                     <div class="form-floating ">
                         <input type="text" class="form-control" placeholder="Role Name" id="roleName" asp-for="roleName">
@@ -43,7 +43,7 @@
             </div>
 
             <div class="d-flex justify-content-end gap-3">
-                <button class="btn btn-info text-white shadow-none" type="button">Save</button>
+                <button class="btn btn-info text-white shadow-none saveBtn" type="submit" value="@Model.roleId">Save</button>
                 <button class="btn border border-info text-info shadow-none" type="reset">Cancel</button>
             </div>
         </form>
@@ -51,6 +51,7 @@
 </div>
 <script>
     $(document).ready(function () {
+
         var type = $('#selectedType').val();
         $.ajax({
             url: '/Admin/RolesList',
@@ -62,5 +63,7 @@
                 alert("1");
             }
         })
+
+        
     })
 </script>

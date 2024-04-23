@@ -12,11 +12,13 @@
             </div>
 
             <div class="modal-body">
-                <input type="text" name="requestId" />
-                <div class="mt-1">Encounter form is finalized successfully.</div>
-                <div class="d-flex justify-content-center align-items-center mt-3">
-                    <button class="btn btn-info">Download</button>
-                </div>
+                <form asp-action="DownloadEncounter" asp-controller="ProviderSide">
+                    <input type="text" name="requestId" hidden id="requestId" />
+                    <div class="mt-1">Encounter form is finalized successfully.</div>
+                    <div class="d-flex justify-content-center align-items-center mt-3" id="downloadBtn">
+                        <button class="btn btn-info" type="submit">Download</button>
+                    </div>
+                </form>
             </div>
 
         </div>
@@ -456,7 +458,7 @@
             });
         })
 
-        $('.concludeCare').click(function(){
+        $('.concludeCare').click(function () {
             var requestId = $(this).attr('id');
             $.ajax({
                 url: "/ProviderSide/ConcludeCare",
@@ -471,5 +473,11 @@
                 }
             });
         })
+
+        // $('#downloadBtn').click(function () {
+        //     toastr.success("File Downloaded successfully.");
+        //     $('.btn-close').click();
+        // })
+
     });
 </script>

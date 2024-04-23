@@ -48,7 +48,7 @@
                         <td>@item.Request.Requestnotes.FirstOrDefault(a=> a.Requestid == item.Request.Requestid)?.Adminnotes</td>
                         <td>@item.Notes</td>
                         <td class="text-center">
-                            <a class="btn btn-outline-info">Delete</a>
+                            <button class="btn btn-outline-info shadow-none deleteBtn" type="button" value="@item.Requestid">Delete</button>
                         </td>
                     </tr>
                 }
@@ -156,4 +156,39 @@
     }
 
 </div>
+<script>
+    $('.deleteBtn').on('click', function (e) {
+        e.preventDefault();
+        var requestId = $(this).val()
+        console.log($(this).val())
+        swal.fire({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes",
+            closeOnConfirm: false
+        }).then(function (result) {
+            if (result.value) {
+                console.log("Yes Btn");
+                $.ajax({
+                    url: '/Admin/DeleteRequest',
+                    data: { "requestId": requestId },
+                    success: function (response) {
+                        $('#dataTable').html(response)
+                        toastr.success("Deleted successfully.");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error in _SearchRecordTable page");
+                    }
+                })
+            }
+        });
+    });
 
+    var temp = document.getElementById('page-' + @Model.currentpage);
+    if (temp != null) {
+        temp.style.backgroundColor = "#5dafb2";
+        temp.style.color = "white"
+    }
+</script>

@@ -84,28 +84,43 @@ namespace Services.Contracts
 
         MonthWiseScheduling Monthwise(int regionid, DateTime currentDate, List<Physician> physician);
 
-        bool AddShift(Scheduling model, string aspNetUserId, List<string> chk);
+        Task<bool> AddShift(Scheduling model, string aspNetUserId, List<string> chk);
 
-        Scheduling viewshift(int shiftdetailid);
+        Task<Scheduling> viewshift(int shiftdetailid);
 
-        void ViewShiftreturn(int shiftdetailid, string aspNetUserId);
+        Task ViewShiftreturn(int shiftdetailid, string aspNetUserId);
 
-        bool ViewShiftedit(Scheduling modal, string aspNetUserId);
+        Task<bool> ViewShiftedit(Scheduling modal, string aspNetUserId);
 
-        Scheduling ProvidersOnCall(Scheduling modal);
+        Task<Scheduling> ProvidersOnCall(Scheduling modal);
 
-        Scheduling ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
+        Task<Scheduling> ProvidersOnCallbyRegion(int regionid, List<int> oncall, List<int> offcall);
 
-        ShiftforReviewModal ShiftForReview();
+        Task<ShiftforReviewModal> ShiftForReview();
 
-        ShiftforReviewModal ShiftReviewTable(int currentPage, int regionid);
+        Task<ShiftforReviewModal> ShiftReviewTable(int currentPage, int regionid);
 
-        void ApproveSelected(int[] shiftchk, string aspNetUserId);
+        Task ApproveSelected(int[] shiftchk, string aspNetUserId);
 
-        void DeleteSelected(int[] shiftchk, string aspNetUserId);
+        Task DeleteSelected(int[] shiftchk, string aspNetUserId);
 
-        void DeleteShift(int shiftdetailid, string aspNetUserId);
+        Task DeleteShift(int shiftdetailid, string aspNetUserId);
+
         byte[] DownloadSearchRecordExcle(SearchRecordsData model);
-        Task<Admin> CheckEmail(string Email);
+
+        Task<bool> CheckEmail(string Email);
+
+        Task<(string, string)> FindUser(LoginPerson model);
+
+        Task UpdatePassword(LoginPerson model);
+
+        Task<List<Role>> GetAdminRoles();
+
+        Task CreateAdmin(CreateAdminModel obj, List<int> selectedRegion);
+
+        string GetFilesNames(int reqwiseid);
+
+        Task DeleteRequest(int requestId);
+        Task SaveRoleChanges(int roleid, List<int> selectedRole);
     }
 }

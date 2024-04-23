@@ -297,5 +297,16 @@ namespace HalloDoc.Controllers
             mailMessage.To.Add(email);
             client.SendMailAsync(mailMessage);
         }
+
+        public async Task ConcludeCareCase(int requestId , string note)
+        {
+            await providerSideServices.ConcludeCareCase(requestId , note);
+            TempData["success"] = "Case concluded successfully.";
+        }
+
+        public async Task<IActionResult> DownloadEncounter(int requestId)
+        {
+            return await providerSideServices.DownloadEncounter(requestId);
+        }
     }
 }
