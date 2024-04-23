@@ -30,17 +30,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
-//$.ajax({
-//    url: '/ProviderLocation/GetLocation',
-//    success: function (response) {
-//        console.log(response);
-//        response.map(function (res) {
-//            L.marker([res.latitude, res.longitude]).addTo(map)
-//                .bindPopup(res.physicianname)
-//        })
-//    }
-//});
-//var marker = L.marker([51.5, -0.19]).addTo(map);
 
 
 for (var i = 0; i < locationdata.length; i++) {
@@ -58,11 +47,11 @@ for (var i = 0; i < locationdata.length; i++) {
         iconAnchor: [15, 45], // point of the icon which will correspond to marker's location
     });
     if (locationdata[i].Photo != null) {
-        popupContent = '<img class="openeditphy" data-id="' + locationdata[i].Physicianid + '" width = "60%" src="' + photoSrc + '" />' +
+        popupContent = '<img class="openeditphy" data-id="' + locationdata[i].aspNetUserId + '" width = "60%" src="' + photoSrc + '" />' +
             '<p>Physician: ' + locationdata[i].Name + '</p>';
     }
     else {
-        popupContent = '<img class="openeditphy" data-id="' + locationdata[i].Physicianid + '" width = "60%" src="' + photoSrc + '" />' +
+        popupContent = '<img class="openeditphy" data-id="' + locationdata[i].aspNetUserId + '" width = "60%" src="' + photoSrc + '" />' +
             '<p>Physician: ' + locationdata[i].Name + '</p>';
     }
     //var popupContent = '<img class="openeditphy" data-id="' + locationdata[i].Physicianid + '" width = "60%" src="' + locationdata[i].Photo + '" />' +
@@ -73,12 +62,13 @@ for (var i = 0; i < locationdata.length; i++) {
     marker.on('popupopen', function (e) {
         $('.openeditphy').on('click', function () {
             debugger;
-            var physicianid = ($(this).data('id'));
+            var aspNetUserId = ($(this).data('id'));
             $.ajax({
                 url: '/Provider/EditProvider',
                 type: 'POST',
-                data: { "physicianId": physicianid },
+                data: { "aspNetUserId": aspNetUserId },
                 success: function (result) {
+                    console.log(result)
                     $('#providerLocationMainDiv').html(result);
                 }
             });

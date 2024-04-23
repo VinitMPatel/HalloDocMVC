@@ -85,7 +85,7 @@
         </div>
     </div>
     <form id="myform1">
-        <input type="text" asp-for="providerId" id="providerId" />
+        <input type="text" asp-for="providerId" id="providerId" hidden/>
         <div class="row mt-3">
 
             <div class="h4">Physician Information</div>
@@ -169,7 +169,7 @@
     </form>
 
     <form id="myForm2">
-        <input type="text" asp-for="providerId" id="providerId2" />
+        <input type="text" asp-for="providerId" id="providerId2" hidden/>
         <div class="row mt-3">
             <div class="h4">Mailing and billing information</div>
 
@@ -417,34 +417,7 @@
                             </a>
                         </td>
                     </tr>
-                    @*                     <tr class="p-1">
-                    <td class="p-2">
-                    <input type="checkbox" class="form-check-input" disabled
-                    @if (Model.IsCredentialDoc)
-                    {
-                    @: checked
-                    }
-                    readonly />
-                    </td>
-                    <td class="p-2 px-3">
-                    HIPAA Compliance
-                    </td>
-                    <td class="p-2">
-                    <button type="button" class="p-1 px-2 text-white bg-info fileuploadbtn rounded border-info d-flex align-items-center h-100">
-                    <i class="bi bi-cloud-arrow-up"></i>
-                    <span class="d-none d-lg-block ps-2">Upload</span>
-                    </button>
-                    </td>
-                    @if (Model.IsCredentialDoc)
-                    {
-                    <td class="p-2">
-                    <button type="button" data-url="/AdminArea/AdminProviderTab/VeiwCredentialdoc" class="p-1 px-2 text-white bg-info fileviewbtn rounded border-info d-flex align-items-center h-100">
-                    <i class="bi  bi-eye-fill"></i>
-                    <span class="d-none d-lg-block ps-2">View</span>
-                    </button>
-                    </td>
-                    }
-                    </tr> *@
+                    
                     <tr class="p-1">
                         <td class="p-2">
                             <input type="checkbox" class="form-check-input" disabled id="nonDisclosureDocCheck"

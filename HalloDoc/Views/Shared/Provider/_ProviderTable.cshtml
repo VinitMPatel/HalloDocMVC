@@ -48,7 +48,7 @@
                         <td class="text-center">Pending</td>
                     }
                     <td class="text-center">
-                        <button type="button" class="btn btn-outline-info shadow-none ContactModal"  value="@obj.Physicianid" data-bs-toggle="modal" data-bs-target="#exampleModal">Contact</button>
+                        <button type="button" class="btn btn-outline-info shadow-none ContactModal"  value="@obj.Physicianid" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="passEmail(this.name)" name="@obj.Email">Contact</button>
                         <button type="button" class="btn btn-outline-info shadow-none editBtn" value="@obj.Aspnetuserid">Edit</button>
                     </td>
                 </tr>
@@ -73,6 +73,8 @@
                     Choose Communication to send Message
                 </div>
                 <div class="d-flex flex-column gap-2">
+
+                    <input type="text" id="physicianEmail" hidden/>
 
                     <div class="d-flex gap-2">
                         <input class="radioBtn" type="radio" name="selectedRadio" id="flexRadioDefault1" style="height : 25px; width : 20px; accent-color: #17a2b8;">
@@ -157,7 +159,6 @@
         if(selectedRadio.length < 1){
             $('#radioError').html('*Please select one option.');
         }
-       
     })
     $('.radioBtn').on('change',function(){
         $('#radioError').html('');
@@ -188,4 +189,8 @@
             }
         });
     })
+
+    function passEmail(email) {
+        $('#physicianEmail').val(email);
+    }
 </script>

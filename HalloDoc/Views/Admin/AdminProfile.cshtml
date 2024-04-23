@@ -31,6 +31,7 @@
                     <label class="FloatingInput">Password</label>
                     <i class="bi bi-eye-fill eyeIcn"></i>
                 </div>
+                    <span id="passwordWarning" class="text-danger"></span>
             </div>
 
             <div class="col-sm-6 col-12 p-2">
@@ -206,13 +207,35 @@
         $('#saveBtn1').css('display', 'none');
 
         $('#resetPasswordBtn').click(function(){
-            $.ajax({
-                url : '/Admin/AdminPasswordReset',
-                data: {"password" : $('#adminPassword').val()},
-                success: function(){
-                    toastr.success("Password has reseted successfully.")
+            if ($('#passwordWarning').text() == "" && $('#adminPassword').val() != "") {
+                $.ajax({
+                    url : '/Admin/AdminPasswordReset',
+                    data: {"password" : $('#adminPassword').val()},
+                    success: function(){
+                        toastr.success("Password has reseted successfully.")
+                    }
+                })
+            }
+            else{
+                $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+            }
+
+        })
+
+        $('#adminPassword').on('input', function () {
+            if ($('#adminPassword').val() == "") {
+                $('#passwordWarning').html("*Please enter password")
+            }
+            else {
+                var regex = /(?=.*\d.*)(?=.*[a-zA-Z].*)(?=.*[!#\$%&\?].*).{8,20}/
+
+                if (!regex.test($('#adminPassword').val())) {
+                    $('#passwordWarning').html("*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.");
+
+                } else {
+                    $('#passwordWarning').html("");
                 }
-            })
+            }
         })
 
         $('#submitBtn1').on('click', function () {

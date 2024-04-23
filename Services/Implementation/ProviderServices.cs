@@ -265,6 +265,7 @@ namespace Services.Implementation
                     Lat = physicianLocation.Latitude.ToString(),
                     Long = physicianLocation.Longitude.ToString(),
                     Physicianid = physicianLocation.Physicianid.ToString(),
+                    aspNetUserId = physiciansList.FirstOrDefault(x => x.Physicianid == physicianLocation.Physicianid)!.Aspnetuserid!,
                     Name = physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid)!.Firstname + physiciansList.FirstOrDefault(m => m.Physicianid == physicianLocation.Physicianid)!.Lastname,
                 });
             }
