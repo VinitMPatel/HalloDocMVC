@@ -26,14 +26,14 @@ namespace HalloDoc.Controllers
         private readonly IDashboardData dashboardData;
         private readonly IValidation validation;
         private readonly ICaseActions caseActions;
-        private readonly HalloDocDbContext _context;
+      
         private readonly IJwtRepository _jwtRepository;
         private readonly IProviderServices providerServices;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
-        public AdminController(IDashboardData dashboardData, HalloDocDbContext context, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
+        public AdminController(IDashboardData dashboardData, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
         {
-            _context = context;
+           
             _jwtRepository = jwtRepository;
             _env = env;
             this.dashboardData = dashboardData;

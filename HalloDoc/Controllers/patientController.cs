@@ -16,7 +16,7 @@ namespace HalloDoc.Controllers
     public class patientController : Controller
     {
 
-        private readonly HalloDocDbContext _context;
+     
         private readonly IPatientRequest patientRequest;
         private readonly IValidation validation;
         private readonly IDashboard dashboard;
@@ -24,9 +24,9 @@ namespace HalloDoc.Controllers
         private readonly ICaseActions caseActions;
         private readonly IJwtRepository _jwtRepository;
 
-        public patientController(HalloDocDbContext context , IPatientRequest patientRequest, IValidation validation, IDashboard dashboard, IEmailSender emailSender, ICaseActions caseActions, IJwtRepository jwtRepository)
+        public patientController(IPatientRequest patientRequest, IValidation validation, IDashboard dashboard, IEmailSender emailSender, ICaseActions caseActions, IJwtRepository jwtRepository)
         {
-            _context = context;
+           
             this.patientRequest = patientRequest;
             this.validation = validation;
             this.dashboard = dashboard;
