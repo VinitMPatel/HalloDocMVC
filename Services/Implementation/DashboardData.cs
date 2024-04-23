@@ -139,6 +139,19 @@ namespace Services.Implementation
             }
         }
 
+        public async Task<Admin> CheckEmail(string Email)
+        {
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(x => x.Email == Email);
+            if (admin == null)
+            {
+                return null;
+            }
+            else
+            {
+                return admin;
+            }
+        }
+
         public async Task<CaseActionDetails> ViewCaseData(int requestId)
         {
             if (requestId == 0)

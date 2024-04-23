@@ -51,6 +51,26 @@ namespace HalloDoc.Controllers
             return View();
         }
 
+        [AllowAnonymous]
+        public IActionResult AdminResetPassword()
+        {
+            return View();
+        }
+
+        public async Task<bool> EmailValidate(string Email)
+        {
+            Admin admin = await dashboardData.CheckEmail(Email);
+
+            if (admin != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public IActionResult CreateRequest()
         {
             return PartialView("AdminCaseAction/_CreateRequest");

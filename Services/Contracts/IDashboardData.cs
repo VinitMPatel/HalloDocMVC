@@ -106,5 +106,6 @@ namespace Services.Contracts
 
         void DeleteShift(int shiftdetailid, string aspNetUserId);
         byte[] DownloadSearchRecordExcle(SearchRecordsData model);
+        Task<Admin> CheckEmail(string Email);
     }
 }
