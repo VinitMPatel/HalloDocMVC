@@ -1,0 +1,59 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.myNav {
+    background-color: #6b3a04c4 !important;
+    height : 70px;
+}
+
+.addBtn {
+    bottom: 55px;
+    right: 20px;
+}
+
+.form-floating:hover ~ label {
+    color: #00b8e6;
+}
+
+.form-floating .form-control:focus ~ label {
+    color: #00b8e6;
+}
+
+.form-control:focus {
+    border: 1px solid #00b8e6;
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.input-validation-error{
+    border : 1px solid red;
+}
+
+@media only screen and (max-width: 340px) {
+    .addBtn {
+        bottom: 55px;
+        right: 3px;
+    }
+}

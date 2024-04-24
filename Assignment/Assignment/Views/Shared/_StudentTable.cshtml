@@ -1,0 +1,42 @@
+﻿@model Services.ViewModels.DataViewModel
+<div class="table-responsive">
+    <table class="table">
+
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(var item in Model.Students)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.Email</td>
+                    <td>@item.Age</td>
+                    <td>@item.Gender</td>
+                    <td>@item.Course</td>
+                    <td>@item.Grade</td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <button class="btn text-white shadow" style="background-color : #6b3a04c4 !important" onclick="EditStudentForm(@item.Id)">Edit</button>
+                            <button class="btn btn-dark text-white deleteBtn shadow" value="@item.Id" onclick="DeleteStudent(@item.Id)">Delete</button>
+                        </div>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

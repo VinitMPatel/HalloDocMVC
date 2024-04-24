@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<nav class="navbar bg-body-tertiary d-flex justify-content-center myNav">
+
+    <div>
+        <span class="navbar-brand mb-0 h1 text-white ">Student Management System</span>
+    </div>
+
+</nav>
+
+<div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-light shadow-none position-relative addBtn">
+        <i class="bi bi-person-plus-fill d-sm-none"></i>
+        <span class="d-none d-sm-flex">Add Stuent</span>
+    </button>
+</div>
+
+<div class="container">
+
+    <div class="my-4">
+
+        <div class="col-12">
+            <div class="d-flex rounded-2 border border-dark h-100">
+                <input id="search" onkeyup="Search()" class="form-control form-control-sm border-0 shadow-none" type="search" placeholder="Search" aria-label="Search">
+            </div>
+        </div>
+
+    </div>
+
+    <div id="studentTable" class="p-0 container border border-1">
+
+    </div>
+</div>
+
+<div id="studentForm">
+
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $.ajax({
+            url: '/Home/StudentData',
+            data: { "requestedPage": 1, "totalEntity": 3 },
+            success: function (response) {
+                $('#studentTable').html(response);
+                // var temp = document.getElementById('page-1');
+                // if (temp != null) {
+                //     temp.style.backgroundColor = "#5dafb2";
+                //     temp.style.color = "white"
+                // }
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+    })
+
+</script>

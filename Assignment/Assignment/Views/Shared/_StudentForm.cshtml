@@ -1,0 +1,200 @@
+﻿@model Services.ViewModels.StudentForm
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info text-white myNav">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Student Form</h1>
+                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+            </div>
+
+            <div class="modal-body">
+                <form class="row" id="myForm">
+
+                    <div class="p-2 col-sm-6 col-12">
+                        <div class="form-floating ">
+                            <input type="text" class="form-control" placeholder="First Name" asp-for="firstName" id="firstName">
+                            <label class="FloatingInput">First Name</label>
+                            <span asp-validation-for="firstName" class="text-danger small validation"></span>
+                        </div>
+                    </div>
+
+                    <div class="p-2 col-sm-6 col-12">
+                        <div class="form-floating ">
+                            <input type="text" class="form-control" placeholder="Last Name" asp-for="lastName" id="lastName">
+                            <label class="FloatingInput">Last Name</label>
+                            <span asp-validation-for="lastName" class="text-danger small validation"></span>
+                        </div>
+                    </div>
+
+                    <div class="p-2 col-sm-6 col-12">
+                        <div class="form-floating ">
+                            <input type="email" class="form-control" placeholder="name@example.com" asp-for="email" id="email">
+                            <label class="FloatingInput">Email</label>
+                            <span asp-validation-for="email" class="text-danger small validation"></span>
+                        </div>
+                    </div>
+
+                    <div class="p-2 col-sm-6 col-12">
+                        <div class="form-floating ">
+                            <input type="date" class="form-control" placeholder="Date of Birth" id="selectedDate">
+                            <label class="FloatingInput">Date of Birth</label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 my-3">
+                        Gender
+                        <input type="radio" name="Gender" id="Male" value="Male"
+                        @if (Model.gender == "Male")
+                        {
+                            @: checked
+                        } /> Male
+
+                        <input type="radio" name="Gender" id="Female" value="Female"
+                        @if (Model.gender == "Female")
+                        {
+                            @: checked
+                        } /> Female
+
+                        <input type="radio" name="Gender" id="other" value="Other"
+                        @if (Model.gender == "Other")
+                        {
+                            @: checked
+                        } /> Other
+
+                        <input type="text" asp-for="gender" hidden />
+                    </div>
+
+                    <div class="col-sm-6 col-12 p-2">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" placeholder="grade" asp-for="grade" id="grade" readonly>
+                            <label class="FloatingInput">Grade</label>
+                        </div>
+                    </div>
+
+                    <div class="p-2 col-sm-6 col-12">
+                        <div class="form-floating ">
+                            <input type="text" class="form-control" placeholder="course" asp-for="course" id="course">
+                            <label class="FloatingInput">Course</label>
+                            <span asp-validation-for="course" class="validation text-danger small"></span>
+                            <span id="courseError" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="w-100 d-flex gap-2 mt-4">
+                        @if (Model.flag == 1)
+                        {
+                            <button id="submitBtn" type="button" class="btn text-white confirm w-50 shadow-none" style="background-color : #6b3a04c4 !important" name="/Home/AddNewStudent">Submit</button>
+                        }
+                        else
+                        {
+                            <button id="submitBtn" type="button" class="btn text-white confirm w-50 shadow-none" style="background-color : #6b3a04c4 !important" name="/Home/EditExistingStudent">Submit</button>
+                        }
+                        <button type="button" class="btn w-50 shadow border border-1" data-bs-dismiss="modal" id="cancelBtn">Cancel</button>
+                    </div>
+
+                    @if (Model.studentId != 0)
+                    {
+                        <input type="text" id="studentId" value="@Model.studentId" hidden>
+                    }
+                    else
+                    {
+                        <input type="text" id="studentId" value="@Model.studentId" hidden>
+                    }
+
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script>
+
+    var formData = {
+        firstName,
+        lastName,
+        email,
+        course,
+        studentId,
+        gender,
+        grade,
+        
+    }
+
+    $('#submitBtn').on('click', function () {
+        $('form span').css('display', 'flex')
+        if ($('#myForm').valid() && $('#courseError').text() == "") {
+
+
+            formData.firstName = $('#firstName').val();
+            formData.lastName = $('#lastName').val();
+            formData.email = $('#email').val();
+            formData.course = $('#course').val();
+            formData.studentId = $('#studentId').val();
+            formData.gender = $('input[name="Gender"]:checked').val();
+            formData.grade = $('#grade').val();
+
+            var url = $(this).attr('name');
+
+            $.ajax({
+                url: url,
+                data: formData,
+                contentType: "application/json",
+                traditional: true,
+                success: function () {
+                    CommonAjax();
+                    $('#cancelBtn').click();
+                }
+            })
+        }
+
+    })
+
+    $(document).ready(function(){
+        $('form input').removeClass('input-validation-error');
+        $('.validation').css('display' , 'none')
+    })
+
+    $('#course').on('input',function(){
+        var course = $(this).val();
+        $.ajax({
+            url : '/Home/ValidateCourse',
+            data: { "course" : course },
+            success: function (response) {
+                if (response) {
+                    $('#courseError').html('');
+                }
+                else{
+                    $('#courseError').html('*This course is not available');
+                }
+            }
+        })
+    })
+
+    $('#course').on('change',function(){
+        var course = $(this).val();
+        switch (course) {
+            case "Hindi":
+                $('#grade').val("4th-6th")
+                break;
+            case "English":
+                $('#grade').val("1st-3rd")
+                break;
+            case "Social":
+                $('#grade').val("7th-8th")
+                break;
+            case "Science":
+                $('#grade').val("9th-12th")
+                break;
+            case "Maths":
+                $('#grade').val("9th-12th")
+                break;
+            default:
+                $('#grade').val("NA")
+        }
+    })
+</script>
