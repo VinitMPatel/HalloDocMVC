@@ -82,6 +82,8 @@ public partial class Physician
 
     public virtual Aspnetuser? ModifiedbyNavigation { get; set; }
 
+    public virtual ICollection<Payrate> Payrates { get; set; } = new List<Payrate>();
+
     public virtual ICollection<Physicianlocation> Physicianlocations { get; set; } = new List<Physicianlocation>();
 
     public virtual ICollection<Physiciannotification> Physiciannotifications { get; set; } = new List<Physiciannotification>();
@@ -89,6 +91,8 @@ public partial class Physician
     public virtual ICollection<Physicianregion> Physicianregions { get; set; } = new List<Physicianregion>();
 
     public virtual Region? Region { get; set; }
+
+    public virtual ICollection<Reimbursement> Reimbursements { get; set; } = new List<Reimbursement>();
 
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 
@@ -101,4 +105,6 @@ public partial class Physician
     public virtual Role? Role { get; set; }
 
     public virtual ICollection<Shift> Shifts { get; set; } = new List<Shift>();
+
+    public virtual ICollection<Timesheet> Timesheets { get; set; } = new List<Timesheet>();
 }

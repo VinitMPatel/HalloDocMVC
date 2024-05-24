@@ -19,16 +19,16 @@
                 @foreach (var item in Model.requestclients)
                 {
                     <tr>
-                        <td>@item.Firstname @item.Lastname</td>
+                        <td>@item.Request.Requestclients.ElementAt(0).Firstname @item.Request.Requestclients.ElementAt(0).Lastname</td>
                         <td>@item.Phonenumber</td>
                         <td>@item.Email</td>
-                        <td>@item.Request.Createddate</td>
-                        <td>NA</td>
+                        <td>@item.Createddate</td>
+                        <td>@item.Request.Requestclients.ElementAt(0).Notes</td>
                         <td>
                             <input type="checkbox" name="@item.Requestid"
                             @foreach(var obj in item.Request.Blockrequests)
                             {
-                                @if(obj.Isactive![0] == true)
+                                @if(item.Isactive![0] == true)
                                 {
                                     @:checked
                                 }
@@ -36,9 +36,8 @@
                             disabled>
                         </td>
                         <td>
-                            @foreach (var obj in item.Request.Blockrequests)
-                            {
-                                @if (obj.Isactive![0] == true)
+                            
+                                @if (item.Isactive![0] == true)
                                 {
                                     <span>Patient is unblocked</span>
                                 }
@@ -46,7 +45,7 @@
                                 {
                                     <button class="btn btn-outline-info shadow-none unblockBtn" value="@item.Requestid">UnBlock</button>
                                 }
-                            }
+                          
                         </td>
                     </tr>
                 }
@@ -59,10 +58,9 @@
             }
         </tbody>
     </table>
-</div>
+
 <div class="d-flex justify-content-center gap-2 filter-label mt-3">
-    @if (Model.totalPages > Model.totalEntity)
-    {
+
         @if (Model.totalPages > 0)
         {
             var previous = Model.currentpage - 1;
@@ -154,11 +152,8 @@
 
             }
         }
-        else
-        {
-            <div class="h3 text-danger">No Record found</div>
-        }
-    }
+
+</div>
 </div>
 <script>
     $('.unblockBtn').on('click',function(){
@@ -174,5 +169,11 @@
             }
         })
     })
+
+    var temp = document.getElementById('page-' + @Model.currentpage);
+    if (temp != null) {
+        temp.style.backgroundColor = "#5dafb2";
+        temp.style.color = "white"
+    }
 </script>
 

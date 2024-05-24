@@ -5,7 +5,7 @@
     var dayweek = Model.date.DayOfWeek.ToString();
     var currentWeek = Model.date.ToString("MMM dd") + "-" + Model.date.AddDays(6).ToString("MMM dd") + "," + Model.date.Year;
     <input type="hidden" value="@currentWeek" id="currentWeek" />
-    var f = 0;
+   
 }
 <div class="table-responsive">
     <table class="calendar-table">
@@ -104,6 +104,12 @@
                     $('#shiftmodalStart').val(response.starttime);
                     $('#shiftmodalEnd').val(response.endtime);
                     $('#shiftmodalid').val(response.shiftdetailid);
+                    if ($('#shiftmodalDate').val() < "@DateTime.Now.ToString("yyyy-MM-dd")") {
+                        $('.edit').addClass('d-none');
+                    }
+                    else {
+                        $('.edit').removeClass('d-none');
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

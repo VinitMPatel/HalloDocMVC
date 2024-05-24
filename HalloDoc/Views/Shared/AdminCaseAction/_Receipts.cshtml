@@ -1,0 +1,127 @@
+﻿@model Services.ViewModels.InvoicingViewModel
+@{
+    DateOnly startDate = DateOnly.Parse(Model.startDate);
+    DateOnly currentDate = startDate;
+}
+
+<div class="shadow pt-2 rounded-2">
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="table-secondary">
+                <tr class="text-center">
+                    <th>Date</th>
+                    <th>Item</th>
+                    <th>Amount</th>
+                    <th>Bill</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (startDate.Day == 1)
+                {
+                    var counter = 1;
+                    for (int i = 0; i < 15; i++)
+                    {
+                        <input type="datetime" id="currentDate_@counter" value="@currentDate">
+                        <tr>
+                            <td>@currentDate</td>
+                            <td class="text-center">
+                                <input type="text" class="form-control inputField" id="item_@counter">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control inputField" id="amount_@counter">
+                            </td>
+                            <td class="text-center">
+                                <div class="row d-flex">
+                                    <div class="col-12 ">
+                                        <div class="rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                                            <div class="px-3 table-responsive">
+                                                <input type="file" id="uploadedFile_@counter" hidden onchange="UploadFile(@counter)" class="inputField" />
+                                                <label id="fileName_@counter" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                                            </div>
+                                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                                                <label for="uploadedFile_@counter" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @* <div class="d-flex flex-column flex-sm-row">
+                                    <button class="btn btn-info shadow-none">Edit</button>
+                                    <button class="btn btn-info shadow-none">Delete</button>
+                                    <button class="btn btn-info shadow-none">View</button>
+                                </div> *@
+                                <div class="d-flex flex-column flex-sm-row gap-2 d-none" id="saveBtn_@counter">
+                                    <button class="btn btn-info text-white shadow-none">Save</button>
+                                </div> 
+                            </td>
+                        </tr>
+                        currentDate = currentDate.AddDays(1);
+                        counter++;
+                    }
+                }
+                else
+                {
+                    var counter = 1;
+                    @while (startDate.Month == currentDate.Month)
+                    {
+                        <input type="datetime" id="currentDate_@counter" value="@currentDate">
+                        <tr>
+                            <td>@currentDate</td>
+                            
+                            <td class="text-center">
+                                <input type="text" class="form-control" id="item_@counter">
+                            </td>
+                            <td>
+                                <input type="text" class="form-control" id="amount_@counter">
+                            </td>
+                            <td class="text-center">
+                                <div class="row d-flex">
+                                    <div class="col-12 ">
+                                        <div class="rounded d-flex align-items-center justify-content-between border border-1 bg-body-secondary">
+                                            <div class="px-3 table-responsive">
+                                                <input type="file" id="uploadedFile_@counter" hidden onchange="UploadFile(@counter)"/>
+                                                <label id="fileName_@counter" class="choosenfile text-nowrap text-secondary">No item selected</label>
+                                            </div>
+                                            <div class="uploadbtn px-2 py-1 d-flex ms-1 border-0 rounded-2 btn-info">
+                                                <label for="uploadedFile_@counter" role="button" class="d-flex align-items-center"><i class="bi bi-cloud-arrow-up p-2"></i><div class="d-none d-sm-block">Upload</div></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @* <div class="d-flex flex-column flex-sm-row gap-2">
+                                    <button class="btn btn-outline-info shadow-none">Edit</button>
+                                    <button class="btn btn-outline-info shadow-none">Delete</button>
+                                    <button class="btn btn-outline-info shadow-none">View</button>
+                                </div> *@
+                            </td>
+                        </tr>
+                        currentDate = currentDate.AddDays(1);
+                        counter++;
+                    }
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end m-3">
+            <button class="btn btn-info shadow-none text-white">
+                Finalize
+            </button>
+        </div>
+
+    </div>
+</div>
+<script>
+
+    function UploadFile(counter) {
+        $('#fileName_' + counter).html($('#uploadedFile_' + counter)[0].files[0].name)
+    }
+
+    $('.inputField').on('change', function () {
+
+    })
+
+</script>

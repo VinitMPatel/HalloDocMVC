@@ -60,10 +60,6 @@
                     url: '/Admin/SubmitCancel',
                     data: { "requestId": @Model.requestId, "caseId": caseId , "cancelNote" : cancelNote },
                     success: function (response) {
-                        // $('#status-tabContent').html(response);
-                        // $("body").removeAttr("style");
-                        // $(".modal-backdrop").remove();
-                        //window.location.reload();
                         $('#status-new').html($(response).find('#status-new').html());
                         $('#status-toclose').html($(response).find('#status-toclose').html());
                         toastr.success("Case canceled successfully.");

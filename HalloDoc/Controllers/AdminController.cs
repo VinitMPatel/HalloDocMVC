@@ -26,13 +26,13 @@ namespace HalloDoc.Controllers
         private readonly IDashboardData dashboardData;
         private readonly IValidation validation;
         private readonly ICaseActions caseActions;
-      
+        private readonly IProviderSideServices providerSideServices;
         private readonly IJwtRepository _jwtRepository;
         private readonly IProviderServices providerServices;
         private readonly Microsoft.AspNetCore.Hosting.IHostingEnvironment _env;
 
-        public AdminController(IDashboardData dashboardData, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices)
-        {
+        public AdminController(IDashboardData dashboardData, ICaseActions caseActions, IValidation validation, IJwtRepository jwtRepository, Microsoft.AspNetCore.Hosting.IHostingEnvironment env , IProviderServices providerServices, IProviderSideServices providerSideServices)
+        { 
            
             _jwtRepository = jwtRepository;
             _env = env;
@@ -40,6 +40,7 @@ namespace HalloDoc.Controllers
             this.caseActions = caseActions;
             this.validation = validation;
             this.providerServices = providerServices;
+            this.providerSideServices = providerSideServices;
         }
 
         [AllowAnonymous]
@@ -48,15 +49,89 @@ namespace HalloDoc.Controllers
             return View();
         }
 
-        public IActionResult ProviderLocation()
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult AdminLogin(LoginPerson obj)
         {
-            return View();
+            try
+            {
+                (PatientLogin result, LoggedInPersonViewModel loggedInPerson) = validation.AdminValidate(obj);
+
+                TempData["Email"] = result.emailError;
+                TempData["Password"] = result.passwordError;
+
+                if (result.Status == ResponseStautsEnum.Success)
+                {
+                    Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
+                    if (loggedInPerson.role == "1")
+                    {
+                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
+                        HttpContext.Session.SetString("Role", "Admin");
+                        TempData["success"] = "Login successfully";
+                        return RedirectToAction("AdminDashboard", "Admin");
+                    }
+                    else if (loggedInPerson.role == "2")
+                    {
+                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
+                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
+                        HttpContext.Session.SetString("Role", "Physician");
+                        TempData["success"] = "Login successfully";
+                        return RedirectToAction("ProviderDashboard", "ProviderSide");
+                    }
+                    else
+                    {
+                        TempData["error"] = "Access Denied";
+                        return View();
+                    }
+                }
+                TempData["error"] = "Incorrect Email or password";
+                return View();
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
         }
 
         [AllowAnonymous]
         public IActionResult AdminResetPassword()
         {
             return View();
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> AdminResetPasswordEmail(LoginPerson model)
+        {
+            (string aspNetUserId, string email) = await dashboardData.FindUser(model);
+            string encryptedId = EncryptDecryptHelper.Encrypt(aspNetUserId);
+            string resetPasswordUrl = GenerateResetPasswordUrl(encryptedId);
+            await SendEmail(email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
+            TempData["success"] = "Email Sent successfully.";
+            return RedirectToAction("AdminLogin", "Admin");
+        }
+
+        [AllowAnonymous]
+        private string GenerateResetPasswordUrl(string userId)
+        {
+            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
+            string resetPasswordPath = Url.Action("AdminSetPassword", "Admin", new { id = userId });
+            return baseUrl + resetPasswordPath;
+        }
+
+        [AllowAnonymous]
+        private Task SendEmail(string email, string subject, string message)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
 
         [AllowAnonymous]
@@ -91,39 +166,11 @@ namespace HalloDoc.Controllers
             }
         }
 
-        [AllowAnonymous]
-        public async Task<IActionResult> AdminResetPasswordEmail(LoginPerson model)
+        public IActionResult ProviderLocation()
         {
-            (string aspNetUserId, string email) = await dashboardData.FindUser(model);
-            string encryptedId = EncryptDecryptHelper.Encrypt(aspNetUserId);
-            string resetPasswordUrl = GenerateResetPasswordUrl(encryptedId);
-            await SendEmail(email, "Reset Your Password", $"Hello, reset your password using this link: {resetPasswordUrl}");
-            TempData["success"] = "Email Sent successfully.";
-            return RedirectToAction("PatientLogin", "Home");
+            return View();
         }
 
-        [AllowAnonymous]
-        private string GenerateResetPasswordUrl(string userId)
-        {
-            string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
-            string resetPasswordPath = Url.Action("AdminSetPassword", "Admin", new { id = userId });
-            return baseUrl + resetPasswordPath;
-        }
-
-        [AllowAnonymous]
-        private Task SendEmail(string email, string subject, string message)
-        {
-            var mail = "tatva.dotnet.vinitpatel@outlook.com";
-            var password = "016@ldce";
-
-            var client = new SmtpClient("smtp.office365.com", 587)
-            {
-                EnableSsl = true,
-                Credentials = new NetworkCredential(mail, password)
-            };
-
-            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
-        }
 
         public IActionResult CreateRequest()
         {
@@ -142,7 +189,6 @@ namespace HalloDoc.Controllers
                 return RedirectToAction("AdminLogin");
             }
         }
-
       
         public async Task<IActionResult> AllState(AdminDashboard obj)
         {
@@ -200,16 +246,7 @@ namespace HalloDoc.Controllers
             return File(record, contentType, filename);
         }
 
-        public async Task<IActionResult> ExportSearchRecordData(SearchRecordsData obj)
-        {
-            obj.requestedPage = 0;
-            SearchRecordsData data = await dashboardData.GetSearchRecordData(obj);
-            var record = dashboardData.DownloadSearchRecordExcle(data);
-            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var strDate = DateTime.Now.ToString("yyyyMMdd");
-            string filename = $"{strDate}.xlsx";
-            return File(record, contentType, filename);
-        }
+
 
         public async Task<IActionResult> ViewCase(int requestId)
         {
@@ -217,11 +254,6 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ViewCase", obj);
         }
 
-        public async Task<IActionResult> ViewNotes(int requestId)
-        {
-            CaseActionDetails obj = await dashboardData.ViewNotes(requestId);
-            return PartialView("AdminCaseAction/_ViewNotes", obj);
-        }
 
         public async Task<List<Physician>> FilterData(int regionid)
         {
@@ -254,7 +286,6 @@ namespace HalloDoc.Controllers
         }
 
 
-
         public async Task<IActionResult> BlockCase(int requestId)
         {
             Services.ViewModels.CaseActions obj = await caseActions.BlockCase(requestId);
@@ -266,7 +297,11 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminDashboard");
         }
 
-
+        public async Task<IActionResult> ViewNotes(int requestId)
+        {
+            CaseActionDetails obj = await dashboardData.ViewNotes(requestId);
+            return PartialView("AdminCaseAction/_ViewNotes", obj);
+        }
         public async Task SubmitNotes(int requestId, string notes, CaseActionDetails obj)
         {
             string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
@@ -291,6 +326,7 @@ namespace HalloDoc.Controllers
             await dashboardData.SingleDelete(reqfileid);
             return RedirectToAction("ViewUploads", new { requestId = reqid });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> DeleteAll(List<int> reqwiseid, int reqid)
@@ -346,7 +382,6 @@ namespace HalloDoc.Controllers
         }
 
 
-
         public IActionResult ClearCase(int requestId)
         {
             Services.ViewModels.CaseActions obj = new Services.ViewModels.CaseActions();
@@ -386,7 +421,6 @@ namespace HalloDoc.Controllers
             await caseActions.CloseCaseChanges(email , requestId , phone);
             return RedirectToAction("CloseCase", new {requestId = requestId});
         }
-
         public async Task CloseRequest(int requestId)
         {
             await caseActions.CloseRequest(requestId);
@@ -418,9 +452,9 @@ namespace HalloDoc.Controllers
             await dashboardData.UpdateBillingInfo(aspNetUserId, obj);
         }
 
-        public IActionResult RoleAccess()
+        public async Task<IActionResult> RoleAccess()
         {
-            RoleAccess obj = dashboardData.AddedRoles();
+            RoleAccess obj = await dashboardData.AddedRoles();
             return View(obj);
         }
         public IActionResult CreateRoleAccess()
@@ -434,6 +468,11 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_RolesList", obj);
         }
 
+        public async Task<bool> CheckRole(string roleName)
+        {
+            return await dashboardData.CheckRole(roleName);
+        }
+
         [HttpPost]
         public async Task AddNewRole(List<int> menus , short accountType, string roleName)
         {
@@ -441,9 +480,9 @@ namespace HalloDoc.Controllers
             await dashboardData.AddNewRole(menus , accountType , roleName , aspNetUserId);
         }
 
-        public IActionResult EditRole(int roleId)
+        public async Task<IActionResult> EditRole(int roleId)
         {
-            RoleAccess obj = dashboardData.EditRole(roleId);
+            RoleAccess obj = await dashboardData.EditRole(roleId);
             return PartialView("AdminCaseAction/_EditRole", obj);
         }
 
@@ -454,11 +493,15 @@ namespace HalloDoc.Controllers
             return RedirectToAction("RoleAccess");
         }
 
+        public async Task DeleteRole(int roleId)
+        {
+            await dashboardData.DeleteRole(roleId);
+        }
 
-        //public async Task<IActionResult> UserAccess()
-        //{
-
-        //}
+        public async Task<bool> CheckAdmin(string adminEmail)
+        {
+            return await dashboardData.CheckAdmin(adminEmail);
+        }
 
         public async Task<IActionResult> AdminCreateAccount()
         {
@@ -475,45 +518,7 @@ namespace HalloDoc.Controllers
             return RedirectToAction("AdminLogin");
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        public IActionResult AdminLogin(LoginPerson obj)
-        {
-            try
-            {
-                (PatientLogin result , LoggedInPersonViewModel loggedInPerson) = validation.AdminValidate(obj);
 
-                TempData["Email"] = result.emailError;
-                TempData["Password"] = result.passwordError;
-
-                if (result.Status == ResponseStautsEnum.Success)
-                {
-                    Response.Cookies.Append("jwt", _jwtRepository.GenerateJwtToken(loggedInPerson));
-                    if(loggedInPerson.role == "1")
-                    {
-                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
-                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
-                        HttpContext.Session.SetString("Role", "Admin");
-                        TempData["success"] = "Login successfully";
-                        return RedirectToAction("AdminDashboard", "Admin");
-                    }
-                    if(loggedInPerson.role == "2")
-                    {
-                        HttpContext.Session.SetString("UserName", loggedInPerson.username);
-                        HttpContext.Session.SetString("aspNetUserId", loggedInPerson.aspuserid);
-                        HttpContext.Session.SetString("Role", "Physician");
-                        TempData["success"] = "Login successfully";
-                        return RedirectToAction("ProviderDashboard", "ProviderSide");
-                    }
-                }
-                TempData["error"] = "Incorrect Email or password";
-                return View();
-            }
-            catch (Exception ex)
-            {
-                return View();
-            }
-        }
 
         public IActionResult Logout()
         {
@@ -623,15 +628,15 @@ namespace HalloDoc.Controllers
             }
         }
 
-        public void SendMailForRequest(string firstName, string email)
+        public async Task SendMailForRequest(string firstName, string email)
         {
             var mail = "tatva.dotnet.vinitpatel@outlook.com";
             var password = "016@ldce";
 
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
             string baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
             string createRequestPath = Url.Action("PatientRequestScreen", "Home");
             string mainURL = baseUrl + createRequestPath;
-
 
             var client = new SmtpClient("smtp.office365.com", 587)
             {
@@ -646,6 +651,9 @@ namespace HalloDoc.Controllers
                 Body = " Hello "+ firstName + " , You can submit request using this link : " + mainURL,
                 IsBodyHtml = true
             };
+
+            await dashboardData.EmailLogEntry(mailMessage.Body, mailMessage.Subject, aspNetUserId, email);
+
 
             mailMessage.To.Add(email);
             client.SendMailAsync(mailMessage);
@@ -671,6 +679,17 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_SearchRecordTable", newObj);
         }
 
+        public async Task<IActionResult> ExportSearchRecordData(SearchRecordsData obj)
+        {
+            obj.requestedPage = 0;
+            SearchRecordsData data = await dashboardData.GetSearchRecordData(obj);
+            var record = dashboardData.DownloadSearchRecordExcle(data);
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var strDate = DateTime.Now.ToString("yyyyMMdd");
+            string filename = $"{strDate}.xlsx";
+            return File(record, contentType, filename);
+        }
+
         public async Task<IActionResult> DeleteRequest(int requestId)
         {
             await dashboardData.DeleteRequest(requestId);
@@ -694,6 +713,11 @@ namespace HalloDoc.Controllers
             return PartialView("AdminCaseAction/_ExplorePatientHistory" , dataObj);
         }
 
+        public async Task<IActionResult> DownloadEncounter(int requestId)
+        {
+            return await providerSideServices.DownloadEncounter(requestId);
+        }
+
         public IActionResult BlockHistory()
         {
             return View();
@@ -711,6 +735,16 @@ namespace HalloDoc.Controllers
             return RedirectToAction("BlockHistoryData", new { requestedPage = 1 , totalEntity = 3});
         }
 
+        public IActionResult EmailLogData()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetEmailLogData(EmailLogViewModel obj)
+        {
+            EmailLogViewModel dataObj = await dashboardData.GetEmailLogData(obj);
+            return PartialView("AdminCaseAction/_EmailLogTable",dataObj);
+        }
 
         public IActionResult Scheduling()
         {

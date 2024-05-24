@@ -62,11 +62,24 @@ namespace Services.ViewModels
     {
         public List<Requestclient> reqcList { get; set; }
 
+     
+
+    }
+
+    public class EmailLogViewModel
+    {
+        public List<Emaillog> emaillogs { get; set; }
+
+        public string email { get; set; }
+
+        public DateTime sentDate {  get; set; }
+
+        public DateTime createdDate {  get; set; }
     }
 
     public class BlockedHistory
     {
-        public List<Requestclient> requestclients { get; set; }
+        public List<Blockrequest> requestclients { get; set; }
 
         public int totalPages { get; set; }
 
@@ -83,5 +96,7 @@ namespace Services.ViewModels
         public string phone { get; set; }
 
         public bool isActive { get; set; }
+
+        public DateTime searchedDate {  get; set; }
     }
 }

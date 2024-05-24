@@ -132,7 +132,7 @@
                                     <li class="Orders" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Orders</a></li>
                                     @if (obj.Request.Encounters.Count() > 0)
                                     {
-                                        @if (obj.Request.Encounters.ElementAt(0).IsFinalized[0] == false)
+                                        @if (obj.Request.Encounters.ElementAt(0).IsFinalized[0] == false && (obj.Request.Status != 5 || obj.Request.Status != 6))
                                         {
                                             <li class="encounterForm" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a></li>
                                         }
@@ -143,11 +143,15 @@
                                             </li>
                                         }
                                     }
-                                    else
+                                    else if(obj.Request.Status != 5 && obj.Request.Status != 6)
                                     {
                                         <li id="@obj.Request.Requestid" style="cursor : pointer" data-bs-toggle="modal" data-bs-target="#encounterModal" onclick="passRequestId(@obj.Request.Requestid)">
                                             <a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a>
                                         </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="encounterForm" id="@obj.Request.Requestid" style="cursor : pointer"><a class="dropdown-item"><i class="bi bi-file-medical me-2"></i>Encounter</a></li>
                                     }
                                 </ul>
                             </div>

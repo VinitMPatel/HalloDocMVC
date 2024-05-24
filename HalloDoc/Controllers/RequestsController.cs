@@ -100,6 +100,8 @@ namespace HalloDoc.Controllers
                 Credentials = new NetworkCredential(mail, password)
             };
 
+            patientRequest.EmailLog(email, message, subject);
+
             return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, message));
         }
 

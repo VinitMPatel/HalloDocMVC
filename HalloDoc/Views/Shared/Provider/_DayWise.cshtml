@@ -6,7 +6,7 @@
     var dayweek = Model.date.DayOfWeek.ToString();
     var currentDay = dayweek + ", " + now.ToString("MMM dd yyyy");
     <input type="hidden" value="@currentDay" id="currentDay" />
-    var f = 0;
+  
 }
 <div class="table-responsive">
     <table class="calendar-table">
@@ -60,7 +60,8 @@
                 {
                     <td>
                         <span class="d-flex">
-                            <img class="me-1" src="~/upload/@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0).
+                            <img class="me-1" src="~/upload/@obj.Photo" height="25px" width="25px" /> @obj.Firstname @obj.Lastname.ElementAt(0)
+                            .
                         </span>
                     </td>
                 }
@@ -71,7 +72,7 @@
                         int flag = 0;
                         foreach (var item in shift)
                         {
-                            f = 0;
+                            
                             var diff = item.Endtime.Hour - item.Starttime.Hour;
                             if (diff <= 0)
                             {
@@ -95,7 +96,7 @@
                                 {
                                     perend = 0;
                                 }
-                                <td id="i_@obj.Physicianid" colspan="@diff" class="p-0">
+                                <td colspan="@diff" class="p-0">
                                     @if (item.Status == 0)
                                     {
                                         <div class="shiftdisplay shiftmodal d-flex align-items-center justify-content-center" name="@item.Shiftdetailid" style="margin-left:@perstart%;margin-right:@perend%; " data-bs-toggle="modal" data-bs-target="#viewShiftModal">
@@ -115,12 +116,12 @@
                         }
                         if (flag == 0)
                         {
-                            <td id="i_@obj.Physicianid"></td>
+                            <td></td>
                         }
                     }
                     else
                     {
-                        <td id="i_@obj.Physicianid"></td>
+                        <td></td>
                     }
                 }
             </tr>
@@ -151,6 +152,12 @@
                     $('#shiftmodalStart').val(response.starttime);
                     $('#shiftmodalEnd').val(response.endtime);
                     $('#shiftmodalid').val(response.shiftdetailid);
+                    if ($('#shiftmodalDate').val() < "@DateTime.Now.ToString("yyyy-MM-dd")") {
+                        $('.edit').addClass('d-none');
+                    }
+                    else {
+                        $('.edit').removeClass('d-none');
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error(error);

@@ -12,10 +12,12 @@ using Data.DataContext;
 using Data.Entity;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using MathNet.Numerics.Optimization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.DependencyResolver;
 using Services.Contracts;
 using Services.ViewModels;
 
@@ -383,6 +385,7 @@ namespace Services.Implementation
 
                 await _context.AddAsync(requestwisefile);
                 await _context.SaveChangesAsync();
+                stream.Close();
             }
         }
 
@@ -534,5 +537,147 @@ namespace Services.Implementation
                 return result;
             }
         }
+
+
+        public async Task<InvoicingViewModel> InvocingData(string aspNetUserId, string startDate)
+        {
+            if (aspNetUserId == null)
+            {
+                return new InvoicingViewModel();
+            }
+
+            InvoicingViewModel obj = new InvoicingViewModel();
+            obj.shiftdetails = await _context.Shiftdetails.Include(a => a.Shift).ThenInclude(a => a.Physician).Where(a => a.Shift.Physician.Aspnetuserid == aspNetUserId).ToListAsync();
+            DateOnly date = DateOnly.Parse(startDate);
+            List<TimeSheetData> data = new List<TimeSheetData>();
+            if (date.Day == 1)
+            {
+                for (int i = 0; i < 15; i++)
+                {
+                    Timesheet? timesheet = await _context.Timesheets.Include(a => a.Physician).FirstOrDefaultAsync(a => a.Date == date && a.Physician.Aspnetuserid == aspNetUserId);
+                    TimeSheetData ts = new TimeSheetData();
+                    if (timesheet != null)
+                    {
+                        if (timesheet.Oncallhours != null)
+                        {
+                            ts.totalHour = (float)timesheet.Oncallhours;
+                        }
+                        if (timesheet.Housecall != null)
+                        {
+                            ts.houseCall = (int)timesheet.Housecall;
+                        }
+                        if (timesheet.Consult != null)
+                        {
+                            ts.consult = (int)timesheet.Consult;
+                        }
+                        if (timesheet.Isweekend != null)
+                        {
+                            ts.holidays = (bool)timesheet.Isweekend;
+                        }
+                    }
+                    else
+                    {
+                        ts.totalHour = 0;
+                        ts.houseCall = 0;
+                        ts.consult = 0;
+                        ts.holidays = false;
+                    }
+                    data.Add(ts);
+                    date = date.AddDays(1);
+                }
+
+            }
+            else
+            {
+                int i = 0;
+                DateOnly currentDate = date;
+                while (currentDate.Month == date.Month)
+                {
+                    Timesheet? timesheet = await _context.Timesheets.Include(a => a.Physician).FirstOrDefaultAsync(a => a.Date == currentDate && a.Physician.Aspnetuserid == aspNetUserId);
+                    TimeSheetData ts = new TimeSheetData();
+                    if (timesheet != null)
+                    {
+                        if (timesheet.Oncallhours != null)
+                        {
+                            ts.totalHour = (float)timesheet.Oncallhours;
+                        }
+                        if (timesheet.Housecall != null)
+                        {
+                            ts.houseCall = (int)timesheet.Housecall;
+                        }
+                        if (timesheet.Consult != null)
+                        {
+                            ts.consult = (int)timesheet.Consult;
+                        }
+                        if (timesheet.Isweekend != null)
+                        {
+                            ts.holidays = (bool)timesheet.Isweekend;
+                        }
+                    }
+                    else
+                    {
+                        ts.totalHour = 0;
+                        ts.houseCall = 0;
+                        ts.consult = 0;
+                        ts.holidays = false;
+                    }
+                    data.Add(ts);
+                    currentDate = currentDate.AddDays(1);
+                    i++;
+                }
+            }
+            obj.timeSheetData = data;
+            return obj;
+        }
+
+        public async Task SubmitTimeSheet(InvoicingViewModel obj, string aspNetUserId)
+        {
+
+            Timesheet? timeSheetData = await _context.Timesheets.Include(a => a.Physician).FirstOrDefaultAsync(a => a.Date == DateOnly.Parse(obj.startDate) && a.Physician.Aspnetuserid == aspNetUserId);
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            if (timeSheetData == null)
+            {
+                foreach (var item in obj.timeSheetData)
+                {
+                    Timesheet timesheet = new Timesheet
+                    {
+                        Physicianid = physician.Physicianid,
+                        Isweekend = item.holidays,
+                        Oncallhours = (decimal)item.totalHour,
+                        Housecall = item.houseCall,
+                        Consult = item.consult,
+                        Createdby = aspNetUserId,
+                        Modifiedby = aspNetUserId,
+                        Createddate = DateTime.Now,
+                        Modifieddate = DateTime.Now,
+                        Date = item.crrDate
+                    };
+                    await _context.Timesheets.AddAsync(timesheet);
+                }
+                
+            }
+            else
+            {
+                DateOnly currentDate = DateOnly.Parse(obj.startDate);
+                while(currentDate <= obj.endDate)
+                {
+                    foreach (var item in obj.timeSheetData)
+                    { 
+                        Timesheet? timesheet = await _context.Timesheets.Include(a => a.Physician).FirstOrDefaultAsync(a => a.Date == currentDate && a.Physician.Aspnetuserid == aspNetUserId);
+                        timesheet.Isweekend = item.holidays;
+                        timesheet.Oncallhours = (decimal)item.totalHour;
+                        timesheet.Consult = item.consult;
+                        timesheet.Housecall = item.houseCall;
+                        timesheet.Modifiedby = aspNetUserId;
+                        timesheet.Modifieddate = DateTime.Now;
+
+                        _context.Timesheets.Update(timesheet);
+                        currentDate = currentDate.AddDays(1);
+                    }
+                }
+            }
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

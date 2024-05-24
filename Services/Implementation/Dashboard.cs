@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
 using Common.Helper;
+using System.Collections;
 
 namespace Services.Implementation
 {
@@ -49,7 +50,7 @@ namespace Services.Implementation
             var req = await _context.Requests.Where(m => m.Userid == userdata.Userid).ToListAsync();
             dash.user = userdata;
             dash.request = req;
-            List<Requestwisefile> files = await _context.Requestwisefiles.ToListAsync();
+            List<Requestwisefile> files = await _context.Requestwisefiles.Where(a=>a.Isdeleted == new System.Collections.BitArray(new[] {false})).ToListAsync();
 
             dash.requestwisefile = files;
             return dash;
@@ -86,7 +87,7 @@ namespace Services.Implementation
             patient_dashboard dash = new patient_dashboard();
             var userdata = await _context.Users.FirstOrDefaultAsync(u => u.Aspnetuserid == aspNetUserId);
             dash.user = userdata;
-            List<Requestwisefile> files = await _context.Requestwisefiles.Where(a => a.Requestid == reqId).ToListAsync();
+            List<Requestwisefile> files = await _context.Requestwisefiles.Where(a => a.Requestid == reqId && a.Isdeleted == new System.Collections.BitArray(new[] { false })).ToListAsync();
 
             dash.requestwisefile = files;
             dash.reqId = reqId;
@@ -114,11 +115,11 @@ namespace Services.Implementation
                     Requestid = id,
                     Filename = item.FileName,
                     Createddate = DateTime.Now,
-
+                    Isdeleted = new BitArray(new[] { false })
                 };
-                stream.Close();
                 _context.Add(requestwisefile);
                 _context.SaveChanges();
+                stream.Close();
             }
         }
 

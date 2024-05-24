@@ -60,7 +60,7 @@ namespace Services.ViewModels
         [Required(ErrorMessage = "*User Name is required")]
         public string userName { get; set; }
 
-        [RegularExpression(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$!%#*?&])[A-Za-z\d$!#%*?&]{8,}", ErrorMessage = "*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.")]
+        [RegularExpression(@"(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$!@%#*?&])[A-Za-z\d$!@#%*?&]{8,}", ErrorMessage = "*Password should contain atleast one number , one alphabet , one special character and having length minimum 8.")]
         [Required(ErrorMessage = "*Password is required")]
         public string password { get; set; }
 

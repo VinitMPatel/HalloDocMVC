@@ -7,8 +7,8 @@
     searchedPhone: "",
     requestedPage: 1,
     totalEntity: 3,
-    fromDate,
-    toDate,
+    fromDate : "",
+    toDate : "",
 }
 
 $('#searchBtn').on('click', function () {
@@ -169,7 +169,8 @@ var requestedBlockData = {
     email: "",
     phone: "",
     requestedPage: 1,
-    totalEntity: 3
+    totalEntity: 3,
+    searchedDate : ""
 }
 
 $('#searchBlockedBtn').click(function () {
@@ -177,8 +178,9 @@ $('#searchBlockedBtn').click(function () {
     requestedBlockData.name = $('#blockedPatient').val();
     requestedBlockData.email = $('#blockedEmail').val();
     requestedBlockData.phone = $('#blockedPhone').val();
+    requestedBlockData.totalEntity = $('#selectedBlockEntity').val()
     requestedData.requestedPage = 1;
-
+    requestedBlockData.searchedDate = $('#selectedDate').val()
     $.ajax({
         url: '/Admin/BlockHistoryData',
         data: requestedBlockData,

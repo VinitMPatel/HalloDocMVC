@@ -1,0 +1,184 @@
+﻿@model Services.ViewModels.InvoicingViewModel
+@{
+    DateOnly startDate = DateOnly.Parse(Model.startDate);
+    DateOnly currentDate = startDate;
+}
+<partial name="_Notification" />
+<div class="d-flex justify-content-end my-4">
+    <a class="btn btn-outline-info shadow-none" asp-action="Invoicing">
+        &lt; Back
+    </a>
+</div>
+
+<div class="shadow pt-2 rounded-2">
+    <div class="table-responsive">
+
+        @if (startDate.Day == 1)
+        {
+            <form asp-action="SubmitTimeSheet">
+                <table class="table">
+                    <thead class="table-secondary">
+                        <tr class="text-center">
+                            <th>Date</th>
+                            <th>On-call Hours</th>
+                            <th>Total Hours</th>
+                            <th>Weekend/Holiday</th>
+                            <th>Number of Housecalls</th>
+                            <th>Number of Phone Consults</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <input type="text" asp-for="startDate" hidden>
+                       
+                        @for (int i = 0; i < 15; i++)
+                        {
+                            var hours = 0.0;
+
+                            <tr>
+                                <td>@currentDate</td>
+                                @foreach (var item in Model.shiftdetails)
+                                {
+                                    DateOnly dateOnly = DateOnly.FromDateTime(item.Shiftdate);
+                                    if (dateOnly == currentDate)
+                                    {
+                                        var startTime = item.Starttime;
+                                        var endTime = item.Endtime;
+                                        var diff = endTime - startTime;
+                                        hours = hours + diff.TotalHours;
+                                    }
+                                }
+                                <td class="text-center">@hours</td>
+                                <td>
+                                    @if (hours != Model.timeSheetData[i].totalHour && Model.timeSheetData[i].totalHour == 0)
+                                    {
+                                        <input type="text" class="form-control" asp-for="timeSheetData[i].totalHour" value="@hours">
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" asp-for="timeSheetData[i].totalHour">
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" asp-for=timeSheetData[i].holidays>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" asp-for="timeSheetData[i].houseCall">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" asp-for="timeSheetData[i].consult">
+                                </td>
+                            </tr>
+                            <input type="datetime" asp-for="timeSheetData[i].crrDate" value="@currentDate" hidden>
+                           
+                            currentDate = currentDate.AddDays(1);
+                        }
+                        <input type="datetime" asp-for="endDate" value="@currentDate.AddDays(-1)" hidden>
+
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end m-3">
+                    <button class="btn btn-info shadow-none text-white" type="submit">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <form asp-action="SubmitTimeSheet">
+                <table class="table">
+                    <thead class="table-secondary">
+                        <tr class="text-center">
+                            <th>Date</th>
+                            <th>On-call Hours</th>
+                            <th>Total Hours</th>
+                            <th>Weekend/Holiday</th>
+                            <th>Number of Housecalls</th>
+                            <th>Number of Phone Consults</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <input type="text" asp-for="startDate" hidden>
+                        @{
+                            var i = 0;
+                        }
+                        @while (startDate.Month == currentDate.Month)
+                        {
+                            var hours = 0.0;
+                            <tr>
+                                <td>@currentDate</td>
+                                @foreach (var item in Model.shiftdetails)
+                                {
+                                    DateOnly dateOnly = DateOnly.FromDateTime(item.Shiftdate);
+                                    if (dateOnly == currentDate)
+                                    {
+                                        var startTime = item.Starttime;
+                                        var endTime = item.Endtime;
+                                        var diff = endTime - startTime;
+                                        hours = hours + diff.TotalHours;
+                                    }
+                                }
+                                <td class="text-center">@hours</td>
+                                <td>
+                                    @if(hours != Model.timeSheetData[i].totalHour && Model.timeSheetData[i].totalHour == 0)
+                                    {
+                                        <input type="text" class="form-control" asp-for="timeSheetData[i].totalHour" value="@hours">
+                                    }
+                                    else
+                                    {
+                                        <input type="text" class="form-control" asp-for="timeSheetData[i].totalHour">
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <input type="checkbox" asp-for=timeSheetData[i].holidays>
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" asp-for="timeSheetData[i].houseCall">
+                                </td>
+                                <td>
+                                    <input type="text" class="form-control" asp-for="timeSheetData[i].consult">
+                                </td>
+                            </tr>
+                            <input type="datetime" asp-for="timeSheetData[i].crrDate" value="@currentDate" hidden>
+                            currentDate = currentDate.AddDays(1);
+                            i++;
+                        }
+                        <input type="datetime" asp-for="endDate" value="@currentDate.AddDays(-1)" hidden>
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-end m-3">
+                    <button class="btn btn-info shadow-none text-white" type="submit">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        }
+
+    </div>
+</div>
+
+<div class="my-3">
+    <button class="btn btn-info shadow-none text-white receiptsBtn">
+        Add receipts
+    </button>
+</div>
+<div id="receipts" class="my-3">
+</div>
+<script>
+    $('.receiptsBtn').on('click', function () {
+        var temp = "@Model.startDate"
+        $.ajax({
+            url: '/ProviderSide/GetReceipts',
+            data: { "startDate": temp },
+            success: function (response) {
+                $('#receipts').html(response)
+            },
+            error: function (xhr, status, error) {
+                console.log(error + "At _Biweek")
+            }
+        })
+    })
+</script>
+@*
+    startDate , all values of total hours , corresponding checkbox(weekend/holiday) , housecall , consult
+ *@

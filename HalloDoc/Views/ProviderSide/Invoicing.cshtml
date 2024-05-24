@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "_ProviderSide";
+    var currentDate = DateTime.Now;
+}
+<partial name="_Notification" />
+<div class="container" id="main-div">
+    
+    <div class="d-flex justify-content-between my-4">
+        <div class="h4">Timesheets</div>
+        <a class="btn btn-outline-info shadow-none"  asp-action="ProviderDashboard">
+            &lt; Back
+        </a>
+    </div>
+    
+    <div class="shadow p-2">
+        <div class="mx-3 d-flex justify-content-between flex-column flex-sm-row gap-2">
+             
+            <div class="col-sm-8 col-md-5 col-lg-3 col-12">
+                <div class="form-floating">
+                    <select class="form-select" id="biWeek">
+                        @{
+                            var startDate = new DateOnly(currentDate.Year, currentDate.Month, 1);
+                        }
+                        @for(int i=0; i<12; i++)
+                        {
+                            <option value="@startDate">@startDate - @startDate.AddDays(14)</option>
+                            <option value="@startDate.AddDays(15)">@startDate.AddDays(15) - @startDate.AddMonths(1).AddDays(-1)</option>
+                            startDate = startDate.AddMonths(-1);
+                        }
+                    </select>
+                    <label class="FloatingInput">
+                        Search By TimesheetPeriod
+                    </label>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-outline-info shadow-none w-100 finalizeBtn">
+                    Finalize Timesheet
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.finalizeBtn').on('click', function () {
+        var startDate = $('#biWeek').val()
+        $.ajax({
+            url: '/ProviderSide/GetBiWeekData',
+            data: { "startDate": startDate },
+            success: function (response) {
+                $('#main-div').html(response)
+            },
+            error: function (xhr, status, error) {
+                console.log(error + "At Invoicing")
+            }
+        })
+    })
+</script>

@@ -98,8 +98,8 @@
                 <span id="radioError" class="text-danger"></span>
                 <div class="form-floating my-3">
                     <textarea class="form-control message shadow-none" placeholder="message"
-                              id="floatingTextarea2" style="height: 100px"></textarea>
-                    <label for="floatingTextarea2" class="">
+                              id="note" style="height: 100px"></textarea>
+                    <label for="note" class="">
                         Message
                     </label>
                     <span id="messageError" class="text-danger"></span>
@@ -159,10 +159,30 @@
         if(selectedRadio.length < 1){
             $('#radioError').html('*Please select one option.');
         }
+        if ( $('#radioError').text() == "" && $('#messageError').text() == "" && $('.message').val() != "" && selectedRadio.length >= 1 ){
+            var email = $('#physicianEmail').val();
+            var note = $('#note').val();
+            console.log(email);
+            console.log(note);
+            $.ajax({
+                url: "/Provider/ContactProvider",
+                data: { "email": email , "note" : note},
+                success: function (response) {
+                    $('.btn-close').click();
+                    toastr.success("Email Sent successfully");
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
+        
     })
+
     $('.radioBtn').on('change',function(){
         $('#radioError').html('');
     })
+
     $('.message').on('focus', function () {
         $('.message').css('border', '2px groove #e6eefa');
         $('#messageError').html('');

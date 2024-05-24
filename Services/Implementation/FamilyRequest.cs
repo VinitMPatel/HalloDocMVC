@@ -7,6 +7,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using Services.Contracts;
 using Services.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -130,10 +131,13 @@ namespace Services.Implementation
                     Requestid = id,
                     Filename = item.FileName,
                     Createddate = DateTime.Now,
+                    Isdeleted = new BitArray(new[] { false })
                 };
 
                 await _context.AddAsync(requestwisefile);
                 await _context.SaveChangesAsync();
+
+                stream.Close();
             }
         }
     }

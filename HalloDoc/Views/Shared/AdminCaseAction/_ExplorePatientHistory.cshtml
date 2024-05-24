@@ -38,10 +38,29 @@
                             {
                                 <td> - </td>   
                             }
-                            <td>Date</td>
+                            <td>
+                                @if(item.Request.Requeststatuslogs.Count() > 0 && item.Request.Status == 6)
+                                {
+                                    @item.Request.Requeststatuslogs.Last().Createddate
+                                }
+                                else
+                                {
+                                    @: -
+                                }
+
+                            </td>
                             <td> @Enum.Parse(typeof(Common.Enum.RequestStatus), @item.Request.Status.ToString()) </td>
                             <td>
-                                <button class="btn btn-outline-info shadow-none exploreBtn">View</button>
+                                @if(item.Request.Encounters.Count() > 0)
+                                {
+
+                                    <a class="btn btn-outline-info shadow-none exploreBtn" asp-action="DownloadEncounter" asp-controller="Admin" asp-route-requestId="@item.Request.Requestid">View</a>
+                                   @*  <button class="btn btn-outline-info shadow-none exploreBtn">View</button> *@
+                                }
+                                else
+                                {
+                                    @: -
+                                }
                             </td>
                             <td>
                                 <div class="btn-group">
@@ -50,7 +69,7 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li style="cursor : pointer" class="viewCase" id="@item.Request.Requestid"><a class="dropdown-item">View Case</a></li>
-                                        <li style="cursor : pointer"><a class="dropdown-item">Assign Case</a></li>
+                                        <li style="cursor : pointer"><a class="dropdown-item">Chat</a></li>
                                         <li style="cursor : pointer"><a class="dropdown-item">Documents</a></li>
                                     </ul>
                                 </div>

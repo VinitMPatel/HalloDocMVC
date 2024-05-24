@@ -3,8 +3,10 @@ using Data.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using Services.Implementation;
 using Services.ViewModels;
 using System.Runtime.CompilerServices;
+using static iTextSharp.text.pdf.codec.TiffWriter;
 
 namespace HalloDoc.Controllers
 {
@@ -79,6 +81,11 @@ namespace HalloDoc.Controllers
             return View(obj);
         }
 
+        public async Task<bool> CheckPhysician(string email)
+        {
+            return await providerServices.CheckPhysician(email);
+        }
+
         public async Task<IActionResult> SubmitCreateProvider(EditProviderViewModel obj , List<int> selectedRegion)
         {
             string? aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
@@ -92,6 +99,23 @@ namespace HalloDoc.Controllers
             return LocationData;
         }
 
-        
+        public async Task ContactProvider(string email , string note)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId");
+            await providerServices.ContactProvider(email, note , aspNetUserId);
+        }
+
+
+        public async Task<IActionResult> Payrate(int physicianId)
+        {
+            PayrateViewModel obj = await providerServices.GetPayrateData(physicianId);
+            return PartialView("AdminCaseAction/_Payrate",obj);
+        }
+
+        public async Task SavePayrate(int physicianId , string fieldName, int payRate)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await providerServices.SavePayrate(physicianId, fieldName, payRate,aspNetUserId);
+        }
     }
 }

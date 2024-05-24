@@ -181,7 +181,7 @@
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Provider</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                         <li><a asp-action="Provider" class="text-decoration-none dropdown-item provider-menu mb-2">Providers</a></li>
-                        <li><a asp-action="Schedulling" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
+                        <li><a asp-action="Scheduling" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Schedulling</a></li>
                         <li><a asp-action="Invoicing" class="text-decoration-none dropdown-item provider-menu">Invoicing</a></li>
                     </ul>
                 }
@@ -203,7 +203,7 @@
                 {
                     <a asp-action="Partners" asp-controller="Admin" class="text-decoration-none pe-2" style="color:black;">Partners</a>
                 }
-                @if (Context.Request.Path.Equals("/Admin/RoleAccess") || Context.Request.Path.Equals("/Admin/AdminCreateAccount"))
+                @if (Context.Request.Path.Equals("/Admin/RoleAccess") || Context.Request.Path.Equals("/Admin/AdminCreateAccount") || Context.Request.Path.Equals("/Admin/CreateRoleAccess"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Access</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu" style="cursor:pointer;">
@@ -219,12 +219,12 @@
                         <li><a asp-action="AdminCreateAccount" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Register Admin</a></li>
                     </ul>
                 }
-                @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogs") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockHistory"))
+                @if (Context.Request.Path.Equals("/Admin/SearchRecords") || Context.Request.Path.Equals("/Admin/EmailLogData") || Context.Request.Path.Equals("/Admin/SMSLogs") || Context.Request.Path.Equals("/Admin/PatientRecords") || Context.Request.Path.Equals("/Admin/BlockHistory"))
                 {
                     <a class="text-decoration-none text-info px-2 dropdown-toggle" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false" style="border-bottom: 4px solid #17a2b8!important; height : 40px; cursor : pointer">Records</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                         <li><a asp-action="SearchRecords" class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
-                        <li><a asp-action="EmailLogs" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
+                        <li><a asp-action="EmailLogData" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
                         <li><a asp-action="SMSLogs" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
                         <li><a asp-action="PatientRecords" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
                         <li><a asp-action="BlockHistory" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>
@@ -235,7 +235,7 @@
                     <a class="text-decoration-none pe-2 dropdown-toggle" id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false" style="color:black; cursor : pointer">Records</a>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" style="cursor:pointer;">
                         <li><a asp-action="SearchRecords" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Search Records</a></li>
-                        <li><a asp-action="EmailLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
+                        <li><a asp-action="EmailLogData" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu  mb-2">Email Logs</a></li>
                         <li><a asp-action="SMSLogs" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">SMS Logs</a></li>
                         <li><a asp-action="PatientRecords" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Patient Records</a></li>
                         <li><a asp-action="BlockHistory" asp-controller="Admin" class="text-decoration-none dropdown-item provider-menu mb-2">Blocked History</a></li>

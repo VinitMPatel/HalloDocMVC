@@ -3,8 +3,10 @@ using Data.DataContext;
 using Data.Entity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
@@ -20,6 +22,7 @@ using System.Configuration;
 using System.Drawing.Printing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -271,9 +274,9 @@ namespace Services.Implementation
                     Createddate = DateTime.Now,
 
                 };
-                stream.Close();
                 await _context.AddAsync(requestwisefile);
                 await _context.SaveChangesAsync();
+                stream.Close();
             }
         }
 
@@ -505,11 +508,24 @@ namespace Services.Implementation
             return roleAccess;
         }
 
-        public RoleAccess AddedRoles()
+        public async Task<RoleAccess> AddedRoles()
         {
             RoleAccess obj = new RoleAccess();
-            obj.rolemenuList = _context.Roles.ToList();
+            obj.rolemenuList = await _context.Roles.Where(a=>a.Isdeleted == new BitArray(new[] {false})).ToListAsync();
             return obj;
+        }
+
+        public async Task<bool> CheckRole(string roleName)
+        {
+            Role? role = await _context.Roles.FirstOrDefaultAsync(a => a.Name == roleName && a.Isdeleted == new BitArray(new[] {false}));
+            if(role == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task AddNewRole(List<int> menus, short accountType, string roleName, string aspNetUserId)
@@ -548,13 +564,13 @@ namespace Services.Implementation
 
         }
 
-        public RoleAccess EditRole(int roleId)
+        public async Task<RoleAccess> EditRole(int roleId)
         {
             RoleAccess roleAccess = new RoleAccess();
-            roleAccess.menuList = _context.Menus.ToList();
+            roleAccess.menuList = await _context.Menus.ToListAsync();
             roleAccess.roleId = roleId;
-            roleAccess.roleName = _context.Roles.FirstOrDefault(a => a.Roleid == roleId).Name;
-            roleAccess.accountType = _context.Roles.FirstOrDefault(a => a.Roleid == roleId).Accounttype;
+            roleAccess.roleName = _context.Roles.FirstOrDefault(a => a.Roleid == roleId)!.Name;
+            roleAccess.accountType = _context.Roles.FirstOrDefault(a => a.Roleid == roleId)!.Accounttype;
             //_context.Aspnetroles.FirstOrDefault(a => a.Id == roleId.ToString()).Name
             return roleAccess;
         }
@@ -583,6 +599,25 @@ namespace Services.Implementation
                     }
                 }
 
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task DeleteRole(int roleId)
+        {
+            if (roleId != 0)
+            {
+                Role? role = await _context.Roles.FirstOrDefaultAsync(a => a.Roleid == roleId);
+                List<Rolemenu> rolemenus = await _context.Rolemenus.Where(a=>a.Roleid == roleId).ToListAsync();
+
+                foreach (var item in rolemenus)
+                {
+                    _context.Rolemenus.Remove(item);
+                }
+
+                role.Isdeleted = new BitArray(new[] { true });
+
+                _context.Roles.Update(role);
                 await _context.SaveChangesAsync();
             }
         }
@@ -788,7 +823,7 @@ namespace Services.Implementation
         public async Task<ExplorePatientHistory> ExplorePatientHistory(int patientId)
         {
             ExplorePatientHistory dataObj = new ExplorePatientHistory();
-            dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Where(a => a.Request.Userid == patientId).Include(a => a.Request.Physician).ToListAsync();
+            dataObj.reqcList = await _context.Requestclients.Include(a => a.Request).Include(a=>a.Request.Encounters).Include(a=>a.Request.Requeststatuslogs).Where(a => a.Request.Userid == patientId).Include(a => a.Request.Physician).ToListAsync();
             return dataObj;
         }
 
@@ -805,6 +840,19 @@ namespace Services.Implementation
         public async Task<List<Role>> GetAdminRoles()
         {
             return await _context.Roles.Where(a => a.Accounttype == 1).ToListAsync();
+        }
+
+        public async Task<bool> CheckAdmin(string adminEmail)
+        {
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Email == adminEmail);
+            if (admin == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task CreateAdmin(CreateAdminModel obj, List<int> selectedRegion)
@@ -883,14 +931,20 @@ namespace Services.Implementation
         public async Task<BlockedHistory> GetBlockHistoryData(BlockedHistory obj)
         {
             BlockedHistory dataObj = new BlockedHistory();
-            List<Requestclient> requestclients = new List<Requestclient>();
+            List<Blockrequest> requestclients = new List<Blockrequest>();
 
-            requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Blockrequests).Where(a => a.Request.Status == 11).ToListAsync();
+            //requestclients = await _context.Requestclients.Include(a => a.Request).Include(a => a.Request.Blockrequests).Where(a => a.Request.Status == 11).ToListAsync();
 
+            requestclients = await _context.Blockrequests.Include(a=>a.Request).Include(a=>a.Request.Requestclients).ToListAsync();
             requestclients = requestclients.Where(a =>
-                                (string.IsNullOrWhiteSpace(obj.name) || a.Firstname.ToLower().Contains(obj.name.ToLower()) || a.Lastname!.ToLower().Contains(obj.name.ToLower())) &&
+                                (string.IsNullOrWhiteSpace(obj.name) || a.Request.Requestclients.ElementAt(0).Firstname.ToLower().Contains(obj.name.ToLower()) || a.Request.Requestclients.ElementAt(0).Lastname!.ToLower().Contains(obj.name.ToLower())) &&
                                 (string.IsNullOrWhiteSpace(obj.email) || a.Email!.ToLower().Contains(obj.email.ToLower())) &&
                                 (string.IsNullOrWhiteSpace(obj.phone) || a.Phonenumber!.Contains(obj.phone))).ToList();
+
+            if (obj.searchedDate.Year != 1 && obj.searchedDate.Month != 1 && obj.searchedDate.Day != 1)
+            {
+                requestclients = requestclients.Where(u => u.Createddate.Date == obj.searchedDate!).ToList();
+            }
 
             dataObj.totalPages = (int)Math.Ceiling(requestclients.Count() / (double)obj.totalEntity);
             dataObj.currentpage = obj.requestedPage;
@@ -910,6 +964,34 @@ namespace Services.Implementation
                 _context.Update(blockData);
                 await _context.SaveChangesAsync();
             }
+
+            Data.Entity.Request? request = await _context.Requests.FirstOrDefaultAsync(a => a.Requestid == requestId);
+            if(request != null)
+            {
+                request.Status = 1;
+                request.Modifieddate = DateTime.Now;
+                _context.Update(request);
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
+        public async Task<EmailLogViewModel> GetEmailLogData(EmailLogViewModel obj)
+        {
+            EmailLogViewModel dataObj = new EmailLogViewModel();
+            List<Emaillog> emaillogs = await _context.Emaillogs.ToListAsync();
+            emaillogs = emaillogs.Where(a=> (string.IsNullOrWhiteSpace(obj.email) || a.Emailid!.ToLower().Contains(obj.email.ToLower())) ).ToList();
+            if (obj.sentDate.Year != 1 && obj.sentDate.Month != 1 && obj.sentDate.Day != 1)
+            {
+                emaillogs = emaillogs.Where(u => u.Sentdate != null).ToList();
+                emaillogs = emaillogs.Where(u => u.Sentdate.Value.Date == obj.sentDate!).ToList();
+            }
+            if (obj.createdDate.Year != 1 && obj.createdDate.Month != 1 && obj.createdDate.Day != 1)
+            {
+                emaillogs = emaillogs.Where(u => u.Createdate.Date == obj.createdDate!).ToList();
+            }
+            dataObj.emaillogs = emaillogs;
+            return dataObj;
         }
 
         public Scheduling Scheduling()
@@ -1540,6 +1622,27 @@ namespace Services.Implementation
             string encryptedPassword = EncryptDecryptHelper.Encrypt(model.password);
             aspnetuser.Passwordhash = encryptedPassword;
             _context.Update(aspnetuser);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EmailLogEntry(string emailTemplate , string subject , string aspNetUserId , string email)
+        {
+            Emaillog emaillog = new Emaillog();
+            emaillog.Emailtemplate = emailTemplate;
+            emaillog.Subjectname = subject;
+            emaillog.Emailid = email;
+            emaillog.Createdate = DateTime.Now;
+            emaillog.Sentdate = DateTime.Now;
+            emaillog.Senttries = 1;
+            emaillog.Isemailsent = new BitArray(new[] { true });
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            if(admin != null)
+            {
+                emaillog.Roleid = 1;
+                emaillog.Adminid = admin.Adminid;
+            }
+
+            await _context.Emaillogs.AddAsync(emaillog);
             await _context.SaveChangesAsync();
         }
 

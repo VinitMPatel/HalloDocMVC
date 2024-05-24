@@ -225,7 +225,18 @@ namespace Services.Implementation
                         Isactive = new System.Collections.BitArray(new[] { false }),
                         Createddate = DateTime.Now,
                     };
+
+                    Requeststatuslog requeststatuslog = new Requeststatuslog
+                    {
+                        Requestid = requestId,
+                        Status = 11,
+                        Notes = blockNote,
+                        Createddate = DateTime.Now
+                    };
+
                     await _context.AddAsync(blockrequest);
+                    await _context.AddAsync(requeststatuslog);
+
                     await _context.SaveChangesAsync();
                     transaction.Commit();
                 }

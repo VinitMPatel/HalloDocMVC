@@ -34,9 +34,9 @@ namespace Services.Contracts
 
         Task AddNewRole(List<int> menus, short accountType, string roleName, string aspNetUserId);
 
-        RoleAccess AddedRoles();
+        Task<RoleAccess> AddedRoles();
 
-        RoleAccess EditRole(int roleId);
+        Task<RoleAccess> EditRole(int roleId);
 
         Task<List<Healthprofessionaltype>> GetProfessions();
 
@@ -121,6 +121,16 @@ namespace Services.Contracts
         string GetFilesNames(int reqwiseid);
 
         Task DeleteRequest(int requestId);
+
         Task SaveRoleChanges(int roleid, List<int> selectedRole);
+
+        Task<EmailLogViewModel> GetEmailLogData(EmailLogViewModel obj);
+
+        Task DeleteRole(int roleId);
+
+        Task<bool> CheckRole(string roleName);
+
+        Task<bool> CheckAdmin(string adminEmail);
+        Task EmailLogEntry(string emailTemplate, string subject, string aspNetUserId, string email);
     }
 }

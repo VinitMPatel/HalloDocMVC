@@ -11,6 +11,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -37,7 +39,7 @@ namespace Services.Implementation
 
         public async Task<ProviderViewModel> ProviderData(int regionId)
         {
-            List<Physician> physicinaData = await _context.Physicians.Include(a => a.Role).Where(a=>a.Isdeleted == new BitArray(new[] {false})).ToListAsync();
+            List<Physician> physicinaData = await _context.Physicians.Include(a => a.Role).Where(a => a.Isdeleted == new BitArray(new[] { false })).ToListAsync();
             if (regionId != 0)
             {
                 physicinaData = physicinaData.Where(a => a.Regionid == regionId).ToList();
@@ -85,11 +87,11 @@ namespace Services.Implementation
             {
                 editProviderViewModel.IsNonDisclosureDoc = true;
             }
-            if(physician.Isbackgrounddoc != null && physician.Isbackgrounddoc[0] == true)
+            if (physician.Isbackgrounddoc != null && physician.Isbackgrounddoc[0] == true)
             {
                 editProviderViewModel.IsBackgroundDoc = true;
             }
-            if(physician.Islicensedoc != null && physician.Islicensedoc[0] == true)
+            if (physician.Islicensedoc != null && physician.Islicensedoc[0] == true)
             {
                 editProviderViewModel.IsLicenseDoc = true;
             }
@@ -162,6 +164,7 @@ namespace Services.Implementation
                     string path = _env.WebRootPath + "/upload/" + obj.photo.FileName;
                     FileStream stream = new FileStream(path, FileMode.Create);
                     obj.photo.CopyTo(stream);
+                    stream.Close();
                 }
                 if (obj.signature != null)
                 {
@@ -169,6 +172,7 @@ namespace Services.Implementation
                     string signpath = _env.WebRootPath + "/upload/" + obj.signature.FileName;
                     FileStream signstream = new FileStream(signpath, FileMode.Create);
                     obj.signature.CopyTo(signstream);
+                    signstream.Close();
                 }
                 _context.Update(physician);
                 await _context.SaveChangesAsync();
@@ -199,7 +203,7 @@ namespace Services.Implementation
                     UploadDocument(fileName, obj.nonDisclosureDoc);
                     insertedPhysician.Isnondisclosuredoc = new BitArray(new[] { true });
                 }
-                if(obj.licenseDoc != null)
+                if (obj.licenseDoc != null)
                 {
                     string fileName = physicianId + "_license.pdf";
                     UploadDocument(fileName, obj.licenseDoc);
@@ -236,7 +240,7 @@ namespace Services.Implementation
         public async Task DeleteAccount(int providerId)
         {
             Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Physicianid == providerId);
-            if(physician != null)
+            if (physician != null)
             {
                 physician.Isdeleted = new BitArray(new[] { true });
                 _context.Update(physician);
@@ -273,6 +277,19 @@ namespace Services.Implementation
             return locations.ToJson();
         }
 
+        public async Task<bool> CheckPhysician(string email)
+        {
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+            if (physician == null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public async Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, string aspNetUserId)
         {
 
@@ -295,6 +312,7 @@ namespace Services.Implementation
                 Userid = aspnetuser.Id,
                 Roleid = "2"
             };
+            await _context.AddAsync(aspnetuserrole);
 
             Physician physician = new Physician
             {
@@ -391,6 +409,125 @@ namespace Services.Implementation
             string path = _env.WebRootPath + "/upload/" + fileName;
             FileStream stream = new FileStream(path, FileMode.Create);
             file.CopyTo(stream);
+            stream.Close();
+        }
+
+        public async Task<Task> ContactProvider(string email, string note, string aspNetUserId)
+        {
+            var mail = "tatva.dotnet.vinitpatel@outlook.com";
+            var password = "016@ldce";
+            string subject = "Message from Admin";
+
+            var client = new SmtpClient("smtp.office365.com", 587)
+            {
+                EnableSsl = true,
+                Credentials = new NetworkCredential(mail, password)
+            };
+
+            Emaillog emaillog = new Emaillog();
+            Admin? admin = await _context.Admins.FirstOrDefaultAsync(a => a.Aspnetuserid == aspNetUserId);
+            Physician? physician = await _context.Physicians.FirstOrDefaultAsync(a => a.Email == email);
+
+            emaillog.Emailtemplate = note;
+            emaillog.Subjectname = subject;
+            emaillog.Emailid = email;
+            emaillog.Createdate = DateTime.Now;
+            emaillog.Adminid = admin.Adminid;
+            emaillog.Physicianid = physician.Physicianid;
+            emaillog.Sentdate = DateTime.Now;
+            emaillog.Isemailsent = new BitArray(new[] { true });
+            emaillog.Senttries = 1;
+
+            await _context.Emaillogs.AddAsync(emaillog);
+            await _context.SaveChangesAsync();
+
+            return client.SendMailAsync(new MailMessage(from: mail, to: email, subject, note));
+        }
+
+        public async Task<PayrateViewModel> GetPayrateData(int physicianId)
+        {
+            if (physicianId == 0)
+            {
+                return new PayrateViewModel();
+            }
+            PayrateViewModel obj = new PayrateViewModel();
+            obj.physicianId = physicianId;
+            Payrate? payrate = await _context.Payrates.FirstOrDefaultAsync(a => a.Physicinaid == physicianId);
+            if (payrate != null)
+            {
+                obj.payrate = payrate;
+            }
+            return obj;
+        }
+
+
+        public async Task SavePayrate(int physicianId, string fieldName, int payRate, string aspNetUserId)
+        {
+            Payrate? payrate = await _context.Payrates.FirstOrDefaultAsync(a => a.Physicinaid == physicianId);
+            if (payrate == null)
+            {
+                Payrate newPayrate = new Payrate();
+                newPayrate.Physicinaid = physicianId;
+                switch (fieldName)
+                {
+                    case "NightShift_Weekend":
+                        newPayrate.Nightshift = payRate;
+                        break;
+                    case "Shift":
+                        newPayrate.Shift = payRate;
+                        break;
+                    case "HouseCalls_Nights_Weekend":
+                        newPayrate.Nighthousecall = payRate;
+                        break;
+                    case "PhoneConsults":
+                        newPayrate.Consult = payRate;
+                        break;
+                    case "PhoneConsults_Nights_Weekend":
+                        newPayrate.Nightconsult = payRate;
+                        break;
+                    case "BatchTesting":
+                        newPayrate.Batchtesting = payRate;
+                        break;
+                    case "HouseCalls":
+                        newPayrate.Housecall = payRate;
+                        break;
+                }
+                newPayrate.Modifieddate = DateTime.Now;
+                newPayrate.Modifiedby = aspNetUserId;
+                await _context.Payrates.AddAsync(newPayrate);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                switch (fieldName)
+                {
+                    case "NightShift_Weekend":
+                        payrate.Nightshift = payRate;
+                        break;
+                    case "Shift":
+                        payrate.Shift = payRate;
+                        break;
+                    case "HouseCalls_Nights_Weekend":
+                        payrate.Nighthousecall = payRate;
+                        break;
+                    case "PhoneConsults":
+                        payrate.Consult = payRate;
+                        break;
+                    case "PhoneConsults_Nights_Weekend":
+                        payrate.Nightconsult = payRate;
+                        break;
+                    case "BatchTesting":
+                        payrate.Batchtesting = payRate;
+                        break;
+                    case "HouseCalls":
+                        payrate.Housecall = payRate;
+                        break;
+                }
+                payrate.Modifieddate = DateTime.Now;
+                payrate.Modifiedby = aspNetUserId;
+                _context.Update(payrate);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

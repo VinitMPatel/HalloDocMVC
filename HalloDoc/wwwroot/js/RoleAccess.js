@@ -12,6 +12,21 @@
     })
 })
 
+$('#roleName').on('input', function () {
+    $.ajax({
+        url: '/Admin/CheckRole',
+        data: { "roleName": $(this).val() },
+        success: function (response) {
+            if (!response) {
+                $('#nameError').html("*Role Already exist");
+            }
+            else {
+                $('#nameError').html("");
+            }
+        }
+    })
+})
+
 $('#createRoleBtn').on('click', function () {
 
     var selectedMenu = [];
@@ -19,13 +34,13 @@ $('#createRoleBtn').on('click', function () {
         selectedMenu.push($(this).val());
     });
 
-    if (selectedMenu.length > 0 && $('#nameError').text() == "" && $('#roleName').val() != "") {
+    if (selectedMenu.length > 0 && $('#nameError').text() == "" && $('#roleName').val() != "" && $('#accountType').val() != 0) {
         $.ajax({
 
             url: '/Admin/AddNewRole',
             data: { "menus": selectedMenu, "accountType": $('#accountType').val(), "roleName": $('#roleName').val() },
             type: 'POST',
-            async : false,
+            async: false,
             success: function (response) {
                 var link = document.createElement('a');
                 link.href = "/Admin/RoleAccess";
@@ -75,7 +90,7 @@ $('.editRoleBtn').click(function () {
     var type = 0;
     $.ajax({
         url: '/Admin/EditRole',
-        data: { "roleId" : $(this).val()},
+        data: { "roleId": $(this).val() },
         success: function (response) {
             $('#mainContent').html(response);
         },
@@ -84,3 +99,34 @@ $('.editRoleBtn').click(function () {
         }
     })
 })
+
+
+$('.deleteBtn').on('click', function (e) {
+    e.preventDefault();
+    var roleId = $(this).val()
+
+    swal.fire({
+        title: "Are you sure?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes",
+        closeOnConfirm: false
+    }).then(function (result) {
+        if (result.value) {
+            $.ajax({
+                url: '/Admin/DeleteRole',
+                data: { "roleId": roleId },
+                success: function (response) {
+                    var link = document.createElement('a');
+                    link.href = "/Admin/RoleAccess";
+                    link.click();
+                    toastr.success("Role deleted successfully.")
+                },
+                error: function (xhr, status, error) {
+                    alert("1");
+                }
+            })
+        }
+    });
+});

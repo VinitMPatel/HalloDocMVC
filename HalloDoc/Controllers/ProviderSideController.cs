@@ -308,5 +308,33 @@ namespace HalloDoc.Controllers
         {
             return await providerSideServices.DownloadEncounter(requestId);
         }
+
+        public IActionResult Invoicing()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> GetBiWeekData(InvoicingViewModel obj)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            InvoicingViewModel dataObj = new InvoicingViewModel();
+            dataObj = await providerSideServices.InvocingData(aspNetUserId , obj.startDate);
+            dataObj.startDate = obj.startDate;
+            return PartialView("AdminCaseAction/_BiWeekData", dataObj);
+        }
+
+        public IActionResult GetReceipts(InvoicingViewModel obj)
+        {
+            return PartialView("AdminCaseAction/_Receipts", obj);
+        }
+
+        public async Task<IActionResult> SubmitTimeSheet(InvoicingViewModel obj)
+        {
+            string aspNetUserId = HttpContext.Session.GetString("aspNetUserId")!;
+            await providerSideServices.SubmitTimeSheet(obj , aspNetUserId);
+            TempData["success"] = "*Data saved successfully.";
+            return RedirectToAction("Invoicing");
+
+        }
     }
 }

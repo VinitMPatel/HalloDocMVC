@@ -1,0 +1,62 @@
+﻿@model Services.ViewModels.EmailLogViewModel
+<Partial name="_Notification" />
+<div class="table-responsive">
+    <table class="table">
+        <thead class="table-secondary">
+            <tr class="p-2 fw-bold">
+                <td>Recipient</td>
+                <td>Action</td>
+                <td>Role Name</td>
+                <td>Email Id</td>
+                <td>Created Date</td>
+                <td>Sent Date</td>
+                <td>Sent</td>
+                <td>Sent Tries</td>
+                <td>Confirmation Number</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.emaillogs.Count() > 0)
+            {
+                @foreach (var item in Model.emaillogs)
+                {
+                    <tr>
+                        <td> - </td>
+                        <td>@item.Subjectname</td>
+                        <td> 
+                            @if(item.Adminid != null)
+                            {
+                                @: Admin
+                            }
+                            else
+                            {
+                                @: -
+                            }
+                        </td>
+                        <td>@item.Emailid</td>
+                        <td>@item.Createdate.ToString("MMM dd , yyyy hh:mm tt")</td>
+                        <td>@item.Sentdate.Value.Date</td>
+                        <td>
+                            @if(item.Isemailsent[0] == true)
+                            {
+                                @: Yes
+                            }
+                            else
+                            {
+                                @: No
+                            }
+                        </td>
+                        <td>@item.Senttries</td>
+                        <td>-</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <th colspan="9" class="text-center text-danger h4">No Records Found</th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

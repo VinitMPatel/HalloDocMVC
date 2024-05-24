@@ -10,6 +10,10 @@ namespace Services.Contracts
 {
     public interface IProviderServices
     {
+        Task<bool> CheckPhysician(string email);
+
+        Task<Task> ContactProvider(string email, string note , string aspNetUserId);
+
         Task<EditProviderViewModel> CreateProvider();
 
         Task CreateProviderAccount(EditProviderViewModel obj, List<int> selectedRegion, string aspNetUserId);
@@ -20,9 +24,13 @@ namespace Services.Contracts
 
         Task<string> GetLocations();
 
+        Task<PayrateViewModel> GetPayrateData(int physicianId);
+
         Task<List<Region>> GetRegions();
 
         Task<ProviderViewModel> ProviderData(int regionId);
+
+        Task SavePayrate(int physicianId, string fieldName, int payRate, string aspNetUserId);
 
         Task ToStopNotification(List<int> toStopNotifications, List<int> toNotification);
 

@@ -119,20 +119,13 @@
 
                         <div class="h4">contact information</div>
 
-                        <div class="form-floating mt-3 col-xl-2 col-sm-2 col-4">
-                            <select class="form-control">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </div>
 
-                        <div class="form-floating mt-3 col-xl-4 col-sm-4 col-8">
+                        <div class="form-floating mt-3 col-sm-6 col-12">
                             <input id="phone" class="form-control data" type="tel" name="phone" disabled />
                         </div>
 
-                        <div class="form-floating mt-3 col-xl-6 col-sm-6 col-12">
-                            <input type="email" asp-for="user.Email" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled>
+                        <div class="form-floating mt-3 col-sm-6 col-12">
+                            <input type="email" asp-for="user.Email" class="form-control data" id="floatingInput" placeholder="name@example.com" disabled readonly>
                             <label for="floatingInput" style="left: 5px;">Email</label>
                         </div>
 

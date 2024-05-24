@@ -71,7 +71,6 @@
         <div class="shadow px-4 my-2">
             <div class=" h6 d-none d-md-flex gap-4" style="width:93%">
 
-
                 @if (Context.Request.Path.Equals("/ProviderSide/ProviderDashboard"))
                 {
                     <a  class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">Dashboard</a>
@@ -81,7 +80,14 @@
                     <a asp-action="ProviderDashboard" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">Dashboard</a>
                 }
 
-                <a class="text-decoration-none px-2 text-decoration-none" style="color:black;">Invoicing</a>
+                @if (Context.Request.Path.Equals("/ProviderSide/Invoicing"))
+                {
+                    <a class="text-decoration-none text-info px-2" style="border-bottom: 4px solid #17a2b8!important; height : 40px;">Invoicing</a>
+                }
+                else
+                {
+                    <a asp-action="Invoicing" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">Invoicing</a>
+                }
 
                 @if (Context.Request.Path.Equals("/ProviderSide/ProviderSchedule"))
                 {
@@ -100,6 +106,7 @@
                 {
                     <a asp-action="ProviderProfile" asp-controller="ProviderSide" class="text-decoration-none pe-2" style="color:black;">My Profile</a>
                 }
+
             </div>
         </div>
 

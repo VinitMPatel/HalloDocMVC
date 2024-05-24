@@ -1,0 +1,308 @@
+﻿@model Services.ViewModels.PayrateViewModel
+
+<div class="container">
+
+    <div class="d-flex justify-content-between mt-5">
+        <div class="fw-bolder h4">Payrate</div>
+        <div>
+            <a class="text-decoration-none btn btn-outline-info shadow-none" asp-action="Provider">&lt; Back</a>
+        </div>
+    </div>
+
+    <input type="text" value="@Model.physicianId" id="physicianId" hidden/>
+
+    <div class="pt-2 shadow border border-2 rounded-3 mt-3">
+        <div class="table-responsive">
+            <table class="table ">
+                <thead class="table-secondary">
+                    <tr>
+                        <th>Category</th>
+                        <th>Payrate</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td>NightShift_Weekend</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="NightShift_Weekend" asp-for="payrate.Nightshift">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none NightShift_Weekend" onclick="EditPayrate('NightShift_Weekend')">Edit</button>
+                            <div class="d-none NightShift_WeekendEdit">
+                                <button class="btn btn-info shadow-none text-white" type="button" onclick="SavePayrate('NightShift_Weekend')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('NightShift_Weekend')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Shift</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="Shift" asp-for="payrate.Shift">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none Shift" onclick="EditPayrate('Shift')">Edit</button>
+
+                            <div class="d-none ShiftEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('Shift')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('Shift')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>HouseCalls_Nights_Weekend</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="HouseCalls_Nights_Weekend" asp-for="payrate.Nighthousecall">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none HouseCalls_Nights_Weekend" onclick="EditPayrate('HouseCalls_Nights_Weekend')">Edit</button>
+
+                            <div class="d-none HouseCalls_Nights_WeekendEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('HouseCalls_Nights_Weekend')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('HouseCalls_Nights_Weekend')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PhoneConsults</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="PhoneConsults" asp-for="payrate.Consult">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none PhoneConsults" onclick="EditPayrate('PhoneConsults')">Edit</button>
+
+                            <div class="d-none PhoneConsultsEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('PhoneConsults')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('PhoneConsults')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>PhoneConsults_Nights_Weekend</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="PhoneConsults_Nights_Weekend" asp-for="payrate.Nightconsult">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none PhoneConsults_Nights_Weekend" onclick="EditPayrate('PhoneConsults_Nights_Weekend')">Edit</button>
+
+                            <div class="d-none PhoneConsults_Nights_WeekendEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('PhoneConsults_Nights_Weekend')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('PhoneConsults_Nights_Weekend')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>BatchTesting</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="BatchTesting" asp-for="payrate.Batchtesting">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none BatchTesting" onclick="EditPayrate('BatchTesting')">Edit</button>
+
+                            <div class="d-none BatchTestingEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('BatchTesting')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('BatchTesting')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>HouseCalls</td>
+                        <td>
+                            <div class="form-floating ">
+                                <input type="text" class="form-control" placeholder="Payrate" disabled id="HouseCalls" asp-for="payrate.Housecall">
+                                <label class="FloatingInput">Payrate</label>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-info text-white shadow-none HouseCalls" onclick="EditPayrate('HouseCalls')">Edit</button>
+
+                            <div class="d-none HouseCallsEdit">
+                                <button class="btn btn-info shadow-none text-white" onclick="SavePayrate('HouseCalls')">Save</button>
+                                <button class="btn btn-outline-info shadow-none" onclick="ResetPayrate('HouseCalls')">Cancel</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    @if (Model.payrate != null)
+    {
+        @if (Model.payrate!.Nightshift != null)
+        {
+            @: var NightShift_Weekend = @Model.payrate.Nightshift
+        }
+        else
+        {
+            @: var NightShift_Weekend = null
+        }
+
+        @if (Model.payrate!.Shift != null)
+        {
+            @: var Shift = @Model.payrate.Shift
+        }
+        else
+        {
+            @: var Shift = null
+        }
+
+        @if (Model.payrate!.Nighthousecall != null)
+        {
+            @: var HouseCalls_Nights_Weekend = @Model.payrate.Nighthousecall
+        }
+        else
+        {
+            @: var HouseCalls_Nights_Weekend = null
+        }
+
+        @if (Model.payrate!.Consult != null)
+        {
+            @: var PhoneConsults = @Model.payrate.Consult
+        }
+        else
+        {
+            @: var PhoneConsults = null
+        }
+
+        @if (Model.payrate!.Nightconsult != null)
+        {
+            @: var PhoneConsults_Nights_Weekend = @Model.payrate.Nightconsult
+        }
+        else
+        {
+            @: var PhoneConsults_Nights_Weekend = null
+        }
+
+        @if (Model.payrate!.Batchtesting != null)
+        {
+            @: var BatchTesting = @Model.payrate.Batchtesting
+        }
+        else
+        {
+            @: var BatchTesting = null
+        }
+
+        @if (Model.payrate!.Housecall != null)
+        {
+            @: var HouseCalls = @Model.payrate.Housecall
+        }
+        else
+        {
+            @: var HouseCalls = null
+        }
+    }
+    else
+    {
+        @: var NightShift_Weekend = null
+        @: var Shift = null
+        @: var HouseCalls_Nights_Weekend = null
+        @: var PhoneConsults = null
+        @: var PhoneConsults_Nights_Weekend = null
+        @: var BatchTesting = null
+        @: var HouseCalls = null
+    }
+
+        function EditPayrate(fieldName) {
+            var fieldName = fieldName
+            $('#' + fieldName).prop('disabled', false)
+            $('.' + fieldName).addClass('d-none')
+            $('.' + fieldName + 'Edit').removeClass('d-none')
+        }
+
+    function ResetPayrate(fieldName) {
+        var fieldName = fieldName
+        $('#' + fieldName).prop('disabled', true)
+        $('.' + fieldName + 'Edit').addClass('d-none')
+        $('.' + fieldName).removeClass('d-none')
+        switch (fieldName) {
+            case "NightShift_Weekend":
+                $('#' + fieldName).val(NightShift_Weekend)
+                break;
+            case "Shift":
+                $('#' + fieldName).val(Shift)
+                break;
+            case "HouseCalls_Nights_Weekend":
+                $('#' + fieldName).val(HouseCalls_Nights_Weekend)
+                break;
+            case "PhoneConsults":
+                $('#' + fieldName).val(PhoneConsults)
+                break;
+            case "PhoneConsults_Nights_Weekend":
+                $('#' + fieldName).val(PhoneConsults_Nights_Weekend)
+                break;
+            case "BatchTesting":
+                $('#' + fieldName).val(BatchTesting)
+                break;
+            case "HouseCalls":
+                $('#' + fieldName).val(HouseCalls)
+                break;
+        }
+    }
+
+    function SavePayrate(fieldName) {
+        var fieldName = fieldName
+        var payRate = $('#' + fieldName).val()
+        var physicianId = $('#physicianId').val()
+        $.ajax({
+            url: '/Provider/SavePayrate',
+            data: { "physicianId": physicianId, "fieldName": fieldName, "payRate": payRate },
+            success: function () {
+                $('#' + fieldName).prop('disabled', true)
+                $('.' + fieldName + 'Edit').addClass('d-none')
+                $('.' + fieldName).removeClass('d-none')
+                switch (fieldName) {
+                    case "NightShift_Weekend":
+                        NightShift_Weekend = payRate
+                        break;
+                    case "Shift":
+                        Shift = payRate
+                        break;
+                    case "HouseCalls_Nights_Weekend":
+                        HouseCalls_Nights_Weekend = payRate
+                        break;
+                    case "PhoneConsults":
+                        PhoneConsults = payRate
+                        break;
+                    case "PhoneConsults_Nights_Weekend":
+                        PhoneConsults_Nights_Weekend = payRate
+                        break;
+                    case "BatchTesting":
+                        BatchTesting = payRate
+                        break;
+                    case "HouseCalls":
+                        HouseCalls = payRate
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("At _Payrate" + error)
+            }
+        })
+    }
+
+</script>                 

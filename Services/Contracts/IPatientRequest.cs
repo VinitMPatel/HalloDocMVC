@@ -14,6 +14,6 @@ namespace Services.Contracts
         Task NewAccount(LoginPerson model);
 
         Task<User> CheckEmail(string Email);
-
+        Task EmailLog(string email, string subject, string header);
     }
 }

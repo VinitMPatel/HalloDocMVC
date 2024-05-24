@@ -1,0 +1,116 @@
+﻿@{
+    Layout = "_Admin";
+}
+
+<div class="container-fluid mt-5">
+
+    <div class="d-flex justify-content-start mx-3">
+        <div class="h4">
+            Email Logs(Gmail)
+        </div>
+    </div>
+
+    <div class="shadow mt-3 pb-4">
+
+        <form>
+            <div class="row m-4">
+
+                <div class="col-12 col-sm-6 col-md-2 p-2">
+                    <div class="form-floating">
+                        <select class="form-select p-2" aria-label="Floating label select example" id="selectedRole">
+                            <option value="" selected disabled>Search By role</option>
+                            <option value="0">All</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-2 col-12">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" placeholder="Receiver Name" id="Receiver">
+                        <label class="blockedPatient" for="">Receiver Name</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-sm-6 col-md-2 col-12">
+                    <div class="form-floating ">
+                        <input type="email" class="form-control" placeholder="nav@example.com" id="email">
+                        <label class="FloatingInput">Email</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-md-2 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" placeholder="Date" max="@DateTime.Now.ToString("yyyy-MM-dd")" id="createdDate">
+                        <label class="FloatingInput">Created Date</label>
+                    </div>
+                </div>
+
+                <div class="p-2 col-md-2 col-sm-6 col-12">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" placeholder="Sent Date" max="@DateTime.Now.ToString("yyyy-MM-dd")" id="sentDate">
+                        <label class="FloatingInput">Send Date</label>
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-sm-2 mt-5">
+                    <button class="btn btn-outline-info shadow-none" type="reset" id="clearBtn">Clear</button>
+                    <button class="btn btn-info shadow-none text-white" id="searchBtn" type="button">Search</button>
+                </div>
+
+            </div>
+        </form>
+
+        <div id="dataTable">
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var data = {
+            email,
+            sentDate,
+            createdDate
+        }
+
+        $.ajax({
+            url: '/Admin/GetEmailLogData',
+            success: function (response) {
+                $('#dataTable').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.log(error);
+            }
+        })
+
+        $('#searchBtn').on('click', function () {
+
+            data.email = $('#email').val();
+            data.sentDate = $('#sentDate').val();
+            data.createdDate = $('#createdDate').val();
+            $.ajax({
+                url: '/Admin/GetEmailLogData',
+                data: data,
+                success: function (response) {
+                    $('#dataTable').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        })
+
+        $('#clearBtn').on('click', function () {
+            $.ajax({
+                url: '/Admin/GetEmailLogData',
+                success: function (response) {
+                    $('#dataTable').html(response);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        })
+    })
+</script>

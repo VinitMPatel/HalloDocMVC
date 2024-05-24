@@ -151,10 +151,11 @@ namespace Services.Implementation
                     Requestid = id,
                     Filename = item.FileName,
                     Createddate = DateTime.Now,
-
+                    Isdeleted = new BitArray(new[] { false })
                 };
                 await _context.AddAsync(requestwisefile);
                 await _context.SaveChangesAsync();
+                stream.Close();
             }
         }
 
@@ -204,6 +205,31 @@ namespace Services.Implementation
             {
                 return user;
             }
+        }
+
+        public async Task EmailLog(string email , string subject , string header)
+        {
+            Emaillog emailLog = new Emaillog();
+            if(subject != "")
+            {
+                emailLog.Emailtemplate = subject;
+            }
+            if(header != "")
+            {
+                emailLog.Subjectname = header;
+            }
+            if(email != "")
+            {
+                emailLog.Emailid = email;
+            }
+            emailLog.Createdate = DateTime.Now;
+            emailLog.Roleid = 3;
+            emailLog.Sentdate = DateTime.Now;
+            emailLog.Isemailsent = new BitArray(new[] { true });
+            emailLog.Senttries = 1;
+
+            await _context.Emaillogs.AddAsync(emailLog);
+            await _context.SaveChangesAsync();
         }
     }
 }

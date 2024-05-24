@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <form enctype="multipart/form-data" asp-action="SubmitCreateProvider">
+    <form enctype="multipart/form-data" asp-action="SubmitCreateProvider" id="myForm">
         <div class="shadow p-3 mt-3">
 
             <div class="accountInfo row">
@@ -73,9 +73,10 @@
 
                 <div class="p-2 col-sm-6 col-12 ">
                     <div class="form-floating ">
-                        <input type="email" class="form-control data1" placeholder="name@example.com" asp-for=email>
+                        <input type="email" class="form-control data1" placeholder="name@example.com" asp-for=email id="email">
                         <label class="FloatingInput">Email</label>
                         <span asp-validation-for="email" class="text-danger"></span>
+                        <span id="emailError" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -300,7 +301,7 @@
             <hr class="text-muted" style="border : 1px solid black" />
 
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-success">Create Account</button>
+                <button type="button" class="btn btn-success" id="submitBtn">Create Account</button>
             </div>
         </div>
     </form>
@@ -338,5 +339,27 @@
     })
     $('#nonDisclosureDoc').change(function (e) {
         $('#nonDisclosureDocCheck').prop('checked', true)
+    })
+
+    $('#email').on('input', function () {
+        $.ajax({
+            url: '/Provider/CheckPhysician',
+            data: { "email": $(this).val() },
+            success: function (response) {
+                if (!response) {
+                    $('#emailError').html("*Email Already exist");
+                }
+                else {
+                    $('#emailError').html("");
+                }
+            }
+        })
+    })
+
+    $('#submitBtn').click(function () {
+        if ($('#myForm').valid() && $('#emailError').text() == "") {
+            $(this).prop('type', 'submit')
+            $(this).click()
+        }
     })
 </script>
